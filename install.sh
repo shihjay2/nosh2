@@ -263,7 +263,7 @@ touch "$WEB_CONF"/nosh2.conf
 APACHE_CONF="Alias /nosh $NEWNOSH/public
 <Directory $NEWNOSH/public>
 	Options Indexes FollowSymLinks MultiViews
-	AllowOverride All"
+	AllowOverride None"
 if [ "$APACHE_VER" = "4" ]; then
 	APACHE_CONF="$APACHE_CONF
 	Require all granted"

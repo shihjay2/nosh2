@@ -434,7 +434,7 @@ class InstallController extends Controller {
         }
     }
 
-public function install_fix()
+public function install_fix(Request $request)
 	{
 		if ($request->isMethod('post')) {
 			$this->validate($request, [
@@ -680,7 +680,7 @@ public function install_fix()
 		$base_arr = explode('/', base_path());
 		end($base_arr);
 		$key = key($base_arr);
-		$base_arr[$key] = 'nosh2';
+		$base_arr[$key] = 'nosh-cs';
 		$config_file = implode('/', $base_arr) . '/.env.php';
 		if (file_exists($config_file)) {
 			$config = require($config_file);

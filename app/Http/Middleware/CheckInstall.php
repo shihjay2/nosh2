@@ -23,11 +23,15 @@ class CheckInstall
         // Check Database connection
         $env_file = base_path() . '/.env';
     	if (file_exists($env_file)) {
-    		$connect = mysqli_connect('localhost', env('DB_USERNAME'), env('DB_PASSWORD'));
-    		if (!$connect) {
-    			return redirect()->route('install_fix');
-    		}
-    		mysqli_close($connect);
+            if (env('DB_DATABASE') == 'homestead') {
+                return redirect()->route('update_env');
+            } else {
+                try {
+                    DB::connection()->getPdo();
+                } catch (\Exception $e) {
+                    return redirect()->route('install_fix');
+                }
+            }
     	} else {
             return redirect()->route('update_env');
         }

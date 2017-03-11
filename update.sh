@@ -144,7 +144,6 @@ chmod 777 $NEWNOSH/noshfax
 chmod 777 $NEWNOSH/noshreminder
 chmod 777 $NEWNOSH/noshbackup
 log_only "Updated NOSH ChartingSystem core files."
-php artisan migrate
 a2enmod ssl
 if [ -e "$WEB_CONF"/nosh.conf ]; then
 	sed -i "s_Alias /nosh /noshdocuments/nosh-cs/public_Alias /nosh-old /noshdocuments/nosh-cs/public_" "$WEB_CONF"/nosh.conf
@@ -156,7 +155,7 @@ touch "$WEB_CONF"/nosh2.conf
 APACHE_CONF="Alias /nosh $NEWNOSH/public
 <Directory $NEWNOSH/public>
 	Options Indexes FollowSymLinks MultiViews
-	AllowOverride All"
+	AllowOverride None"
 if [ "$APACHE_VER" = "4" ]; then
 	APACHE_CONF="$APACHE_CONF
 	Require all granted"

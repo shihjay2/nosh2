@@ -872,7 +872,7 @@ class LoginController extends Controller {
 	{
 		$practice = DB::table('practiceinfo')->where('practice_id', '=', $request->input('practice_id'))->first();
 		$html = '<i class="fa fa-child fa-5x" aria-hidden="true" style="margin:20px;text-align: center;"></i>';
-		if ($practice->practice_logo !== '') {
+		if ($practice->practice_logo !== '' && $practice->practice_logo !== null) {
 			if (file_exists(public_path() . '/'. $practice->practice_logo)) {
 				$html = HTML::image($practice->practice_logo, 'Practice Logo', array('border' => '0'));
 			}

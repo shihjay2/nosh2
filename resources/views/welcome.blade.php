@@ -326,7 +326,7 @@
 			@if (isset($content))
 			<div class="panel panel-default">
 				<div class="panel-heading clearfix">
-					<h3 class="panel-title pull-left" style="padding-top: 7.5px;">{!! $title !!}</h3>
+					<h3 class="panel-title pull-left" style="padding-top: 7.5px;">{!! $panel_header !!}</h3>
 					@if (isset($back))
 						<div class="pull-right">
 							{!! $back !!}

@@ -1418,6 +1418,7 @@ class CoreController extends Controller
 
     public function dashboard(Request $request)
     {
+        $data['title'] = 'NOSH ChartingSystem';
         $user_id = Session::get('user_id');
         if (Session::get('group_id') == '100') {
 			$row = DB::table('demographics_relate')->where('id', '=', $user_id)->first();
@@ -1487,7 +1488,7 @@ class CoreController extends Controller
 			} else {
 				$data['mtm_alerts_status'] = "n";
 			}
-            $data['title'] = 'Inventory Alerts';
+            $data['panel_header'] = 'Inventory Alerts';
 			$data['content'] = $this->vaccine_supplement_alert($practice_id);
 		}
 		if (Session::get('group_id') == '3') {
@@ -1520,7 +1521,7 @@ class CoreController extends Controller
 				->count();
             $data['number_bills'] = DB::table('encounters')->where('bill_submitted', '=', 'No')->where('user_id', '=', $user_id)->count();
 			$data['number_tests'] = DB::table('tests')->whereNull('pid')->where('practice_id', '=', $practice_id)->count();
-			$data['title'] = 'Inventory Alerts';
+			$data['panel_header'] = 'Inventory Alerts';
             $data['content'] = $this->vaccine_supplement_alert($practice_id);
 		}
 		if (Session::get('group_id') == '4') {
@@ -1576,7 +1577,7 @@ class CoreController extends Controller
             } else {
                 $return = 'None.';
             }
-            $data['title'] = 'Audit Logs';
+            $data['panel_header'] = 'Audit Logs';
             $data['content'] = $return;
 		}
         $data['weekends'] = 'false';
