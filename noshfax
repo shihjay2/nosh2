@@ -1,0 +1,2 @@
+#!/bin/sh
+wget --no-check-certificate -O - -q -t 1 localhost/nosh/fax

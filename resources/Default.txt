@@ -1,0 +1,1614 @@
+user_id	default	template_name	age	category	sex	group	array	scoring	template_core_id
+	default	SIDE_C		specific			RIGHT		1
+	default	SIDE_C		specific			LEFT		2
+	default	SIDE_C		specific			BILATERAL		3
+	default	side		specific			right		4
+	default	side		specific			left		5
+	default	side		specific			bilateral		6
+	default	UPPER/LOWER_C		specific			UPPER		7
+	default	UPPER/LOWER_C		specific			LOWER		8
+	default	UPPER/LOWER_C		specific			UPPER AND LOWER		9
+	default	upper/lower		specific			upper		10
+	default	upper/lower		specific			lower		11
+	default	upper/lower		specific			upper and lower		12
+	default	YES/NO_C		specific			YES		13
+	default	YES/NO_C		specific			NO		14
+	default	yes/no		specific			yes		15
+	default	yes/no		specific			no		16
+	default	normal/abnormal		specific			normal		17
+	default	normal/abnormal		specific			abnormal		18
+	default	NORMAL/ABNORMAL_C		specific			NORMAL		19
+	default	NORMAL/ABNORMAL_C		specific			ABNORMAL		20
+	default	anterior/posterior		specific			anterior		21
+	default	anterior/posterior		specific			posterior		22
+	default	ANTERIOR/POSTERIOR_C		specific			ANTERIOR		23
+	default	ANTERIOR/POSTERIOR_C		specific			POSTERIOR		24
+	default	dorsal/plantar/volar		specific			dorsal		25
+	default	dorsal/plantar/volar		specific			plantar		26
+	default	dorsal/plantar/volar		specific			volar		27
+	default	DORSAL/PLANTAR/VOLAR_C		specific			DORSAL		28
+	default	DORSAL/PLANTAR/VOLAR_C		specific			PLANTAR		29
+	default	DORSAL/PLANTAR/VOLAR_C		specific			VOLAR		30
+	default	DIGIT_C		specific			THUMB		31
+	default	DIGIT_C		specific			2ND FINGER		32
+	default	DIGIT_C		specific			3RD FINGER		33
+	default	DIGIT_C		specific			4TH FINGER		34
+	default	DIGIT_C		specific			5TH FINGER		35
+	default	DIGIT_C		specific			GREAT TOE		36
+	default	DIGIT_C		specific			2ND TOE		37
+	default	DIGIT_C		specific			3RD TOE		38
+	default	DIGIT_C		specific			4TH TOE		39
+	default	DIGIT_C		specific			5TH TOE		40
+	default	digit		specific			thumb		41
+	default	digit		specific			2nd finger		42
+	default	digit		specific			3rd finger		43
+	default	digit		specific			4th finger		44
+	default	digit		specific			5th finger		45
+	default	digit		specific			great toe		46
+	default	digit		specific			2nd toe		47
+	default	digit		specific			3rd toe		48
+	default	digit		specific			4th toe		49
+	default	digit		specific			5th toe		50
+	default	good/fair/poor		specific			good		51
+	default	good/fair/poor		specific			fair		52
+	default	good/fair/poor		specific			poor		53
+	default	GOOD/FAIR/POOR_C		specific			GOOD		54
+	default	GOOD/FAIR/POOR_C		specific			FAIR		55
+	default	GOOD/FAIR/POOR_C		specific			POOR		56
+		ros_gen		text		Denies			57
+	normal	ros_gen		text		Denies	fever		58
+	normal	ros_gen		text		Denies	weight change		59
+	normal	ros_gen		text		Denies	fatigue		60
+	normal	ros_gen		text		Denies	appetite change		61
+		ros_gen		text		REPORTS			62
+		ros_gen		text		REPORTS	FEVER		63
+		ros_gen		text		REPORTS	WEIGHT LOSS		64
+		ros_gen		text		REPORTS	WEIGHT GAIN		65
+		ros_gen		text		REPORTS	FATIGUE		66
+		ros_gen		text		REPORTS	WEAKNESS		67
+		ros_gen		text		REPORTS	INCREASED APPETITE		68
+		ros_gen		text		REPORTS	DECREASED APPETITE		69
+		ros_eye		text		Denies			70
+	normal	ros_eye		text		Denies	vision change		71
+	normal	ros_eye		text		Denies	eye pain		72
+	normal	ros_eye		text		Denies	eye redness		73
+	normal	ros_eye		text		Denies	eye discharge		74
+		ros_eye		text		REPORTS			75
+		ros_eye		text		REPORTS	VISION CHANGE ON THE *SIDE_C* SIDE		76
+		ros_eye		text		REPORTS	EYE PAIN ON THE *SIDE_C* SIDE		77
+		ros_eye		text		REPORTS	EYE REDNESS ON THE *SIDE_C* SIDE		78
+		ros_eye		text		REPORTS	EYE DISCHARGE ON THE *SIDE_C* SIDE		79
+		ros_ent		text		Denies			80
+	normal	ros_ent		text		Denies	ear pain		81
+	normal	ros_ent		text		Denies	tinnitus		82
+	normal	ros_ent		text		Denies	rhinorrhea		83
+	normal	ros_ent		text		Denies	nose bleeding		84
+	normal	ros_ent		text		Denies	nasal congestion		85
+		ros_ent		text		REPORTS			86
+		ros_ent		text		REPORTS	EAR PAIN ON THE *SIDE_C* SIDE		87
+		ros_ent		text		REPORTS	TINNITUS		88
+		ros_ent		text		REPORTS	NASAL CONGESTION		89
+		ros_ent		text		REPORTS	RHINORRHEA		90
+		ros_ent		text		REPORTS	NOSE BLEEDING ON THE *SIDE_C* SIDE		91
+		ros_resp		text		Denies			92
+	normal	ros_resp		text		Denies	shortness of breath		93
+	normal	ros_resp		text		Denies	dyspnea on exertion		94
+	normal	ros_resp		text		Denies	paroxysmal nocturnal dyspnea		95
+	normal	ros_resp		text		Denies	cough		96
+		ros_resp		text		REPORTS			97
+		ros_resp		text		REPORTS	SHORTNESS OF BREATH		98
+		ros_resp		text		REPORTS	DYSPNEA ON EXERTION		99
+		ros_resp		text		REPORTS	PAROXYSMAL NOCTURNAL DYSPNEA		100
+		ros_resp		text		REPORTS	PRODUCTIVE COUGH		101
+		ros_resp		text		REPORTS	NON-PRODUCTIVE COUGH		102
+		ros_cv		text		Denies			103
+	normal	ros_cv		text		Denies	chest pain		104
+	normal	ros_cv		text		Denies	palpitations		105
+	normal	ros_cv		text		Denies	cyanosis		106
+	normal	ros_cv		text		Denies	edema		107
+		ros_cv		text		REPORTS			108
+		ros_cv		text		REPORTS	CHEST PAIN ON THE *SIDE_C* SIDE		109
+		ros_cv		text		REPORTS	PALPITATIONS		110
+		ros_cv		text		REPORTS	CYANOSIS		111
+		ros_cv		text		REPORTS	EDEMA ON THE *UPPER/LOWER_C* *SIDE_C* SIDE		112
+		ros_cv		text		REPORTS	GENERALIZED EDEMA		113
+		ros_gi		text		Denies			114
+	normal	ros_gi		text		Denies	nausea		115
+	normal	ros_gi		text		Denies	vomiting		116
+	normal	ros_gi		text		Denies	abdominal pain		117
+	normal	ros_gi		text		Denies	bowel movement changes		118
+	normal	ros_gi		text		Denies	jaundice		119
+		ros_gi		text		REPORTS			120
+		ros_gi		text		REPORTS	NAUSEA		121
+		ros_gi		text		REPORTS	VOMITING		122
+		ros_gi		text		REPORTS	ABDOMINAL PAIN ON THE *UPPER/LOWER_C* *SIDE_C* SIDE		123
+		ros_gi		text		REPORTS	GENERALIZED ABDOMINAL PAIN		124
+		ros_gi		text		REPORTS	DIARRHEA		125
+		ros_gi		text		REPORTS	CONSTIPATION		126
+		ros_gi		text		REPORTS	ALTERNATING DIARRHEA AND CONSTIPATION		127
+		ros_gi		text		REPORTS	JAUNDICE		128
+		ros_gu	m	text		Denies			129
+	normal	ros_gu	m	text		Denies	penile discharge		130
+	normal	ros_gu	m	text		Denies	urinary incontinence		131
+	normal	ros_gu	m	text		Denies	hematuria	132	132
+	normal	ros_gu	m	text		Denies	genital lesions		133
+	normal	ros_gu	m	text		Denies	dysuria		134
+		ros_gu	m	text		REPORTS			135
+		ros_gu	m	text		REPORTS	PENILE DISCHARGE		136
+		ros_gu	m	text		REPORTS	URINARY INCONTINENCE		137
+		ros_gu	m	text		REPORTS	HEMATURIA		138
+		ros_gu	m	text		REPORTS	GENITAL LESIONS		139
+		ros_gu	m	text		REPORTS	DYSURIA		140
+		ros_gu	f	text		Denies			141
+	normal	ros_gu	f	text		Denies	vaginal discharge		142
+	normal	ros_gu	f	text		Denies	urinary incontinence		143
+	normal	ros_gu	f	text		Denies	hematuria		144
+	normal	ros_gu	f	text		Denies	genital lesions		145
+	normal	ros_gu	f	text		Denies	dysuria		146
+		ros_gu	f	text		REPORTS			147
+		ros_gu	f	text		REPORTS	VAGINAL DISCHARGE		148
+		ros_gu	f	text		REPORTS	URINARY INCONTINENCE		149
+		ros_gu	f	text		REPORTS	HEMATURIA		150
+		ros_gu	f	text		REPORTS	GENITAL LESIONS		151
+		ros_gu	f	text		REPORTS	DYSURIA		152
+		ros_mus		text		Denies			153
+	normal	ros_mus		text		Denies	joint pain		154
+	normal	ros_mus		text		Denies	joint swelling		155
+		ros_mus		text		REPORTS			156
+		ros_mus		text		REPORTS	JOINT PAIN		157
+		ros_mus		text		REPORTS	JOINT SWELLING		158
+		ros_neuro		text		Denies			159
+	normal	ros_neuro		text		Denies	dizziness		160
+	normal	ros_neuro		text		Denies	localized weakness		161
+	normal	ros_neuro		text		Denies	parasthesias		162
+	normal	ros_neuro		text		Denies	loss of sensation		163
+	normal	ros_neuro		text		Denies	loss of function		164
+		ros_neuro		text		REPORTS			165
+		ros_neuro		text		REPORTS	DIZZINESS		166
+		ros_neuro		text		REPORTS	LOCALIZED WEAKNESS		167
+		ros_neuro		text		REPORTS	PARASTHESIAS		168
+		ros_neuro		text		REPORTS	LOSS OF SENSATION		169
+		ros_neuro		text		REPORTS	LOSS OF FUNCTION		170
+		ros_psych		text		Denies			171
+	normal	ros_psych		text		Denies	depression		172
+	normal	ros_psych		text		Denies	anxiety		173
+	normal	ros_psych		text		Denies	hallucinations		174
+	normal	ros_psych		text		Denies	mood swings		175
+		ros_psych		text		REPORTS			176
+		ros_psych		text		REPORTS	DEPRESSION		177
+		ros_psych		text		REPORTS	ANXIETY		178
+		ros_psych		text		REPORTS	HALLUCINATIONS		179
+		ros_psych		text		REPORTS	MOOD SWINGS		180
+		ros_heme		text		Denies			181
+	normal	ros_heme		text		Denies	abnormal bleeding		182
+	normal	ros_heme		text		Denies	easy bruising		183
+	normal	ros_heme		text		Denies	skin lumps		184
+		ros_heme		text		REPORTS			185
+		ros_heme		text		REPORTS	ABNORMAL BLEEDING		186
+		ros_heme		text		REPORTS	EASY BRUISING		187
+		ros_heme		text		REPORTS	SKIN LUMPS		188
+		ros_endocrine		text		Denies			189
+	normal	ros_endocrine		text		Denies	polyuria		190
+	normal	ros_endocrine		text		Denies	polydipsia		191
+	normal	ros_endocrine		text		Denies	breast discharge		192
+		ros_endocrine		text		REPORTS			193
+		ros_endocrine		text		REPORTS	POLYURIA		194
+		ros_endocrine		text		REPORTS	POLYDIPSIA		195
+		ros_endocrine		text		REPORTS	BREAST DISCHARGE		196
+		ros_skin		text		Denies			197
+	normal	ros_skin		text		Denies	skin rash		198
+	normal	ros_skin		text		Denies	skin itching		199
+	normal	ros_skin		text		Denies	skin lumps		200
+		ros_skin		text		REPORTS			201
+		ros_skin		text		REPORTS	SKIN RASH		202
+		ros_skin		text		REPORTS	SKIN ITCHING		203
+		ros_skin		text		REPORTS	SKIN LUMPS		204
+		ros_wcc	child	text		Nutrition			205
+	normal	ros_wcc	child	text		Nutrition	*~*		206
+		ros_wcc	child	text		Breastfeeding			207
+		ros_wcc	child	text		Breastfeeding	Minutes per feeding: *~*		208
+		ros_wcc	child	text		Breastfeeding	Hours between feeding: *~*		209
+		ros_wcc	child	text		Breastfeeding	Feedings per 24 hours: *~*		210
+		ros_wcc	child	text		Formula feeding			211
+		ros_wcc	child	text		Formula feeding	Ounces per feeding: *~*		212
+		ros_wcc	child	text		Formula feeding	Source of water: *~*		213
+		ros_wcc	child	text		Formula feeding	Vitamins/fluoride: *~*		214
+		ros_wcc	child	text		Elimination			215
+	normal	ros_wcc	child	text		Elimination	*~*		216
+		ros_wcc	child	text		Environment			217
+	normal	ros_wcc	child	text		Environment	*~*		218
+		ros_wcc	child	text		Sleep Pattern			219
+	normal	ros_wcc	child	text		Sleep Pattern	*~*		220
+		ros_wcc	child	text		Behavior			221
+	normal	ros_wcc	child	text		Behavior	*~*		222
+		ros_wcc	child	text		Activity			223
+	normal	ros_wcc	child	text		Activity	*~*		224
+		ros_wcc	child	text		Dental vist in last 12 months			225
+	normal	ros_wcc	child	text		Dental vist in last 12 months	*yes/no*		226
+		ros_wcc	child	text		Development 1 month			227
+		ros_wcc	child	text		Development 1 month	If upset, able to calm: *yes/no*		228
+		ros_wcc	child	text		Development 1 month	Has started to smile: *yes/no*		229
+		ros_wcc	child	text		Development 1 month	Recognizes parents' voices: *yes/no*		230
+		ros_wcc	child	text		Development 1 month	Follows parent with eyes: *yes/no*		231
+		ros_wcc	child	text		Development 1 month	Able to lift head when on tummy: *yes/no*		232
+		ros_wcc	child	text		Development 1 month	If upset, able to calm: *yes/no*		233
+		orders_plan	child	text		Anticipatory Guidance 1 month			234
+		orders_plan	child	text		Anticipatory Guidance 1 month	Parental well being		235
+		orders_plan	child	text		Anticipatory Guidance 1 month	Family adjustment		236
+		orders_plan	child	text		Anticipatory Guidance 1 month	400 IU vitmain D supplement with breastfeeding		237
+		orders_plan	child	text		Anticipatory Guidance 1 month	Iron-fortified formula		238
+		orders_plan	child	text		Anticipatory Guidance 1 month	Solid foods (wait until 4-6 months)		239
+		orders_plan	child	text		Anticipatory Guidance 1 month	Elimination (5-8 wet diapers, 3-4 stools)		240
+		orders_plan	child	text		Anticipatory Guidance 1 month	Tummy time		241
+		orders_plan	child	text		Anticipatory Guidance 1 month	Encourage daily routines		242
+		orders_plan	child	text		Anticipatory Guidance 1 month	Back to sleep		243
+		orders_plan	child	text		Anticipatory Guidance 1 month	Sleep location		244
+		orders_plan	child	text		Anticipatory Guidance 1 month	Techniques to calm		245
+		orders_plan	child	text		Anticipatory Guidance 1 month	Car safety seat		246
+		orders_plan	child	text		Anticipatory Guidance 1 month	Falls		247
+		orders_plan	child	text		Anticipatory Guidance 1 month	No strings around neck		248
+		orders_plan	child	text		Anticipatory Guidance 1 month	No shaking		249
+		orders_plan	child	text		Anticipatory Guidance 1 month	Smoke-free environment		250
+		ros_wcc	child	text		Development 2 month			251
+		ros_wcc	child	text		Development 2 month	Lifts head and begins to push up when prone: *yes/no*		252
+		ros_wcc	child	text		Development 2 month	Holds head erect for short periods (when held upright): *yes/no*		253
+		ros_wcc	child	text		Development 2 month	Diminished newborn reflexes: *yes/no*		254
+		ros_wcc	child	text		Development 2 month	Symmetrical movement: *yes/no*		255
+		ros_wcc	child	text		Development 2 month	Indicates boredome when no activity change: *yes/no*		256
+		ros_wcc	child	text		Development 2 month	Coos: *yes/no*		257
+		ros_wcc	child	text		Development 2 month	Different cries for different needs: *yes/no*		258
+		ros_wcc	child	text		Development 2 month	Smiles: *yes/no*		259
+		ros_wcc	child	text		Development 2 month	Looks at parent: *yes/no*		260
+		ros_wcc	child	text		Development 2 month	Self-comfort: *yes/no*		261
+		orders_plan	child	text		Anticipatory Guidance 2 month			262
+		orders_plan	child	text		Anticipatory Guidance 2 month	Parental well being		263
+		orders_plan	child	text		Anticipatory Guidance 2 month	Infant-family synchrony		264
+		orders_plan	child	text		Anticipatory Guidance 2 month	400 IU vitmain D supplement with breastfeeding		265
+		orders_plan	child	text		Anticipatory Guidance 2 month	Iron-fortified forumla		266
+		orders_plan	child	text		Anticipatory Guidance 2 month	Solid foods (wait until 4-6 months)		267
+		orders_plan	child	text		Anticipatory Guidance 2 month	Elimination		268
+		orders_plan	child	text		Anticipatory Guidance 2 month	No bottle in bed		269
+		orders_plan	child	text		Anticipatory Guidance 2 month	Tummy time		270
+		orders_plan	child	text		Anticipatory Guidance 2 month	Daily routines		271
+		orders_plan	child	text		Anticipatory Guidance 2 month	Back to sleep		272
+		orders_plan	child	text		Anticipatory Guidance 2 month	Car safety seat		273
+		orders_plan	child	text		Anticipatory Guidance 2 month	Falls		274
+		orders_plan	child	text		Anticipatory Guidance 2 month	Burns (hot liquids and water heater)		275
+		orders_plan	child	text		Anticipatory Guidance 2 month	Smoke-free environment		276
+		orders_plan	child	text		Anticipatory Guidance 2 month	Drowning		277
+		orders_plan	child	text		Anticipatory Guidance 2 month	Choking (small objects, plastic bags)		278
+		ros_wcc	child	text		Development 4 month			279
+		ros_wcc	child	text		Development 4 month	Pushes chest up to elbows: *yes/no*		280
+		ros_wcc	child	text		Development 4 month	Good head control: *yes/no*		281
+		ros_wcc	child	text		Development 4 month	Symmetry in movement: *yes/no*		282
+		ros_wcc	child	text		Development 4 month	Begins to roll and reach for objects: *yes/no*		283
+		ros_wcc	child	text		Development 4 month	Responds to affection: *yes/no*		284
+		ros_wcc	child	text		Development 4 month	Indicates pleasure and displeasure: *yes/no*		285
+		ros_wcc	child	text		Development 4 month	Spontaneous expressive babbling: *yes/no*		286
+		ros_wcc	child	text		Development 4 month	Social smile: *yes/no*		287
+		ros_wcc	child	text		Development 4 month	Elicits social interactions: *yes/no*		288
+		ros_wcc	child	text		Development 4 month	Can calm down on own: *yes/no*		289
+		orders_plan	child	text		Anticipatory Guidance 4 month			290
+		orders_plan	child	text		Anticipatory Guidance 4 month	Family functioning		291
+		orders_plan	child	text		Anticipatory Guidance 4 month	Weight gain and growth spurts		292
+		orders_plan	child	text		Anticipatory Guidance 4 month	Vitamin D and iron supplementation with breastfeeding		293
+		orders_plan	child	text		Anticipatory Guidance 4 month	Iron-fortified forumla		294
+		orders_plan	child	text		Anticipatory Guidance 4 month	Solid foods (when and how to add)		295
+		orders_plan	child	text		Anticipatory Guidance 4 month	Elimination		296
+		orders_plan	child	text		Anticipatory Guidance 4 month	Social development		297
+		orders_plan	child	text		Anticipatory Guidance 4 month	Communication skills		298
+		orders_plan	child	text		Anticipatory Guidance 4 month	Physical (tummy time)		299
+		orders_plan	child	text		Anticipatory Guidance 4 month	Daily routines		300
+		orders_plan	child	text		Anticipatory Guidance 4 month	Sleep		301
+		orders_plan	child	text		Anticipatory Guidance 4 month	Don't share utensils/pacifier		302
+		orders_plan	child	text		Anticipatory Guidance 4 month	Avoid bed in bottle		303
+		orders_plan	child	text		Anticipatory Guidance 4 month	Car safety seat		304
+		orders_plan	child	text		Anticipatory Guidance 4 month	Falls		305
+		orders_plan	child	text		Anticipatory Guidance 4 month	Burns (hot liquids and water heater)		306
+		orders_plan	child	text		Anticipatory Guidance 4 month	Walkers		307
+		orders_plan	child	text		Anticipatory Guidance 4 month	Drowning		308
+		orders_plan	child	text		Anticipatory Guidance 4 month	Choking		309
+		orders_plan	child	text		Anticipatory Guidance 4 month	Lead poisoning		310
+		ros_wcc	child	text		Development 6 month			311
+		ros_wcc	child	text		Development 6 month	Sits briefly, leaning forward: *yes/no*		312
+		ros_wcc	child	text		Development 6 month	Rolls over: *yes/no*		313
+		ros_wcc	child	text		Development 6 month	Uses visual exploration: *yes/no*		314
+		ros_wcc	child	text		Development 6 month	Beginning to use oral exploration: *yes/no*		315
+		ros_wcc	child	text		Development 6 month	Uses a string of words (ah, eh, oh): *yes/no*		316
+		ros_wcc	child	text		Development 6 month	Beginning to recognize own name: *yes/no*		317
+		ros_wcc	child	text		Development 6 month	Enjoys vocal turn asking: *yes/no*		318
+		ros_wcc	child	text		Development 6 month	Shows pleasure from interactions with parents or others: *yes/no*		319
+		orders_plan	child	text		Anticipatory Guidance 6 month			320
+		orders_plan	child	text		Anticipatory Guidance 6 month	Family functioning		321
+		orders_plan	child	text		Anticipatory Guidance 6 month	Vitamin D and iron supplementation with breastfeeding		322
+		orders_plan	child	text		Anticipatory Guidance 6 month	Iron-fortified forumla		323
+		orders_plan	child	text		Anticipatory Guidance 6 month	Solid foods (types and amounts, begin cup)		324
+		orders_plan	child	text		Anticipatory Guidance 6 month	Elimination		325
+		orders_plan	child	text		Anticipatory Guidance 6 month	Social development		326
+		orders_plan	child	text		Anticipatory Guidance 6 month	Communication skills		327
+		orders_plan	child	text		Anticipatory Guidance 6 month	Sleep		328
+		orders_plan	child	text		Anticipatory Guidance 6 month	Brush teeth		329
+		orders_plan	child	text		Anticipatory Guidance 6 month	Avoid bed in bottle		330
+		orders_plan	child	text		Anticipatory Guidance 6 month	Car safety seat		331
+		orders_plan	child	text		Anticipatory Guidance 6 month	Falls		332
+		orders_plan	child	text		Anticipatory Guidance 6 month	Burns (hot liquids and water heater)		333
+		orders_plan	child	text		Anticipatory Guidance 6 month	Walkers		334
+		orders_plan	child	text		Anticipatory Guidance 6 month	Drowning		335
+		orders_plan	child	text		Anticipatory Guidance 6 month	Choking		336
+		orders_plan	child	text		Anticipatory Guidance 6 month	Kitchen safety		337
+		orders_plan	child	text		Anticipatory Guidance 6 month	Poisons		338
+		ros_wcc	child	text		Development 9 month			339
+		ros_wcc	child	text		Development 9 month	Sits well: *yes/no*		340
+		ros_wcc	child	text		Development 9 month	Crawls: *yes/no*		341
+		ros_wcc	child	text		Development 9 month	Pulls to feet with support: *yes/no*		342
+		ros_wcc	child	text		Development 9 month	Peekaboo: *yes/no*		343
+		ros_wcc	child	text		Development 9 month	Object permanence: *yes/no*		344
+		ros_wcc	child	text		Development 9 month	Looks at books: *yes/no*		345
+		ros_wcc	child	text		Development 9 month	Imitates sounds: *yes/no*		346
+		ros_wcc	child	text		Development 9 month	Points out objects: *yes/no*		347
+		ros_wcc	child	text		Development 9 month	Stranger anxiety: *yes/no*		348
+		ros_wcc	child	text		Development 9 month	Seeks parent for comfort: *yes/no*		349
+		orders_plan	child	text		Anticipatory Guidance 9 month			350
+		orders_plan	child	text		Anticipatory Guidance 9 month	Limit word "no"		351
+		orders_plan	child	text		Anticipatory Guidance 9 month	Age-appropriate discipline		352
+		orders_plan	child	text		Anticipatory Guidance 9 month	Domestic violence		353
+		orders_plan	child	text		Anticipatory Guidance 9 month	Time for self/partner		354
+		orders_plan	child	text		Anticipatory Guidance 9 month	Consistent routines		355
+		orders_plan	child	text		Anticipatory Guidance 9 month	Separation anxiety		356
+		orders_plan	child	text		Anticipatory Guidance 9 month	Learning and developing		357
+		orders_plan	child	text		Anticipatory Guidance 9 month	No TV		358
+		orders_plan	child	text		Anticipatory Guidance 9 month	Self feeding		359
+		orders_plan	child	text		Anticipatory Guidance 9 month	Solid foods		360
+		orders_plan	child	text		Anticipatory Guidance 9 month	Safe foods		361
+		orders_plan	child	text		Anticipatory Guidance 9 month	Using a cup		362
+		orders_plan	child	text		Anticipatory Guidance 9 month	Vitamin D and iron supplementation with breastfeeding		363
+		orders_plan	child	text		Anticipatory Guidance 9 month	Iron-fortified forumla		364
+		orders_plan	child	text		Anticipatory Guidance 9 month	No bottle in bed		365
+		orders_plan	child	text		Anticipatory Guidance 9 month	Brush teeth		366
+		orders_plan	child	text		Anticipatory Guidance 9 month	Car safety seat		367
+		orders_plan	child	text		Anticipatory Guidance 9 month	Falls/Window guards		368
+		orders_plan	child	text		Anticipatory Guidance 9 month	Burns (hot liquids and water heater)		369
+		orders_plan	child	text		Anticipatory Guidance 9 month	Guns		370
+		ros_wcc	child	text		Development 12 month			371
+		ros_wcc	child	text		Development 12 month	Waves bye-bye: *yes/no*		372
+		ros_wcc	child	text		Development 12 month	Tries to do what you do: *yes/no*		373
+		ros_wcc	child	text		Development 12 month	Cries when you leave: *yes/no*		374
+		ros_wcc	child	text		Development 12 month	Plays peekaboo: *yes/no*		375
+		ros_wcc	child	text		Development 12 month	Hands you a book to read: *yes/no*		376
+		ros_wcc	child	text		Development 12 month	Speaks 1-2 words: *yes/no*		377
+		ros_wcc	child	text		Development 12 month	Babbles: *yes/no*		378
+		ros_wcc	child	text		Development 12 month	Tries to make the same sounds you do: *yes/no*		379
+		ros_wcc	child	text		Development 12 month	Looks at things you are looking at: *yes/no*		380
+		ros_wcc	child	text		Development 12 month	Follows simple directions: *yes/no*		381
+		ros_wcc	child	text		Development 12 month	Bangs toys together: *yes/no*		382
+		ros_wcc	child	text		Development 12 month	Pulls to stand: *yes/no*		383
+		ros_wcc	child	text		Development 12 month	Stands alone: *yes/no*		384
+		ros_wcc	child	text		Development 12 month	Drinks from a cup: *yes/no*		385
+		orders_plan	child	text		Anticipatory Guidance 12 month			386
+		orders_plan	child	text		Anticipatory Guidance 12 month	Time for self/partner		387
+		orders_plan	child	text		Anticipatory Guidance 12 month	Community activities		388
+		orders_plan	child	text		Anticipatory Guidance 12 month	Age appropriate discipline		389
+		orders_plan	child	text		Anticipatory Guidance 12 month	Family traditions		390
+		orders_plan	child	text		Anticipatory Guidance 12 month	Nap and bedtime		391
+		orders_plan	child	text		Anticipatory Guidance 12 month	Self feeding		392
+		orders_plan	child	text		Anticipatory Guidance 12 month	Consistent meals/snacks		393
+		orders_plan	child	text		Anticipatory Guidance 12 month	Variety of nutritious foods		394
+		orders_plan	child	text		Anticipatory Guidance 12 month	Iron-fortified foods		395
+		orders_plan	child	text		Anticipatory Guidance 12 month	First dental visit		396
+		orders_plan	child	text		Anticipatory Guidance 12 month	Brush teeth twice a day		397
+		orders_plan	child	text		Anticipatory Guidance 12 month	Limit bottle use (water only)		398
+		orders_plan	child	text		Anticipatory Guidance 12 month	No bottle in bed		399
+		orders_plan	child	text		Anticipatory Guidance 12 month	Car safety seat		400
+		orders_plan	child	text		Anticipatory Guidance 12 month	Poisons		401
+		orders_plan	child	text		Anticipatory Guidance 12 month	Water		402
+		orders_plan	child	text		Anticipatory Guidance 12 month	No supervision by young children		403
+		orders_plan	child	text		Anticipatory Guidance 12 month	Sharp objects		404
+		orders_plan	child	text		Anticipatory Guidance 12 month	Guns		405
+		orders_plan	child	text		Anticipatory Guidance 12 month	Home safety		406
+		orders_plan	child	text		Anticipatory Guidance 12 month	Falls		407
+		ros_wcc	child	text		Development 15 month			408
+		ros_wcc	child	text		Development 15 month	Tries to do what you do: *yes/no*		409
+		ros_wcc	child	text		Development 15 month	Helps in the house: *yes/no*		410
+		ros_wcc	child	text		Development 15 month	Listens to a story: *yes/no*		411
+		ros_wcc	child	text		Development 15 month	Says 2-3 words: *yes/no*		412
+		ros_wcc	child	text		Development 15 month	Brings toys over to show you: *yes/no*		413
+		ros_wcc	child	text		Development 15 month	Scribbles: *yes/no*		414
+		ros_wcc	child	text		Development 15 month	Follows simple commands: *yes/no*		415
+		ros_wcc	child	text		Development 15 month	Bends down without falling: *yes/no*		416
+		ros_wcc	child	text		Development 15 month	Walks well: *yes/no*		417
+		ros_wcc	child	text		Development 15 month	Puts blocks in a cup: *yes/no*		418
+		ros_wcc	child	text		Development 15 month	Drinks from a cup with very little spilling: *yes/no*		419
+		orders_plan	child	text		Anticipatory Guidance 15 month			420
+		orders_plan	child	text		Anticipatory Guidance 15 month	Give limited choices		421
+		orders_plan	child	text		Anticipatory Guidance 15 month	Stranger anxiety		422
+		orders_plan	child	text		Anticipatory Guidance 15 month	Read and talk with child		423
+		orders_plan	child	text		Anticipatory Guidance 15 month	Consistent routines		424
+		orders_plan	child	text		Anticipatory Guidance 15 month	Night waking		425
+		orders_plan	child	text		Anticipatory Guidance 15 month	Distraction		426
+		orders_plan	child	text		Anticipatory Guidance 15 month	Praise		427
+		orders_plan	child	text		Anticipatory Guidance 15 month	Consistency		428
+		orders_plan	child	text		Anticipatory Guidance 15 month	First dental visit		429
+		orders_plan	child	text		Anticipatory Guidance 15 month	Healthy oral habits		430
+		orders_plan	child	text		Anticipatory Guidance 15 month	Brush teeth twice a day		431
+		orders_plan	child	text		Anticipatory Guidance 15 month	No bottle		432
+		orders_plan	child	text		Anticipatory Guidance 15 month	Car safety seat		433
+		orders_plan	child	text		Anticipatory Guidance 15 month	Home safety		434
+		orders_plan	child	text		Anticipatory Guidance 15 month	Poisons		435
+		orders_plan	child	text		Anticipatory Guidance 15 month	Falls		436
+		orders_plan	child	text		Anticipatory Guidance 15 month	Burns		437
+		orders_plan	child	text		Anticipatory Guidance 15 month	Smoke detectors		438
+		orders_plan	child	text		Anticipatory Guidance 15 month	Carbon monoxide detectors		439
+		ros_wcc	child	text		Development 18 month			440
+		ros_wcc	child	text		Development 18 month	Helps in the house: *yes/no*		441
+		ros_wcc	child	text		Development 18 month	Laughs in response to others: *yes/no*		442
+		ros_wcc	child	text		Development 18 month	Speaks 6 words: *yes/no*		443
+		ros_wcc	child	text		Development 18 month	Knows name of favorite book: *yes/no*		444
+		ros_wcc	child	text		Development 18 month	Points to 1 body part: *yes/no*		445
+		ros_wcc	child	text		Development 18 month	Stacks 2 small blocks: *yes/no*		446
+		ros_wcc	child	text		Development 18 month	Runs: *yes/no*		447
+		ros_wcc	child	text		Development 18 month	Walks up steps: *yes/no*		448
+		ros_wcc	child	text		Development 18 month	Uses spoon and cup without spilling most of the time: *yes/no*		449
+		orders_plan	child	text		Anticipatory Guidance 18 month			450
+		orders_plan	child	text		Anticipatory Guidance 18 month	Family time		451
+		orders_plan	child	text		Anticipatory Guidance 18 month	Time for self and other children		452
+		orders_plan	child	text		Anticipatory Guidance 18 month	Reinforce limits		453
+		orders_plan	child	text		Anticipatory Guidance 18 month	Prepare for new sibling		454
+		orders_plan	child	text		Anticipatory Guidance 18 month	Smoke-free environment		455
+		orders_plan	child	text		Anticipatory Guidance 18 month	Anticipate anxiety		456
+		orders_plan	child	text		Anticipatory Guidance 18 month	Praise		457
+		orders_plan	child	text		Anticipatory Guidance 18 month	Consistent discipline		458
+		orders_plan	child	text		Anticipatory Guidance 18 month	Daily playtime		459
+		orders_plan	child	text		Anticipatory Guidance 18 month	Read, talk, and sing		460
+		orders_plan	child	text		Anticipatory Guidance 18 month	Simple words		461
+		orders_plan	child	text		Anticipatory Guidance 18 month	Feelings and emotions		462
+		orders_plan	child	text		Anticipatory Guidance 18 month	Walk until child is ready		463
+		orders_plan	child	text		Anticipatory Guidance 18 month	Reading books/praise		464
+		orders_plan	child	text		Anticipatory Guidance 18 month	Car safety seat		465
+		orders_plan	child	text		Anticipatory Guidance 18 month	Falls		466
+		orders_plan	child	text		Anticipatory Guidance 18 month	Burns		467
+		orders_plan	child	text		Anticipatory Guidance 18 month	Smoke detectors		468
+		orders_plan	child	text		Anticipatory Guidance 18 month	Gas		469
+		orders_plan	child	text		Anticipatory Guidance 18 month	Poisons		470
+		ros_wcc	child	text		Development 2 year			471
+		ros_wcc	child	text		Development 2 year	Copies things you do: *yes/no*		472
+		ros_wcc	child	text		Development 2 year	Plays pretend: *yes/no*		473
+		ros_wcc	child	text		Development 2 year	Plays alongside other children: *yes/no*		474
+		ros_wcc	child	text		Development 2 year	When talking, puts 2 words together: *yes/no*		475
+		ros_wcc	child	text		Development 2 year	Names 1 picture: *yes/no*		476
+		ros_wcc	child	text		Development 2 year	Follows 2-step commands: *yes/no*		477
+		ros_wcc	child	text		Development 2 year	Stacks small blocks: *yes/no*		478
+		ros_wcc	child	text		Development 2 year	Kicks a ball: *yes/no*		479
+		ros_wcc	child	text		Development 2 year	Walks up and down stairs 1 step at a time alone while holding wall or railing: *yes/no*		480
+		ros_wcc	child	text		Development 2 year	Throws a ball overhand: *yes/no*		481
+		ros_wcc	child	text		Development 2 year	Jumps up: *yes/no*		482
+		ros_wcc	child	text		Development 2 year	Turns book pages 1 at a time: *yes/no*		483
+		orders_plan	child	text		Anticipatory Guidance 2 year			484
+		orders_plan	child	text		Anticipatory Guidance 2 year	Model appropriate language		485
+		orders_plan	child	text		Anticipatory Guidance 2 year	Daily reading		486
+		orders_plan	child	text		Anticipatory Guidance 2 year	Following 1-2 step commands		487
+		orders_plan	child	text		Anticipatory Guidance 2 year	Listen and respond to child		488
+		orders_plan	child	text		Anticipatory Guidance 2 year	Praise, respect		489
+		orders_plan	child	text		Anticipatory Guidance 2 year	Help express feelings		490
+		orders_plan	child	text		Anticipatory Guidance 2 year	Self-expression		491
+		orders_plan	child	text		Anticipatory Guidance 2 year	Playing with other children		492
+		orders_plan	child	text		Anticipatory Guidance 2 year	Toilet training when child is ready		493
+		orders_plan	child	text		Anticipatory Guidance 2 year	Plan for frequent toilet breaks		494
+		orders_plan	child	text		Anticipatory Guidance 2 year	Personal hygiene		495
+		orders_plan	child	text		Anticipatory Guidance 2 year	Limit TV viewing to no more than 1-2 hours a day		496
+		orders_plan	child	text		Anticipatory Guidance 2 year	TV alternatives: reading, games, singing		497
+		orders_plan	child	text		Anticipatory Guidance 2 year	Encourage physical activity		498
+		orders_plan	child	text		Anticipatory Guidance 2 year	Car safety seat		499
+		orders_plan	child	text		Anticipatory Guidance 2 year	Bike helmet		500
+		orders_plan	child	text		Anticipatory Guidance 2 year	Supervise outside		501
+		orders_plan	child	text		Anticipatory Guidance 2 year	Guns		502
+		ros_wcc	child	text		Development 2 1/2 year			503
+		ros_wcc	child	text		Development 2 1/2 year	Plays pretend: *yes/no*		504
+		ros_wcc	child	text		Development 2 1/2 year	Plays with other children: *yes/no*		505
+		ros_wcc	child	text		Development 2 1/2 year	Other people can understand what your child is saying half of the time: *yes/no*		506
+		ros_wcc	child	text		Development 2 1/2 year	When talking, puts 3 or 4 words together: *yes/no*		507
+		ros_wcc	child	text		Development 2 1/2 year	Points to 6 body parts: *yes/no*		508
+		ros_wcc	child	text		Development 2 1/2 year	Knows correct animal sounds: *yes/no*		509
+		ros_wcc	child	text		Development 2 1/2 year	Jumps up and down in place: *yes/no*		510
+		ros_wcc	child	text		Development 2 1/2 year	Puts on clothes with help: *yes/no*		511
+		ros_wcc	child	text		Development 2 1/2 year	Washes and dries hands without help: *yes/no*		512
+		ros_wcc	child	text		Development 2 1/2 year	Brushes teeth with help: *yes/no*		513
+		orders_plan	child	text		Anticipatory Guidance 2 1/2 year			514
+		orders_plan	child	text		Anticipatory Guidance 2 1/2 year	Family meals		515
+		orders_plan	child	text		Anticipatory Guidance 2 1/2 year	Family activities		516
+		orders_plan	child	text		Anticipatory Guidance 2 1/2 year	Limit TV		517
+		orders_plan	child	text		Anticipatory Guidance 2 1/2 year	Daily reading		518
+		orders_plan	child	text		Anticipatory Guidance 2 1/2 year	Listen and repeat to child		519
+		orders_plan	child	text		Anticipatory Guidance 2 1/2 year	Supervised play with other children		520
+		orders_plan	child	text		Anticipatory Guidance 2 1/2 year	Emerging independence		521
+		orders_plan	child	text		Anticipatory Guidance 2 1/2 year	Group activites/preschool (if possible)		522
+		orders_plan	child	text		Anticipatory Guidance 2 1/2 year	Toilet training		523
+		orders_plan	child	text		Anticipatory Guidance 2 1/2 year	Car safety seat		524
+		orders_plan	child	text		Anticipatory Guidance 2 1/2 year	Water		525
+		orders_plan	child	text		Anticipatory Guidance 2 1/2 year	Appropriate supervision		526
+		orders_plan	child	text		Anticipatory Guidance 2 1/2 year	Sun exposure		527
+		orders_plan	child	text		Anticipatory Guidance 2 1/2 year	Fire safety		528
+		orders_plan	child	text		Anticipatory Guidance 2 1/2 year	Smoke detectors		529
+		orders_plan	child	text		Anticipatory Guidance 2 1/2 year	Outdoor safety		530
+		orders_plan	child	text		Anticipatory Guidance 2 1/2 year	Playground		531
+		orders_plan	child	text		Anticipatory Guidance 2 1/2 year	Dogs		532
+		ros_wcc	child	text		Development 3 year			533
+		ros_wcc	child	text		Development 3 year	Self-care skills: *yes/no*		534
+		ros_wcc	child	text		Development 3 year	Imaginative play: *yes/no*		535
+		ros_wcc	child	text		Development 3 year	2-3 sentences: *yes/no*		536
+		ros_wcc	child	text		Development 3 year	Usually understandable: *yes/no*		537
+		ros_wcc	child	text		Development 3 year	Names a friend: *yes/no*		538
+		ros_wcc	child	text		Development 3 year	Builds tower (6-8 blocks): *yes/no*		539
+		ros_wcc	child	text		Development 3 year	Stands on 1 foot: *yes/no*		540
+		ros_wcc	child	text		Development 3 year	Throws ball overhead: *yes/no*		541
+		ros_wcc	child	text		Development 3 year	Walks upstairs alternating feet: *yes/no*		542
+		ros_wcc	child	text		Development 3 year	Copies circle: *yes/no*		543
+		ros_wcc	child	text		Development 3 year	Draws person (2 body parts): *yes/no*		544
+		ros_wcc	child	text		Development 3 year	Toilet trained during the day: *yes/no*		545
+		orders_plan	child	text		Anticipatory Guidance 3 year			546
+		orders_plan	child	text		Anticipatory Guidance 3 year	Show affection		547
+		orders_plan	child	text		Anticipatory Guidance 3 year	Manage anger		548
+		orders_plan	child	text		Anticipatory Guidance 3 year	Reinforce appropriate behavior		549
+		orders_plan	child	text		Anticipatory Guidance 3 year	Reinforce limits		550
+		orders_plan	child	text		Anticipatory Guidance 3 year	Find time for yourself		551
+		orders_plan	child	text		Anticipatory Guidance 3 year	Read, sing, play		552
+		orders_plan	child	text		Anticipatory Guidance 3 year	Talk about pictures in books		553
+		orders_plan	child	text		Anticipatory Guidance 3 year	Encourage child to talk		554
+		orders_plan	child	text		Anticipatory Guidance 3 year	Encourage appropriate play		555
+		orders_plan	child	text		Anticipatory Guidance 3 year	Encourage fantasy play		556
+		orders_plan	child	text		Anticipatory Guidance 3 year	Encourage play with peers		557
+		orders_plan	child	text		Anticipatory Guidance 3 year	Family exercise, activities		558
+		orders_plan	child	text		Anticipatory Guidance 3 year	Limit screen time - maximum 1-2 hours/day		559
+		orders_plan	child	text		Anticipatory Guidance 3 year	No TV in bedroom		560
+		orders_plan	child	text		Anticipatory Guidance 3 year	Car safety seat		561
+		orders_plan	child	text		Anticipatory Guidance 3 year	Supervise play near streets, cars		562
+		orders_plan	child	text		Anticipatory Guidance 3 year	Safety near windows		563
+		orders_plan	child	text		Anticipatory Guidance 3 year	Guns		564
+		ros_wcc	child	text		Development 4 year			565
+		ros_wcc	child	text		Development 4 year	Interactions with peers: *yes/no*		566
+		ros_wcc	child	text		Development 4 year	Fantasy play: *yes/no*		567
+		ros_wcc	child	text		Development 4 year	Usually understandable: *yes/no*		568
+		ros_wcc	child	text		Development 4 year	Knows name, age, gender: *yes/no*		569
+		ros_wcc	child	text		Development 4 year	Names 4 colors: *yes/no*		570
+		ros_wcc	child	text		Development 4 year	Draws person (3 body parts): *yes/no*		571
+		ros_wcc	child	text		Development 4 year	Plays board/card games: *yes/no*		572
+		ros_wcc	child	text		Development 4 year	Hops on 1 foot: *yes/no*		573
+		ros_wcc	child	text		Development 4 year	Balances on 1 foot for 2 seconds: *yes/no*		574
+		ros_wcc	child	text		Development 4 year	Builds tower (8 blocks): *yes/no*		575
+		ros_wcc	child	text		Development 4 year	Copies a cross: *yes/no*		576
+		ros_wcc	child	text		Development 4 year	Brushes own teeth: *yes/no*		577
+		ros_wcc	child	text		Development 4 year	Dresses self: *yes/no*		578
+		orders_plan	child	text		Anticipatory Guidance 4 year			579
+		orders_plan	child	text		Anticipatory Guidance 4 year	Model behavior		580
+		orders_plan	child	text		Anticipatory Guidance 4 year	Be sensitive to child's feelings		581
+		orders_plan	child	text		Anticipatory Guidance 4 year	Encourage play with other children		582
+		orders_plan	child	text		Anticipatory Guidance 4 year	Consider preschool		583
+		orders_plan	child	text		Anticipatory Guidance 4 year	Daily reading		584
+		orders_plan	child	text		Anticipatory Guidance 4 year	Talk with child		585
+		orders_plan	child	text		Anticipatory Guidance 4 year	Calm bedtime routines		586
+		orders_plan	child	text		Anticipatory Guidance 4 year	Brush teeth twice daily		587
+		orders_plan	child	text		Anticipatory Guidance 4 year	Daily physical activity		588
+		orders_plan	child	text		Anticipatory Guidance 4 year	Limit TV/video to 1-2 hours/day		589
+		orders_plan	child	text		Anticipatory Guidance 4 year	No TV in bedroom		590
+		orders_plan	child	text		Anticipatory Guidance 4 year	Community activities		591
+		orders_plan	child	text		Anticipatory Guidance 4 year	Expect curiosity about body - answer questions using proper terms		592
+		orders_plan	child	text		Anticipatory Guidance 4 year	Safety rules with adults		593
+		orders_plan	child	text		Anticipatory Guidance 4 year	Safe and unsafe touches		594
+		orders_plan	child	text		Anticipatory Guidance 4 year	How to seek help when needed		595
+		orders_plan	child	text		Anticipatory Guidance 4 year	Appropriately restrained in all vehicles		596
+		orders_plan	child	text		Anticipatory Guidance 4 year	Supervise all outdoor play		597
+		orders_plan	child	text		Anticipatory Guidance 4 year	Guns		598
+		ros_wcc	child	text		Development 5-6 year			599
+		ros_wcc	child	text		Development 5-6 year	Balances on 1 foot: *yes/no*		600
+		ros_wcc	child	text		Development 5-6 year	Hops and skips: *yes/no*		601
+		ros_wcc	child	text		Development 5-6 year	Able to tie knot: *yes/no*		602
+		ros_wcc	child	text		Development 5-6 year	Good articulation/language skills: *yes/no*		603
+		ros_wcc	child	text		Development 5-6 year	Draws person (6+ body parts): *yes/no*		604
+		ros_wcc	child	text		Development 5-6 year	Prints some letters and numbers: *yes/no*		605
+		ros_wcc	child	text		Development 5-6 year	Copies squares, triangles: *yes/no*		606
+		ros_wcc	child	text		Development 5-6 year	Counts to 10: *yes/no*		607
+		ros_wcc	child	text		Development 5-6 year	Names 4 or more colors: *yes/no*		608
+		ros_wcc	child	text		Development 5-6 year	Follows simple directions: *yes/no*		609
+		ros_wcc	child	text		Development 5-6 year	Listens and attends: *yes/no*		610
+		orders_plan	child	text		Anticipatory Guidance 5-6 year			611
+		orders_plan	child	text		Anticipatory Guidance 5-6 year	Establish routines		612
+		orders_plan	child	text		Anticipatory Guidance 5-6 year	After-school chare/activites		613
+		orders_plan	child	text		Anticipatory Guidance 5-6 year	Friends		614
+		orders_plan	child	text		Anticipatory Guidance 5-6 year	Bullying		615
+		orders_plan	child	text		Anticipatory Guidance 5-6 year	Communicate with teachers		616
+		orders_plan	child	text		Anticipatory Guidance 5-6 year	Family time		617
+		orders_plan	child	text		Anticipatory Guidance 5-6 year	Anger management		618
+		orders_plan	child	text		Anticipatory Guidance 5-6 year	Discipline for teaching not punishment		619
+		orders_plan	child	text		Anticipatory Guidance 5-6 year	Limit TV		620
+		orders_plan	child	text		Anticipatory Guidance 5-6 year	Healthy weight		621
+		orders_plan	child	text		Anticipatory Guidance 5-6 year	Well-balanced diet, including breakfast		622
+		orders_plan	child	text		Anticipatory Guidance 5-6 year	Fruits, vegetables, whole grains		623
+		orders_plan	child	text		Anticipatory Guidance 5-6 year	Adequate calcium		624
+		orders_plan	child	text		Anticipatory Guidance 5-6 year	60 minutes of exercise/day		625
+		orders_plan	child	text		Anticipatory Guidance 5-6 year	Regular dental visits		626
+		orders_plan	child	text		Anticipatory Guidance 5-6 year	Brushing/flossing		627
+		orders_plan	child	text		Anticipatory Guidance 5-6 year	Fluoride		628
+		orders_plan	child	text		Anticipatory Guidance 5-6 year	Sexual safety		629
+		orders_plan	child	text		Anticipatory Guidance 5-6 year	Pedestrian safety		630
+		orders_plan	child	text		Anticipatory Guidance 5-6 year	Safety helmets		631
+		orders_plan	child	text		Anticipatory Guidance 5-6 year	Swimming safety		632
+		orders_plan	child	text		Anticipatory Guidance 5-6 year	Fire escape plan		633
+		orders_plan	child	text		Anticipatory Guidance 5-6 year	Smoke/carbon monoxide detectors		634
+		orders_plan	child	text		Anticipatory Guidance 5-6 year	Guns		635
+		orders_plan	child	text		Anticipatory Guidance 5-6 year	Sun		636
+		orders_plan	child	text		Anticipatory Guidance 5-6 year	Appropriately restrained in all vehicles		637
+		ros_wcc	child	text		Development 7-8 year			638
+		ros_wcc	child	text		Development 7-8 year	Grade: *~*		639
+		ros_wcc	child	text		Development 7-8 year	Social interaction: *normal/abnormal*		640
+		ros_wcc	child	text		Development 7-8 year	Performance: *normal/abnormal*		641
+		ros_wcc	child	text		Development 7-8 year	Behavior: *normal/abnormal*		642
+		ros_wcc	child	text		Development 7-8 year	Attention: *normal/abnormal*		643
+		ros_wcc	child	text		Development 7-8 year	Homework: *normal/abnormal*		644
+		ros_wcc	child	text		Development 7-8 year	Parent/Teacher concerns: *yes/no*		645
+		ros_wcc	child	text		Development 7-8 year	Cooperation: *yes/no*		646
+		ros_wcc	child	text		Development 7-8 year	Parent-child interaction: *normal/abnormal*		647
+		ros_wcc	child	text		Development 7-8 year	Sibling interaction: *normal/abnormal*		648
+		ros_wcc	child	text		Development 7-8 year	Oppositional behavior: *yes/no*		649
+		ros_wcc	child	text		Development 7-8 year	Eats healthy meals and snacks: *yes/no*		650
+		ros_wcc	child	text		Development 7-8 year	Participates in an after-school activity: *yes/no*		651
+		ros_wcc	child	text		Development 7-8 year	Has friends: *yes/no*		652
+		ros_wcc	child	text		Development 7-8 year	Is vigorously active for 1 hour a day: *yes/no*		653
+		ros_wcc	child	text		Development 7-8 year	Is doing well in school: *yes/no*		654
+		ros_wcc	child	text		Development 7-8 year	Does chores when asked: *yes/no*		655
+		ros_wcc	child	text		Development 7-8 year	Gets along with family: *yes/no*		656
+		orders_plan	child	text		Anticipatory Guidance 7-8 year			657
+		orders_plan	child	text		Anticipatory Guidance 7-8 year	Show interest in school		658
+		orders_plan	child	text		Anticipatory Guidance 7-8 year	Communicate with teachers		659
+		orders_plan	child	text		Anticipatory Guidance 7-8 year	Encourage independence		660
+		orders_plan	child	text		Anticipatory Guidance 7-8 year	Praise strengths		661
+		orders_plan	child	text		Anticipatory Guidance 7-8 year	Be a positive role model		662
+		orders_plan	child	text		Anticipatory Guidance 7-8 year	Discuss expected body changes		663
+		orders_plan	child	text		Anticipatory Guidance 7-8 year	Encourage proper nutrition		664
+		orders_plan	child	text		Anticipatory Guidance 7-8 year	Eat meals as a family		665
+		orders_plan	child	text		Anticipatory Guidance 7-8 year	60 minutes of physical activity daily		666
+		orders_plan	child	text		Anticipatory Guidance 7-8 year	Limit TV and screen time		667
+		orders_plan	child	text		Anticipatory Guidance 7-8 year	Dental visits twice a year		668
+		orders_plan	child	text		Anticipatory Guidance 7-8 year	Brush teeth twice a day		669
+		orders_plan	child	text		Anticipatory Guidance 7-8 year	Floss teeth daily		670
+		orders_plan	child	text		Anticipatory Guidance 7-8 year	Wear mouth guard during sports		671
+		orders_plan	child	text		Anticipatory Guidance 7-8 year	Know child's friends		672
+		orders_plan	child	text		Anticipatory Guidance 7-8 year	Home emergency plan		673
+		orders_plan	child	text		Anticipatory Guidance 7-8 year	Safety rules with adults		674
+		orders_plan	child	text		Anticipatory Guidance 7-8 year	Appropriate vehicle restraint		675
+		orders_plan	child	text		Anticipatory Guidance 7-8 year	Helmets and pads		676
+		orders_plan	child	text		Anticipatory Guidance 7-8 year	Supervise around water		677
+		orders_plan	child	text		Anticipatory Guidance 7-8 year	Smoke-free environment		678
+		orders_plan	child	text		Anticipatory Guidance 7-8 year	Guns		679
+		orders_plan	child	text		Anticipatory Guidance 7-8 year	Monitor computer use		680
+		ros_wcc	child	text		Development 9-10 year			681
+		ros_wcc	child	text		Development 9-10 year	Grade: *~*		682
+		ros_wcc	child	text		Development 9-10 year	Social interaction: *normal/abnormal*		683
+		ros_wcc	child	text		Development 9-10 year	Performance: *normal/abnormal*		684
+		ros_wcc	child	text		Development 9-10 year	Behavior: *normal/abnormal*		685
+		ros_wcc	child	text		Development 9-10 year	Attention: *normal/abnormal*		686
+		ros_wcc	child	text		Development 9-10 year	Homework: *normal/abnormal*		687
+		ros_wcc	child	text		Development 9-10 year	Parent/Teacher concerns: *yes/no*		688
+		ros_wcc	child	text		Development 9-10 year	Cooperation: *yes/no*		689
+		ros_wcc	child	text		Development 9-10 year	Parent-child interaction: *normal/abnormal*		690
+		ros_wcc	child	text		Development 9-10 year	Sibling interaction: *normal/abnormal*		691
+		ros_wcc	child	text		Development 9-10 year	Oppositional behavior: *yes/no*		692
+		ros_wcc	child	text		Development 9-10 year	Eats healthy meals and snacks: *yes/no*		693
+		ros_wcc	child	text		Development 9-10 year	Participates in an after-school activity: *yes/no*		694
+		ros_wcc	child	text		Development 9-10 year	Has friends: *yes/no*		695
+		ros_wcc	child	text		Development 9-10 year	Is vigorously active for 1 hour a day: *yes/no*		696
+		ros_wcc	child	text		Development 9-10 year	Has a caring and supportive family: *yes/no*		697
+		ros_wcc	child	text		Development 9-10 year	Is doing well in school: *yes/no*		698
+		ros_wcc	child	text		Development 9-10 year	Is getting chances to make own decisions: *yes/no*		699
+		ros_wcc	child	text		Development 9-10 year	Feels good about self: *yes/no*		700
+		ros_wcc	child	text		Development 9-10 year	Does an activity really well: *yes/no*; Describe: *~*		701
+		orders_plan	child	text		Anticipatory Guidance 9-10 year			702
+		orders_plan	child	text		Anticipatory Guidance 9-10 year	Show interest in school		703
+		orders_plan	child	text		Anticipatory Guidance 9-10 year	Quiet space for homework		704
+		orders_plan	child	text		Anticipatory Guidance 9-10 year	Address bullying		705
+		orders_plan	child	text		Anticipatory Guidance 9-10 year	Encouraging independence and self-responsibility		706
+		orders_plan	child	text		Anticipatory Guidance 9-10 year	Be a positive role model - discuss respect, anger		707
+		orders_plan	child	text		Anticipatory Guidance 9-10 year	Know child's friends and importance of peers		708
+		orders_plan	child	text		Anticipatory Guidance 9-10 year	Expect preadolescent behaviors		709
+		orders_plan	child	text		Anticipatory Guidance 9-10 year	Answer questions and discuss puberty		710
+		orders_plan	child	text		Anticipatory Guidance 9-10 year	Safety rules with adults		711
+		orders_plan	child	text		Anticipatory Guidance 9-10 year	Encourage proper nutrition		712
+		orders_plan	child	text		Anticipatory Guidance 9-10 year	60 minutes of physical activity daily		713
+		orders_plan	child	text		Anticipatory Guidance 9-10 year	Limit TV and screen time		714
+		orders_plan	child	text		Anticipatory Guidance 9-10 year	Dental visits twice a year		715
+		orders_plan	child	text		Anticipatory Guidance 9-10 year	Brush teeth twice a day		716
+		orders_plan	child	text		Anticipatory Guidance 9-10 year	Floss teeth daily		717
+		orders_plan	child	text		Anticipatory Guidance 9-10 year	Wear mouth guards during sports		718
+		orders_plan	child	text		Anticipatory Guidance 9-10 year	Booster seat		719
+		orders_plan	child	text		Anticipatory Guidance 9-10 year	Teach to swim/water safety		720
+		orders_plan	child	text		Anticipatory Guidance 9-10 year	Sunscreen		721
+		orders_plan	child	text		Anticipatory Guidance 9-10 year	Avoid tobacco, alcohol, drugs		722
+		orders_plan	child	text		Anticipatory Guidance 9-10 year	Guns		723
+		ros_wcc	child	text		Risk Assessment 11-14 year			724
+		ros_wcc	child	text		Risk Assessment 11-14 year	Home - Eats meals with family: *yes/no*		725
+		ros_wcc	child	text		Risk Assessment 11-14 year	Home - Has family members/adult to turn to for help: *yes/no*		726
+		ros_wcc	child	text		Risk Assessment 11-14 year	Home - Is permitted and is able to make independent decisions: *yes/no*		727
+		ros_wcc	child	text		Risk Assessment 11-14 year	Education - Grade: *~*		728
+		ros_wcc	child	text		Risk Assessment 11-14 year	Education - Performance: *normal/abnormal*		729
+		ros_wcc	child	text		Risk Assessment 11-14 year	Education - Behavior/Attention: *normal/abnormal*		730
+		ros_wcc	child	text		Risk Assessment 11-14 year	Education - Homework: *normal/abnormal*		731
+		ros_wcc	child	text		Risk Assessment 11-14 year	Eating - Eats regular meals including adequate fruits and vegetables: *yes/no*		732
+		ros_wcc	child	text		Risk Assessment 11-14 year	Eating - Drinks non-sweetened liquids: *yes/no*		733
+		ros_wcc	child	text		Risk Assessment 11-14 year	Eating - Calcium source: *yes/no*		734
+		ros_wcc	child	text		Risk Assessment 11-14 year	Eating - Has concerns about body or appearance: *yes/no*		735
+		ros_wcc	child	text		Risk Assessment 11-14 year	Activities - Has friends: *yes/no*		736
+		ros_wcc	child	text		Risk Assessment 11-14 year	Activities - At least 1 hour of physical activiy/day: *yes/no*		737
+		ros_wcc	child	text		Risk Assessment 11-14 year	Activities - Screen time (except for homework) less than 2 hours per day: *yes/no*		738
+		ros_wcc	child	text		Risk Assessment 11-14 year	Activities - Has interests/participates in community activites/volunteers: *yes/no*		739
+		ros_wcc	child	text		Risk Assessment 11-14 year	Drugs - Uses tobacco/alcoho/drugs: *yes/no*		740
+		ros_wcc	child	text		Risk Assessment 11-14 year	Safety - Home is free of violence: *yes/no*		741
+		ros_wcc	child	text		Risk Assessment 11-14 year	Safety - Uses safety belts/safety equipment: *yes/no*		742
+		ros_wcc	child	text		Risk Assessment 11-14 year	Safety - Has peer relationships free of violence: *yes/no*		743
+		ros_wcc	child	text		Risk Assessment 11-14 year	Sex - Has had oral sex: *yes/no*		744
+		ros_wcc	child	text		Risk Assessment 11-14 year	Ses - Has had sexual intercourse (vaginal, anal): *yes/no*		745
+		ros_wcc	child	text		Risk Assessment 11-14 year	Suicidality/Mental Health - Has ways to cope with stress: *yes/no*		746
+		ros_wcc	child	text		Risk Assessment 11-14 year	Suicidality/Mental Health - Displays self-confidence: *yes/no*		747
+		ros_wcc	child	text		Risk Assessment 11-14 year	Suicidality/Mental Health - Has problems with sleep: *yes/no*		748
+		ros_wcc	child	text		Risk Assessment 11-14 year	Suicidality/Mental Health - Gets depressed, anxious, or irritable/has mood swings: *yes/no*		749
+		ros_wcc	child	text		Risk Assessment 11-14 year	Suicidality/Mental Health - Has thoughts about hurting self or considered suicide: *yes/no*		750
+		orders_plan	child	text		Anticipatory Guidance 11-14 year			751
+		orders_plan	child	text		Anticipatory Guidance 11-14 year	Brush/floss teeth		752
+		orders_plan	child	text		Anticipatory Guidance 11-14 year	Regular dental visits		753
+		orders_plan	child	text		Anticipatory Guidance 11-14 year	Body image		754
+		orders_plan	child	text		Anticipatory Guidance 11-14 year	Balanced diet		755
+		orders_plan	child	text		Anticipatory Guidance 11-14 year	Limit TV		756
+		orders_plan	child	text		Anticipatory Guidance 11-14 year	Physical activity		757
+		orders_plan	child	text		Anticipatory Guidance 11-14 year	Help with homework when needed		758
+		orders_plan	child	text		Anticipatory Guidance 11-14 year	Encourage reading/school		759
+		orders_plan	child	text		Anticipatory Guidance 11-14 year	Community involvement		760
+		orders_plan	child	text		Anticipatory Guidance 11-14 year	Family time		761
+		orders_plan	child	text		Anticipatory Guidance 11-14 year	Age-appropriate limits		762
+		orders_plan	child	text		Anticipatory Guidance 11-14 year	Friends		763
+		orders_plan	child	text		Anticipatory Guidance 11-14 year	Decision-making		764
+		orders_plan	child	text		Anticipatory Guidance 11-14 year	Dealing with stress		765
+		orders_plan	child	text		Anticipatory Guidance 11-14 year	Mental health concerns		766
+		orders_plan	child	text		Anticipatory Guidance 11-14 year	Sexuality/puberty		767
+		orders_plan	child	text		Anticipatory Guidance 11-14 year	Tobacco, alcohol, drugs		768
+		orders_plan	child	text		Anticipatory Guidance 11-14 year	Prescription drugs		769
+		orders_plan	child	text		Anticipatory Guidance 11-14 year	Know friends and activities		770
+		orders_plan	child	text		Anticipatory Guidance 11-14 year	Sex		771
+		orders_plan	child	text		Anticipatory Guidance 11-14 year	Seat belts, no ATV		772
+		orders_plan	child	text		Anticipatory Guidance 11-14 year	Guns		773
+		orders_plan	child	text		Anticipatory Guidance 11-14 year	Safe dating		774
+		orders_plan	child	text		Anticipatory Guidance 11-14 year	Conflict resolution		775
+		orders_plan	child	text		Anticipatory Guidance 11-14 year	Bullying		776
+		orders_plan	child	text		Anticipatory Guidance 11-14 year	Sport helmets		777
+		orders_plan	child	text		Anticipatory Guidance 11-14 year	Protective gear		778
+		ros_wcc	child	text		Risk Assessment 15-21 year			779
+		ros_wcc	child	text		Risk Assessment 15-21 year	Home - Eats meals with family: *yes/no*		780
+		ros_wcc	child	text		Risk Assessment 15-21 year	Home - Has family members/adult to turn to for help: *yes/no*		781
+		ros_wcc	child	text		Risk Assessment 15-21 year	Home - Is permitted and is able to make independent decisions: *yes/no*		782
+		ros_wcc	child	text		Risk Assessment 15-21 year	Education - Grade: *~*		783
+		ros_wcc	child	text		Risk Assessment 15-21 year	Education - Performance: *normal/abnormal*		784
+		ros_wcc	child	text		Risk Assessment 15-21 year	Education - Behavior/Attention: *normal/abnormal*		785
+		ros_wcc	child	text		Risk Assessment 15-21 year	Education - Homework: *normal/abnormal*		786
+		ros_wcc	child	text		Risk Assessment 15-21 year	Eating - Eats regular meals including adequate fruits and vegetables: *yes/no*		787
+		ros_wcc	child	text		Risk Assessment 15-21 year	Eating - Drinks non-sweetened liquids: *yes/no*		788
+		ros_wcc	child	text		Risk Assessment 15-21 year	Eating - Calcium source: *yes/no*		789
+		ros_wcc	child	text		Risk Assessment 15-21 year	Eating - Has concerns about body or appearance: *yes/no*		790
+		ros_wcc	child	text		Risk Assessment 15-21 year	Activities - Has friends: *yes/no*		791
+		ros_wcc	child	text		Risk Assessment 15-21 year	Activities - At least 1 hour of physical activiy/day: *yes/no*		792
+		ros_wcc	child	text		Risk Assessment 15-21 year	Activities - Screen time (except for homework) less than 2 hours per day: *yes/no*		793
+		ros_wcc	child	text		Risk Assessment 15-21 year	Activities - Has interests/participates in community activites/volunteers: *yes/no*		794
+		ros_wcc	child	text		Risk Assessment 15-21 year	Drugs - Uses tobacco/alcoho/drugs: *yes/no*		795
+		ros_wcc	child	text		Risk Assessment 15-21 year	Safety - Home is free of violence: *yes/no*		796
+		ros_wcc	child	text		Risk Assessment 15-21 year	Safety - Uses safety belts/safety equipment: *yes/no*		797
+		ros_wcc	child	text		Risk Assessment 15-21 year	Safety - Impaired/Distracted driving: *yes/no*		798
+		ros_wcc	child	text		Risk Assessment 15-21 year	Safety - Has peer relationships free of violence: *yes/no*		799
+		ros_wcc	child	text		Risk Assessment 15-21 year	Sex - Has had oral sex: *yes/no*		800
+		ros_wcc	child	text		Risk Assessment 15-21 year	Ses - Has had sexual intercourse (vaginal, anal): *yes/no*		801
+		ros_wcc	child	text		Risk Assessment 15-21 year	Suicidality/Mental Health - Has ways to cope with stress: *yes/no*		802
+		ros_wcc	child	text		Risk Assessment 15-21 year	Suicidality/Mental Health - Displays self-confidence: *yes/no*		803
+		ros_wcc	child	text		Risk Assessment 15-21 year	Suicidality/Mental Health - Has problems with sleep: *yes/no*		804
+		ros_wcc	child	text		Risk Assessment 15-21 year	Suicidality/Mental Health - Gets depressed, anxious, or irritable/has mood swings: *yes/no*		805
+		ros_wcc	child	text		Risk Assessment 15-21 year	Suicidality/Mental Health - Has thoughts about hurting self or considered suicide: *yes/no*		806
+		orders_plan	child	text		Anticipatory Guidance 15-21 year			807
+		orders_plan	child	text		Anticipatory Guidance 15-21 year	Balanced diet		808
+		orders_plan	child	text		Anticipatory Guidance 15-21 year	Physical activity		809
+		orders_plan	child	text		Anticipatory Guidance 15-21 year	Limit TV		810
+		orders_plan	child	text		Anticipatory Guidance 15-21 year	Protect hearing		811
+		orders_plan	child	text		Anticipatory Guidance 15-21 year	Brush/floss teeth		812
+		orders_plan	child	text		Anticipatory Guidance 15-21 year	Regular dental visits		813
+		orders_plan	child	text		Anticipatory Guidance 15-21 year	Age-appropriate limits		814
+		orders_plan	child	text		Anticipatory Guidance 15-21 year	Friends/relationships		815
+		orders_plan	child	text		Anticipatory Guidance 15-21 year	Family time		816
+		orders_plan	child	text		Anticipatory Guidance 15-21 year	Community involvement		817
+		orders_plan	child	text		Anticipatory Guidance 15-21 year	Encourage reading/school		818
+		orders_plan	child	text		Anticipatory Guidance 15-21 year	Rules/exceptions		819
+		orders_plan	child	text		Anticipatory Guidance 15-21 year	Planning for after high school		820
+		orders_plan	child	text		Anticipatory Guidance 15-21 year	Dealing with stress		821
+		orders_plan	child	text		Anticipatory Guidance 15-21 year	Decision-making		822
+		orders_plan	child	text		Anticipatory Guidance 15-21 year	Mood changes		823
+		orders_plan	child	text		Anticipatory Guidance 15-21 year	Sexuality/Puberty		824
+		orders_plan	child	text		Anticipatory Guidance 15-21 year	Tobacco, alcohol, drugs		825
+		orders_plan	child	text		Anticipatory Guidance 15-21 year	Presciption drugs		826
+		orders_plan	child	text		Anticipatory Guidance 15-21 year	Sex		827
+		orders_plan	child	text		Anticipatory Guidance 15-21 year	Seat belts		828
+		orders_plan	child	text		Anticipatory Guidance 15-21 year	Guns		829
+		orders_plan	child	text		Anticipatory Guidance 15-21 year	Conflict resolution		830
+		orders_plan	child	text		Anticipatory Guidance 15-21 year	Driving restriction		831
+		orders_plan	child	text		Anticipatory Guidance 15-21 year	Sports/Recreation safety		832
+		pe_gen1		text		Appearance			833
+	normal	pe_gen1		text		Appearance	No acute distress and within normal limits		834
+		pe_gen1		text		Appearance	ACUTELY DISTRESSED		835
+		pe_gen1		text		Appearance	DISHEVELLED		836
+		pe_gen1		text		Appearance	ILL		837
+		pe_gen1		text		Appearance	TOXIC		838
+		pe_gen1		text		Appearance	LETHARGIC		839
+		pe_gen1		text		Appearance	OBESE		840
+		pe_gen1		text		Appearance	EMACIATED		841
+		pe_eye1		text		Eyebrows and lashes			842
+	normal	pe_eye1		text		Eyebrows and lashes	Evenly distributed bilaterally		843
+		pe_eye1		text		Eyebrows and lashes	ABNORMAL: *~*		844
+		pe_eye1		text		Conjunctiva			845
+	normal	pe_eye1		text		Conjunctiva	Clear bilaterally without discharge		846
+		pe_eye1		text		Conjunctiva	REDNESS: *SIDE_C*		847
+		pe_eye1		text		Lids			848
+	normal	pe_eye1		text		Lids	Normal appearing eyelids bilaterally		849
+		pe_eye1		text		Lids	EDEMA: *SIDE_C*		850
+		pe_eye1		text		Lids	REDNESS: *SIDE_C*		851
+		pe_eye2		text		Pupils			852
+	normal	pe_eye2		text		Pupils	Equal, round, and reactive to light and accommodation		853
+		pe_eye2		text		Pupils	DILATED: *SIDE_C*		854
+		pe_eye2		text		Iris			855
+	normal	pe_eye2		text		Iris	Within normal limits bilaterally		856
+		pe_eye2		text		Iris	ABNORMAL: *~*		857
+		pe_eye3		text		Cup-to-disc ratio			858
+	normal	pe_eye3		text		Cup-to-disc ratio	Normal		859
+		pe_eye3		text		Cup-to-disc ratio	ABNORMAL: *SIDE_C*		860
+		pe_eye3		text		Red reflex			861
+	normal	pe_eye3		text		Red reflex	Present		862
+		pe_eye3		text		Red reflex	ABSENT: *SIDE_C*		863
+		pe_ent1		text		External ear			864
+	normal	pe_ent1		text		External ear	Normal		865
+		pe_ent1		text		External ear	ABNORMAL: *~*		866
+		pe_ent1		text		Auricle			867
+	normal	pe_ent1		text		Auricle	No swelling		868
+		pe_ent1		text		Auricle	SWELLING: *SIDE_C*		869
+		pe_ent1		text		External nose			870
+	normal	pe_ent1		text		External nose	Normal		871
+		pe_ent1		text		External nose	ABNORMAL: *~*		872
+		pe_ent2		text		Tympanic membranes			873
+	normal	pe_ent2		text		Tympanic membranes	Clear bilaterally		874
+		pe_ent2		text		Tympanic membranes	RED: *SIDE_C*		875
+		pe_ent2		text		Tympanic membranes	PERFORATION: *SIDE_C*		876
+		pe_ent2		text		Tympanic membranes	BULGING: *SIDE_C*		877
+		pe_ent2		text		Tympanic membranes	DULL: *SIDE_C*		878
+		pe_ent2		text		Tympanic membranes	AIR-FLUID LEVELS: *SIDE_C*		879
+		pe_ent2		text		External canals			880
+	normal	pe_ent2		text		External canals	Normal		881
+		pe_ent2		text		External canals	CERUMEN IMPACTION: *SIDE_C*		882
+		pe_ent2		text		External canals	REDNESS: *SIDE_C*		883
+		pe_ent2		text		External canals	EXUDATE: *SIDE_C*		884
+		pe_ent3		text		Weber testing			885
+	normal	pe_ent3		text		Weber testing	Normal		886
+		pe_ent3		text		Weber testing	ABNORMAL: *SIDE_C*		887
+		pe_ent3		text		Rinne testing			888
+	normal	pe_ent3		text		Rinne testing	Positive		889
+		pe_ent3		text		Rinne testing	NEGATIVE: *SIDE_C*		890
+		pe_ent4		text		Nasal mucosa			891
+	normal	pe_ent4		text		Nasal mucosa	Pink and moist bilaterally		892
+		pe_ent4		text		Nasal mucosa	RED: *SIDE_C*		893
+		pe_ent4		text		Nasal mucosa	COBBLESTONING: *SIDE_C*		894
+		pe_ent4		text		Nasal turbinates			895
+	normal	pe_ent4		text		Nasal turbinates	Normal bilaterally		896
+		pe_ent4		text		Nasal turbinates	ENLARGED: *SIDE_C*		897
+		pe_ent4		text		Nasal polyps			898
+	normal	pe_ent4		text		Nasal polyps	None		899
+		pe_ent4		text		Nasal polyps	*SIDE_C*		900
+		pe_ent5		text		Lips			901
+	normal	pe_ent5		text		Lips	Normal		902
+		pe_ent5		text		Lips	ABNORMAL: *~*		903
+		pe_ent5		text		Dentition			904
+	normal	pe_ent5		text		Dentition	Normal bilaterally		905
+		pe_ent5		text		Dentition	POOR: *SIDE_C*		906
+		pe_ent5		text		Gums			907
+	normal	pe_ent5		text		Gums	Normal		908
+		pe_ent5		text		Gums	RED: *UPPER/LOWER_C* *SIDE_C*		909
+		pe_ent6		text		Oropharynx			910
+	normal	pe_ent6		text		Oropharynx	Normal		911
+		pe_ent6		text		Oropharynx	RED: *SIDE_C*		912
+		pe_ent6		text		Posterior pharynx			913
+	normal	pe_ent6		text		Posterior pharynx	Normal		914
+		pe_ent6		text		Posterior pharynx	RED: *SIDE_C*		915
+		pe_ent6		text		Posterior pharynx	COBBLESTONING: *SIDE_C*		916
+		pe_ent6		text		Tonsils			917
+	normal	pe_ent6		text		Tonsils	Normal bilaterally		918
+		pe_ent6		text		Tonsils	RED: *SIDE_C*		919
+		pe_ent6		text		Tonsils	EXUDATE: *SIDE_C*		920
+		pe_neck1		text		Neck masses			921
+	normal	pe_neck1		text		Neck masses	No		922
+		pe_neck1		text		Neck masses	YES: *~*		923
+		pe_neck1		text		Neck masses	LATERALITY: *SIDE_C*		924
+		pe_neck1		text		Neck masses	SIZE: *~*		925
+		pe_neck1		text		Brudzinski's sign			926
+	normal	pe_neck1		text		Brudzinski's sign	No		927
+		pe_neck1		text		Brudzinski's sign	YES		928
+		pe_neck1		text		Kernig's sign			929
+	normal	pe_neck1		text		Kernig's sign	No		930
+		pe_neck1		text		Kernig's sign	YES		931
+		pe_neck2		text		Thyromegaly			932
+	normal	pe_neck2		text		Thyromegaly	No		933
+		pe_neck2		text		Thyromegaly	YES		934
+		pe_neck2		text		Thyroid nodule			935
+	normal	pe_neck2		text		Thyroid nodule	No		936
+		pe_neck2		text		Thyroid nodule	YES: *~*		937
+		pe_neck2		text		Thyroid nodule	LATERALITY: *SIDE_C*		938
+		pe_neck2		text		Thyroid nodule	SIZE: *~*		939
+		pe_resp1		text		Tachypnea			940
+	normal	pe_resp1		text		Tachypnea	No		941
+		pe_resp1		text		Tachypnea	YES		942
+		pe_resp1		text		Use of accessory muscles			943
+	normal	pe_resp1		text		Use of accessory muscles	No		944
+		pe_resp1		text		Use of accessory muscles	YES		945
+		pe_resp2		text		Dullness			946
+	normal	pe_resp2		text		Dullness	No		947
+		pe_resp2		text		Dullness	*SIDE_C*		948
+		pe_resp3		text		Tactile fremitus			949
+	normal	pe_resp3		text		Tactile fremitus	Normal		950
+		pe_resp3		text		Tactile fremitus	INCREASED: *SIDE_C*		951
+		pe_resp3		text		Tactile fremitus	DECREASED: *SIDE_C*		952
+		pe_resp4		text		Rhonchi			953
+	normal	pe_resp4		text		Rhonchi	No		954
+		pe_resp4		text		Rhonchi	*SIDE_C*		955
+		pe_resp4		text		Wheezing			956
+	normal	pe_resp4		text		Wheezing	No		957
+		pe_resp4		text		Wheezing	*SIDE_C*		958
+		pe_resp4		text		Crackles			959
+	normal	pe_resp4		text		Crackles	No		960
+		pe_resp4		text		Crackles	*SIDE_C*		961
+		pe_cv1		text		Heaves			962
+	normal	pe_cv1		text		Heaves	No		963
+		pe_cv1		text		Heaves	YES		964
+		pe_cv1		text		Lifts			965
+	normal	pe_cv1		text		Lifts	No		966
+		pe_cv1		text		Lifts	YES		967
+		pe_cv1		text		Thrills			968
+	normal	pe_cv1		text		Thrills	No		969
+		pe_cv1		text		Thrills	YES		970
+		pe_cv2		text		Rate			971
+	normal	pe_cv2		text		Rate	Regular		972
+		pe_cv2		text		Rate	IRREGULAR		973
+		pe_cv2		text		Rhythm			974
+	normal	pe_cv2		text		Rhythm	Regular		975
+		pe_cv2		text		Rhythm	IRREGULAR		976
+		pe_cv2		text		Murmur			977
+	normal	pe_cv2		text		Murmur	None		978
+		pe_cv2		text		Murmur	SYSTOLIC EJECTION		979
+		pe_cv2		text		Murmur	HOLOSYSTOLIC		980
+		pe_cv2		text		Murmur	CRESCENDO-DECRESCENDO		981
+		pe_cv2		text		Murmur	BEST HEARD AT THE *~*		982
+		pe_cv3		text		Bruits			983
+	normal	pe_cv3		text		Bruits	None		984
+		pe_cv3		text		Bruits	*SIDE_C*		985
+		pe_cv3		text		Jugular venous distention			986
+	normal	pe_cv3		text		Jugular venous distention	No		987
+		pe_cv3		text		Jugular venous distention	YES		988
+		pe_cv4		text		Abdominal bruits			989
+	normal	pe_cv4		text		Abdominal bruits	None		990
+		pe_cv4		text		Abdominal bruits	YES		991
+		pe_cv4		text		Renal bruits			992
+	normal	pe_cv4		text		Renal bruits	No		993
+		pe_cv4		text		Renal bruits	*SIDE_C*		994
+		pe_cv5		text		Bruits			995
+	normal	pe_cv5		text		Bruits	No		996
+		pe_cv5		text		Bruits	*SIDE_C*		997
+		pe_cv6		text		Lower extremity edema			998
+	normal	pe_cv6		text		Lower extremity edema	None		999
+		pe_cv6		text		Lower extremity edema	*SIDE_C*		1000
+		pe_cv6		text		Homan's sign			1001
+	normal	pe_cv6		text		Homan's sign	Normal		1002
+		pe_cv6		text		Homan's sign	*SIDE_C*		1003
+	normal	pe_ch1		text		Breasts	Symmetric bilaterally		1004
+		pe_ch1		text		Breasts	ASSYEMTRIC: *~*		1005
+		pe_ch2		text		Nipple discharge			1006
+	normal	pe_ch2		text		Nipple discharge	None		1007
+		pe_ch2		text		Nipple discharge	*SIDE_C*		1008
+		pe_ch2		text		Axillary nodes			1009
+	normal	pe_ch2		text		Axillary nodes	Within normal limits		1010
+		pe_ch2		text		Axillary nodes	PALPABLE: *SIDE_C*		1011
+		pe_gi1		text		Abdominal Tenderness			1012
+	normal	pe_gi1		text		Abdominal Tenderness	None		1013
+		pe_gi1		text		Abdominal Tenderness	RIGHT LOWER QUADRANT		1014
+		pe_gi1		text		Abdominal Tenderness	LEFT LOWER QUADRANT		1015
+		pe_gi1		text		Abdominal Tenderness	RIGHT UPPER QUADRANT		1016
+		pe_gi1		text		Abdominal Tenderness	LEFT UPPER QUADRANT		1017
+		pe_gi1		text		Abdominal Tenderness	EPIGASTRIC		1018
+		pe_gi1		text		Abdominal Tenderness	DIFFUSE		1019
+		pe_gi1		text		Abdominal Tenderness	REBOUND		1020
+		pe_gi1		text		Abdominal Tenderness	INVOLUNTARY GUARDING		1021
+		pe_gi1		text		Tympanic			1022
+	normal	pe_gi1		text		Tympanic	No		1023
+		pe_gi1		text		Tympanic	YES		1024
+		pe_gi2		text		Hepatomegaly			1025
+	normal	pe_gi2		text		Hepatomegaly	No		1026
+		pe_gi2		text		Hepatomegaly	YES		1027
+		pe_gi2		text		Splenomegaly			1028
+	normal	pe_gi2		text		Splenomegaly	No		1029
+		pe_gi2		text		Splenomegaly	YES		1030
+		pe_gi3		text		Direct inguinal hernia			1031
+	normal	pe_gi3		text		Direct inguinal hernia	None		1032
+		pe_gi3		text		Direct inguinal hernia	*SIDE_C*		1033
+		pe_gi3		text		Direct inguinal hernia	REDUCIBLE: *YES/NO_C*		1034
+		pe_gi3		text		Direct inguinal hernia	SIZE: *~*		1035
+		pe_gi3		text		Indirect inguinal hernia			1036
+	normal	pe_gi3		text		Indirect inguinal hernia	None		1037
+		pe_gi3		text		Indirect inguinal hernia	*SIDE_C*		1038
+		pe_gi3		text		Indirect inguinal hernia	REDUCIBLE: *YES/NO_C*		1039
+		pe_gi3		text		Indirect inguinal hernia	SIZE: *~*		1040
+		pe_gi3		text		Umbilical hernia			1041
+	normal	pe_gi3		text		Umbilical hernia	None		1042
+		pe_gi3		text		Umbilical hernia	YES		1043
+		pe_gi3		text		Umbilical hernia	REDUCIBLE: *YES/NO_C*		1044
+		pe_gi3		text		Umbilical hernia	SIZE: *~*		1045
+		pe_gi4		text		External Hemorrhoid			1046
+	normal	pe_gi4		text		External Hemorrhoid	No		1047
+		pe_gi4		text		External Hemorrhoid	THROMBOSED		1048
+		pe_gi4		text		External Hemorrhoid	NOT THROMBOSED		1049
+		pe_gi4		text		Internal Hemorrhoid			1050
+	normal	pe_gi4		text		Internal Hemorrhoid	No		1051
+		pe_gi4		text		Internal Hemorrhoid	THROMBOSED		1052
+		pe_gi4		text		Internal Hemorrhoid	NOT THROMBOSED		1053
+		pe_gu1		text		Cyst			1054
+	normal	pe_gu1		text		Cyst	None		1055
+		pe_gu1		text		Cyst	*SIDE_C*		1056
+		pe_gu1		text		Vaginal discharge			1057
+	normal	pe_gu1		text		Vaginal discharge	None		1058
+		pe_gu1		text		Vaginal discharge	YES		1059
+		pe_gu1		text		Whiff test			1060
+	normal	pe_gu1		text		Whiff test	Negative		1061
+		pe_gu1		text		Whiff test	POSITIVE		1062
+		pe_gu2		text		Swelling			1063
+	normal	pe_gu2		text		Swelling	No		1064
+		pe_gu2		text		Swelling	YES		1065
+		pe_gu3		text		Tenderness			1066
+	normal	pe_gu3		text		Tenderness	No		1067
+		pe_gu3		text		Tenderness	YES		1068
+		pe_gu4		text		Tenderness			1069
+	normal	pe_gu4		text		Tenderness	No		1070
+		pe_gu4		text		Tenderness	YES		1071
+		pe_gu4		text		Bleeding			1072
+	normal	pe_gu4		text		Bleeding	No		1073
+		pe_gu4		text		Bleeding	YES		1074
+		pe_gu5		text		Masses			1075
+	normal	pe_gu5		text		Masses	No		1076
+		pe_gu5		text		Masses	YES		1077
+		pe_gu5		text		Prolapse			1078
+	normal	pe_gu5		text		Prolapse	No		1079
+		pe_gu5		text		Prolapse	YES		1080
+		pe_gu6		text		Masses			1081
+	normal	pe_gu6		text		Masses	No		1082
+		pe_gu6		text		Masses	YES		1083
+		pe_gu6		text		Tenderness			1084
+	normal	pe_gu6		text		Tenderness	No		1085
+		pe_gu6		text		Tenderness	YES		1086
+		pe_gu7		text		Masses			1087
+	normal	pe_gu7		text		Masses	No		1088
+		pe_gu7		text		Masses	*SIDE_C*		1089
+		pe_gu7		text		Tenderness			1090
+	normal	pe_gu7		text		Tenderness	No		1091
+		pe_gu7		text		Tenderness	*SIDE_C*		1092
+		pe_gu7		text		Undescended testicle			1093
+	normal	pe_gu7		text		Undescended testicle	No		1094
+		pe_gu7		text		Undescended testicle	*SIDE_C*		1095
+		pe_gu8		text		Penile discharge			1096
+	normal	pe_gu8		text		Penile discharge	No		1097
+		pe_gu8		text		Penile discharge	YES		1098
+		pe_gu9		text		Enlargement			1099
+	normal	pe_gu9		text		Enlargement	No		1100
+		pe_gu9		text		Enlargement	YES		1101
+		pe_gu9		text		Nodules			1102
+	normal	pe_gu9		text		Nodules	No		1103
+		pe_gu9		text		Nodules	*SIDE_C*		1104
+		pe_gu9		text		Tenderness			1105
+	normal	pe_gu9		text		Tenderness	No		1106
+		pe_gu9		text		Tenderness	*SIDE_C*		1107
+		pe_lymph1		text		Cervical lymphadenopathy			1108
+	normal	pe_lymph1		text		Cervical lymphadenopathy	None		1109
+		pe_lymph1		text		Cervical lymphadenopathy	*ANTERIOR/POSTERIOR_C* *SIDE_C*		1110
+		pe_lymph2		text		Axillary lymphadenopathy			1111
+	normal	pe_lymph2		text		Axillary lymphadenopathy	None		1112
+		pe_lymph2		text		Axillary lymphadenopathy	*SIDE_C*		1113
+		pe_lymph3		text		Inguinal lymphadenopathy			1114
+	normal	pe_lymph3		text		Inguinal lymphadenopathy	None		1115
+		pe_lymph3		text		Inguinal lymphadenopathy	*SIDE_C*		1116
+		pe_ms1		text		Gait			1117
+	normal	pe_ms1		text		Gait	Normal		1118
+		pe_ms1		text		Gait	ATALGIC		1119
+		pe_ms1		text		Gait	SLOW		1120
+		pe_ms2		text		Clubbing			1121
+	normal	pe_ms2		text		Clubbing	No		1122
+		pe_ms2		text		Clubbing	*SIDE_C* *DIGIT_C*		1123
+		pe_ms2		text		Ingrown nail			1124
+	normal	pe_ms2		text		Ingrown nail	No		1125
+		pe_ms2		text		Ingrown nail	*SIDE_C* *DIGIT_C*		1126
+		pe_ms3		text		Flexion (0-90 degrees)			1127
+	normal	pe_ms3		text		Flexion (0-90 degrees)	90 degrees bilaterally		1128
+		pe_ms3		text		Flexion (0-90 degrees)	RIGHT: *~* DEGREES		1129
+		pe_ms3		text		Flexion (0-90 degrees)	LEFT: *~* DEGREES		1130
+		pe_ms3		text		Extension (0-50 degrees)			1131
+	normal	pe_ms3		text		Extension (0-50 degrees)	50 degrees bilaterally		1132
+		pe_ms3		text		Extension (0-50 degrees)	RIGHT: *~* DEGREES		1133
+		pe_ms3		text		Extension (0-50 degrees)	LEFT: *~* DEGREES		1134
+		pe_ms3		text		Abduction (0-90 degrees)			1135
+	normal	pe_ms3		text		Abduction (0-90 degrees)	90 degrees bilaterally		1136
+		pe_ms3		text		Abduction (0-90 degrees)	RIGHT: *~* DEGREES		1137
+		pe_ms3		text		Abduction (0-90 degrees)	LEFT: *~* DEGREES		1138
+		pe_ms3		text		Adduction (0-90 degrees)			1139
+	normal	pe_ms3		text		Adduction (0-90 degrees)	90 degrees bilaterally		1140
+		pe_ms3		text		Adduction (0-90 degrees)	RIGHT: *~* DEGREES		1141
+		pe_ms3		text		Adduction (0-90 degrees)	LEFT: *~* DEGREES		1142
+		pe_ms3		text		Medial rotation (0-90 degrees)			1143
+	normal	pe_ms3		text		Medial rotation (0-90 degrees)	90 degrees bilaterally		1144
+		pe_ms3		text		Medial rotation (0-90 degrees)	RIGHT: *~* DEGREES		1145
+		pe_ms3		text		Medial rotation (0-90 degrees)	LEFT: *~* DEGREES		1146
+		pe_ms3		text		Lateral rotation (0-90 degrees)			1147
+	normal	pe_ms3		text		Lateral rotation (0-90 degrees)	90 degrees bilaterally		1148
+		pe_ms3		text		Lateral rotation (0-90 degrees)	RIGHT: *~* DEGREES		1149
+		pe_ms3		text		Lateral rotation (0-90 degrees)	LEFT: *~* DEGREES		1150
+		pe_ms3		text		Supraspinatus testing			1151
+	normal	pe_ms3		text		Supraspinatus testing	Negative		1152
+		pe_ms3		text		Supraspinatus testing	POSITIVE: *SIDE_C*		1153
+		pe_ms3		text		Neer's testing			1154
+	normal	pe_ms3		text		Neer's testing	Negative		1155
+		pe_ms3		text		Neer's testing	POSITIVE: *SIDE_C*		1156
+		pe_ms3		text		Hawkins' testing			1157
+	normal	pe_ms3		text		Hawkins' testing	Negative		1158
+		pe_ms3		text		Hawkins' testing	POSITIVE: *SIDE_C*		1159
+		pe_ms3		text		Apprehension testing			1160
+	normal	pe_ms3		text		Apprehension testing	Negative		1161
+		pe_ms3		text		Apprehension testing	POSITIVE: *SIDE_C*		1162
+		pe_ms4		text		Flexion (0-160 degrees)			1163
+	normal	pe_ms4		text		Flexion (0-160 degrees)	160 degrees bilaterally		1164
+		pe_ms4		text		Flexion (0-160 degrees)	RIGHT: *~* DEGREES		1165
+		pe_ms4		text		Flexion (0-160 degrees)	LEFT: *~* DEGREES		1166
+		pe_ms4		text		Extension (0-145 degrees)			1167
+	normal	pe_ms4		text		Extension (0-145 degrees)	145 degrees bilaterally		1168
+		pe_ms4		text		Extension (0-145 degrees)	RIGHT: *~* DEGREES		1169
+		pe_ms4		text		Extension (0-145 degrees)	LEFT: *~* DEGREES		1170
+		pe_ms4		text		Pronation (0-90 degrees)			1171
+	normal	pe_ms4		text		Pronation (0-90 degrees)	90 degrees bilaterally		1172
+		pe_ms4		text		Pronation (0-90 degrees)	RIGHT: *~* DEGREES		1173
+		pe_ms4		text		Pronation (0-90 degrees)	LEFT: *~* DEGREES		1174
+		pe_ms5		text		Flexion (0-160 degrees)			1175
+	normal	pe_ms5		text		Flexion (0-160 degrees)	160 degrees bilaterally		1176
+		pe_ms5		text		Flexion (0-160 degrees)	RIGHT: *~* DEGREES		1177
+		pe_ms5		text		Flexion (0-160 degrees)	LEFT: *~* DEGREES		1178
+		pe_ms5		text		Extension (0-145 degrees)			1179
+	normal	pe_ms5		text		Extension (0-145 degrees)	145 degrees bilaterally		1180
+		pe_ms5		text		Extension (0-145 degrees)	RIGHT: *~* DEGREES		1181
+		pe_ms5		text		Extension (0-145 degrees)	LEFT: *~* DEGREES		1182
+		pe_ms5		text		Abduction (0-90 degrees)			1183
+	normal	pe_ms5		text		Abduction (0-90 degrees)	90 degrees bilaterally		1184
+		pe_ms5		text		Abduction (0-90 degrees)	RIGHT: *~* DEGREES		1185
+		pe_ms5		text		Abduction (0-90 degrees)	LEFT: *~* DEGREES		1186
+		pe_ms5		text		Adduction (0-90 degrees)			1187
+	normal	pe_ms5		text		Adduction (0-90 degrees)	90 degrees bilaterally		1188
+		pe_ms5		text		Adduction (0-90 degrees)	RIGHT: *~* DEGREES		1189
+		pe_ms5		text		Adduction (0-90 degrees)	LEFT: *~* DEGREES		1190
+		pe_ms5		text		Ulnar deviation (0-25 degrees)			1191
+	normal	pe_ms5		text		Ulnar deviation (0-25 degrees)	25 degrees bilaterally		1192
+		pe_ms5		text		Ulnar deviation (0-25 degrees)	RIGHT: *~* DEGREES		1193
+		pe_ms5		text		Ulnar deviation (0-25 degrees)	LEFT: *~* DEGREES		1194
+		pe_ms5		text		Radial deviation (0-20 degrees)			1195
+	normal	pe_ms5		text		Radial deviation (0-20 degrees)	20 degrees bilaterally		1196
+		pe_ms5		text		Radial deviation (0-20 degrees)	RIGHT: *~* DEGREES		1197
+		pe_ms5		text		Radial deviation (0-20 degrees)	LEFT: *~* DEGREES		1198
+		pe_ms5		text		Finkelstein's testing			1199
+	normal	pe_ms5		text		Finkelstein's testing	Negative		1200
+		pe_ms5		text		Finkelstein's testing	POSITIVE: *SIDE_C*		1201
+		pe_ms6		text		Thumb MCP flexion (0-70 degrees)			1202
+	normal	pe_ms6		text		Thumb MCP flexion (0-70 degrees)	70 degrees bilaterally		1203
+		pe_ms6		text		Thumb MCP flexion (0-70 degrees)	RIGHT: *~* DEGREES		1204
+		pe_ms6		text		Thumb MCP flexion (0-70 degrees)	LEFT: *~* DEGREES		1205
+		pe_ms6		text		Thumb MCP extension (0-60 degrees)			1206
+	normal	pe_ms6		text		Thumb MCP extension (0-60 degrees)	60 degrees bilaterally		1207
+		pe_ms6		text		Thumb MCP extension (0-60 degrees)	RIGHT: *~* DEGREES		1208
+		pe_ms6		text		Thumb MCP extension (0-60 degrees)	LEFT: *~* DEGREES		1209
+		pe_ms6		text		Thumb MCP abduction (0-50 degrees)			1210
+	normal	pe_ms6		text		Thumb MCP abduction (0-50 degrees)	50 degrees bilaterally		1211
+		pe_ms6		text		Thumb MCP abduction (0-50 degrees)	RIGHT: *~* DEGREES		1212
+		pe_ms6		text		Thumb MCP abduction (0-50 degrees)	LEFT: *~* DEGREES		1213
+		pe_ms6		text		Thumb MCP adduction (0-40 degrees)			1214
+	normal	pe_ms6		text		Thumb MCP adduction (0-40 degrees)	40 degrees bilaterally		1215
+		pe_ms6		text		Thumb MCP adduction (0-40 degrees)	RIGHT: *~* DEGREES		1216
+		pe_ms6		text		Thumb MCP adduction (0-40 degrees)	LEFT: *~* DEGREES		1217
+		pe_ms6		text		Thumb IP flexion (0-90 degrees)			1218
+	normal	pe_ms6		text		Thumb IP flexion (0-90 degrees)	90 degrees bilaterally		1219
+		pe_ms6		text		Thumb IP flexion (0-90 degrees)	RIGHT: *~* DEGREES		1220
+		pe_ms6		text		Thumb IP flexion (0-90 degrees)	LEFT: *~* DEGREES		1221
+		pe_ms6		text		Thumb IP extension (0-90 degrees)			1222
+	normal	pe_ms6		text		Thumb IP extension (0-90 degrees)	90 degrees bilaterally		1223
+		pe_ms6		text		Thumb IP extension (0-90 degrees)	RIGHT: *~* DEGREES		1224
+		pe_ms6		text		Thumb IP extension (0-90 degrees)	LEFT: *~* DEGREES		1225
+		pe_ms6		text		2nd finger DIP flexion (0-80 degrees)			1226
+	normal	pe_ms6		text		2nd finger DIP flexion (0-80 degrees)	80 degrees bilaterally		1227
+		pe_ms6		text		2nd finger DIP flexion (0-80 degrees)	RIGHT: *~* DEGREES		1228
+		pe_ms6		text		2nd finger DIP flexion (0-80 degrees)	LEFT: *~* DEGREES		1229
+		pe_ms6		text		2nd finger DIP extension (0-80 degrees)			1230
+	normal	pe_ms6		text		2nd finger DIP extension (0-80 degrees)	80 degrees bilaterally		1231
+		pe_ms6		text		2nd finger DIP extension (0-80 degrees)	RIGHT: *~* DEGREES		1232
+		pe_ms6		text		2nd finger DIP extension (0-80 degrees)	LEFT: *~* DEGREES		1233
+		pe_ms6		text		2nd finger PIP flexion (0-120 degrees)			1234
+	normal	pe_ms6		text		2nd finger PIP flexion (0-120 degrees)	120 degrees bilaterally		1235
+		pe_ms6		text		2nd finger PIP flexion (0-120 degrees)	RIGHT: *~* DEGREES		1236
+		pe_ms6		text		2nd finger PIP flexion (0-120 degrees)	LEFT: *~* DEGREES		1237
+		pe_ms6		text		2nd finger PIP extension (0-120 degrees)			1238
+	normal	pe_ms6		text		2nd finger PIP extension (0-120 degrees)	120 degrees bilaterally		1239
+		pe_ms6		text		2nd finger PIP extension (0-120 degrees)	RIGHT: *~* DEGREES		1240
+		pe_ms6		text		2nd finger PIP extension (0-120 degrees)	LEFT: *~* DEGREES		1241
+		pe_ms6		text		3rd finger DIP flexion (0-80 degrees)			1242
+	normal	pe_ms6		text		3rd finger DIP flexion (0-80 degrees)	80 degrees bilaterally		1243
+		pe_ms6		text		3rd finger DIP flexion (0-80 degrees)	RIGHT: *~* DEGREES		1244
+		pe_ms6		text		3rd finger DIP flexion (0-80 degrees)	LEFT: *~* DEGREES		1245
+		pe_ms6		text		3rd finger DIP extension (0-80 degrees)			1246
+	normal	pe_ms6		text		3rd finger DIP extension (0-80 degrees)	80 degrees bilaterally		1247
+		pe_ms6		text		3rd finger DIP extension (0-80 degrees)	RIGHT: *~* DEGREES		1248
+		pe_ms6		text		3rd finger DIP extension (0-80 degrees)	LEFT: *~* DEGREES		1249
+		pe_ms6		text		3rd finger PIP flexion (0-120 degrees)			1250
+	normal	pe_ms6		text		3rd finger PIP flexion (0-120 degrees)	120 degrees bilaterally		1251
+		pe_ms6		text		3rd finger PIP flexion (0-120 degrees)	RIGHT: *~* DEGREES		1252
+		pe_ms6		text		3rd finger PIP flexion (0-120 degrees)	LEFT: *~* DEGREES		1253
+		pe_ms6		text		3rd finger PIP extension (0-120 degrees)			1254
+	normal	pe_ms6		text		3rd finger PIP extension (0-120 degrees)	120 degrees bilaterally		1255
+		pe_ms6		text		3rd finger PIP extension (0-120 degrees)	RIGHT: *~* DEGREES		1256
+		pe_ms6		text		3rd finger PIP extension (0-120 degrees)	LEFT: *~* DEGREES		1257
+		pe_ms6		text		4th finger DIP flexion (0-80 degrees)			1258
+	normal	pe_ms6		text		4th finger DIP flexion (0-80 degrees)	80 degrees bilaterally		1259
+		pe_ms6		text		4th finger DIP flexion (0-80 degrees)	RIGHT: *~* DEGREES		1260
+		pe_ms6		text		4th finger DIP flexion (0-80 degrees)	LEFT: *~* DEGREES		1261
+		pe_ms6		text		4th finger DIP extension (0-80 degrees)			1262
+	normal	pe_ms6		text		4th finger DIP extension (0-80 degrees)	80 degrees bilaterally		1263
+		pe_ms6		text		4th finger DIP extension (0-80 degrees)	RIGHT: *~* DEGREES		1264
+		pe_ms6		text		4th finger DIP extension (0-80 degrees)	LEFT: *~* DEGREES		1265
+		pe_ms6		text		4th finger PIP flexion (0-120 degrees)			1266
+	normal	pe_ms6		text		4th finger PIP flexion (0-120 degrees)	120 degrees bilaterally		1267
+		pe_ms6		text		4th finger PIP flexion (0-120 degrees)	RIGHT: *~* DEGREES		1268
+		pe_ms6		text		4th finger PIP flexion (0-120 degrees)	LEFT: *~* DEGREES		1269
+		pe_ms6		text		4th finger PIP extension (0-120 degrees)			1270
+	normal	pe_ms6		text		4th finger PIP extension (0-120 degrees)	120 degrees bilaterally		1271
+		pe_ms6		text		4th finger PIP extension (0-120 degrees)	RIGHT: *~* DEGREES		1272
+		pe_ms6		text		4th finger PIP extension (0-120 degrees)	LEFT: *~* DEGREES		1273
+		pe_ms6		text		5th finger DIP flexion (0-80 degrees)			1274
+	normal	pe_ms6		text		5th finger DIP flexion (0-80 degrees)	80 degrees bilaterally		1275
+		pe_ms6		text		5th finger DIP flexion (0-80 degrees)	RIGHT: *~* DEGREES		1276
+		pe_ms6		text		5th finger DIP flexion (0-80 degrees)	LEFT: *~* DEGREES		1277
+		pe_ms6		text		5th finger DIP extension (0-80 degrees)			1278
+	normal	pe_ms6		text		5th finger DIP extension (0-80 degrees)	80 degrees bilaterally		1279
+		pe_ms6		text		5th finger DIP extension (0-80 degrees)	RIGHT: *~* DEGREES		1280
+		pe_ms6		text		5th finger DIP extension (0-80 degrees)	LEFT: *~* DEGREES		1281
+		pe_ms6		text		5th finger PIP flexion (0-120 degrees)			1282
+	normal	pe_ms6		text		5th finger PIP flexion (0-120 degrees)	120 degrees bilaterally		1283
+		pe_ms6		text		5th finger PIP flexion (0-120 degrees)	RIGHT: *~* DEGREES		1284
+		pe_ms6		text		5th finger PIP flexion (0-120 degrees)	LEFT: *~* DEGREES		1285
+		pe_ms6		text		5th finger PIP extension (0-120 degrees)			1286
+	normal	pe_ms6		text		5th finger PIP extension (0-120 degrees)	120 degrees bilaterally		1287
+		pe_ms6		text		5th finger PIP extension (0-120 degrees)	RIGHT: *~* DEGREES		1288
+		pe_ms6		text		5th finger PIP extension (0-120 degrees)	LEFT: *~* DEGREES		1289
+		pe_ms7		text		Flexion (0-125 degrees)			1290
+	normal	pe_ms7		text		Flexion (0-125 degrees)	125 degrees bilaterally		1291
+		pe_ms7		text		Flexion (0-125 degrees)	RIGHT: *~* DEGREES		1292
+		pe_ms7		text		Flexion (0-125 degrees)	LEFT: *~* DEGREES		1293
+		pe_ms7		text		Extension (0-115 degrees)			1294
+	normal	pe_ms7		text		Extension (0-115 degrees)	115 degrees bilaterally		1295
+		pe_ms7		text		Extension (0-115 degrees)	RIGHT: *~* DEGREES		1296
+		pe_ms7		text		Extension (0-115 degrees)	LEFT: *~* DEGREES		1297
+		pe_ms7		text		Abduction (0-45 degrees)			1298
+	normal	pe_ms7		text		Abduction (0-45 degrees)	45 degrees bilaterally		1299
+		pe_ms7		text		Abduction (0-45 degrees)	RIGHT: *~* DEGREES		1300
+		pe_ms7		text		Abduction (0-45 degrees)	LEFT: *~* DEGREES		1301
+		pe_ms7		text		Adduction (0-45 degrees)			1302
+	normal	pe_ms7		text		Adduction (0-45 degrees)	45 degrees bilaterally		1303
+		pe_ms7		text		Adduction (0-45 degrees)	RIGHT: *~* DEGREES		1304
+		pe_ms7		text		Adduction (0-45 degrees)	LEFT: *~* DEGREES		1305
+		pe_ms8		text		Flexion (0-130 degrees)			1306
+	normal	pe_ms8		text		Flexion (0-130 degrees)	130 degrees bilaterally		1307
+		pe_ms8		text		Flexion (0-130 degrees)	RIGHT: *~* DEGREES		1308
+		pe_ms8		text		Flexion (0-130 degrees)	LEFT: *~* DEGREES		1309
+		pe_ms8		text		Extension (0-120 degrees)			1310
+	normal	pe_ms8		text		Extension (0-120 degrees)	120 degrees bilaterally		1311
+		pe_ms8		text		Extension (0-120 degrees)	RIGHT: *~* DEGREES		1312
+		pe_ms8		text		Extension (0-120 degrees)	LEFT: *~* DEGREES		1313
+		pe_ms8		text		McMurray testing			1314
+	normal	pe_ms8		text		McMurray testing	Negative bilaterally		1315
+		pe_ms8		text		McMurray testing	POSITIVE ON *SIDE_C* SIDE		1316
+		pe_ms8		text		Anterior drawer/Lachmann testing			1317
+	normal	pe_ms8		text		Anterior drawer/Lachmann testing	Negative bilaterally		1318
+		pe_ms8		text		Anterior drawer/Lachmann testing	POSITIVE ON *SIDE_C* SIDE		1319
+		pe_ms9		text		Dorsiflexion (0-20 degrees)			1320
+	normal	pe_ms9		text		Dorsiflexion (0-20 degrees)	20 degrees bilaterally		1321
+		pe_ms9		text		Dorsiflexion (0-20 degrees)	RIGHT: *~* DEGREES		1322
+		pe_ms9		text		Dorsiflexion (0-20 degrees)	LEFT: *~* DEGREES		1323
+		pe_ms9		text		Plantar flexion (0-50 degrees)			1324
+	normal	pe_ms9		text		Plantar flexion (0-50 degrees)	50 degrees bilaterally		1325
+		pe_ms9		text		Plantar flexion (0-50 degrees)	RIGHT: *~* DEGREES		1326
+		pe_ms9		text		Plantar flexion (0-50 degrees)	LEFT: *~* DEGREES		1327
+		pe_ms9		text		Inversion (0-35 degrees)			1328
+	normal	pe_ms9		text		Inversion (0-35 degrees)	35 degrees bilaterally		1329
+		pe_ms9		text		Inversion (0-35 degrees)	RIGHT: *~* DEGREES		1330
+		pe_ms9		text		Inversion (0-35 degrees)	LEFT: *~* DEGREES		1331
+		pe_ms9		text		Eversion (0-25 degrees)			1332
+	normal	pe_ms9		text		Eversion (0-25 degrees)	25 degrees bilaterally		1333
+		pe_ms9		text		Eversion (0-25 degrees)	RIGHT: *~* DEGREES		1334
+		pe_ms9		text		Eversion (0-25 degrees)	LEFT: *~* DEGREES		1335
+		pe_ms10		text		Great toe MTP flexion (0-30 degrees)			1336
+	normal	pe_ms10		text		Great toe MTP flexion (0-30 degrees)	30 degrees bilaterally		1337
+		pe_ms10		text		Great toe MTP flexion (0-30 degrees)	RIGHT: *~* DEGREES		1338
+		pe_ms10		text		Great toe MTP flexion (0-30 degrees)	LEFT: *~* DEGREES		1339
+		pe_ms10		text		Great toe MTP extension (0-80 degrees)			1340
+	normal	pe_ms10		text		Great toe MTP extension (0-80 degrees)	80 degrees bilaterally		1341
+		pe_ms10		text		Great toe MTP extension (0-80 degrees)	RIGHT: *~* DEGREES		1342
+		pe_ms10		text		Great toe MTP extension (0-80 degrees)	LEFT: *~* DEGREES		1343
+		pe_ms10		text		Great toe IP flexion (0-50 degrees)			1344
+	normal	pe_ms10		text		Great toe IP flexion (0-50 degrees)	50 degrees bilaterally		1345
+		pe_ms10		text		Great toe IP flexion (0-50 degrees)	RIGHT: *~* DEGREES		1346
+		pe_ms10		text		Great toe IP flexion (0-50 degrees)	LEFT: *~* DEGREES		1347
+		pe_ms10		text		Great toe IP extension (0-50 degrees)			1348
+	normal	pe_ms10		text		Great toe IP extension (0-50 degrees)	50 degrees bilaterally		1349
+		pe_ms10		text		Great toe IP extension (0-50 degrees)	RIGHT: *~* DEGREES		1350
+		pe_ms10		text		Great toe IP extension (0-50 degrees)	LEFT: *~* DEGREES		1351
+		pe_ms10		text		Great toe IP flexion (0-90 degrees)			1352
+	normal	pe_ms10		text		Great toe IP flexion (0-90 degrees)	90 degrees bilaterally		1353
+		pe_ms10		text		Great toe IP flexion (0-90 degrees)	RIGHT: *~* DEGREES		1354
+		pe_ms10		text		Great toe IP flexion (0-90 degrees)	LEFT: *~* DEGREES		1355
+		pe_ms10		text		Great toe IP extension (0-90 degrees)			1356
+	normal	pe_ms10		text		Great toe IP extension (0-90 degrees)	90 degrees bilaterally		1357
+		pe_ms10		text		Great toe IP extension (0-90 degrees)	RIGHT: *~* DEGREES		1358
+		pe_ms10		text		Great toe IP extension (0-90 degrees)	LEFT: *~* DEGREES		1359
+		pe_ms10		text		2nd toe IP flexion (0-50 degrees)			1360
+	normal	pe_ms10		text		2nd toe IP flexion (0-50 degrees)	50 degrees bilaterally		1361
+		pe_ms10		text		2nd toe IP flexion (0-50 degrees)	RIGHT: *~* DEGREES		1362
+		pe_ms10		text		2nd toe IP flexion (0-50 degrees)	LEFT: *~* DEGREES		1363
+		pe_ms10		text		2nd toe IP extension (0-50 degrees)			1364
+	normal	pe_ms10		text		2nd toe IP extension (0-50 degrees)	50 degrees bilaterally		1365
+		pe_ms10		text		2nd toe IP extension (0-50 degrees)	RIGHT: *~* DEGREES		1366
+		pe_ms10		text		2nd toe IP extension (0-50 degrees)	LEFT: *~* DEGREES		1367
+		pe_ms10		text		2nd toe MTP flexion (0-30 degrees)			1368
+	normal	pe_ms10		text		2nd toe MTP flexion (0-30 degrees)	30 degrees bilaterally		1369
+		pe_ms10		text		2nd toe MTP flexion (0-30 degrees)	RIGHT: *~* DEGREES		1370
+		pe_ms10		text		2nd toe MTP flexion (0-30 degrees)	LEFT: *~* DEGREES		1371
+		pe_ms10		text		2nd toe MTP extension (0-80 degrees)			1372
+	normal	pe_ms10		text		2nd toe MTP extension (0-80 degrees)	80 degrees bilaterally		1373
+		pe_ms10		text		2nd toe MTP extension (0-80 degrees)	RIGHT: *~* DEGREES		1374
+		pe_ms10		text		2nd toe MTP extension (0-80 degrees)	LEFT: *~* DEGREES		1375
+		pe_ms10		text		3rd toe IP flexion (0-50 degrees)			1376
+	normal	pe_ms10		text		3rd toe IP flexion (0-50 degrees)	50 degrees bilaterally		1377
+		pe_ms10		text		3rd toe IP flexion (0-50 degrees)	RIGHT: *~* DEGREES		1378
+		pe_ms10		text		3rd toe IP flexion (0-50 degrees)	LEFT: *~* DEGREES		1379
+		pe_ms10		text		3rd toe IP extension (0-50 degrees)			1380
+	normal	pe_ms10		text		3rd toe IP extension (0-50 degrees)	50 degrees bilaterally		1381
+		pe_ms10		text		3rd toe IP extension (0-50 degrees)	RIGHT: *~* DEGREES		1382
+		pe_ms10		text		3rd toe IP extension (0-50 degrees)	LEFT: *~* DEGREES		1383
+		pe_ms10		text		3rd toe MTP flexion (0-30 degrees)			1384
+	normal	pe_ms10		text		3rd toe MTP flexion (0-30 degrees)	30 degrees bilaterally		1385
+		pe_ms10		text		3rd toe MTP flexion (0-30 degrees)	RIGHT: *~* DEGREES		1386
+		pe_ms10		text		3rd toe MTP flexion (0-30 degrees)	LEFT: *~* DEGREES		1387
+		pe_ms10		text		3rd toe MTP extension (0-80 degrees)			1388
+	normal	pe_ms10		text		3rd toe MTP extension (0-80 degrees)	80 degrees bilaterally		1389
+		pe_ms10		text		3rd toe MTP extension (0-80 degrees)	RIGHT: *~* DEGREES		1390
+		pe_ms10		text		3rd toe MTP extension (0-80 degrees)	LEFT: *~* DEGREES		1391
+		pe_ms10		text		4th toe IP flexion (0-50 degrees)			1392
+	normal	pe_ms10		text		4th toe IP flexion (0-50 degrees)	50 degrees bilaterally		1393
+		pe_ms10		text		4th toe IP flexion (0-50 degrees)	RIGHT: *~* DEGREES		1394
+		pe_ms10		text		4th toe IP flexion (0-50 degrees)	LEFT: *~* DEGREES		1395
+		pe_ms10		text		4th toe IP extension (0-50 degrees)			1396
+	normal	pe_ms10		text		4th toe IP extension (0-50 degrees)	50 degrees bilaterally		1397
+		pe_ms10		text		4th toe IP extension (0-50 degrees)	RIGHT: *~* DEGREES		1398
+		pe_ms10		text		4th toe IP extension (0-50 degrees)	LEFT: *~* DEGREES		1399
+		pe_ms10		text		4th toe MTP flexion (0-30 degrees)			1400
+	normal	pe_ms10		text		4th toe MTP flexion (0-30 degrees)	30 degrees bilaterally		1401
+		pe_ms10		text		4th toe MTP flexion (0-30 degrees)	RIGHT: *~* DEGREES		1402
+		pe_ms10		text		4th toe MTP flexion (0-30 degrees)	LEFT: *~* DEGREES		1403
+		pe_ms10		text		4th toe MTP extension (0-80 degrees)			1404
+	normal	pe_ms10		text		4th toe MTP extension (0-80 degrees)	80 degrees bilaterally		1405
+		pe_ms10		text		4th toe MTP extension (0-80 degrees)	RIGHT: *~* DEGREES		1406
+		pe_ms10		text		4th toe MTP extension (0-80 degrees)	LEFT: *~* DEGREES		1407
+		pe_ms10		text		5th toe IP flexion (0-50 degrees)			1408
+	normal	pe_ms10		text		5th toe IP flexion (0-50 degrees)	50 degrees bilaterally		1409
+		pe_ms10		text		5th toe IP flexion (0-50 degrees)	RIGHT: *~* DEGREES		1410
+		pe_ms10		text		5th toe IP flexion (0-50 degrees)	LEFT: *~* DEGREES		1411
+		pe_ms10		text		5th toe IP extension (0-50 degrees)			1412
+	normal	pe_ms10		text		5th toe IP extension (0-50 degrees)	50 degrees bilaterally		1413
+		pe_ms10		text		5th toe IP extension (0-50 degrees)	RIGHT: *~* DEGREES		1414
+		pe_ms10		text		5th toe IP extension (0-50 degrees)	LEFT: *~* DEGREES		1415
+		pe_ms10		text		5th toe MTP flexion (0-30 degrees)			1416
+	normal	pe_ms10		text		5th toe MTP flexion (0-30 degrees)	30 degrees bilaterally		1417
+		pe_ms10		text		5th toe MTP flexion (0-30 degrees)	RIGHT: *~* DEGREES		1418
+		pe_ms10		text		5th toe MTP flexion (0-30 degrees)	LEFT: *~* DEGREES		1419
+		pe_ms10		text		5th toe MTP extension (0-80 degrees)			1420
+	normal	pe_ms10		text		5th toe MTP extension (0-80 degrees)	80 degrees bilaterally		1421
+		pe_ms10		text		5th toe MTP extension (0-80 degrees)	RIGHT: *~* DEGREES		1422
+		pe_ms10		text		5th toe MTP extension (0-80 degrees)	LEFT: *~* DEGREES		1423
+		pe_ms11		text		Forward flexion (0-45 degrees)			1424
+	normal	pe_ms11		text		Forward flexion (0-45 degrees)	45 degrees bilaterally		1425
+		pe_ms11		text		Forward flexion (0-45 degrees)	RIGHT: *~* DEGREES		1426
+		pe_ms11		text		Forward flexion (0-45 degrees)	LEFT: *~* DEGREES		1427
+		pe_ms11		text		Extension (0-45 degrees)			1428
+	normal	pe_ms11		text		Extension (0-45 degrees)	45 degrees bilaterally		1429
+		pe_ms11		text		Extension (0-45 degrees)	RIGHT: *~* DEGREES		1430
+		pe_ms11		text		Extension (0-45 degrees)	LEFT: *~* DEGREES		1431
+		pe_ms11		text		Lateral flexion (0-45 degrees)			1432
+	normal	pe_ms11		text		Lateral flexion (0-45 degrees)	45 degrees bilaterally		1433
+		pe_ms11		text		Lateral flexion (0-45 degrees)	RIGHT: *~* DEGREES		1434
+		pe_ms11		text		Lateral flexion (0-45 degrees)	LEFT: *~* DEGREES		1435
+		pe_ms11		text		Lateral rotation (0-80 degrees)			1436
+	normal	pe_ms11		text		Lateral rotation (0-80 degrees)	80 degrees bilaterally		1437
+		pe_ms11		text		Lateral rotation (0-80 degrees)	RIGHT: *~* DEGREES		1438
+		pe_ms11		text		Lateral rotation (0-80 degrees)	LEFT: *~* DEGREES		1439
+		pe_ms12		text		Forward flexion (0-90 degrees)			1440
+	normal	pe_ms12		text		Forward flexion (0-90 degrees)	90 degrees bilaterally		1441
+		pe_ms12		text		Forward flexion (0-90 degrees)	RIGHT: *~* DEGREES		1442
+		pe_ms12		text		Forward flexion (0-90 degrees)	LEFT: *~* DEGREES		1443
+		pe_ms12		text		Extension (0-30 degrees)			1444
+	normal	pe_ms12		text		Extension (0-30 degrees)	30 degrees bilaterally		1445
+		pe_ms12		text		Extension (0-30 degrees)	RIGHT: *~* DEGREES		1446
+		pe_ms12		text		Extension (0-30 degrees)	LEFT: *~* DEGREES		1447
+		pe_ms12		text		Lateral flexion (0-30 degrees)			1448
+	normal	pe_ms12		text		Lateral flexion (0-30 degrees)	30 degrees bilaterally		1449
+		pe_ms12		text		Lateral flexion (0-30 degrees)	RIGHT: *~* DEGREES		1450
+		pe_ms12		text		Lateral flexion (0-30 degrees)	LEFT: *~* DEGREES		1451
+		pe_ms12		text		Lateral rotation (0-30 degrees)			1452
+	normal	pe_ms12		text		Lateral rotation (0-30 degrees)	30 degrees bilaterally		1453
+		pe_ms12		text		Lateral rotation (0-30 degrees)	RIGHT: *~* DEGREES		1454
+		pe_ms12		text		Lateral rotation (0-30 degrees)	LEFT: *~* DEGREES		1455
+		pe_neuro1		text		Cranial nerves			1456
+	normal	pe_neuro1		text		Cranial nerves	No deficits		1457
+		pe_neuro1		text		Cranial nerves	DEFICITS: *~*		1458
+		pe_neuro1		text		Nystagmus			1459
+	normal	pe_neuro1		text		Nystagmus	No		1460
+		pe_neuro1		text		Nystagmus	*SIDE_C*		1461
+		pe_neuro2		text		Biceps (0-4)			1462
+	normal	pe_neuro2		text		Biceps (0-4)	Equal and bilateral		1463
+		pe_neuro2		text		Biceps (0-4)	RIGHT: *~*		1464
+		pe_neuro2		text		Biceps (0-4)	LEFT: *~*		1465
+		pe_neuro2		text		Patellar (0-4)			1466
+	normal	pe_neuro2		text		Patellar (0-4)	Equal and bilateral		1467
+		pe_neuro2		text		Patellar (0-4)	RIGHT: *~*		1468
+		pe_neuro2		text		Patellar (0-4)	LEFT: *~*		1469
+		pe_neuro2		text		Achillies (0-4)			1470
+	normal	pe_neuro2		text		Achillies (0-4)	Equal and bilateral		1471
+		pe_neuro2		text		Achillies (0-4)	RIGHT: *~*		1472
+		pe_neuro2		text		Achillies (0-4)	LEFT: *~*		1473
+		pe_neuro3		text		Pinprick sensation			1474
+	normal	pe_neuro3		text		Pinprick sensation	Normal bilaterally		1475
+		pe_neuro3		text		Pinprick sensation	DECREASED: *SIDE_C*		1476
+		pe_neuro3		text		Two-point discrimination			1477
+	normal	pe_neuro3		text		Two-point discrimination	Normal bilaterally		1478
+		pe_neuro3		text		Two-point discrimination	DECREASED: *SIDE_C*		1479
+		pe_neuro3		text		Vibratory sensation			1480
+	normal	pe_neuro3		text		Vibratory sensation	Normal bilaterally		1481
+		pe_neuro3		text		Vibratory sensation	DECREASED: *SIDE_C*		1482
+		pe_neuro3		text		Temperature sensation			1483
+	normal	pe_neuro3		text		Temperature sensation	Normal bilaterally		1484
+		pe_neuro3		text		Temperature sensation	DECREASED: *SIDE_C*		1485
+		pe_psych1		text		Judgement			1486
+	normal	pe_psych1		text		Judgement	Good		1487
+		pe_psych1		text		Judgement	*GOOD/FAIR/POOR_C*		1488
+		pe_psych1		text		Insight			1489
+	normal	pe_psych1		text		Insight	Good		1490
+		pe_psych1		text		Insight	*GOOD/FAIR/POOR_C*		1491
+		pe_psych2		text		Person			1492
+	normal	pe_psych2		text		Person	Oriented		1493
+		pe_psych2		text		Person	DISORIENTED		1494
+		pe_psych2		text		Place			1495
+	normal	pe_psych2		text		Place	Oriented		1496
+		pe_psych2		text		Place	DISORIENTED		1497
+		pe_psych2		text		Time			1498
+	normal	pe_psych2		text		Time	Oriented		1499
+		pe_psych2		text		Time	DISORIENTED		1500
+		pe_psych3		text		Recent memory			1501
+	normal	pe_psych3		text		Recent memory	Intact		1502
+		pe_psych3		text		Recent memory	DEFICIT		1503
+		pe_psych3		text		Remote memory			1504
+	normal	pe_psych3		text		Remote memory	Intact		1505
+		pe_psych3		text		Remote memory	DEFICIT		1506
+		pe_psych4		text		Depressed			1507
+	normal	pe_psych4		text		Depressed	No		1508
+		pe_psych4		text		Depressed	YES		1509
+		pe_psych4		text		Anxious			1510
+	normal	pe_psych4		text		Anxious	No		1511
+		pe_psych4		text		Anxious	YES		1512
+		pe_psych4		text		Suicidal ideation			1513
+	normal	pe_psych4		text		Suicidal ideation	No		1514
+		pe_psych4		text		Suicidal ideation	YES		1515
+		pe_psych4		text		Homicidal ideation			1516
+	normal	pe_psych4		text		Homicidal ideation	No		1517
+		pe_psych4		text		Homicidal ideation	YES		1518
+		pe_skin1		text		Lesions			1519
+	normal	pe_skin1		text		Lesions	None		1520
+		pe_skin1		text		Lesions	*~*		1521
+		pe_skin1		text		Hair thinning			1522
+	normal	pe_skin1		text		Hair thinning	No		1523
+		pe_skin1		text		Hair thinning	YES		1524
+		pe_skin2		text		Macules			1525
+	normal	pe_skin2		text		Macules	None		1526
+		pe_skin2		text		Macules	*~*		1527
+		pe_skin2		text		Papules			1528
+	normal	pe_skin2		text		Papules	None		1529
+		pe_skin2		text		Papules	*~*		1530
+		pe_skin2		text		Nodules			1531
+	normal	pe_skin2		text		Nodules	None		1532
+		pe_skin2		text		Nodules	*~*		1533
+		pe_skin2		text		Vescicles			1534
+	normal	pe_skin2		text		Vescicles	None		1535
+		pe_skin2		text		Vescicles	*~*		1536
+		pe_skin2		text		Warmth			1537
+	normal	pe_skin2		text		Warmth	None		1538
+		pe_skin2		text		Warmth	*~*		1539
+		pe_skin2		text		Urticaria			1540
+	normal	pe_skin2		text		Urticaria	None		1541
+		pe_skin2		text		Urticaria	*~*		1542
+		hpi		text		Asthma			1543
+	normal	hpi		text		Asthma	Frequency of attacks per week: *~*		1544
+	normal	hpi		text		Asthma	Time of usual attacks: *~*		1545
+	normal	hpi		text		Asthma	Number of ER visits or hospitalizations: *~*		1546
+	normal	hpi		text		Asthma	Number of school/work days missed: *~*		1547
+	normal	hpi		text		Asthma	Nocturnal awakenings: *~*		1548
+	normal	hpi		text		Asthma	Restriction of activites: *~*		1549
+	normal	hpi		text		Asthma	Recent infections: *~*		1550
+	normal	hpi		text		Asthma	Asthma triggers: *~*		1551
+		hpi		text		Chronic Pain			1552
+	normal	hpi		text		Chronic Pain	Diagnosis: *~*		1553
+	normal	hpi		text		Chronic Pain	Side effects from medications: *~*		1554
+	normal	hpi		text		Chronic Pain	Other treatments: *~*		1555
+	normal	hpi		text		Chronic Pain	Pain scale (0-10): *~*		1556
+	normal	hpi		text		Chronic Pain	Relief (% improvement) since last visit: *~*		1557
+	normal	hpi		text		Chronic Pain	General activity: *~*		1558
+	normal	hpi		text		Chronic Pain	Interactions with other people: *~*		1559
+	normal	hpi		text		Chronic Pain	Mood: *~*		1560
+	normal	hpi		text		Chronic Pain	Ability to work: *~*		1561
+	normal	hpi		text		Chronic Pain	Enjoyment of life: *~*		1562
+		hpi		text		Generic			1563
+	normal	hpi		text		Generic	Location/Description: *~*		1564
+	normal	hpi		text		Generic	Duration: *~*		1565
+	normal	hpi		text		Generic	Modifying factors: *~*		1566
+		hpi		text		Injury			1567
+	normal	hpi		text		Injury	Date of injury: *~*		1568
+	normal	hpi		text		Injury	Description of how injury occurred: *~*		1569
+	normal	hpi		text		Injury	Treatments: *~*		1570
+	normal	hpi		text		Injury	Pain scale (0-10): *~*		1571
+	normal	hpi		text		Injury	Relief (% improvement) since last visit: *~*		1572
+	normal	hpi		text		Injury	General activity: *~*		1573
+	normal	hpi		text		Injury	Ability to work: *~*		1574
+		hpi	child	text		Birth History			1575
+	normal	hpi	child	text		Birth History	Pregnancy complications: *yes/no*		1576
+	normal	hpi	child	text		Birth History	Delivery complications: *yes/no*		1577
+	normal	hpi	child	text		Birth History	Postpartum complications: *yes/no*		1578
+	normal	hpi	child	text		Birth History	Gestational age: *~*		1579
+	normal	hpi	child	text		Birth History	Birth weight: *~*		1580
+	normal	hpi	child	text		Birth History	Apgar scores: *~*		1581
+	normal	hpi	child	text		Birth History	Hearing screen: *normal/abnormal*		1582
+	normal	hpi	child	text		Birth History	Metabolic screen: *normal/abnormal*		1583
+		hpi	child	text		Sports Physical			1584
+	normal	hpi	child	text		Sports Physical	Illness, surgery, or other medical conditions in the past 2 months: *yes/no*		1585
+	normal	hpi	child	text		Sports Physical	Concussion, skull fractures, or neck injury: *yes/no*		1586
+	normal	hpi	child	text		Sports Physical	Poor or abnormal vision or loss of an eye: *yes/no*		1587
+	normal	hpi	child	text		Sports Physical	Rheumatic fever or heart murmur: *yes/no*		1588
+	normal	hpi	child	text		Sports Physical	Heart condition: *yes/no*		1589
+	normal	hpi	child	text		Sports Physical	Chest discomfort during exercise: *yes/no*		1590
+	normal	hpi	child	text		Sports Physical	Lung condition or breathing difficulty: *yes/no*		1591
+	normal	hpi	child	text		Sports Physical	Asthma or chronic bronchitis: *yes/no*		1592
+	normal	hpi	child	text		Sports Physical	Any bone or joint injury: *yes/no*		1593
+	normal	hpi	child	text		Sports Physical	Epilepsy or other convulsive disorder: *yes/no*		1594
+	normal	hpi	child	text		Sports Physical	Any other medical problem or surgical operation other than tonsillectomy: *yes/no*		1595
+	normal	hpi	child	text	f	Sports Physical	Hernia or loss of ovary: *yes/no*		1596
+	normal	hpi	child	text	f	Sports Physical	Absence of an ovary, kidney, or lung: *yes/no*		1597
+	normal	hpi	child	text	m	Sports Physical	Hernia or loss of testicle: *yes/no*		1598
+	normal	hpi	child	text	m	Sports Physical	Absence of an testicle, kidney, or lung: *yes/no*		1599
+		hpi	adult	text	f	Well Woman Exam			1600
+	normal	hpi	adult	text	f	Well Woman Exam	Abnormal pap smears in the past: *yes/no*		1601
+	normal	hpi	adult	text	f	Well Woman Exam	Irregular periods: *yes/no*		1602
+	normal	hpi	adult	text	f	Well Woman Exam	Bleeding between periods: *yes/no*		1603
+	normal	hpi	adult	text	f	Well Woman Exam	Days between periods: *~*		1604
+	normal	hpi	adult	text	f	Well Woman Exam	Duration of periods: *~*		1605
+	normal	hpi	adult	text	f	Well Woman Exam	Period flow: *~*		1606
+	normal	hpi	adult	text	f	Well Woman Exam	Pain with periods (0-10): *~*		1607
+	normal	hpi	adult	text	f	Well Woman Exam	Pain with premenstrual tension syndrome (0-10): *~*		1608
+	normal	hpi	adult	text	f	Well Woman Exam	Pain with sex (0-10): *~*		1609
+	normal	hpi	adult	text	f	Well Woman Exam	Sexually active: *yes/no*		1610
+	normal	hpi	adult	text	f	Well Woman Exam	Birth control: *yes/no*		1611
+	normal	hpi	adult	text	f	Well Woman Exam	Self breast exams: *yes/no*		1612
+	normal	hpi	adult	text	f	Well Woman Exam	Past or current history of abuse: *yes/no*		1613

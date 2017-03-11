@@ -1,0 +1,121 @@
+               <entry
+                  typeCode="DRIV">
+                  <act
+                     classCode="ACT"
+                     moodCode="EVN">
+                     <!-- Problem act template -->
+                     <templateId
+                        root="2.16.840.1.113883.10.20.22.4.3"/>
+                     <id
+                        root="?issues_random_id1?"/>
+                     <code
+                        code="CONC"
+                        codeSystem="2.16.840.1.113883.5.6"
+                        displayName="Concern"/>
+                     <statusCode
+                        code="completed"/>
+                     <effectiveTime>
+                        <low
+                           value="?issue_date_active?"/>
+                        <high
+                           value="?issue_date_inactive?"/>
+                     </effectiveTime>
+                     <entryRelationship
+                        typeCode="SUBJ">
+                        <observation
+                           classCode="OBS"
+                           moodCode="EVN">
+                           <!-- Problem observation template -->
+                           <templateId
+                              root="2.16.840.1.113883.10.20.22.4.4"/>
+                           <id
+                              root="ab1791b0-5c71-11db-b0de-0800200c9a66"/>
+                           <code
+                              code="409586006"
+                              codeSystem="2.16.840.1.113883.6.96"
+                              displayName="Complaint"/>
+                           <text>
+                              <reference
+                                 value="?issues_number?"/>
+                           </text>
+                           <statusCode
+                              code="completed"/>
+                           <effectiveTime>
+                              <low value="?issue_date_active?"/>
+                              <high value="?issue_date_inactive?"/>
+                           </effectiveTime>
+                           <value
+                              xsi:type="CD"
+                              code="?issue_code?"
+                              codeSystem="2.16.840.1.113883.6.103"
+                              displayName="?issue_code_description?"/>
+                           <entryRelationship
+                              typeCode="SUBJ"
+                              inversionInd="true">
+                              <observation
+                                 classCode="OBS"
+                                 moodCode="EVN">
+                                 <templateId
+                                    root="2.16.840.1.113883.10.20.22.4.31"/>
+                                 <!--    Age observation template   -->
+                                 <code
+                                    code="445518008"
+                                    codeSystem="2.16.840.1.113883.6.96"
+                                    displayName="Age At Onset"/>
+                                 <statusCode
+                                    code="completed"/>
+                                 <value
+                                    xsi:type="PQ"
+                                    value="65"
+                                    unit="a"/>
+                              </observation>
+                           </entryRelationship>
+                           <entryRelationship
+                              typeCode="REFR">
+                              <observation
+                                 classCode="OBS"
+                                 moodCode="EVN">
+                                 <templateId
+                                    root="2.16.840.1.113883.10.20.22.4.5"/>
+                                 <!-- Health status observation template -->
+                                 <code xsi:type="CE"
+                                    code="11323-3"
+                                    codeSystem="2.16.840.1.113883.6.1"
+                                    codeSystemName="LOINC"
+                                    displayName="Health status"/>
+                                 <text><reference
+                                       value="#problems"/></text>
+                                 <statusCode
+                                    code="completed"/>
+                                 <value
+                                    xsi:type="CD"
+                                    code="162467007"
+                                    codeSystem="2.16.840.1.113883.6.96"
+                                    codeSystemName="SNOMED CT"
+                                    displayName="Symptom Free"/>
+                              </observation>
+                           </entryRelationship>
+                           <entryRelationship typeCode="REFR">
+                              <observation classCode="OBS" moodCode="EVN">
+                                 <!-- Status observation template -->
+                                 <templateId root="2.16.840.1.113883.10.20.22.4.6"/>
+                                 <code xsi:type="CE" 
+                                    code="33999-4" 
+                                    codeSystem="2.16.840.1.113883.6.1"
+                                    codeSystemName="LOINC" 
+                                    displayName="Status"/>
+                                 <text><reference
+                                    value="?issues_number?"/></text>
+                                 <statusCode code="completed"/>
+                                 <value xsi:type="CD" 
+                                    code="?issues_code?"
+                                    codeSystem="2.16.840.1.113883.6.96"
+                                    codeSystemName="SNOMED CT" 
+                                    displayName="?issues_status?"/>
+                              </observation>
+                           </entryRelationship>
+                        </observation>
+                     </entryRelationship>
+                  </act>
+               </entry>
+

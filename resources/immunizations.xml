@@ -1,0 +1,51 @@
+               <entry
+                  typeCode="DRIV">
+                  <substanceAdministration
+                     classCode="SBADM"
+                     moodCode="EVN"
+                     negationInd="false">
+                     <templateId
+                        root="2.16.840.1.113883.10.20.22.4.52"/>
+                     <!--  ********   Immunization activity template    ******** -->
+                     <id
+                        root="?imm_random_id1?"/>
+                     <text>
+                        <reference
+                           value="?immun_number?"/>
+                     </text>
+                     <statusCode
+                        code="completed"/>
+                     <effectiveTime
+                        xsi:type="IVL_TS"
+                        value="?imm_date?"/>
+                     <routeCode
+                        code="?imm_code?"
+                        codeSystem="2.16.840.1.113883.3.26.1.2"
+                        codeSystemName="NCI Metathesaurus"
+                        displayName="?imm_code_description?"/>
+                     <doseQuantity
+                        value="?imm_dosage?"
+                        unit="?imm_dosage_unit?"/>
+                     <consumable>
+                        <manufacturedProduct
+                           classCode="MANU">
+                           <templateId
+                              root="2.16.840.1.113883.10.20.22.4.54"/>
+                           <!--  ********   Immunization Medication Information    ******** -->
+                           <manufacturedMaterial>
+                              <code
+                                 code="?imm_cvxcode?"
+                                 codeSystem="2.16.840.1.113883.12.292"
+                                 displayName="?vaccine_name?"
+                                 codeSystemName="CVX">
+                                 <originalText>?vaccine_name?</originalText>
+                              </code>
+                           </manufacturedMaterial>
+                           <manufacturerOrganization>
+                              <name>?imm_manufacturer?</name>
+                           </manufacturerOrganization>
+                        </manufacturedProduct>
+                     </consumable>
+                  </substanceAdministration>
+               </entry>
+

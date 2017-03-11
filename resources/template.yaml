@@ -1,0 +1,6529 @@
+---
+action:
+alert_description:
+assessment_other:
+assessment_ddx:
+assessment_notes:
+body:
+goals:
+hpi:
+  Asthma:
+    -
+      text: Asthma triggers
+      input: text
+    -
+      text: Frequency of attacks per week?
+      input: text
+    -
+      text: Nocturnal awakenings
+      input: text
+    -
+      text: Number of ER visits or hospitalizations
+      input: text
+    -
+      text: Number of school/work days missed
+      input: text
+    -
+      text: Recent infections
+      input: text
+    -
+      text: Restriction of activities
+      input: text
+    -
+      text: Time of usual attacks
+      input: text
+  Chronic Pain:
+    -
+      text: Ability to work
+      input: text
+    -
+      text: Diagnosis
+      input: text
+    -
+      text: Enjoyment of life
+      input: text
+    -
+      text: General Activity
+      input: text
+    -
+      text: Interaction with other people
+      input: text
+    -
+      text: Mood
+      input: text
+    -
+      text: Other treatments
+      input: text
+    -
+      text: Pain scale (0-10)
+      input: text
+    -
+      text: Relief (% improvement) since last visit
+      input: text
+    -
+      text: Side effects from medications
+      input: text
+  Generic:
+    -
+      text: Duration
+      input: text
+    -
+      text: Location/Description
+      input: text
+    -
+      text: Modifying factors
+      input: text
+  Injury:
+    -
+      text: Date of injury
+      input: text
+    -
+      text: Description of how injury occurred
+      input: text
+    -
+      text: General activity
+      input: text
+    -
+      text: Pain scale (0-10)
+      input: text
+    -
+      text: Treatments
+      input: text
+    -
+      text: Relief (% improvement) since last visit
+      input: text
+    -
+      text: Ability to work
+      input: text
+  Birth History:
+    -
+      text: Apgar scores
+      input: text
+    -
+      text: Birth weight
+      input: text
+    -
+      text: Delivery complications
+      input: radio
+      options: Yes,No
+    -
+      text: Gestational age
+      input: text
+    -
+      text: Hearing screen
+      input: radio
+      options: Normal,Abnormal
+    -
+      text: Metabolic screen
+      input: radio
+      options: Normal,Abnormal
+    -
+      text: Postpartum complications
+      input: radio
+      options: Yes,No
+    -
+      text: Pregnancy complications
+      input: radio
+      options: Yes,No
+  Diabetes:
+    -
+      text: Diabetes is under control
+      normal: yes
+    -
+      text: Wounds
+      normal: yes
+letter_body:
+  School Absence:
+    -
+      text: *~letterintro~*
+      normal: yes
+    -
+      text: Please excuse *~firstname~* from school starting
+      input: text
+    -
+      text:  *~firstname~* can return to school on
+      input: text
+  Work Absence:
+    -
+      text: *~letterintro~*
+      normal: yes
+    -
+      text: Please excuse *~firstname~* from work starting
+      input: text
+    -
+      text:  *~firstname~* can return to work on
+      input: text
+  Work Light Duty:
+    -
+      text: *~firstname~* should begin the following modified work restrictions
+    -
+      text: Start Date
+      input: text
+    -
+      text: End Date
+      input: text
+    -
+      text: Limited use of the right shoulder
+    -
+      text: No use of the right shoulder
+    -
+      text: Limited use of the left shoulder
+    -
+      text: No use of the left shoulder
+    -
+      text: Limited use of both shoulders
+    -
+      text: No use of both shoulders
+    -
+      text: Limited use of the right arm
+    -
+      text: No use of the right arm
+    -
+      text: Limited use of the left arm
+    -
+      text: No use of the left arm
+    -
+      text: Limited use of both arms
+    -
+      text: No use of both arms
+    -
+      text: Limited use of the right hand
+    -
+      text: No use of the right hand
+    -
+      text: Limited use of the left hand
+    -
+      text: No use of the left hand
+    -
+      text: Limited use of both hands
+    -
+      text: No use of both hands
+    -
+      text: Limited use of the right leg
+    -
+      text: No use of the right leg
+    -
+      text: Limited use of the left leg
+    -
+      text: No use of the left leg
+    -
+      text: Limited use of both legs
+    -
+      text: No use of both legs
+    -
+      text: Need to use splint provided while at work
+    -
+      text: Need to use splint provided while at work
+    -
+      text: Need to use back brace provided while at work
+    -
+      text: Limited bending
+    -
+      text: No bending
+    -
+      text: Limited climbing
+    -
+      text: No climbing
+    -
+      text: Limited heavy lifting
+    -
+      text: No heavy lifting
+    -
+      text: Limited overhead reaching
+    -
+      text: No overhead reaching
+    -
+      text: Limited pulling
+    -
+      text: No pulling
+    -
+      text: Limited pushing
+    -
+      text: No pushing
+    -
+      text: Limited squatting
+    -
+      text: No squatting
+    -
+      text: Limited standing
+    -
+      text: No standing
+    -
+      text: Limited stooping
+    -
+      text: No stooping
+    -
+      text: Limited twisting
+    -
+      text: No twisting
+    -
+      text: Limited weight bearing
+    -
+      text: No weight bearing
+    -
+      text: Limited work near moving machinery
+    -
+      text: No work near moving machinery
+    -
+      text: Limited work requiring depth perception
+    -
+      text: No work requiring depth perception
+oh_developmental:
+oh_diet:
+oh_drugs:
+oh_employment:
+oh_etoh:
+oh_medtrials:
+oh_physical_activity:
+oh_psychosocial:
+oh_sh:
+  Social History:
+    -
+      text: 'Spouse or partner name:'
+      input: text
+    -
+      text: 'Family memebers in the household:'
+      input: text
+    -
+      text: 'Children:'
+      input: text
+    -
+      text: 'Pets:'
+      input: text
+    -
+      text: 'Hobbies:'
+      input: text
+    -
+      text: 'Child care:'
+      input: text
+  Sexual History:
+    -
+      text: Number of sexual partners
+      input: radio
+      options: One,Multiple
+    -
+      text: Sexual partner preference
+      input: select
+      options: Heterosexual,Homosexual,Bisexual
+oh_tobacco:
+  Tobacco History:
+    -
+      text: 'Type:'
+      input: text
+    -
+      text: 'Frequency:'
+      input: text
+    -
+      text: 'Years of using tobacco:'
+      input: text
+    -
+      text: 'Intention to quit?'
+      input: text
+  Tobacco Cessation:
+    -
+      text: 'Methods tried:'
+      input: text
+    -
+      text: 'What has worked:'
+      input: text
+    -
+      text: 'What has failed:'
+      input: text
+orders_cp:
+orders_labs:
+  LabCorp:
+    -
+      text: Aerobic Bacterial Culture
+      input: orders
+      orders:
+        facility: LabCorp
+        orders_code: 008649
+        cpt: 87070
+        loinc: 634-6
+        results_code: 8649
+    -
+      text: Allergen Profile, Food
+      input: orders
+      orders:
+        facility: LabCorp
+        orders_code: 660423
+        cpt: >
+          86003,86005
+        loinc: >
+          7258-7,6276-0,6087-1,6206-7,6248-9,6219-0,6039-2,15218-1,7291-8,6080-6
+        results_code: >
+          602453,602459,602460,602451,602457,602498,602509,602860,602528,602492
+    -
+      text: ANA
+      input: orders
+      orders:
+        facility: LabCorp
+        orders_code: 164947
+        cpt: 86038
+        loinc: 5048-4
+        results_code: 164947
+    -
+      text: Basic Metabolic Panel
+      input: orders
+      orders:
+        facility: LabCorp
+        orders_code: 322758
+        cpt: 80048
+        loinc: >
+          48642-3,48643-1,2345-7,3094-0,2160-0,3097-3,2951-2,2823-3,2075-0,2028-9,17861-6
+        results_code: >
+          100791,100797,1032,1040,1370,11577,1198,1180,1206,1578,1016
+    -
+      text: BNP
+      input: orders
+      orders:
+        facility: LabCorp
+        orders_code: 140889
+        cpt: 83880
+        loinc: 30934-4
+        results_code: 140891
+    -
+      text: CBC with Differential and Platelets
+      input: orders
+      orders:
+        facility: LabCorp
+        orders_code: 005009
+        cpt: 85025
+        loinc: >
+          6690-2,789-8,718-7,4544-3,787-2,785-6,786-4,788-0,777-3,770-8,736-9,5905-5,713-8,706-2,751-8,731-0,742-7,711-2,704-7,38518-7,51584-1,58413-6,18314-5
+        results_code: >
+          5025,5033,5041,5058,15065,15073,15081,105007,15172,15107,15123,15131,15149,15156,15909,15917,15925,15933,15941,15108,15911,15945,15180
+    -
+      text: Chlamydia GC Amplification
+      input: orders
+      orders:
+        facility: LabCorp
+        orders_code: 183194
+        cpt: >
+          87491,87591
+        loinc: >
+          43304-5,43305-2
+        results_code: >
+          188078,188086
+    -
+      text: Comprehensive Metabolic Panel
+      input: orders
+      orders:
+        facility: LabCorp
+        orders_code: 322000
+        cpt: 80053
+        loinc: >
+          48642-3,48643-1,2345-7,3094-0,2160-0,3097-3,2951-2,2823-3,2075-0,2028-9,17861-6,2885-2,1751-7,10834-0,1759-0,1975-2,6768-6,1920-8,1742-6
+        results_code: >
+          100791,100797,1032,1040,1370,11577,1198,1180,1206,1578,1016,1073,1081,12039,12047,1099,1107,1123,1545
+    -
+      text: C-Reactive Protein
+      input: orders
+      orders:
+        facility: LabCorp
+        orders_code: 006627
+        cpt: 86140
+        loinc: 1988-5
+        results_code: 6627
+    -
+      text: Ferritin
+      input: orders
+      orders:
+        facility: LabCorp
+        orders_code: 004598
+        cpt: 82728
+        loinc: 2276-4
+        results_code: 4598
+    -
+      text: Giardia, Ova and Parasite
+      input: orders
+      orders:
+        facility: LabCorp
+        orders_code: 140285
+        cpt: >
+          87177,87209,87329
+        loinc: >
+          10701-1,6412-1
+        results_code: >
+          8624,182204
+    -
+      text: Hemoglobin A1c
+      input: orders
+      orders:
+        facility: LabCorp
+        orders_code: 001453
+        cpt: 83036
+        loinc: 4548-4
+        results_code: 1481
+    -
+      text: Hepatic Function Panel
+      input: orders
+      orders:
+        facility: LabCorp
+        orders_code: 322755
+        cpt: 80076
+        loinc: >
+          2885-2,1751-7,1975-2,1968-7,6768-6,1920-8,1742-6
+        results_code: >
+          1073,1081,1099,1222,1107,1123,1545
+    -
+      text: Hepatitis C Antibody
+      input: orders
+      orders:
+        facility: LabCorp
+        orders_code: 140659
+        cpt: 86803
+        loinc: 48159-8
+        results_code: 140689
+    -
+      text: Lipid Panel with TC-HDL Ratio
+      input: orders
+      orders:
+        facility: LabCorp
+        orders_code: 221010
+        cpt: 80061
+        loinc: >
+          2093-3,2571-8,2085-9,13458-5,13457-7,9830-1
+        results_code: >
+          1065,1172,11817,11916,12054,100065
+    -
+      text: Microalbumin Creatinine Ratio
+      input: orders
+      orders:
+        facility: LabCorp
+        orders_code: 140285
+        cpt: >
+          82043,82570
+        loinc: >
+          2161-8,14957-5,9318-7
+        results_code: >
+          13672,140097,140288
+    -
+      text: Pap Test, Liquid Based
+      input: orders
+      orders:
+        facility: LabCorp
+        orders_code: 192005
+        cpt: 88142
+        loinc: 22637-3
+        results_code: 191108
+    -
+      text: RPR
+      input: orders
+      orders:
+        facility: LabCorp
+        orders_code: 006072
+        cpt: 86592
+        loinc: 20507-0
+        results_code: 6072
+    -
+      text: Sedimentation Rate
+      input: orders
+      orders:
+        facility: LabCorp
+        orders_code: 005215
+        cpt: 85652
+        loinc: 4537-7
+        results_code:
+    -
+      text: Stool Culture
+      input: orders
+      orders:
+        facility: LabCorp
+        orders_code: 008144
+        cpt: >
+          87045,87046,87427
+        loinc: >
+          43371-4,6331-3,21262-1
+        results_code: >
+          8722,180141,180935
+    -
+      text: Testosterone, Total
+      input: orders
+      orders:
+        facility: LabCorp
+        orders_code: 004226
+        cpt: 84403
+        loinc: 2986-8
+        results_code: 4227
+    -
+      text: TSH
+      input: orders
+      orders:
+        facility: LabCorp
+        orders_code: 004259
+        cpt: 84403
+        loinc: 11580-8
+        results_code: 4264
+    -
+      text: Free T4
+      input: orders
+      orders:
+        facility: LabCorp
+        orders_code: 001974
+        cpt: 84439
+        loinc: 3024-7
+        results_code: 19745
+    -
+      text: Tissue Pathology
+      input: orders
+      orders:
+        facility: LabCorp
+        orders_code: 500918
+        cpt: >
+          88300,88302,88304,88305,88307,88309,88311,88312,88313,88314,88319,88321,88323,88325,88342
+        loinc: 22637-3
+        results_code: 191108
+    -
+      text: Urinalysis with Microscopic
+      input: orders
+      orders:
+        facility: LabCorp
+        orders_code: 003772
+        cpt: 81001
+        loinc: >,
+          2965-2,5803-2,5778-6,5767-9,5799-2,20454-5,2349-9,2514-8,5794-3,5770-3,20405-7,5802-4,12235-8
+        results_code: >
+          13060,13078,13045,13052,13185,13094,13086,13110,13102,13104,13105,13106,12237
+    -
+      text: Urine Culture
+      input: orders
+      orders:
+        facility: LabCorp
+        orders_code: 008847
+        cpt: 87086
+        loinc: 630-4
+        results_code: 8847
+    -
+      text: Vaginitis DNA Probe
+      input: orders
+      orders:
+        facility: LabCorp
+        orders_code: 180026
+        cpt: >
+          87480,87510,87660
+        loinc: >
+          47000-5,6410-5,6410-5
+        results_code: >
+          180027,180028,180029
+    -
+      text: Vitamin B12
+      input: orders
+      orders:
+        facility: LabCorp
+        orders_code: 001503
+        cpt: 82607
+        loinc: 2132-9
+        results_code: 1503
+    -
+      text: 'Vitamin D, 25-Hydroxy'
+      input: orders
+      orders:
+        facility: LabCorp
+        orders_code: 081950
+        cpt: 82306
+        loinc: 62292-8
+        results_code: 81953
+  QuestDiagnostics:
+    -
+      text: Aerobic Bacterial Culture
+      input: orders
+      orders:
+        facility: QuestDiagnostics
+        orders_code: 4550
+        cpt: 87070
+        loinc: 634-6
+        results_code: 75400164
+    -
+      text: Allergen Profile, Food
+      input: orders
+      orders:
+        facility: QuestDiagnostics
+        orders_code: 91682
+        cpt: >
+          86003
+        loinc: >
+          7691-9,6718-1,6106-9,6174-7,6082-2,6276-0,6242-2,6206-7,6248-9,6136-6,6019-4,6246-3,6270-3,6237-2,6273-7
+        results_code: >
+          55084720,55168205,55085805,55085905,55084505,55086005,55083505,55083605,55086205,55107005,55083705,55084705,55084805,55107305,55172005
+    -
+      text: ANA
+      input: orders
+      orders:
+        facility: QuestDiagnostics
+        orders_code: 249
+        cpt: 86038
+        loinc: 42254-3
+        results_code: 45060420
+    -
+      text: Basic Metabolic Panel
+      input: orders
+      orders:
+        facility: QuestDiagnostics
+        orders_code: 10165
+        cpt: 80048
+        loinc: >
+          33914-3,48643-1,2345-7,3094-0,2160-0,3097-3,2951-2,2823-3,2075-0,2028-9,17861-6
+        results_code: >
+          25000210,25000220,25000000,25000100,25000200,25000200,25000400,25000500,25000600,25000700,25001000
+    -
+      text: BNP
+      input: orders
+      orders:
+        facility: QuestDiagnostics
+        orders_code: 37386
+        cpt: 83880
+        loinc: 30934-4
+        results_code: 56034200
+    -
+      text: CBC with Differential and Platelets
+      input: orders
+      orders:
+        facility: QuestDiagnostics
+        orders_code: 6399
+        cpt: 85025
+        loinc: >
+          6690-2,789-8,718-7,4544-3,787-2,785-6,786-4,788-0,777-3,770-8,736-9,5905-5,713-8,706-2,751-8,731-0,742-7,711-2,704-7
+        results_code: >
+          30000000,30000100,30000200,30000300,30000400,30000500,30000600,30000600,30000800,30000900,30001800,30002200,30002500,30002800,30001700,30002110,30002400,30002700,30003000
+    -
+      text: Chlamydia GC Amplification
+      input: orders
+      orders:
+        facility: QuestDiagnostics
+        orders_code: 91773
+        cpt: >
+          87491,87591
+        loinc: >
+          43304-5,43305-2
+        results_code: >
+          70043800,70043900
+    -
+       text: Comprehensive Metabolic Panel
+       input: orders
+       orders:
+         facility: QuestDiagnostics
+         orders_code: 10231
+         cpt: 80053
+         loinc: >
+           48642-3,48643-1,2345-7,3094-0,2160-0,3097-3,2951-2,2823-3,2075-0,2028-9,17861-6,2885-2,1751-7,10834-0,1759-0,1975-2,6768-6,1920-8,1742-6
+         results_code: >
+           25000210,25000220,25000000,25000100,25000200,25000200,25000400,25000500,25000600,25000700,25001000,25001300,25001400,25001500,25001500,25001700,25002000,25002300,25002400
+    -
+      text: C-Reactive Protein
+      input: orders
+      orders:
+        facility: QuestDiagnostics
+        orders_code: 4420
+        cpt: 86140
+        loinc: 1988-5
+        results_code: 45003700
+    -
+      text: Ferritin
+      input: orders
+      orders:
+        facility: QuestDiagnostics
+        orders_code: 457
+        cpt: 82728
+        loinc: 2276-4
+        results_code: 55059300
+    -
+      text: Giardia, Ova and Parasite
+      input: orders
+      orders:
+        facility: QuestDiagnostics
+        orders_code: 1748
+        cpt: >
+          87177,87209,87329
+        loinc: >
+          10701-1,6412-1
+        results_code: >
+          75400111,75400426
+    -
+      text: Hemoglobin A1c
+      input: orders
+      orders:
+        facility: QuestDiagnostics
+        orders_code: 496
+        cpt: 83036
+        loinc: 4548-4
+        results_code: 50026400
+    -
+      text: Hepatic Function Panel
+      input: orders
+      orders:
+        facility: QuestDiagnostics
+        orders_code: 10256
+        cpt: 80076
+        loinc: >
+          2885-2,1751-7,1975-2,1968-7,6768-6,1920-8,1742-6
+        results_code: >
+          25001300,25001400,25001700,25001800,25002000,25002300,25002400
+    -
+      text: Hepatitis C Antibody
+      input: orders
+      orders:
+        facility: QuestDiagnostics
+        orders_code: 8472
+        cpt: 86803
+        loinc: 48159-8
+        results_code: 55071705
+    -
+      text: Lipid Panel with Ratios
+      input: orders
+      orders:
+        facility: QuestDiagnostics
+        orders_code: 19543
+        cpt: 80061
+        loinc: >
+          2093-3,2571-8,2085-9,11054-4,13457-7,9830-1
+        results_code: >
+          25003000,25002900,25015900,25017200,25016900,25017000
+    -
+      text: Microalbumin Creatinine Ratio
+      input: orders
+      orders:
+        facility: QuestDiagnostics
+        orders_code: 6517
+        cpt: >
+          82043,82570
+        loinc: >
+          2161-8,14957-5,9318-7
+        results_code: >
+          25026500,50060710,50061100
+    -
+      text: Pap Test, Liquid Based
+      input: orders
+      orders:
+        facility: QuestDiagnostics
+        orders_code: 92093
+        cpt: 88142
+        loinc: 22637-3
+        results_code: 191108
+    -
+      text: RPR
+      input: orders
+      orders:
+        facility: QuestDiagnostics
+        orders_code: 799
+        cpt: 85652
+        loinc: 20507-0
+        results_code: 40010100
+    -
+      text: Sedimentation Rate
+      input: orders
+      orders:
+        facility: QuestDiagnostics
+        orders_code: 809
+        cpt: 86592
+        loinc: 4537-7
+        results_code: 30045300
+    -
+      text: Stool Culture
+      input: orders
+      orders:
+        facility: QuestDiagnostics
+        orders_code: 10108
+        cpt: >
+          87045,87046,87427
+        loinc: >
+          43371-4,6331-3,21262-1
+        results_code: >
+          75400265,75400286,75400254
+    -
+      text: Testosterone, Total
+      input: orders
+      orders:
+        facility: QuestDiagnostics
+        orders_code: 15983
+        cpt: 84403
+        loinc: 2986-8
+        results_code: 85996653
+    -
+      text: TSH
+      input: orders
+      orders:
+        facility: QuestDiagnostics
+        orders_code: 899
+        cpt: 84403
+        loinc: 3016-3
+        results_code: 55080400
+    -
+      text: Free T4
+      input: orders
+      orders:
+        facility: QuestDiagnostics
+        orders_code: 866
+        cpt: 84439
+        loinc: 3024-7
+        results_code: 55070600
+    -
+      text: Tissue Pathology
+      input: orders
+      orders:
+        facility: QuestDiagnostics
+        orders_code: 3542
+        cpt: >
+          88300,88302,88304,88305,88307,88309,88311,88312,88313,88314,88319,88321,88323,88325,88342
+        loinc: 22638-1
+        results_code: 90000498
+    -
+      text: Urinalysis with Microscopic
+      input: orders
+      orders:
+        facility: QuestDiagnostics
+        orders_code: 5463
+        cpt: 81001
+        loinc: >,
+          5811-5,5803-2,5778-6,5767-9,5799-2,20454-5,25428-4,2514-8,5794-3,5770-3,5802-4,12235-8
+        results_code: >
+          30006000,30006200,30005500,30005600,30006500,30006300,30071800,30005900,30006100,30019500,30006400,30008800
+    -
+      text: Urine Culture
+      input: orders
+      orders:
+        facility: QuestDiagnostics
+        orders_code: 395
+        cpt: 87086,87088
+        loinc: 630-4
+        results_code: 75400001
+    -
+      text: Vaginitis DNA Probe
+      input: orders
+      orders:
+        facility: QuestDiagnostics
+        orders_code: 14577
+        cpt: >
+          87480,87510,87660
+        loinc: >
+          47000-5,6410-5,6568-0
+        results_code: >
+          75407092,75407091,75407090
+    -
+      text: Vitamin B12
+      input: orders
+      orders:
+        facility: QuestDiagnostics
+        orders_code: 927
+        cpt: 82607
+        loinc: 2132-9
+        results_code: 55057200
+    -
+      text: 'Vitamin D, 25-Hydroxy'
+      input: orders
+      orders:
+        facility: QuestDiagnostics
+        orders_code: 17306
+        cpt: 82306
+        loinc: 1989-3
+        results_code: 55182715
+orders_notes:
+orders_radiology:
+orders_referrals:
+  Referral:
+    -
+      text: Assume management for this particular problem and return patient after conclusion of care
+    -
+      text: Assume future management of patient within your area of expertise
+    -
+      text: Please provide primary physician with summaries of subsequent visits
+    -
+      text: *~problems~*
+    -
+      text: *~meds~*
+    -
+      text: *~allergies~*
+    -
+      text: Please call me when you have seen the patient
+    -
+      text: I would like to receive periodic status reports on this patient
+    -
+      text: Please send a thorough written report when the consultation is complete
+  Consultation:
+    -
+      text: Please send the patient back for followup and treatment
+    -
+      text: *~problems~*
+    -
+      text: *~meds~*
+    -
+      text: *~allergies~*
+    -
+      text: Confirm the diagnosis
+    -
+      text: Advise as to the diagnosis
+    -
+      text: Suggested medication or treatment
+    -
+      text: Please call me after you have seen *~firstname~*
+    -
+      text: I would like to receive periodic status reports on this patient
+    -
+      text: Please send a thorough written report when the consultation is complete
+  Physical Therapy:
+    -
+      text: Objective - decrease pain
+    -
+      text: Objective - increase mobility
+    -
+      text: Objective - increase strength
+    -
+      text: Hot or cold packs
+    -
+      text: TENS unit
+    -
+      text: Back program
+    -
+      text: Joint mobilization
+    -
+      text: Home program
+    -
+      text: Pool Therapy
+    -
+      text: Feldenkrais method
+    -
+      text: Therapeutic exercise
+    -
+      text: Myofascial release
+    -
+      text: Patient education
+    -
+      text: Work hardening
+    -
+      text: 'Precautions:'
+      input: text
+    -
+      text: 'Frequency:'
+      input: text
+    -
+      text: 'Duration:'
+      input: text
+  Massage Therapy:
+    -
+      text: Objective - decrease pain
+    -
+      text: Objective - increase mobility
+    -
+      text: 'Precautions:'
+      input: text
+    -
+      text: 'Frequency:'
+      input: text
+    -
+      text: 'Duration:'
+      input: text
+  Sleep Study:
+    -
+      text: Diagnostic sleep study only
+    -
+      text: Diagnostic testing with Continuous Positive Airway Pressure
+    -
+      text: Diagnostic testing with BiLevel Positive Airway Pressure
+    -
+      text: Diagnostic testing with Oxygen
+    -
+      text: Diagnostic testing with Oral device
+    -
+      text: MSLT (Multiple Sleep Latency Test)
+    -
+      text: MWT (Maintainence of Wakefulness Test)
+    -
+      text: Titrate BiPAP settings
+    -
+      text: 'Inspiratory Presssure (IPIP), cm H2O:'
+      input: text
+    -
+      text: 'Expiratory Pressure (EPAP), cm H2O:'
+      input: text
+    -
+      text: 'BiPAP mode:'
+      input: select
+      options: Spontaneous,Spontaneous/Timed
+    -
+      text: 'Breaths per minute:'
+      input: text
+pe:
+  General - Appearance:
+    -
+      text: No acute distress and within normal limits
+      normal: true
+    -
+      text: ACUTELY DISTRESSED
+    -
+      text: DISHEVELED
+    -
+      text: ILL
+    -
+      text: TOXIC
+    -
+      text: LETHARGIC
+    -
+      text: OBESE
+    -
+      text: EMACIATED
+  Eye - Conjunctiva and Lids:
+    -
+      text: 'Eyebrows and lashes - '
+    -
+      text: 'Eyebrows and lashes - Evenly distributed bilaterally'
+      normal: true
+    -
+      text: 'Eyebrows and lashes - ABNORMAL'
+      input: text
+    -
+      text: 'Conjunctiva - '
+    -
+      text: 'Conjunctiva - Clear bilaterally without discharge'
+      normal: true
+    -
+      text: 'Conjunctiva - REDNESS'
+      input: radio
+      options: RIGHT,LEFT,BILATERAL
+    -
+      text: 'Lids - '
+    -
+      text: 'Lids - Normal appearing eyelids bilaterally'
+      normal: true
+    -
+      text: 'Lids - EDEMA'
+      input: radio
+      options: RIGHT,LEFT,BILATERAL
+    -
+      text: 'Lids - REDNESS'
+      input: radio
+      options: RIGHT,LEFT,BILATERAL
+  Eye - Pupil and Iris:
+    -
+      text: 'Pupils - '
+    -
+      text: 'Pupils - Equal, round, and reactive to light and accommodation'
+      normal: true
+    -
+      text: 'Pupils - DILATED'
+      input: radio
+      options: RIGHT,LEFT,BILATERAL
+    -
+      text: 'Iris - '
+    -
+      text: 'Iris - Within normal limits bilaterally'
+      normal: true
+    -
+      text: 'Iris - ABNORMAL'
+      input: text
+  Eye - Fundoscopic:
+    -
+      text: 'Cup-to-disc ratio - '
+    -
+      text: 'Cup-to-disc ratio - Normal'
+      normal: true
+    -
+      text: 'Cup-to-disc ratio - ABNORMAL'
+      input: radio
+      options: RIGHT,LEFT,BILATERAL
+    -
+      text: 'Red reflex - '
+    -
+      text: 'Red reflex - Present'
+      normal: true
+    -
+      text: 'Red reflex - ABSENT'
+      input: radio
+      options: RIGHT,LEFT,BILATERAL
+  ENT - External Ear and Nose:
+    -
+      text: 'External ear - '
+    -
+      text: 'External ear - Normal'
+      normal: true
+    -
+      text: 'External ear - ABNORMAL'
+      input: text
+    -
+      text: 'Auricle - '
+    -
+      text: 'Auricle - No swelling'
+      normal: true
+    -
+      text: 'Auricle - SWELLING'
+      input: radio
+      options: RIGHT,LEFT,BILATERAL
+    -
+      text: 'External nose - '
+    -
+      text: 'External nose - Normal'
+      normal: true
+    -
+      text: 'External nose - ABNORMAL'
+      input: text
+  ENT - Canals and Tympanic Membranes:
+    -
+      text: 'Tympanic membranes - '
+    -
+      text: 'Tympanic membranes - Clear bilaterally'
+      normal: true
+    -
+      text: 'Tympanic membranes - RED'
+      input: radio
+      options: RIGHT,LEFT,BILATERAL
+    -
+      text: 'Tympanic membranes - PERFORATION'
+      input: radio
+      options: RIGHT,LEFT,BILATERAL
+    -
+      text: 'Tympanic membranes - BULGING'
+      input: radio
+      options: RIGHT,LEFT,BILATERAL
+    -
+      text: 'Tympanic membranes - DULL'
+      input: radio
+      options: RIGHT,LEFT,BILATERAL
+    -
+      text: 'Tympanic membranes - AIR-FLUID LEVELS'
+      input: radio
+      options: RIGHT,LEFT,BILATERAL
+    -
+      text: 'External canals - '
+    -
+      text: 'External canals - Normal'
+      normal: true
+    -
+      text: 'External canals - CERUMEN IMPACTION'
+      input: radio
+      options: RIGHT,LEFT,BILATERAL
+    -
+      text: 'External canals - REDNESS'
+      input: radio
+      options: RIGHT,LEFT,BILATERAL
+    -
+      text: 'External canals - EXUDATE'
+      input: radio
+      options: RIGHT,LEFT,BILATERAL
+  ENT - Hearing Assessment:
+    -
+      text: 'Weber testing - '
+    -
+      text: 'Weber testing - Normal'
+      normal: true
+    -
+      text: 'Weber testing - ABNORMAL'
+      input: radio
+      options: RIGHT,LEFT,BILATERAL
+    -
+      text: 'Rinne testing - '
+    -
+      text: 'Rinne testing - Positive'
+      normal: true
+    -
+      text: 'Rinne testing - NEGATIVE'
+      input: radio
+      options: RIGHT,LEFT,BILATERAL
+  ENT - Sinuses, Mucosa, Septum, and Turbinates:
+    -
+      text: 'Nasal mucosa - '
+    -
+      text: 'Nasal mucosa - Pink and moist bilaterally'
+      normal: true
+    -
+      text: 'Nasal mucosa - RED'
+      input: radio
+      options: RIGHT,LEFT,BILATERAL
+    -
+      text: 'Nasal mucosa - COBBLESTONING'
+      input: radio
+      options: RIGHT,LEFT,BILATERAL
+    -
+      text: 'Nasal turbinates - '
+    -
+      text: 'Nasal turbinates - Normal bilaterally'
+      normal: true
+    -
+      text: 'Nasal turbinates - ENLARGED'
+      input: radio
+      options: RIGHT,LEFT,BILATERAL
+    -
+      text: 'Nasal polyps - '
+    -
+      text: 'Nasal polyps - None'
+      normal: true
+  ENT - Lips, Teeth, and Gums:
+    -
+      text: 'Lips - '
+    -
+      text: 'Lips - Normal'
+      normal: true
+    -
+      text: 'Lips - ABNORMAL'
+      input: text
+    -
+      text: 'Dentition - '
+    -
+      text: 'Dentition - Normal bilaterally'
+      normal: true
+    -
+      text: 'Dentition - POOR'
+      input: radio
+      options: RIGHT,LEFT,BILATERAL
+    -
+      text: 'Gums - '
+    -
+      text: 'Gums - Normal'
+      normal: true
+    -
+      text: 'Gums - RED'
+      input: radio
+      options: UPPER,LOWER,UPPER AND LOWER
+  ENT - Oropharynx:
+    -
+      text: 'Oropharynx - '
+    -
+      text: 'Oropharynx - Normal'
+      normal: true
+    -
+      text: 'Oropharynx - RED'
+      input: radio
+      options: RIGHT,LEFT,BILATERAL
+    -
+      text: 'Posterior pharynx - '
+    -
+      text: 'Posterior pharynx - Normal'
+      normal: true
+    -
+      text: 'Posterior pharynx - RED'
+      input: radio
+      options: RIGHT,LEFT,BILATERAL
+    -
+      text: 'Posterior pharynx - COBBLESTONING'
+      input: radio
+      options: RIGHT,LEFT,BILATERAL
+    -
+      text: 'Tonsils - '
+    -
+      text: 'Tonsils - Normal bilaterally'
+      normal: true
+    -
+      text: 'Tonsils - RED'
+      input: radio
+      options: RIGHT,LEFT,BILATERAL
+    -
+      text: 'Tonsils - EXUDATE'
+      input: radio
+      options: RIGHT,LEFT,BILATERAL
+  Neck - General:
+    -
+      text: 'Neck masses - '
+    -
+      text: 'Neck masses - No'
+      normal: true
+    -
+      text: 'Neck masses - YES'
+      input: text
+    -
+      text: 'Neck masses - LATERALITY'
+      input: radio
+      options: RIGHT,LEFT,BILATERAL
+    -
+      text: 'Neck masses - SIZE'
+      input: text
+    -
+      text: "Brudzinski's sign - "
+    -
+      text: "Brudzinski's sign - No"
+      normal: true
+    -
+      text: "Brudzinski's sign - YES"
+    -
+      text: "Kernig's sign - "
+    -
+      text: "Kernig's sign - No"
+      normal: true
+    -
+      text: "Kernig's sign - YES"
+  Neck - Thryoid:
+    -
+      text: 'Thyromegaly - '
+    -
+      text: 'Thyromegaly - No'
+      normal: true
+    -
+      text: 'Thyromegaly - YES'
+    -
+      text: 'Thyroid nodule - '
+    -
+      text: 'Thyroid nodule - No'
+      normal: true
+    -
+      text: 'Thyroid nodule - YES'
+      input: text
+    -
+      text: 'Thyroid nodule - LATERALITY'
+      input: radio
+      options: RIGHT,LEFT,BILATERAL
+    -
+      text: 'Thyroid nodule - SIZE'
+      input: text
+  Respiratory - Effort:
+    -
+      text: 'Tachypnea - '
+    -
+      text: 'Tachypnea - No'
+      normal: true
+    -
+      text: 'Tachypnea - YES'
+    -
+      text: 'Use of accessory muscles - '
+    -
+      text: 'Use of accessory muscles - No'
+      normal: true
+    -
+      text: 'Use of accessory muscles - YES'
+  Respiratory - Percussion:
+    -
+      text: 'Dullness - '
+    -
+      text: 'Dullness - No'
+      normal: true
+  Respiratory - Palpation:
+    -
+      text: 'Tactile fremitus - '
+    -
+      text: 'Tactile fremitus - Normal'
+      normal: true
+    -
+      text: 'Tactile fremitus - INCREASED'
+      input: radio
+      options: RIGHT,LEFT,BILATERAL
+    -
+      text: 'Tactile fremitus - DECREASED'
+      input: radio
+      options: RIGHT,LEFT,BILATERAL
+  Respiratory - Auscultation:
+    0:
+      text: 'Rhonchi - '
+    1:
+      text: 'Rhonchi - No'
+      normal: true
+    3:
+      text: 'Wheezing - '
+    4:
+      text: 'Wheezing - No'
+      normal: true
+    6:
+      text: 'Crackles - '
+    7:
+      text: 'Crackles - No'
+      normal: true
+  Cardiovascular - Palpation:
+    -
+      text: 'Heaves - '
+    -
+      text: 'Heaves - No'
+      normal: true
+    -
+      text: 'Heaves - YES'
+    -
+      text: 'Lifts - '
+    -
+      text: 'Lifts - No'
+      normal: true
+    -
+      text: 'Lifts - YES'
+    -
+      text: 'Thrills - '
+    -
+      text: 'Thrills - No'
+      normal: true
+    -
+      text: 'Thrills - YES'
+  Cardiovascular - Auscultation:
+    -
+      text: 'Rate - '
+    -
+      text: 'Rate - Regular'
+      normal: true
+    -
+      text: 'Rate - IRREGULAR'
+    -
+      text: 'Rhythm - '
+    -
+      text: 'Rhythm - Regular'
+      normal: true
+    -
+      text: 'Rhythm - IRREGULAR'
+    -
+      text: 'Murmur - '
+    -
+      text: 'Murmur - None'
+      normal: true
+    -
+      text: 'Murmur - SYSTOLIC EJECTION'
+    -
+      text: 'Murmur - HOLOSYSTOLIC'
+    -
+      text: 'Murmur - CRESCENDO-DECRESCENDO'
+    -
+      text: 'Murmur - BEST HEARD AT THE'
+      input: text
+  Cardiovascular - Carotid Arteries:
+    0:
+      text: 'Bruits - '
+    1:
+      text: 'Bruits - None'
+      normal: true
+    3:
+      text: 'Jugular venous distention - '
+    4:
+      text: 'Jugular venous distention - No'
+      normal: true
+    5:
+      text: 'Jugular venous distention - YES'
+  Cardiovascular - Abdominal Aorta:
+    -
+      text: 'Abdominal bruits - '
+    -
+      text: 'Abdominal bruits - None'
+      normal: true
+    -
+      text: 'Abdominal bruits - YES'
+    -
+      text: 'Renal bruits - '
+    -
+      text: 'Renal bruits - No'
+      normal: true
+  Cardiovascular - Femoral Arteries:
+    -
+      text: 'Bruits - '
+    -
+      text: 'Bruits - No'
+      normal: true
+  Cardiovascular - Extremities:
+    0:
+      text: 'Lower extremity edema - '
+    1:
+      text: 'Lower extremity edema - None'
+      normal: true
+    3:
+      text: "Homan's sign - "
+    4:
+      text: "Homan's sign - Normal"
+      normal: true
+  Chest - Inspection:
+    -
+      text: 'Breasts - Symmetric bilaterally'
+      normal: true
+    -
+      text: 'Breasts - ASSYMETRIC'
+      input: text
+  Chest - Palpation:
+    0:
+      text: 'Nipple discharge - '
+    1:
+      text: 'Nipple discharge - None'
+      normal: true
+    3:
+      text: 'Axillary nodes - '
+    4:
+      text: 'Axillary nodes - Within normal limits'
+      normal: true
+    5:
+      text: 'Axillary nodes - PALPABLE'
+      input: radio
+      options: RIGHT,LEFT,BILATERAL
+  Gastrointestinal - Masses and Tenderness:
+    -
+      text: 'Abdominal Tenderness - '
+    -
+      text: 'Abdominal Tenderness - None'
+      normal: true
+    -
+      text: 'Abdominal Tenderness - RIGHT LOWER QUADRANT'
+    -
+      text: 'Abdominal Tenderness - LEFT LOWER QUADRANT'
+    -
+      text: 'Abdominal Tenderness - RIGHT UPPER QUADRANT'
+    -
+      text: 'Abdominal Tenderness - LEFT UPPER QUADRANT'
+    -
+      text: 'Abdominal Tenderness - EPIGASTRIC'
+    -
+      text: 'Abdominal Tenderness - DIFFUSE'
+    -
+      text: 'Abdominal Tenderness - REBOUND'
+    -
+      text: 'Abdominal Tenderness - INVOLUNTARY GUARDING'
+    -
+      text: 'Tympanic - '
+    -
+      text: 'Tympanic - No'
+      normal: true
+    -
+      text: 'Tympanic - YES'
+  Gastrointestinal - Liver and Spleen:
+    -
+      text: 'Hepatomegaly - '
+    -
+      text: 'Hepatomegaly - No'
+      normal: true
+    -
+      text: 'Hepatomegaly - YES'
+    -
+      text: 'Splenomegaly - '
+    -
+      text: 'Splenomegaly - No'
+      normal: true
+    -
+      text: 'Splenomegaly - YES'
+  Gastrointestinal - Hernia:
+    0:
+      text: 'Direct inguinal hernia - '
+    1:
+      text: 'Direct inguinal hernia - None'
+      normal: true
+    3:
+      text: 'Direct inguinal hernia - REDUCIBLE'
+      input: radio
+      options: YES,NO
+    4:
+      text: 'Direct inguinal hernia - SIZE'
+      input: text
+    5:
+      text: 'Indirect inguinal hernia - '
+    6:
+      text: 'Indirect inguinal hernia - None'
+      normal: true
+    8:
+      text: 'Indirect inguinal hernia - REDUCIBLE'
+      input: radio
+      options: YES,NO
+    9:
+      text: 'Indirect inguinal hernia - SIZE'
+      input: text
+    10:
+      text: 'Umbilical hernia - '
+    11:
+      text: 'Umbilical hernia - None'
+      normal: true
+    12:
+      text: 'Umbilical hernia - YES'
+    13:
+      text: 'Umbilical hernia - REDUCIBLE'
+      input: radio
+      options: YES,NO
+    14:
+      text: 'Umbilical hernia - SIZE'
+      input: text
+  Gastrointestinal - Anus, Perineum, and Rectum:
+    -
+      text: 'External Hemorrhoid - '
+    -
+      text: 'External Hemorrhoid - No'
+      normal: true
+    -
+      text: 'External Hemorrhoid - THROMBOSED'
+    -
+      text: 'External Hemorrhoid - NOT THROMBOSED'
+    -
+      text: 'Internal Hemorrhoid - '
+    -
+      text: 'Internal Hemorrhoid - No'
+      normal: true
+    -
+      text: 'Internal Hemorrhoid - THROMBOSED'
+    -
+      text: 'Internal Hemorrhoid - NOT THROMBOSED'
+  Genitourinary - Genitalia:
+    0:
+      text: 'Cyst - '
+      gender: f
+    1:
+      text: 'Cyst - None'
+      normal: true
+      gender: f
+    3:
+      text: 'Vaginal discharge - '
+      gender: f
+    4:
+      text: 'Vaginal discharge - None'
+      normal: true
+      gender: f
+    5:
+      text: 'Vaginal discharge - YES'
+      gender: f
+    6:
+      text: 'Whiff test - '
+      gender: f
+    7:
+      text: 'Whiff test - Negative'
+      normal: true
+      gender: f
+    8:
+      text: 'Whiff test - POSITIVE'
+      gender: f
+    gender: f
+  Genitourinary - Urethra:
+    -
+      text: 'Swelling - '
+      gender: f
+    -
+      text: 'Swelling - No'
+      normal: true
+      gender: f
+    -
+      text: 'Swelling - YES'
+      gender: f
+    gender: f
+  Genitourinary - Bladder:
+    -
+      text: 'Tenderness - '
+      gender: f
+    -
+      text: 'Tenderness - No'
+      normal: true
+      gender: f
+    -
+      text: 'Tenderness - YES'
+      gender: f
+    gender: f
+  Genitourinary - Cervix:
+    -
+      text: 'Tenderness - '
+      gender: f
+    -
+      text: 'Tenderness - No'
+      normal: true
+      gender: f
+    -
+      text: 'Tenderness - YES'
+      gender: f
+    -
+      text: 'Bleeding - '
+      gender: f
+    -
+      text: 'Bleeding - No'
+      normal: true
+      gender: f
+    -
+      text: 'Bleeding - YES'
+      gender: f
+    gender: f
+  Genitourinary - Uterus:
+    -
+      text: 'Masses - '
+      gender: f
+    -
+      text: 'Masses - No'
+      normal: true
+      gender: f
+    -
+      text: 'Masses - YES'
+      gender: f
+    -
+      text: 'Prolapse - '
+      gender: f
+    -
+      text: 'Prolapse - No'
+      normal: true
+      gender: f
+    -
+      text: 'Prolapse - YES'
+      gender: f
+    gender: f
+  Genitourinary - Adnexa:
+    -
+      text: 'Masses - '
+      gender: f
+    -
+      text: 'Masses - No'
+      normal: true
+      gender: f
+    -
+      text: 'Masses - YES'
+      gender: f
+    -
+      text: 'Tenderness - '
+      gender: f
+    -
+      text: 'Tenderness - No'
+      normal: true
+      gender: f
+    -
+      text: 'Tenderness - YES'
+      gender: f
+    gender: f
+  Genitourinary - Scrotum:
+    0:
+      text: 'Masses - '
+      gender: m
+    1:
+      text: 'Masses - No'
+      normal: true
+      gender: m
+    3:
+      text: 'Tenderness - '
+      gender: m
+    4:
+      text: 'Tenderness - No'
+      normal: true
+      gender: m
+    6:
+      text: 'Undescended testicle - '
+      gender: m
+    7:
+      text: 'Undescended testicle - No'
+      normal: true
+      gender: m
+    gender: m
+  Genitourinary - Penis:
+    -
+      text: 'Penile discharge - '
+    -
+      text: 'Penile discharge - No'
+      normal: true
+    -
+      text: 'Penile discharge - YES'
+  Genitourinary - Prostate:
+    0:
+      text: 'Enlargement - '
+    1:
+      text: 'Enlargement - No'
+      normal: true
+    2:
+      text: 'Enlargement - YES'
+    3:
+      text: 'Nodules - '
+    4:
+      text: 'Nodules - No'
+      normal: true
+    6:
+      text: 'Tenderness - '
+    7:
+      text: 'Tenderness - No'
+      normal: true
+  Lymphatic - Neck:
+    -
+      text: 'Cervical lymphadenopathy - '
+    -
+      text: 'Cervical lymphadenopathy - None'
+      normal: true
+    -
+      text: 'Cervical lymphadenopathy - '
+      input: radio
+      options: RIGHT,LEFT,BILATERAL
+  Lymphatic - Axillae:
+    -
+      text: 'Axillary lymphadenopathy - '
+    -
+      text: 'Axillary lymphadenopathy - None'
+      normal: true
+  Lymphatic - Groin:
+    -
+      text: 'Inguinal lymphadenopathy - '
+    -
+      text: 'Inguinal lymphadenopathy - None'
+      normal: true
+  Musculoskeletal - Gait and Station:
+    -
+      text: 'Gait - '
+    -
+      text: 'Gait - Normal'
+      normal: true
+    -
+      text: 'Gait - ATALGIC'
+    -
+      text: 'Gait - SLOW'
+  Musculoskeletal - Digit and Nails:
+    -
+      text: 'Clubbing - '
+    -
+      text: 'Clubbing - No'
+      normal: true
+    -
+      text: 'Clubbing - '
+      input: radio
+      options: THUMB,2ND FINGER,3RD FINGER,4TH FINGER,5TH FINGER,GREAT TOE,2ND TOE,3RD TOE,4TH TOE,5TH TOE
+    -
+      text: 'Ingrown nail - '
+    -
+      text: 'Ingrown nail - No'
+      normal: true
+    -
+      text: 'Ingrown nail - '
+      input: radio
+      options: THUMB,2ND FINGER,3RD FINGER,4TH FINGER,5TH FINGER,GREAT TOE,2ND TOE,3RD TOE,4TH TOE,5TH TOE
+  Musculoskeletal - Shoulder:
+    -
+      text: 'Flexion (0-90 degrees) - '
+    -
+      text: 'Flexion (0-90 degrees) - 90 degrees bilaterally'
+      normal: true
+    -
+      text: 'Flexion (0-90 degrees) - RIGHT'
+      input: text
+    -
+      text: 'Flexion (0-90 degrees) - LEFT'
+      input: text
+    -
+      text: 'Extension (0-50 degrees) - '
+    -
+      text: 'Extension (0-50 degrees) - 50 degrees bilaterally'
+      normal: true
+    -
+      text: 'Extension (0-50 degrees) - RIGHT'
+      input: text
+    -
+      text: 'Extension (0-50 degrees) - LEFT'
+      input: text
+    -
+      text: 'Abduction (0-90 degrees) - '
+    -
+      text: 'Abduction (0-90 degrees) - 90 degrees bilaterally'
+      normal: true
+    -
+      text: 'Abduction (0-90 degrees) - RIGHT'
+      input: text
+    -
+      text: 'Abduction (0-90 degrees) - LEFT'
+      input: text
+    -
+      text: 'Adduction (0-90 degrees) - '
+    -
+      text: 'Adduction (0-90 degrees) - 90 degrees bilaterally'
+      normal: true
+    -
+      text: 'Adduction (0-90 degrees) - RIGHT'
+      input: text
+    -
+      text: 'Adduction (0-90 degrees) - LEFT'
+      input: text
+    -
+      text: 'Medial rotation (0-90 degrees) - '
+    -
+      text: 'Medial rotation (0-90 degrees) - 90 degrees bilaterally'
+      normal: true
+    -
+      text: 'Medial rotation (0-90 degrees) - RIGHT'
+      input: text
+    -
+      text: 'Medial rotation (0-90 degrees) - LEFT'
+      input: text
+    -
+      text: 'Lateral rotation (0-90 degrees) - '
+    -
+      text: 'Lateral rotation (0-90 degrees) - 90 degrees bilaterally'
+      normal: true
+    -
+      text: 'Lateral rotation (0-90 degrees) - RIGHT'
+      input: text
+    -
+      text: 'Lateral rotation (0-90 degrees) - LEFT'
+      input: text
+    -
+      text: 'Supraspinatus testing - '
+    -
+      text: 'Supraspinatus testing - Negative'
+      normal: true
+    -
+      text: 'Supraspinatus testing - POSITIVE'
+      input: radio
+      options: RIGHT,LEFT,BILATERAL
+    -
+      text: "Neer's testing - "
+    -
+      text: "Neer's testing - Negative"
+      normal: true
+    -
+      text: "Neer's testing - POSITIVE:"
+      input: radio
+      options: RIGHT,LEFT,BILATERAL
+    -
+      text: "Hawkins' testing - "
+    -
+      text: "Hawkins' testing - Negative"
+      normal: true
+    -
+      text: "Hawkins' testing - POSITIVE:"
+      input: radio
+      options: RIGHT,LEFT,BILATERAL
+    -
+      text: 'Apprehension testing - '
+    -
+      text: 'Apprehension testing - Negative'
+      normal: true
+    -
+      text: 'Apprehension testing - POSITIVE'
+      input: radio
+      options: RIGHT,LEFT,BILATERAL
+  Musculoskeletal - Elbow:
+    -
+      text: 'Flexion (0-160 degrees) - '
+    -
+      text: 'Flexion (0-160 degrees) - 160 degrees bilaterally'
+      normal: true
+    -
+      text: 'Flexion (0-160 degrees) - RIGHT'
+      input: text
+    -
+      text: 'Flexion (0-160 degrees) - LEFT'
+      input: text
+    -
+      text: 'Extension (0-145 degrees) - '
+    -
+      text: 'Extension (0-145 degrees) - 145 degrees bilaterally'
+      normal: true
+    -
+      text: 'Extension (0-145 degrees) - RIGHT'
+      input: text
+    -
+      text: 'Extension (0-145 degrees) - LEFT'
+      input: text
+    -
+      text: 'Pronation (0-90 degrees) - '
+    -
+      text: 'Pronation (0-90 degrees) - 90 degrees bilaterally'
+      normal: true
+    -
+      text: 'Pronation (0-90 degrees) - RIGHT'
+      input: text
+    -
+      text: 'Pronation (0-90 degrees) - LEFT'
+      input: text
+  Musculoskeletal - Wrist:
+    -
+      text: 'Flexion (0-160 degrees) - '
+    -
+      text: 'Flexion (0-160 degrees) - 160 degrees bilaterally'
+      normal: true
+    -
+      text: 'Flexion (0-160 degrees) - RIGHT'
+      input: text
+    -
+      text: 'Flexion (0-160 degrees) - LEFT'
+      input: text
+    -
+      text: 'Extension (0-145 degrees) - '
+    -
+      text: 'Extension (0-145 degrees) - 145 degrees bilaterally'
+      normal: true
+    -
+      text: 'Extension (0-145 degrees) - RIGHT'
+      input: text
+    -
+      text: 'Extension (0-145 degrees) - LEFT'
+      input: text
+    -
+      text: 'Abduction (0-90 degrees) - '
+    -
+      text: 'Abduction (0-90 degrees) - 90 degrees bilaterally'
+      normal: true
+    -
+      text: 'Abduction (0-90 degrees) - RIGHT'
+      input: text
+    -
+      text: 'Abduction (0-90 degrees) - LEFT'
+      input: text
+    -
+      text: 'Adduction (0-90 degrees) - '
+    -
+      text: 'Adduction (0-90 degrees) - 90 degrees bilaterally'
+      normal: true
+    -
+      text: 'Adduction (0-90 degrees) - RIGHT'
+      input: text
+    -
+      text: 'Adduction (0-90 degrees) - LEFT'
+      input: text
+    -
+      text: 'Ulnar deviation (0-25 degrees) - '
+    -
+      text: 'Ulnar deviation (0-25 degrees) - 25 degrees bilaterally'
+      normal: true
+    -
+      text: 'Ulnar deviation (0-25 degrees) - RIGHT'
+      input: text
+    -
+      text: 'Ulnar deviation (0-25 degrees) - LEFT'
+      input: text
+    -
+      text: 'Radial deviation (0-20 degrees) - '
+    -
+      text: 'Radial deviation (0-20 degrees) - 20 degrees bilaterally'
+      normal: true
+    -
+      text: 'Radial deviation (0-20 degrees) - RIGHT'
+      input: text
+    -
+      text: 'Radial deviation (0-20 degrees) - LEFT'
+      input: text
+    -
+      text: "Finkelstein's testing - "
+    -
+      text: "Finkelstein's testing - Negative"
+      normal: true
+    -
+      text: "Finkelstein's testing - POSITIVE:"
+      input: radio
+      options: RIGHT,LEFT,BILATERAL
+  Musculoskeletal - Hand:
+    -
+      text: 'Thumb MCP flexion (0-70 degrees) - '
+    -
+      text: 'Thumb MCP flexion (0-70 degrees) - 70 degrees bilaterally'
+      normal: true
+    -
+      text: 'Thumb MCP flexion (0-70 degrees) - RIGHT'
+      input: text
+    -
+      text: 'Thumb MCP flexion (0-70 degrees) - LEFT'
+      input: text
+    -
+      text: 'Thumb MCP extension (0-60 degrees) - '
+    -
+      text: 'Thumb MCP extension (0-60 degrees) - 60 degrees bilaterally'
+      normal: true
+    -
+      text: 'Thumb MCP extension (0-60 degrees) - RIGHT'
+      input: text
+    -
+      text: 'Thumb MCP extension (0-60 degrees) - LEFT'
+      input: text
+    -
+      text: 'Thumb MCP abduction (0-50 degrees) - '
+    -
+      text: 'Thumb MCP abduction (0-50 degrees) - 50 degrees bilaterally'
+      normal: true
+    -
+      text: 'Thumb MCP abduction (0-50 degrees) - RIGHT'
+      input: text
+    -
+      text: 'Thumb MCP abduction (0-50 degrees) - LEFT'
+      input: text
+    -
+      text: 'Thumb MCP adduction (0-40 degrees) - '
+    -
+      text: 'Thumb MCP adduction (0-40 degrees) - 40 degrees bilaterally'
+      normal: true
+    -
+      text: 'Thumb MCP adduction (0-40 degrees) - RIGHT'
+      input: text
+    -
+      text: 'Thumb MCP adduction (0-40 degrees) - LEFT'
+      input: text
+    -
+      text: 'Thumb IP flexion (0-90 degrees) - '
+    -
+      text: 'Thumb IP flexion (0-90 degrees) - 90 degrees bilaterally'
+      normal: true
+    -
+      text: 'Thumb IP flexion (0-90 degrees) - RIGHT'
+      input: text
+    -
+      text: 'Thumb IP flexion (0-90 degrees) - LEFT'
+      input: text
+    -
+      text: 'Thumb IP extension (0-90 degrees) - '
+    -
+      text: 'Thumb IP extension (0-90 degrees) - 90 degrees bilaterally'
+      normal: true
+    -
+      text: 'Thumb IP extension (0-90 degrees) - RIGHT'
+      input: text
+    -
+      text: 'Thumb IP extension (0-90 degrees) - LEFT'
+      input: text
+    -
+      text: '2nd finger DIP flexion (0-80 degrees) - '
+    -
+      text: '2nd finger DIP flexion (0-80 degrees) - 80 degrees bilaterally'
+      normal: true
+    -
+      text: '2nd finger DIP flexion (0-80 degrees) - RIGHT'
+      input: text
+    -
+      text: '2nd finger DIP flexion (0-80 degrees) - LEFT'
+      input: text
+    -
+      text: '2nd finger DIP extension (0-80 degrees) - '
+    -
+      text: '2nd finger DIP extension (0-80 degrees) - 80 degrees bilaterally'
+      normal: true
+    -
+      text: '2nd finger DIP extension (0-80 degrees) - RIGHT'
+      input: text
+    -
+      text: '2nd finger DIP extension (0-80 degrees) - LEFT'
+      input: text
+    -
+      text: '2nd finger PIP flexion (0-120 degrees) - '
+    -
+      text: '2nd finger PIP flexion (0-120 degrees) - 120 degrees bilaterally'
+      normal: true
+    -
+      text: '2nd finger PIP flexion (0-120 degrees) - RIGHT'
+      input: text
+    -
+      text: '2nd finger PIP flexion (0-120 degrees) - LEFT'
+      input: text
+    -
+      text: '2nd finger PIP extension (0-120 degrees) - '
+    -
+      text: '2nd finger PIP extension (0-120 degrees) - 120 degrees bilaterally'
+      normal: true
+    -
+      text: '2nd finger PIP extension (0-120 degrees) - RIGHT'
+      input: text
+    -
+      text: '2nd finger PIP extension (0-120 degrees) - LEFT'
+      input: text
+    -
+      text: '3rd finger DIP flexion (0-80 degrees) - '
+    -
+      text: '3rd finger DIP flexion (0-80 degrees) - 80 degrees bilaterally'
+      normal: true
+    -
+      text: '3rd finger DIP flexion (0-80 degrees) - RIGHT'
+      input: text
+    -
+      text: '3rd finger DIP flexion (0-80 degrees) - LEFT'
+      input: text
+    -
+      text: '3rd finger DIP extension (0-80 degrees) - '
+    -
+      text: '3rd finger DIP extension (0-80 degrees) - 80 degrees bilaterally'
+      normal: true
+    -
+      text: '3rd finger DIP extension (0-80 degrees) - RIGHT'
+      input: text
+    -
+      text: '3rd finger DIP extension (0-80 degrees) - LEFT'
+      input: text
+    -
+      text: '3rd finger PIP flexion (0-120 degrees) - '
+    -
+      text: '3rd finger PIP flexion (0-120 degrees) - 120 degrees bilaterally'
+      normal: true
+    -
+      text: '3rd finger PIP flexion (0-120 degrees) - RIGHT'
+      input: text
+    -
+      text: '3rd finger PIP flexion (0-120 degrees) - LEFT'
+      input: text
+    -
+      text: '3rd finger PIP extension (0-120 degrees) - '
+    -
+      text: '3rd finger PIP extension (0-120 degrees) - 120 degrees bilaterally'
+      normal: true
+    -
+      text: '3rd finger PIP extension (0-120 degrees) - RIGHT'
+      input: text
+    -
+      text: '3rd finger PIP extension (0-120 degrees) - LEFT'
+      input: text
+    -
+      text: '4th finger DIP flexion (0-80 degrees) - '
+    -
+      text: '4th finger DIP flexion (0-80 degrees) - 80 degrees bilaterally'
+      normal: true
+    -
+      text: '4th finger DIP flexion (0-80 degrees) - RIGHT'
+      input: text
+    -
+      text: '4th finger DIP flexion (0-80 degrees) - LEFT'
+      input: text
+    -
+      text: '4th finger DIP extension (0-80 degrees) - '
+    -
+      text: '4th finger DIP extension (0-80 degrees) - 80 degrees bilaterally'
+      normal: true
+    -
+      text: '4th finger DIP extension (0-80 degrees) - RIGHT'
+      input: text
+    -
+      text: '4th finger DIP extension (0-80 degrees) - LEFT'
+      input: text
+    -
+      text: '4th finger PIP flexion (0-120 degrees) - '
+    -
+      text: '4th finger PIP flexion (0-120 degrees) - 120 degrees bilaterally'
+      normal: true
+    -
+      text: '4th finger PIP flexion (0-120 degrees) - RIGHT'
+      input: text
+    -
+      text: '4th finger PIP flexion (0-120 degrees) - LEFT'
+      input: text
+    -
+      text: '4th finger PIP extension (0-120 degrees) - '
+    -
+      text: '4th finger PIP extension (0-120 degrees) - 120 degrees bilaterally'
+      normal: true
+    -
+      text: '4th finger PIP extension (0-120 degrees) - RIGHT'
+      input: text
+    -
+      text: '4th finger PIP extension (0-120 degrees) - LEFT'
+      input: text
+    -
+      text: '5th finger DIP flexion (0-80 degrees) - '
+    -
+      text: '5th finger DIP flexion (0-80 degrees) - 80 degrees bilaterally'
+      normal: true
+    -
+      text: '5th finger DIP flexion (0-80 degrees) - RIGHT'
+      input: text
+    -
+      text: '5th finger DIP flexion (0-80 degrees) - LEFT'
+      input: text
+    -
+      text: '5th finger DIP extension (0-80 degrees) - '
+    -
+      text: '5th finger DIP extension (0-80 degrees) - 80 degrees bilaterally'
+      normal: true
+    -
+      text: '5th finger DIP extension (0-80 degrees) - RIGHT'
+      input: text
+    -
+      text: '5th finger DIP extension (0-80 degrees) - LEFT'
+      input: text
+    -
+      text: '5th finger PIP flexion (0-120 degrees) - '
+    -
+      text: '5th finger PIP flexion (0-120 degrees) - 120 degrees bilaterally'
+      normal: true
+    -
+      text: '5th finger PIP flexion (0-120 degrees) - RIGHT'
+      input: text
+    -
+      text: '5th finger PIP flexion (0-120 degrees) - LEFT'
+      input: text
+    -
+      text: '5th finger PIP extension (0-120 degrees) - '
+    -
+      text: '5th finger PIP extension (0-120 degrees) - 120 degrees bilaterally'
+      normal: true
+    -
+      text: '5th finger PIP extension (0-120 degrees) - RIGHT'
+      input: text
+    -
+      text: '5th finger PIP extension (0-120 degrees) - LEFT'
+      input: text
+  Musculoskeletal - Hip:
+    -
+      text: 'Flexion (0-125 degrees) - '
+    -
+      text: 'Flexion (0-125 degrees) - 125 degrees bilaterally'
+      normal: true
+    -
+      text: 'Flexion (0-125 degrees) - RIGHT'
+      input: text
+    -
+      text: 'Flexion (0-125 degrees) - LEFT'
+      input: text
+    -
+      text: 'Extension (0-115 degrees) - '
+    -
+      text: 'Extension (0-115 degrees) - 115 degrees bilaterally'
+      normal: true
+    -
+      text: 'Extension (0-115 degrees) - RIGHT'
+      input: text
+    -
+      text: 'Extension (0-115 degrees) - LEFT'
+      input: text
+    -
+      text: 'Abduction (0-45 degrees) - '
+    -
+      text: 'Abduction (0-45 degrees) - 45 degrees bilaterally'
+      normal: true
+    -
+      text: 'Abduction (0-45 degrees) - RIGHT'
+      input: text
+    -
+      text: 'Abduction (0-45 degrees) - LEFT'
+      input: text
+    -
+      text: 'Adduction (0-45 degrees) - '
+    -
+      text: 'Adduction (0-45 degrees) - 45 degrees bilaterally'
+      normal: true
+    -
+      text: 'Adduction (0-45 degrees) - RIGHT'
+      input: text
+    -
+      text: 'Adduction (0-45 degrees) - LEFT'
+      input: text
+  Musculoskeletal - Knee:
+    -
+      text: 'Flexion (0-130 degrees) - '
+    -
+      text: 'Flexion (0-130 degrees) - 130 degrees bilaterally'
+      normal: true
+    -
+      text: 'Flexion (0-130 degrees) - RIGHT'
+      input: text
+    -
+      text: 'Flexion (0-130 degrees) - LEFT'
+      input: text
+    -
+      text: 'Extension (0-120 degrees) - '
+    -
+      text: 'Extension (0-120 degrees) - 120 degrees bilaterally'
+      normal: true
+    -
+      text: 'Extension (0-120 degrees) - RIGHT'
+      input: text
+    -
+      text: 'Extension (0-120 degrees) - LEFT'
+      input: text
+    -
+      text: 'McMurray testing - '
+    -
+      text: 'McMurray testing - Negative bilaterally'
+      normal: true
+    -
+      text: 'McMurray testing - POSITIVE ON  SIDE'
+      input: radio
+      options: RIGHT,LEFT,BILATERAL
+    -
+      text: 'Anterior drawer/Lachmann testing - '
+    -
+      text: 'Anterior drawer/Lachmann testing - Negative bilaterally'
+      normal: true
+    -
+      text: 'Anterior drawer/Lachmann testing - POSITIVE ON  SIDE'
+      input: radio
+      options: RIGHT,LEFT,BILATERAL
+  Musculoskeletal - Ankle:
+    -
+      text: 'Dorsiflexion (0-20 degrees) - '
+    -
+      text: 'Dorsiflexion (0-20 degrees) - 20 degrees bilaterally'
+      normal: true
+    -
+      text: 'Dorsiflexion (0-20 degrees) - RIGHT'
+      input: text
+    -
+      text: 'Dorsiflexion (0-20 degrees) - LEFT'
+      input: text
+    -
+      text: 'Plantar flexion (0-50 degrees) - '
+    -
+      text: 'Plantar flexion (0-50 degrees) - 50 degrees bilaterally'
+      normal: true
+    -
+      text: 'Plantar flexion (0-50 degrees) - RIGHT'
+      input: text
+    -
+      text: 'Plantar flexion (0-50 degrees) - LEFT'
+      input: text
+    -
+      text: 'Inversion (0-35 degrees) - '
+    -
+      text: 'Inversion (0-35 degrees) - 35 degrees bilaterally'
+      normal: true
+    -
+      text: 'Inversion (0-35 degrees) - RIGHT'
+      input: text
+    -
+      text: 'Inversion (0-35 degrees) - LEFT'
+      input: text
+    -
+      text: 'Eversion (0-25 degrees) - '
+    -
+      text: 'Eversion (0-25 degrees) - 25 degrees bilaterally'
+      normal: true
+    -
+      text: 'Eversion (0-25 degrees) - RIGHT'
+      input: text
+    -
+      text: 'Eversion (0-25 degrees) - LEFT'
+      input: text
+  Musculoskeletal - Foot:
+    -
+      text: 'Great toe MTP flexion (0-30 degrees) - '
+    -
+      text: 'Great toe MTP flexion (0-30 degrees) - 30 degrees bilaterally'
+      normal: true
+    -
+      text: 'Great toe MTP flexion (0-30 degrees) - RIGHT'
+      input: text
+    -
+      text: 'Great toe MTP flexion (0-30 degrees) - LEFT'
+      input: text
+    -
+      text: 'Great toe MTP extension (0-80 degrees) - '
+    -
+      text: 'Great toe MTP extension (0-80 degrees) - 80 degrees bilaterally'
+      normal: true
+    -
+      text: 'Great toe MTP extension (0-80 degrees) - RIGHT'
+      input: text
+    -
+      text: 'Great toe MTP extension (0-80 degrees) - LEFT'
+      input: text
+    -
+      text: 'Great toe IP flexion (0-50 degrees) - '
+    -
+      text: 'Great toe IP flexion (0-50 degrees) - 50 degrees bilaterally'
+      normal: true
+    -
+      text: 'Great toe IP flexion (0-50 degrees) - RIGHT'
+      input: text
+    -
+      text: 'Great toe IP flexion (0-50 degrees) - LEFT'
+      input: text
+    -
+      text: 'Great toe IP extension (0-50 degrees) - '
+    -
+      text: 'Great toe IP extension (0-50 degrees) - 50 degrees bilaterally'
+      normal: true
+    -
+      text: 'Great toe IP extension (0-50 degrees) - RIGHT'
+      input: text
+    -
+      text: 'Great toe IP extension (0-50 degrees) - LEFT'
+      input: text
+    -
+      text: 'Great toe IP flexion (0-90 degrees) - '
+    -
+      text: 'Great toe IP flexion (0-90 degrees) - 90 degrees bilaterally'
+      normal: true
+    -
+      text: 'Great toe IP flexion (0-90 degrees) - RIGHT'
+      input: text
+    -
+      text: 'Great toe IP flexion (0-90 degrees) - LEFT'
+      input: text
+    -
+      text: 'Great toe IP extension (0-90 degrees) - '
+    -
+      text: 'Great toe IP extension (0-90 degrees) - 90 degrees bilaterally'
+      normal: true
+    -
+      text: 'Great toe IP extension (0-90 degrees) - RIGHT'
+      input: text
+    -
+      text: 'Great toe IP extension (0-90 degrees) - LEFT'
+      input: text
+    -
+      text: '2nd toe IP flexion (0-50 degrees) - '
+    -
+      text: '2nd toe IP flexion (0-50 degrees) - 50 degrees bilaterally'
+      normal: true
+    -
+      text: '2nd toe IP flexion (0-50 degrees) - RIGHT'
+      input: text
+    -
+      text: '2nd toe IP flexion (0-50 degrees) - LEFT'
+      input: text
+    -
+      text: '2nd toe IP extension (0-50 degrees) - '
+    -
+      text: '2nd toe IP extension (0-50 degrees) - 50 degrees bilaterally'
+      normal: true
+    -
+      text: '2nd toe IP extension (0-50 degrees) - RIGHT'
+      input: text
+    -
+      text: '2nd toe IP extension (0-50 degrees) - LEFT'
+      input: text
+    -
+      text: '2nd toe MTP flexion (0-30 degrees) - '
+    -
+      text: '2nd toe MTP flexion (0-30 degrees) - 30 degrees bilaterally'
+      normal: true
+    -
+      text: '2nd toe MTP flexion (0-30 degrees) - RIGHT'
+      input: text
+    -
+      text: '2nd toe MTP flexion (0-30 degrees) - LEFT'
+      input: text
+    -
+      text: '2nd toe MTP extension (0-80 degrees) - '
+    -
+      text: '2nd toe MTP extension (0-80 degrees) - 80 degrees bilaterally'
+      normal: true
+    -
+      text: '2nd toe MTP extension (0-80 degrees) - RIGHT'
+      input: text
+    -
+      text: '2nd toe MTP extension (0-80 degrees) - LEFT'
+      input: text
+    -
+      text: '3rd toe IP flexion (0-50 degrees) - '
+    -
+      text: '3rd toe IP flexion (0-50 degrees) - 50 degrees bilaterally'
+      normal: true
+    -
+      text: '3rd toe IP flexion (0-50 degrees) - RIGHT'
+      input: text
+    -
+      text: '3rd toe IP flexion (0-50 degrees) - LEFT'
+      input: text
+    -
+      text: '3rd toe IP extension (0-50 degrees) - '
+    -
+      text: '3rd toe IP extension (0-50 degrees) - 50 degrees bilaterally'
+      normal: true
+    -
+      text: '3rd toe IP extension (0-50 degrees) - RIGHT'
+      input: text
+    -
+      text: '3rd toe IP extension (0-50 degrees) - LEFT'
+      input: text
+    -
+      text: '3rd toe MTP flexion (0-30 degrees) - '
+    -
+      text: '3rd toe MTP flexion (0-30 degrees) - 30 degrees bilaterally'
+      normal: true
+    -
+      text: '3rd toe MTP flexion (0-30 degrees) - RIGHT'
+      input: text
+    -
+      text: '3rd toe MTP flexion (0-30 degrees) - LEFT'
+      input: text
+    -
+      text: '3rd toe MTP extension (0-80 degrees) - '
+    -
+      text: '3rd toe MTP extension (0-80 degrees) - 80 degrees bilaterally'
+      normal: true
+    -
+      text: '3rd toe MTP extension (0-80 degrees) - RIGHT'
+      input: text
+    -
+      text: '3rd toe MTP extension (0-80 degrees) - LEFT'
+      input: text
+    -
+      text: '4th toe IP flexion (0-50 degrees) - '
+    -
+      text: '4th toe IP flexion (0-50 degrees) - 50 degrees bilaterally'
+      normal: true
+    -
+      text: '4th toe IP flexion (0-50 degrees) - RIGHT'
+      input: text
+    -
+      text: '4th toe IP flexion (0-50 degrees) - LEFT'
+      input: text
+    -
+      text: '4th toe IP extension (0-50 degrees) - '
+    -
+      text: '4th toe IP extension (0-50 degrees) - 50 degrees bilaterally'
+      normal: true
+    -
+      text: '4th toe IP extension (0-50 degrees) - RIGHT'
+      input: text
+    -
+      text: '4th toe IP extension (0-50 degrees) - LEFT'
+      input: text
+    -
+      text: '4th toe MTP flexion (0-30 degrees) - '
+    -
+      text: '4th toe MTP flexion (0-30 degrees) - 30 degrees bilaterally'
+      normal: true
+    -
+      text: '4th toe MTP flexion (0-30 degrees) - RIGHT'
+      input: text
+    -
+      text: '4th toe MTP flexion (0-30 degrees) - LEFT'
+      input: text
+    -
+      text: '4th toe MTP extension (0-80 degrees) - '
+    -
+      text: '4th toe MTP extension (0-80 degrees) - 80 degrees bilaterally'
+      normal: true
+    -
+      text: '4th toe MTP extension (0-80 degrees) - RIGHT'
+      input: text
+    -
+      text: '4th toe MTP extension (0-80 degrees) - LEFT'
+      input: text
+    -
+      text: '5th toe IP flexion (0-50 degrees) - '
+    -
+      text: '5th toe IP flexion (0-50 degrees) - 50 degrees bilaterally'
+      normal: true
+    -
+      text: '5th toe IP flexion (0-50 degrees) - RIGHT'
+      input: text
+    -
+      text: '5th toe IP flexion (0-50 degrees) - LEFT'
+      input: text
+    -
+      text: '5th toe IP extension (0-50 degrees) - '
+    -
+      text: '5th toe IP extension (0-50 degrees) - 50 degrees bilaterally'
+      normal: true
+    -
+      text: '5th toe IP extension (0-50 degrees) - RIGHT'
+      input: text
+    -
+      text: '5th toe IP extension (0-50 degrees) - LEFT'
+      input: text
+    -
+      text: '5th toe MTP flexion (0-30 degrees) - '
+    -
+      text: '5th toe MTP flexion (0-30 degrees) - 30 degrees bilaterally'
+      normal: true
+    -
+      text: '5th toe MTP flexion (0-30 degrees) - RIGHT'
+      input: text
+    -
+      text: '5th toe MTP flexion (0-30 degrees) - LEFT'
+      input: text
+    -
+      text: '5th toe MTP extension (0-80 degrees) - '
+    -
+      text: '5th toe MTP extension (0-80 degrees) - 80 degrees bilaterally'
+      normal: true
+    -
+      text: '5th toe MTP extension (0-80 degrees) - RIGHT'
+      input: text
+    -
+      text: '5th toe MTP extension (0-80 degrees) - LEFT'
+      input: text
+  Musculoskeletal - Cervical Spine:
+    -
+      text: 'Forward flexion (0-45 degrees) - '
+    -
+      text: 'Forward flexion (0-45 degrees) - 45 degrees bilaterally'
+      normal: true
+    -
+      text: 'Forward flexion (0-45 degrees) - RIGHT'
+      input: text
+    -
+      text: 'Forward flexion (0-45 degrees) - LEFT'
+      input: text
+    -
+      text: 'Extension (0-45 degrees) - '
+    -
+      text: 'Extension (0-45 degrees) - 45 degrees bilaterally'
+      normal: true
+    -
+      text: 'Extension (0-45 degrees) - RIGHT'
+      input: text
+    -
+      text: 'Extension (0-45 degrees) - LEFT'
+      input: text
+    -
+      text: 'Lateral flexion (0-45 degrees) - '
+    -
+      text: 'Lateral flexion (0-45 degrees) - 45 degrees bilaterally'
+      normal: true
+    -
+      text: 'Lateral flexion (0-45 degrees) - RIGHT'
+      input: text
+    -
+      text: 'Lateral flexion (0-45 degrees) - LEFT'
+      input: text
+    -
+      text: 'Lateral rotation (0-80 degrees) - '
+    -
+      text: 'Lateral rotation (0-80 degrees) - 80 degrees bilaterally'
+      normal: true
+    -
+      text: 'Lateral rotation (0-80 degrees) - RIGHT'
+      input: text
+    -
+      text: 'Lateral rotation (0-80 degrees) - LEFT'
+      input: text
+  Musculoskeletal - Thoracic and Lumbar Spine:
+    -
+      text: 'Forward flexion (0-90 degrees) - '
+    -
+      text: 'Forward flexion (0-90 degrees) - 90 degrees bilaterally'
+      normal: true
+    -
+      text: 'Forward flexion (0-90 degrees) - RIGHT'
+      input: text
+    -
+      text: 'Forward flexion (0-90 degrees) - LEFT'
+      input: text
+    -
+      text: 'Extension (0-30 degrees) - '
+    -
+      text: 'Extension (0-30 degrees) - 30 degrees bilaterally'
+      normal: true
+    -
+      text: 'Extension (0-30 degrees) - RIGHT'
+      input: text
+    -
+      text: 'Extension (0-30 degrees) - LEFT'
+      input: text
+    -
+      text: 'Lateral flexion (0-30 degrees) - '
+    -
+      text: 'Lateral flexion (0-30 degrees) - 30 degrees bilaterally'
+      normal: true
+    -
+      text: 'Lateral flexion (0-30 degrees) - RIGHT'
+      input: text
+    -
+      text: 'Lateral flexion (0-30 degrees) - LEFT'
+      input: text
+    -
+      text: 'Lateral rotation (0-30 degrees) - '
+    -
+      text: 'Lateral rotation (0-30 degrees) - 30 degrees bilaterally'
+      normal: true
+    -
+      text: 'Lateral rotation (0-30 degrees) - RIGHT'
+      input: text
+    -
+      text: 'Lateral rotation (0-30 degrees) - LEFT'
+      input: text
+  Neurological - Cranial Nerves:
+    -
+      text: 'Cranial nerves - '
+    -
+      text: 'Cranial nerves - No deficits'
+      normal: true
+    -
+      text: 'Cranial nerves - DEFICITS'
+      input: text
+    -
+      text: 'Nystagmus - '
+    -
+      text: 'Nystagmus - No'
+      normal: true
+  Neurological - Deep Tendon Reflexes:
+    -
+      text: 'Biceps (0-4) - '
+    -
+      text: 'Biceps (0-4) - Equal and bilateral'
+      normal: true
+    -
+      text: 'Biceps (0-4) - RIGHT'
+      input: text
+    -
+      text: 'Biceps (0-4) - LEFT'
+      input: text
+    -
+      text: 'Patellar (0-4) - '
+    -
+      text: 'Patellar (0-4) - Equal and bilateral'
+      normal: true
+    -
+      text: 'Patellar (0-4) - RIGHT'
+      input: text
+    -
+      text: 'Patellar (0-4) - LEFT'
+      input: text
+    -
+      text: 'Achillies (0-4) - '
+    -
+      text: 'Achillies (0-4) - Equal and bilateral'
+      normal: true
+    -
+      text: 'Achillies (0-4) - RIGHT'
+      input: text
+    -
+      text: 'Achillies (0-4) - LEFT'
+      input: text
+  Neurological - Sensation and Motor:
+    -
+      text: 'Pinprick sensation - '
+    -
+      text: 'Pinprick sensation - Normal bilaterally'
+      normal: true
+    -
+      text: 'Pinprick sensation - DECREASED'
+      input: radio
+      options: RIGHT,LEFT,BILATERAL
+    -
+      text: 'Two-point discrimination - '
+    -
+      text: 'Two-point discrimination - Normal bilaterally'
+      normal: true
+    -
+      text: 'Two-point discrimination - DECREASED'
+      input: radio
+      options: RIGHT,LEFT,BILATERAL
+    -
+      text: 'Vibratory sensation - '
+    -
+      text: 'Vibratory sensation - Normal bilaterally'
+      normal: true
+    -
+      text: 'Vibratory sensation - DECREASED'
+      input: radio
+      options: RIGHT,LEFT,BILATERAL
+    -
+      text: 'Temperature sensation - '
+    -
+      text: 'Temperature sensation - Normal bilaterally'
+      normal: true
+    -
+      text: 'Temperature sensation - DECREASED'
+      input: radio
+      options: RIGHT,LEFT,BILATERAL
+  Psychiatric - Judgment:
+    0:
+      text: 'Judgment - '
+    1:
+      text: 'Judgment - Good'
+      normal: true
+    3:
+      text: 'Insight - '
+    4:
+      text: 'Insight - Good'
+      normal: true
+  Psychiatric - Orientation:
+    -
+      text: 'Person - '
+    -
+      text: 'Person - Oriented'
+      normal: true
+    -
+      text: 'Person - DISORIENTED'
+    -
+      text: 'Place - '
+    -
+      text: 'Place - Oriented'
+      normal: true
+    -
+      text: 'Place - DISORIENTED'
+    -
+      text: 'Time - '
+    -
+      text: 'Time - Oriented'
+      normal: true
+    -
+      text: 'Time - DISORIENTED'
+  Psychiatric - Memory:
+    -
+      text: 'Recent memory - '
+    -
+      text: 'Recent memory - Intact'
+      normal: true
+    -
+      text: 'Recent memory - DEFICIT'
+    -
+      text: 'Remote memory - '
+    -
+      text: 'Remote memory - Intact'
+      normal: true
+    -
+      text: 'Remote memory - DEFICIT'
+  Psychiatric - Mood and Affect:
+    -
+      text: 'Depressed - '
+    -
+      text: 'Depressed - No'
+      normal: true
+    -
+      text: 'Depressed - YES'
+    -
+      text: 'Anxious - '
+    -
+      text: 'Anxious - No'
+      normal: true
+    -
+      text: 'Anxious - YES'
+    -
+      text: 'Suicidal ideation - '
+    -
+      text: 'Suicidal ideation - No'
+      normal: true
+    -
+      text: 'Suicidal ideation - YES'
+    -
+      text: 'Homicidal ideation - '
+    -
+      text: 'Homicidal ideation - No'
+      normal: true
+    -
+      text: 'Homicidal ideation - YES'
+  Skin - Inspection:
+    0:
+      text: 'Lesions - '
+    1:
+      text: 'Lesions - None'
+      normal: true
+    3:
+      text: 'Hair thinning - '
+    4:
+      text: 'Hair thinning - No'
+      normal: true
+    5:
+      text: 'Hair thinning - YES'
+  Skin - Palpation:
+    0:
+      text: 'Macules - '
+    1:
+      text: 'Macules - None'
+      normal: true
+    3:
+      text: 'Papules - '
+    4:
+      text: 'Papules - None'
+      normal: true
+    6:
+      text: 'Nodules - '
+    7:
+      text: 'Nodules - None'
+      normal: true
+    9:
+      text: 'Vescicles - '
+    10:
+      text: 'Vescicles - None'
+      normal: true
+    12:
+      text: 'Warmth - '
+    13:
+      text: 'Warmth - None'
+      normal: true
+    15:
+      text: 'Urticaria - '
+    16:
+      text: 'Urticaria - None'
+      normal: true
+hpi:
+  Asthma:
+    -
+      text: 'Frequency of attacks per week'
+      input: text
+    -
+      text: 'Time of usual attacks'
+      input: text
+    -
+      text: 'Number of ER visits or hospitalizations'
+      input: text
+    -
+      text: 'Number of school/work days missed'
+      input: text
+    -
+      text: 'Nocturnal awakenings'
+      input: text
+    -
+      text: 'Restriction of activities'
+      input: text
+    -
+      text: 'Recent infections'
+      input: text
+    -
+      text: 'Asthma triggers'
+      input: text
+  Chronic Pain:
+    -
+      text: 'Diagnosis'
+      input: text
+    -
+      text: 'Side effects from medications'
+      input: text
+    -
+      text: 'Other treatments'
+      input: text
+    -
+      text: 'Pain scale (0-10)'
+      input: text
+    -
+      text: 'Relief (% improvement) since last visit'
+      input: text
+    -
+      text: 'General activity'
+      input: text
+    -
+      text: 'Interactions with other people'
+      input: text
+    -
+      text: 'Mood'
+      input: text
+    -
+      text: 'Ability to work'
+      input: text
+    -
+      text: 'Enjoyment of life'
+      input: text
+  Generic:
+    -
+      text: 'Location/Description'
+      input: text
+    -
+      text: 'Duration'
+      input: text
+    -
+      text: 'Modifying factors'
+      input: text
+  Injury:
+    -
+      text: 'Date of injury'
+      input: text
+    -
+      text: 'Description of how injury occurred'
+      input: text
+    -
+      text: 'Treatments'
+      input: text
+    -
+      text: 'Pain scale (0-10)'
+      input: text
+    -
+      text: 'Relief (% improvement) since last visit'
+      input: text
+    -
+      text: 'General activity'
+      input: text
+    -
+      text: 'Ability to work'
+      input: text
+  Birth History:
+    -
+      text: 'Pregnancy complications'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Delivery complications'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Postpartum complications'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Gestational age'
+      input: text
+      age: child
+    -
+      text: 'Birth weight'
+      input: text
+      age: child
+    -
+      text: 'Apgar scores'
+      input: text
+      age: child
+    -
+      text: 'Hearing screen'
+      input: radio
+      options: normal,abnormal
+      age: child
+    -
+      text: 'Metabolic screen'
+      input: radio
+      options: normal,abnormal
+      age: child
+  Sports Physical:
+    -
+      text: 'Illness, surgery, or other medical conditions in the past 2 months'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Concussion, skull fractures, or neck injury'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Poor or abnormal vision or loss of an eye'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Rheumatic fever or heart murmur'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Heart condition'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Chest discomfort during exercise'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Lung condition or breathing difficulty'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Asthma or chronic bronchitis'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Any bone or joint injury'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Epilepsy or other convulsive disorder'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Any other medical problem or surgical operation other than tonsillectomy'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Hernia or loss of ovary'
+      input: radio
+      options: yes,no
+      gender: f
+      age: child
+    -
+      text: 'Absence of an ovary, kidney, or lung'
+      input: radio
+      options: yes,no
+      gender: f
+      age: child
+    -
+      text: 'Hernia or loss of testicle'
+      input: radio
+      options: yes,no
+      gender: m
+      age: child
+    -
+      text: 'Absence of an testicle, kidney, or lung'
+      input: radio
+      options: yes,no
+      gender: m
+      age: child
+  Well Woman Exam:
+    -
+      text: 'Abnormal pap smears in the past'
+      input: radio
+      options: yes,no
+      gender: f
+      age: adult
+    -
+      text: 'Irregular periods'
+      input: radio
+      options: yes,no
+      gender: f
+      age: adult
+    -
+      text: 'Bleeding between periods'
+      input: radio
+      options: yes,no
+      gender: f
+      age: adult
+    -
+      text: 'Days between periods'
+      input: text
+      gender: f
+      age: adult
+    -
+      text: 'Duration of periods'
+      input: text
+      gender: f
+      age: adult
+    -
+      text: 'Period flow'
+      input: text
+      gender: f
+      age: adult
+    -
+      text: 'Pain with periods (0-10)'
+      input: text
+      gender: f
+      age: adult
+    -
+      text: 'Pain with premenstrual tension syndrome (0-10)'
+      input: text
+      gender: f
+      age: adult
+    -
+      text: 'Pain with sex (0-10)'
+      input: text
+      gender: f
+      age: adult
+    -
+      text: 'Sexually active'
+      input: radio
+      options: yes,no
+      gender: f
+      age: adult
+    -
+      text: 'Birth control'
+      input: radio
+      options: yes,no
+      gender: f
+      age: adult
+    -
+      text: 'Self breast exams'
+      input: radio
+      options: yes,no
+      gender: f
+      age: adult
+    -
+      text: 'Past or current history of abuse'
+      input: radio
+      options: yes,no
+      gender: f
+      age: adult
+plan:
+  Anticipatory Guidance 1 month:
+    -
+      text: Parental well being
+      age: child
+    -
+      text: Family adjustment
+      age: child
+    -
+      text: 400 IU vitamin D supplement with breastfeeding
+      age: child
+    -
+      text: Iron-fortified formula
+      age: child
+    -
+      text: Solid foods (wait until 4-6 months)
+      age: child
+    -
+      text: Elimination (5-8 wet diapers, 3-4 stools)
+      age: child
+    -
+      text: Tummy time
+      age: child
+    -
+      text: Encourage daily routines
+      age: child
+    -
+      text: Back to sleep
+      age: child
+    -
+      text: Sleep location
+      age: child
+    -
+      text: Techniques to calm
+      age: child
+    -
+      text: Car safety seat
+      age: child
+    -
+      text: Falls
+      age: child
+    -
+      text: No strings around neck
+      age: child
+    -
+      text: No shaking
+      age: child
+    -
+      text: Smoke-free environment
+      age: child
+  Anticipatory Guidance 2 month:
+    -
+      text: Parental well being
+      age: child
+    -
+      text: Infant-family synchrony
+      age: child
+    -
+      text: 400 IU vitamin D supplement with breastfeeding
+      age: child
+    -
+      text: Iron-fortified formula
+      age: child
+    -
+      text: Solid foods (wait until 4-6 months)
+      age: child
+    -
+      text: Elimination
+      age: child
+    -
+      text: No bottle in bed
+      age: child
+    -
+      text: Tummy time
+      age: child
+    -
+      text: Daily routines
+      age: child
+    -
+      text: Back to sleep
+      age: child
+    -
+      text: Car safety seat
+      age: child
+    -
+      text: Falls
+      age: child
+    -
+      text: Burns (hot liquids and water heater)
+      age: child
+    -
+      text: Smoke-free environment
+      age: child
+    -
+      text: Drowning
+      age: child
+    -
+      text: Choking (small objects, plastic bags)
+      age: child
+  Anticipatory Guidance 4 month:
+    -
+      text: Family functioning
+      age: child
+    -
+      text: Weight gain and growth spurts
+      age: child
+    -
+      text: Vitamin D and iron supplementation with breastfeeding
+      age: child
+    -
+      text: Iron-fortified formula
+      age: child
+    -
+      text: Solid foods (when and how to add)
+      age: child
+    -
+      text: Elimination
+      age: child
+    -
+      text: Social development
+      age: child
+    -
+      text: Communication skills
+      age: child
+    -
+      text: Physical (tummy time)
+      age: child
+    -
+      text: Daily routines
+      age: child
+    -
+      text: Sleep
+      age: child
+    -
+      text: "Don't share utensils/pacifier"
+      age: child
+    -
+      text: Avoid bed in bottle
+      age: child
+    -
+      text: Car safety seat
+      age: child
+    -
+      text: Falls
+      age: child
+    -
+      text: Burns (hot liquids and water heater)
+      age: child
+    -
+      text: Walkers
+      age: child
+    -
+      text: Drowning
+      age: child
+    -
+      text: Choking
+      age: child
+    -
+      text: Lead poisoning
+      age: child
+  Anticipatory Guidance 6 month:
+    -
+      text: Family functioning
+      age: child
+    -
+      text: Vitamin D and iron supplementation with breastfeeding
+      age: child
+    -
+      text: Iron-fortified formula
+      age: child
+    -
+      text: Solid foods (types and amounts, begin cup)
+      age: child
+    -
+      text: Elimination
+      age: child
+    -
+      text: Social development
+      age: child
+    -
+      text: Communication skills
+      age: child
+    -
+      text: Sleep
+      age: child
+    -
+      text: Brush teeth
+      age: child
+    -
+      text: Avoid bed in bottle
+      age: child
+    -
+      text: Car safety seat
+      age: child
+    -
+      text: Falls
+      age: child
+    -
+      text: Burns (hot liquids and water heater)
+      age: child
+    -
+      text: Walkers
+      age: child
+    -
+      text: Drowning
+      age: child
+    -
+      text: Choking
+      age: child
+    -
+      text: Kitchen safety
+      age: child
+    -
+      text: Poisons
+      age: child
+  Anticipatory Guidance 9 month:
+    -
+      text: Limit word "no"
+      age: child
+    -
+      text: Age-appropriate discipline
+      age: child
+    -
+      text: Domestic violence
+      age: child
+    -
+      text: Time for self/partner
+      age: child
+    -
+      text: Consistent routines
+      age: child
+    -
+      text: Separation anxiety
+      age: child
+    -
+      text: Learning and developing
+      age: child
+    -
+      text: No TV
+      age: child
+    -
+      text: Self feeding
+      age: child
+    -
+      text: Solid foods
+      age: child
+    -
+      text: Safe foods
+      age: child
+    -
+      text: Using a cup
+      age: child
+    -
+      text: Vitamin D and iron supplementation with breastfeeding
+      age: child
+    -
+      text: Iron-fortified formula
+      age: child
+    -
+      text: No bottle in bed
+      age: child
+    -
+      text: Brush teeth
+      age: child
+    -
+      text: Car safety seat
+      age: child
+    -
+      text: Falls/Window guards
+      age: child
+    -
+      text: Burns (hot liquids and water heater)
+      age: child
+    -
+      text: Guns
+      age: child
+  Anticipatory Guidance 12 month:
+    -
+      text: Time for self/partner
+      age: child
+    -
+      text: Community activities
+      age: child
+    -
+      text: Age appropriate discipline
+      age: child
+    -
+      text: Family traditions
+      age: child
+    -
+      text: Nap and bedtime
+      age: child
+    -
+      text: Self feeding
+      age: child
+    -
+      text: Consistent meals/snacks
+      age: child
+    -
+      text: Variety of nutritious foods
+      age: child
+    -
+      text: Iron-fortified foods
+      age: child
+    -
+      text: First dental visit
+      age: child
+    -
+      text: Brush teeth twice a day
+      age: child
+    -
+      text: Limit bottle use (water only)
+      age: child
+    -
+      text: No bottle in bed
+      age: child
+    -
+      text: Car safety seat
+      age: child
+    -
+      text: Poisons
+      age: child
+    -
+      text: Water
+      age: child
+    -
+      text: No supervision by young children
+      age: child
+    -
+      text: Sharp objects
+      age: child
+    -
+      text: Guns
+      age: child
+    -
+      text: Home safety
+      age: child
+    -
+      text: Falls
+      age: child
+  Anticipatory Guidance 15 month:
+    -
+      text: Give limited choices
+      age: child
+    -
+      text: Stranger anxiety
+      age: child
+    -
+      text: Read and talk with child
+      age: child
+    -
+      text: Consistent routines
+      age: child
+    -
+      text: Night waking
+      age: child
+    -
+      text: Distraction
+      age: child
+    -
+      text: Praise
+      age: child
+    -
+      text: Consistency
+      age: child
+    -
+      text: First dental visit
+      age: child
+    -
+      text: Healthy oral habits
+      age: child
+    -
+      text: Brush teeth twice a day
+      age: child
+    -
+      text: No bottle
+      age: child
+    -
+      text: Car safety seat
+      age: child
+    -
+      text: Home safety
+      age: child
+    -
+      text: Poisons
+      age: child
+    -
+      text: Falls
+      age: child
+    -
+      text: Burns
+      age: child
+    -
+      text: Smoke detectors
+      age: child
+    -
+      text: Carbon monoxide detectors
+      age: child
+  Anticipatory Guidance 18 month:
+    -
+      text: Family time
+      age: child
+    -
+      text: Time for self and other children
+      age: child
+    -
+      text: Reinforce limits
+      age: child
+    -
+      text: Prepare for new sibling
+      age: child
+    -
+      text: Smoke-free environment
+      age: child
+    -
+      text: Anticipate anxiety
+      age: child
+    -
+      text: Praise
+      age: child
+    -
+      text: Consistent discipline
+      age: child
+    -
+      text: Daily playtime
+      age: child
+    -
+      text: Read, talk, and sing
+      age: child
+    -
+      text: Simple words
+      age: child
+    -
+      text: Feelings and emotions
+      age: child
+    -
+      text: Walk until child is ready
+      age: child
+    -
+      text: Reading books/praise
+      age: child
+    -
+      text: Car safety seat
+      age: child
+    -
+      text: Falls
+      age: child
+    -
+      text: Burns
+      age: child
+    -
+      text: Smoke detectors
+      age: child
+    -
+      text: Gas
+      age: child
+    -
+      text: Poisons
+      age: child
+  Anticipatory Guidance 2 year:
+    -
+      text: Model appropriate language
+      age: child
+    -
+      text: Daily reading
+      age: child
+    -
+      text: Following 1-2 step commands
+      age: child
+    -
+      text: Listen and respond to child
+      age: child
+    -
+      text: Praise, respect
+      age: child
+    -
+      text: Help express feelings
+      age: child
+    -
+      text: Self-expression
+      age: child
+    -
+      text: Playing with other children
+      age: child
+    -
+      text: Toilet training when child is ready
+      age: child
+    -
+      text: Plan for frequent toilet breaks
+      age: child
+    -
+      text: Personal hygiene
+      age: child
+    -
+      text: Limit TV viewing to no more than 1-2 hours a day
+      age: child
+    -
+      text: 'TV alternatives: reading, games, singing'
+      age: child
+    -
+      text: Encourage physical activity
+      age: child
+    -
+      text: Car safety seat
+      age: child
+    -
+      text: Bike helmet
+      age: child
+    -
+      text: Supervise outside
+      age: child
+    -
+      text: Guns
+      age: child
+  Anticipatory Guidance 2 1/2 year:
+    -
+      text: Family meals
+      age: child
+    -
+      text: Family activities
+      age: child
+    -
+      text: Limit TV
+      age: child
+    -
+      text: Daily reading
+      age: child
+    -
+      text: Listen and repeat to child
+      age: child
+    -
+      text: Supervised play with other children
+      age: child
+    -
+      text: Emerging independence
+      age: child
+    -
+      text: Group activities/preschool (if possible)
+      age: child
+    -
+      text: Toilet training
+      age: child
+    -
+      text: Car safety seat
+      age: child
+    -
+      text: Water
+      age: child
+    -
+      text: Appropriate supervision
+      age: child
+    -
+      text: Sun exposure
+      age: child
+    -
+      text: Fire safety
+      age: child
+    -
+      text: Smoke detectors
+      age: child
+    -
+      text: Outdoor safety
+      age: child
+    -
+      text: Playground
+      age: child
+    -
+      text: Dogs
+      age: child
+  Anticipatory Guidance 3 year:
+    -
+      text: Show affection
+      age: child
+    -
+      text: Manage anger
+      age: child
+    -
+      text: Reinforce appropriate behavior
+      age: child
+    -
+      text: Reinforce limits
+      age: child
+    -
+      text: Find time for yourself
+      age: child
+    -
+      text: Read, sing, play
+      age: child
+    -
+      text: Talk about pictures in books
+      age: child
+    -
+      text: Encourage child to talk
+      age: child
+    -
+      text: Encourage appropriate play
+      age: child
+    -
+      text: Encourage fantasy play
+      age: child
+    -
+      text: Encourage play with peers
+      age: child
+    -
+      text: Family exercise, activities
+      age: child
+    -
+      text: 'Limit screen time - maximum 1-2 hours/day'
+      age: child
+    -
+      text: No TV in bedroom
+      age: child
+    -
+      text: Car safety seat
+      age: child
+    -
+      text: Supervise play near streets, cars
+      age: child
+    -
+      text: Safety near windows
+      age: child
+    -
+      text: Guns
+      age: child
+  Anticipatory Guidance 4 year:
+    -
+      text: Model behavior
+      age: child
+    -
+      text: "Be sensitive to child's feelings"
+      age: child
+    -
+      text: Encourage play with other children
+      age: child
+    -
+      text: Consider preschool
+      age: child
+    -
+      text: Daily reading
+      age: child
+    -
+      text: Talk with child
+      age: child
+    -
+      text: Calm bedtime routines
+      age: child
+    -
+      text: Brush teeth twice daily
+      age: child
+    -
+      text: Daily physical activity
+      age: child
+    -
+      text: Limit TV/video to 1-2 hours/day
+      age: child
+    -
+      text: No TV in bedroom
+      age: child
+    -
+      text: Community activities
+      age: child
+    -
+      text: 'Expect curiosity about body - answer questions using proper terms'
+      age: child
+    -
+      text: Safety rules with adults
+      age: child
+    -
+      text: Safe and unsafe touches
+      age: child
+    -
+      text: How to seek help when needed
+      age: child
+    -
+      text: Appropriately restrained in all vehicles
+      age: child
+    -
+      text: Supervise all outdoor play
+      age: child
+    -
+      text: Guns
+      age: child
+  Anticipatory Guidance 5-6 year:
+    -
+      text: Establish routines
+      age: child
+    -
+      text: After-school care/activities
+      age: child
+    -
+      text: Friends
+      age: child
+    -
+      text: Bullying
+      age: child
+    -
+      text: Communicate with teachers
+      age: child
+    -
+      text: Family time
+      age: child
+    -
+      text: Anger management
+      age: child
+    -
+      text: Discipline for teaching not punishment
+      age: child
+    -
+      text: Limit TV
+      age: child
+    -
+      text: Healthy weight
+      age: child
+    -
+      text: Well-balanced diet, including breakfast
+      age: child
+    -
+      text: Fruits, vegetables, whole grains
+      age: child
+    -
+      text: Adequate calcium
+      age: child
+    -
+      text: 60 minutes of exercise/day
+      age: child
+    -
+      text: Regular dental visits
+      age: child
+    -
+      text: Brushing/flossing
+      age: child
+    -
+      text: Fluoride
+      age: child
+    -
+      text: Sexual safety
+      age: child
+    -
+      text: Pedestrian safety
+      age: child
+    -
+      text: Safety helmets
+      age: child
+    -
+      text: Swimming safety
+      age: child
+    -
+      text: Fire escape plan
+      age: child
+    -
+      text: Smoke/carbon monoxide detectors
+      age: child
+    -
+      text: Guns
+      age: child
+    -
+      text: Sun
+      age: child
+    -
+      text: Appropriately restrained in all vehicles
+      age: child
+  Anticipatory Guidance 7-8 year:
+    -
+      text: Show interest in school
+      age: child
+    -
+      text: Communicate with teachers
+      age: child
+    -
+      text: Encourage independence
+      age: child
+    -
+      text: Praise strengths
+      age: child
+    -
+      text: Be a positive role model
+      age: child
+    -
+      text: Discuss expected body changes
+      age: child
+    -
+      text: Encourage proper nutrition
+      age: child
+    -
+      text: Eat meals as a family
+      age: child
+    -
+      text: 60 minutes of physical activity daily
+      age: child
+    -
+      text: Limit TV and screen time
+      age: child
+    -
+      text: Dental visits twice a year
+      age: child
+    -
+      text: Brush teeth twice a day
+      age: child
+    -
+      text: Floss teeth daily
+      age: child
+    -
+      text: Wear mouth guard during sports
+      age: child
+    -
+      text: "Know child's friends"
+      age: child
+    -
+      text: Home emergency plan
+      age: child
+    -
+      text: Safety rules with adults
+      age: child
+    -
+      text: Appropriate vehicle restraint
+      age: child
+    -
+      text: Helmets and pads
+      age: child
+    -
+      text: Supervise around water
+      age: child
+    -
+      text: Smoke-free environment
+      age: child
+    -
+      text: Guns
+      age: child
+    -
+      text: Monitor computer use
+      age: child
+  Anticipatory Guidance 9-10 year:
+    -
+      text: Show interest in school
+      age: child
+    -
+      text: Quiet space for homework
+      age: child
+    -
+      text: Address bullying
+      age: child
+    -
+      text: Encouraging independence and self-responsibility
+      age: child
+    -
+      text: 'Be a positive role model - discuss respect, anger'
+      age: child
+    -
+      text: "Know child's friends and importance of peers"
+      age: child
+    -
+      text: Expect preadolescent behaviors
+      age: child
+    -
+      text: Answer questions and discuss puberty
+      age: child
+    -
+      text: Safety rules with adults
+      age: child
+    -
+      text: Encourage proper nutrition
+      age: child
+    -
+      text: 60 minutes of physical activity daily
+      age: child
+    -
+      text: Limit TV and screen time
+      age: child
+    -
+      text: Dental visits twice a year
+      age: child
+    -
+      text: Brush teeth twice a day
+      age: child
+    -
+      text: Floss teeth daily
+      age: child
+    -
+      text: Wear mouth guards during sports
+      age: child
+    -
+      text: Booster seat
+      age: child
+    -
+      text: Teach to swim/water safety
+      age: child
+    -
+      text: Sunscreen
+      age: child
+    -
+      text: Avoid tobacco, alcohol, drugs
+      age: child
+    -
+      text: Guns
+      age: child
+  Anticipatory Guidance 11-14 year:
+    -
+      text: Brush/floss teeth
+      age: child
+    -
+      text: Regular dental visits
+      age: child
+    -
+      text: Body image
+      age: child
+    -
+      text: Balanced diet
+      age: child
+    -
+      text: Limit TV
+      age: child
+    -
+      text: Physical activity
+      age: child
+    -
+      text: Help with homework when needed
+      age: child
+    -
+      text: Encourage reading/school
+      age: child
+    -
+      text: Community involvement
+      age: child
+    -
+      text: Family time
+      age: child
+    -
+      text: Age-appropriate limits
+      age: child
+    -
+      text: Friends
+      age: child
+    -
+      text: Decision-making
+      age: child
+    -
+      text: Dealing with stress
+      age: child
+    -
+      text: Mental health concerns
+      age: child
+    -
+      text: Sexuality/puberty
+      age: child
+    -
+      text: Tobacco, alcohol, drugs
+      age: child
+    -
+      text: Prescription drugs
+      age: child
+    -
+      text: Know friends and activities
+      age: child
+    -
+      text: Sex
+      age: child
+    -
+      text: Seat belts, no ATV
+      age: child
+    -
+      text: Guns
+      age: child
+    -
+      text: Safe dating
+      age: child
+    -
+      text: Conflict resolution
+      age: child
+    -
+      text: Bullying
+      age: child
+    -
+      text: Sport helmets
+      age: child
+    -
+      text: Protective gear
+      age: child
+  Anticipatory Guidance 15-21 year:
+    -
+      text: Balanced diet
+      age: child
+    -
+      text: Physical activity
+      age: child
+    -
+      text: Limit TV
+      age: child
+    -
+      text: Protect hearing
+      age: child
+    -
+      text: Brush/floss teeth
+      age: child
+    -
+      text: Regular dental visits
+      age: child
+    -
+      text: Age-appropriate limits
+      age: child
+    -
+      text: Friends/relationships
+      age: child
+    -
+      text: Family time
+      age: child
+    -
+      text: Community involvement
+      age: child
+    -
+      text: Encourage reading/school
+      age: child
+    -
+      text: Rules/exceptions
+      age: child
+    -
+      text: Planning for after high school
+      age: child
+    -
+      text: Dealing with stress
+      age: child
+    -
+      text: Decision-making
+      age: child
+    -
+      text: Mood changes
+      age: child
+    -
+      text: Sexuality/Puberty
+      age: child
+    -
+      text: Tobacco, alcohol, drugs
+      age: child
+    -
+      text: Prescription drugs
+      age: child
+    -
+      text: Sex
+      age: child
+    -
+      text: Seat belts
+      age: child
+    -
+      text: Guns
+      age: child
+    -
+      text: Conflict resolution
+      age: child
+    -
+      text: Driving restriction
+      age: child
+    -
+      text: Sports/Recreation safety
+      age: child
+procedure:
+  Casting/splinting/orthotics/DME:
+    -
+      text: Aircast was provided
+      input: select
+      options: left ankle,right ankle
+    -
+      text: ASO ankle brace was provided
+      input: select
+      options: left ankle,right ankle
+    -
+      text: Boxer fracture splint applied
+      input: select
+      options: left side,right side
+    -
+      text: Buddy taping was applied
+      input: select
+      options: left hand fingers,right hand fingers,left foot toes,right foot toes,left index and middle fingers,left middle and ring fingers,left ring and small fingers,right index and middle fingers,right middle and ring fingers,right ring and small fingers,left big and 2nd toes,left 2nd and 3rd toes,left 3rd and 4th toes,left 4th and 5th toes,right big and 2nd toes,right 2nd and 3rd toes,right 3rd and 4th toes,right 4th and 5th toes
+    -
+      text: Carpal tunnel gel pads were provided
+    -
+      text: Cock-up wrist splint was provided
+      input: select
+      options: left wrist,right wrist
+    -
+      text: Equalizer boot was provided
+      input: select
+      options: left,right
+    -
+      text: Forearm brace was provided
+      input: select
+      options: left,right
+    -
+      text: Gunumedi knee sleeve was provided
+      input: select
+      options: left,right
+    -
+      text: Heel cups were provided
+      input: select
+      options: left,right
+    -
+      text: Long arm cast was applied
+      input: select
+      options: left,right
+    -
+      text: Long arm splint was applied
+      input: select
+      options: left,right
+    -
+      text: Long leg cast was applied
+      input: select
+      options: left,right
+    -
+      text: Patella tendonitis strap was provided
+      input: select
+      options: left,right
+    -
+      text: Post-op shoe was provided
+      input: select
+      options: left,right
+    -
+      text: Radial gutter cast was applied
+      input: select
+      options: left,right
+    -
+      text: Short arm cast was applied
+      input: select
+      options: left,right
+    -
+      text: Short leg cast was applied
+      input: select
+      options: left,right
+    -
+      text: Short leg walking cast was applied
+      input: select
+      options: left,right
+    -
+      text: Sugar tong arm splint was applied
+      input: select
+      options: left,right
+    -
+      text: Thumb spica wrist splint was provided
+      input: select
+      options: left,right
+    -
+      text: Ulnar gutter cast was applied
+      input: select
+      options: left,right
+    -
+      text: Velcro wrist splint was provided
+      input: select
+      options: left,right
+  Cerumen removal:
+    -
+      text: Location
+      input: select
+      options: left,right,bilateral
+    -
+      text: Performed under direct visualization
+    -
+      text: Curette used to remove cerumen
+    -
+      text: Irrigated with water/H2O2
+    -
+      text: Irrigated with warm water
+    -
+      text: Debrox was used to soften the ear wax
+    -
+      text: Patient tolerated the procedure
+      input: radio
+      options: well,poorly
+    -
+      text: Cerumen successfuly removed
+  Circumcision:
+    -
+      text: Procedure, alternatives, risks, and questions (PARQ) conference performed
+    -
+      text: Consent was signed and witnessed in the office
+    -
+      text: Anesthesia
+      input: select
+      options: local 1% Xylocaine,1% Xylocaine dorsal penile nerve block
+    -
+      text: Gomco
+      input: select
+      options: 1.1,1.3,1.45
+    -
+      text: Plastibell
+      input: select
+      options: 1.1,1.3,1.45
+    -
+      text: After anesthetizing, penis was prepped with Betadine
+    -
+      text: Sterile drape placed
+    -
+      text: Hemostats used to grasp foreskin
+    -
+      text: Adhesions bluntly dissected
+    -
+      text: Straight forceps used in dorsal midline to crush tissue
+    -
+      text: Iris scissors to cut along crush line
+    -
+      text: Clamp placed and foreskin excised
+    -
+      text: Patient tolerated the procedure
+      input: radio
+      options: well,poorly
+    -
+      text: Minimal blood loss
+    -
+      text: Hypospadius found and circumcision was stopped
+    -
+      text: Petroleum gauze was applied
+    -
+      text: Patient care instructions given
+  Cryotherapy:
+    -
+      text: 'Type of lesion:'
+      input: text
+    -
+      text: 'Reason for treatment:'
+      input: text
+    -
+      text: Procedure, alternatives, risks, and questions (PARQ) conference performed
+    -
+      text: Verbal consent given
+    -
+      text: Consent was signed and witnessed in the office
+    -
+      text: 'Location, size, and number of lesions:'
+      input: text
+    -
+      text: Lesion was debrided with a scalpel
+    -
+      text: Liquid nitrogen was used to treat the lesion with 3 freeze-thaw cycles
+    -
+      text: Histofreeze performed according to manufacturer's time guidelines
+    -
+      text: Verruca Freeze performed according to manufacturer's time guidelines
+    -
+      text: Patient tolerated the procedure
+      input: radio
+      options: well,poorly
+    -
+      text: Patient care instructions given
+  Excision/biopsy:
+    -
+      text: Procedure, alternatives, risks, and questions (PARQ) conference performed
+    -
+      text: Verbal consent given
+    -
+      text: Consent was signed and witnessed in the office
+    -
+      text: 'Preoperative diagnosis:'
+      input: text
+    -
+      text: 'Postoperative diagnosis:'
+      input: text
+    -
+      text: 'Location and size of lesion:'
+      input: text
+    -
+      text: Area of skin was prepared and draped in the usual sterile fashion
+    -
+      text: Anesthesia
+      input: select
+      options: 1% lidocaine,1% lidocaine with epinephrine,2% lidocaine,2% lidocaine with epinephrine
+    -
+      text: Full thickness elliptical incision was performed
+    -
+      text: Linear incision was performed
+    -
+      text: Punch biopsy performed
+    -
+      text: Scissor snip performed
+    -
+      text: Shave excision was performed
+    -
+      text: Suture ligation performed
+    -
+      text: Hemostasis was acheived
+    -
+      text: Closure was performed using
+      input: text
+    -
+      text: Patient tolerated the procedure
+      input: radio
+      options: well,poorly
+    -
+      text: Minimal blood loss
+    -
+      text: Patient care instructions given
+  Foreign body removal:
+    -
+      text: Procedure, alternatives, risks, and questions (PARQ) conference performed
+    -
+      text: Verbal consent given
+    -
+      text: Consent was signed and witnessed in the office
+    -
+      text: 'Location of foreign body:'
+      input: text
+    -
+      text: Area of skin was prepared and draped in the usual sterile fashion
+    -
+      text: Anesthesia
+      input: select
+      options: 1% lidocaine,1% lidocaine with epinephrine,2% lidocaine,2% lidocaine with epinephrine
+    -
+      text: Eye was irrigated with saline
+    -
+      text: Wound was irrigated copiously with sterile saline
+    -
+      text: Patient tolerated the procedure
+      input: radio
+      options: well,poorly
+    -
+      text: Minimal blood loss
+    -
+      text: Patient care instructions given
+  Gynecologic procedures:
+    -
+      text: 'Indication for procedure:'
+      input: text
+    -
+      text: Procedure, alternatives, risks, and questions (PARQ) conference performed
+    -
+      text: Verbal consent given
+    -
+      text: Consent was signed and witnessed in the office
+    -
+      text: Area was prepared and draped in the usual sterile fashion
+    -
+      text: Anesthesia
+      input: select
+      options: 1% lidocaine,1% lidocaine with epinephrine,2% lidocaine,2% lidocaine with epinephrine,Hurricaine spray,Motrin 600mg,Tylenol 1000 mg
+    -
+      text: Bivalve speculum was placed in the vagina
+    -
+      text: Tenaculum was used
+    -
+      text: Cryosurgery was performed
+    -
+      text: Uterine sounds to
+      input: text
+    -
+      text: Endometrial sample was obtained with pipelle
+    -
+      text: Podophylin was applied
+    -
+      text: Acetic acid was applied
+    -
+      text: 'Bimanual exam:'
+      input: text
+    -
+      text: Patient tolerated the procedure
+      input: radio
+      options: well,poorly
+    -
+      text: Minimal blood loss
+    -
+      text: Patient care instructions given
+  Incision and drainage:
+    -
+      text: Procedure, alternatives, risks, and questions (PARQ) conference performed
+    -
+      text: Verbal consent given
+    -
+      text: Consent was signed and witnessed in the office
+    -
+      text: Area of skin was prepared and draped in the usual sterile fashion
+    -
+      text: Anesthesia
+      input: select
+      options: 1% lidocaine,1% lidocaine with epinephrine,2% lidocaine,2% lidocaine with epinephrine
+    -
+      text: Wound was irrigated copiously with sterile saline
+    -
+      text: Wick was inserted
+    -
+      text: Patient tolerated the procedure
+      input: radio
+      options: well,poorly
+    -
+      text: Minimal blood loss
+    -
+      text: Patient care instructions given
+  Injections, joint:
+    -
+      text: 'Indication for procedure:'
+      input: text
+    -
+      text: Procedure, alternatives, risks, and questions (PARQ) conference performed
+    -
+      text: Verbal consent given
+    -
+      text: Consent was signed and witnessed in the office
+    -
+      text: 'Location:'
+      input: text
+    -
+      text: Location
+      input: select
+      options: AC joint,Ankle joint,Anserine bursa,Biceps tendon,Carpal tunnel,Coccyx,Costochondral joint,DeQuervain's,Facet joint,First carpometacarpal injection,Foot injection,Ganglion cyst,Greater trochanteric bursitis,Hip joint,Ischial bursa,Knee joint,Lateral epicondyle,Medial epicondyle,Olecranon bursa,Plantar fascia,Subacromial bursa,Trigger finger,Wrist joint
+    -
+      text: Laterality
+      input: select
+      options: left,right,bilateral
+    -
+      text: Medication used for injection
+      input: text
+    -
+      text: Patient tolerated the procedure
+      input: radio
+      options: well,poorly
+    -
+      text: Patient care instructions given
+  Intralesional Kenalog:
+    -
+      text: Indication for procedure
+      input: text
+    -
+      text: Procedure, alternatives, risks, and questions (PARQ) conference performed
+    -
+      text: Verbal consent given
+    -
+      text: Consent was signed and witnessed in the office
+    -
+      text: Location and number of lesions treated
+      input: text
+    -
+      text: Kenalog concentration
+      input: select
+      options: 1.25 mg/cc,2.5 mg/cc,3.3 mg/cc,5.0 mg/cc,10 mg/cc,20 mg/cc,40 mg/cc
+    -
+      text: An alcohol swab was used to prepare the lesions for injection
+    -
+      text: A TB syringe was filled with the appropriate concentration of Kenalog
+    -
+      text: Intralesional injection was then carried out with just enough of the solution to blanch the lesions
+  Intrauterine device insertion:
+    -
+      text: Procedure, alternatives, risks, and questions (PARQ) conference performed
+    -
+      text: Verbal consent given
+    -
+      text: Consent was signed and witnessed in the office
+    -
+      text: type
+      input: text
+    -
+      text: The patient was placed in lithotomy position
+    -
+      text: The cervix was prepped with Betadine
+    -
+      text: A paracervical block was performed
+    -
+      text: A tenaculum was placed
+    -
+      text: The uterus was sounded and found to be
+      input: text
+    -
+      text: IUD was inserted without difficulty
+    -
+      text: The strings were cut to approximately 2 cm
+    -
+      text: Patient tolerated the procedure
+      input: radio
+      options: well,poorly
+    -
+      text: Patient care instructions given
+  IV fluids:
+    -
+      text: 'Indication:'
+      input: text
+    -
+      text: 'Location:'
+      input: text
+    -
+      text: Catheter type
+      input: select
+      options: 18 gauge,20 gauge,22 gauge
+    -
+      text: IV solution
+      input: select
+      options: NaCl 0.9%,D5 NS,Lactated Ringers,D5 W
+    -
+      text: 'Volume:'
+      input: text
+    -
+      text: 'Rate:'
+      input: text
+    -
+      text: IV catheter was removed and dressing applied
+    -
+      text: Patient tolerated the procedure
+      input: radio
+      options: well,poorly
+    -
+      text: Patient care instructions given
+  KOH/wet prep:
+    -
+      text: 'Indication:'
+      input: text
+    -
+      text: A 15-blade was used to scrape the surface of a representative portion of the area in question
+    -
+      text: The scrapings were placed on a glass slide
+    -
+      text: A drop of KOH was applied and a cover slip was applied
+    -
+      text: The slide was then examined microscopically
+    -
+      text: 'Findings:'
+      input: text
+  Laceration repair:
+    -
+      text: Procedure, alternatives, risks, and questions (PARQ) conference performed
+    -
+      text: Verbal consent given
+    -
+      text: Consent was signed and witnessed in the office
+    -
+      text: 'Wound location:'
+      input: text
+    -
+      text: 'Wound size and type:'
+      input: text
+    -
+      text: Area of skin was prepared and draped in the usual sterile fashion
+    -
+      text: Anesthesia
+      input: select
+      options: 1% lidocaine,1% lidocaine with epinephrine,2% lidocaine,2% lidocaine with epinephrine
+    -
+      text: 'Wound closed using:'
+      input: text
+    -
+      text: Subcutaneous sutures placed
+    -
+      text: Continuous sutures placed
+    -
+      text: 'Number of sutures placed:'
+      input: text
+    -
+      text: 'Number of staples placed:'
+      input: text
+    -
+      text: 'Number of steri strips placed:'
+      input: text
+    -
+      text: Area cleaned and bandaged
+    -
+      text: Patient tolerated the procedure
+      input: radio
+      options: well,poorly
+    -
+      text: Minimal blood loss
+    -
+      text: Patient care instructions given
+  Manipulation:
+    -
+      text: 'Indications:'
+      input: text
+    -
+      text: 'Area manipulated:'
+      input: text
+    -
+      text: Soft tissue, muscle energy technique applied
+    -
+      text: High velociy, low amplitude technique applied
+    -
+      text: Counterstrain technique applied
+    -
+      text: Rotation right, side bend right
+    -
+      text: Rotation left, side bend left
+    -
+      text: Right first rib elevated
+    -
+      text: Left first rib elevated
+    -
+      text: Right trigger point
+    -
+      text: Left trigger point
+  Nail procedures:
+    -
+      text: Procedure, alternatives, risks, and questions (PARQ) conference performed
+    -
+      text: Verbal consent given
+    -
+      text: Consent was signed and witnessed in the office
+    -
+      text: Area of skin was prepared and draped in the usual sterile fashion
+    -
+      text: Anesthesia
+      input: select
+      options: local block,digital block,metatarsal block,1% lidocaine without epinephrine,2% lidocaine without epinephrine
+    -
+      text: Nail plate separated from nailbed
+    -
+      text: Entire nail plate removed
+    -
+      text: Partial nail plate removed
+    -
+      text: Phenol applied with cotton swab
+    -
+      text: Bleeding ligated or cauterized as needed
+    -
+      text: Site dressed with dry sterile dressing
+    -
+      text: Hematoma drained with electrocautery
+    -
+      text: Patient tolerated the procedure
+      input: radio
+      options: well,poorly
+    -
+      text: Minimal blood loss
+    -
+      text: Patient care instructions given
+  Peak flow/spirometry:
+    -
+      text: 'Peak flow rate:'
+      input: text
+    -
+      text: 'Post-medication peak flow rate:'
+      input: text
+    -
+      text: 'Spirometry:'
+      input: text
+    -
+      text: 'Treatment given:'
+      input: text
+  Staple/suture removal:
+    -
+      text: Verbal consent given
+    -
+      text: 'Location:'
+      input: text
+    -
+      text: 'Number of sutures:'
+      input: text
+    -
+      text: 'Number of staples:'
+      input: text
+    -
+      text: The area was first cleaned with alcohol
+    -
+      text: Sutures were taken out with forceps and suture cutting scissors
+    -
+      text: Staples were removed with staple remover
+    -
+      text: Steri-strips placed
+    -
+      text: Non-stick dressing was applied
+    -
+      text: No sign of infection noted
+    -
+      text: Patient tolerated the procedure
+      input: radio
+      options: well,poorly
+    -
+      text: Patient care instructions given
+  Trigger point injection:
+    -
+      text: 'Indications:'
+      input: text
+    -
+      text: Procedure, alternatives, risks, and questions (PARQ) conference performed
+    -
+      text: Verbal consent given
+    -
+      text: Consent was signed and witnessed in the office
+    -
+      text: 'Location:'
+      input: text
+    -
+      text: 'Injected with:'
+      input: text
+    -
+      text: Needle type
+      input: select
+      options: 22 gauge 3.5 in,25 gauge 3.5 in,25 gauge 1.5 in,27 gauge 1.5 in,hollow Q-tip
+    -
+      text: 'Amount per site:'
+      input: text
+    -
+      text: Performed under sterile conditions
+    -
+      text: Patient tolerated the procedure
+      input: radio
+      options: well,poorly
+    -
+      text: 'Post treatment effect:'
+      input: text
+    -
+      text: Patient care instructions given
+  Vasectomy:
+    -
+      text: Procedure, alternatives, risks, and questions (PARQ) conference performed
+    -
+      text: Verbal consent given
+    -
+      text: Consent was signed and witnessed in the office
+    -
+      text: Patient tolerated the procedure
+      input: radio
+      options: well,poorly
+    -
+      text: Patient care instructions given
+  Wound care:
+    -
+      text: 'Location:'
+      input: text
+    -
+      text: 'Size and shape of wound:'
+      input: text
+    -
+      text: Using clean technique, wound was irrigated with normal saline
+    -
+      text: Normal saline wet to dry dressing applied using
+      input: text
+    -
+      text: Kerlix applied
+    -
+      text: ABD applied
+    -
+      text: Telfa applied
+    -
+      text: Paper tape applied
+    -
+      text: Kling applied
+    -
+      text: Triple antibiotic ointment applied
+    -
+      text: Duoderm applied
+    -
+      text: Tegaderm applied
+    -
+      text: Patient tolerated the procedure
+      input: radio
+      options: well,poorly
+    -
+      text: Patient care instructions given
+ros:
+  General - Denies:
+    -
+      text: fever
+      normal: true
+    -
+      text: weight change
+      normal: true
+    -
+      text: fatigue
+      normal: true
+    -
+      text: appetite change
+      normal: true
+  General - REPORTS:
+    -
+      text: FEVER
+    -
+      text: WEIGHT LOSS
+    -
+      text: WEIGHT GAIN
+    -
+      text: FATIGUE
+    -
+      text: WEAKNESS
+    -
+      text: INCREASED APPETITE
+    -
+      text: DECREASED APPETITE
+  Eye - Denies:
+    -
+      text: vision change
+      normal: true
+    -
+      text: eye pain
+      normal: true
+    -
+      text: eye redness
+      normal: true
+    -
+      text: eye discharge
+      normal: true
+  Eye - REPORTS:
+    -
+      text: 'VISION CHANGE'
+      input: radio
+      options: RIGHT,LEFT,BILATERAL
+    -
+      text: 'EYE PAIN'
+      input: radio
+      options: RIGHT,LEFT,BILATERAL
+    -
+      text: 'EYE REDNESS'
+      input: radio
+      options: RIGHT,LEFT,BILATERAL
+    -
+      text: 'EYE DISCHARGE'
+      input: radio
+      options: RIGHT,LEFT,BILATERAL
+  Ears, Nose, Throat - Denies:
+    -
+      text: ear pain
+      normal: true
+    -
+      text: tinnitus
+      normal: true
+    -
+      text: rhinorrhea
+      normal: true
+    -
+      text: nose bleeding
+      normal: true
+    -
+      text: nasal congestion
+      normal: true
+  Ears, Nose, Throat - REPORTS:
+    -
+      text: 'EAR PAIN'
+      input: radio
+      options: RIGHT,LEFT,BILATERAL
+    -
+      text: TINNITUS
+    -
+      text: NASAL CONGESTION
+    -
+      text: RHINORRHEA
+    -
+      text: 'NOSE BLEEDING'
+      input: radio
+      options: RIGHT,LEFT,BILATERAL
+  Respiratory - Denies:
+    -
+      text: shortness of breath
+      normal: true
+    -
+      text: dyspnea on exertion
+      normal: true
+    -
+      text: paroxysmal nocturnal dyspnea
+      normal: true
+    -
+      text: cough
+      normal: true
+  Respiratory - REPORTS:
+    -
+      text: SHORTNESS OF BREATH
+    -
+      text: DYSPNEA ON EXERTION
+    -
+      text: PAROXYSMAL NOCTURNAL DYSPNEA
+    -
+      text: PRODUCTIVE COUGH
+    -
+      text: NON-PRODUCTIVE COUGH
+  Cardiovascular - Denies:
+    -
+      text: chest pain
+      normal: true
+    -
+      text: palpitations
+      normal: true
+    -
+      text: cyanosis
+      normal: true
+    -
+      text: edema
+      normal: true
+  Cardiovascular - REPORTS:
+    -
+      text: 'CHEST PAIN'
+      input: radio
+      options: RIGHT,LEFT,BILATERAL
+    -
+      text: PALPITATIONS
+    -
+      text: CYANOSIS
+    -
+      text: 'EDEMA'
+      input: radio
+      options: UPPER,LOWER,UPPER AND LOWER
+    -
+      text: GENERALIZED EDEMA
+  Gastrointestinal - Denies:
+    -
+      text: nausea
+      normal: true
+    -
+      text: vomiting
+      normal: true
+    -
+      text: abdominal pain
+      normal: true
+    -
+      text: bowel movement changes
+      normal: true
+    -
+      text: jaundice
+      normal: true
+  Gastrointestinal - REPORTS:
+    -
+      text: NAUSEA
+    -
+      text: VOMITING
+    -
+      text: 'ABDOMINAL PAIN'
+      input: radio
+      options: UPPER,LOWER,UPPER AND LOWER
+    -
+      text: GENERALIZED ABDOMINAL PAIN
+    -
+      text: DIARRHEA
+    -
+      text: CONSTIPATION
+    -
+      text: ALTERNATING DIARRHEA AND CONSTIPATION
+    -
+      text: JAUNDICE
+  Genitourinary - Denies:
+    -
+      text: penile discharge
+      normal: true
+      age: m
+    -
+      text: urinary incontinence
+      normal: true
+      age: m
+    -
+      text: hematuria
+      normal: true
+      age: m
+    -
+      text: genital lesions
+      normal: true
+      age: m
+    -
+      text: dysuria
+      normal: true
+      age: m
+    -
+      text: vaginal discharge
+      normal: true
+      age: f
+    -
+      text: urinary incontinence
+      normal: true
+      age: f
+    -
+      text: hematuria
+      normal: true
+      age: f
+    -
+      text: genital lesions
+      normal: true
+      age: f
+    -
+      text: dysuria
+      normal: true
+      age: f
+  Genitourinary - REPORTS:
+    -
+      text: PENILE DISCHARGE
+      age: m
+    -
+      text: URINARY INCONTINENCE
+      age: m
+    -
+      text: HEMATURIA
+      age: m
+    -
+      text: GENITAL LESIONS
+      age: m
+    -
+      text: DYSURIA
+      age: m
+    -
+      text: VAGINAL DISCHARGE
+      age: f
+    -
+      text: URINARY INCONTINENCE
+      age: f
+    -
+      text: HEMATURIA
+      age: f
+    -
+      text: GENITAL LESIONS
+      age: f
+    -
+      text: DYSURIA
+      age: f
+  Musculoskeletal - Denies:
+    -
+      text: joint pain
+      normal: true
+    -
+      text: joint swelling
+      normal: true
+  Musculoskeletal - REPORTS:
+    -
+      text: JOINT PAIN
+    -
+      text: JOINT SWELLING
+  Neurological - Denies:
+    -
+      text: dizziness
+      normal: true
+    -
+      text: localized weakness
+      normal: true
+    -
+      text: parasthesias
+      normal: true
+    -
+      text: loss of sensation
+      normal: true
+    -
+      text: loss of function
+      normal: true
+  Neurological - REPORTS:
+    -
+      text: DIZZINESS
+    -
+      text: LOCALIZED WEAKNESS
+    -
+      text: PARASTHESIAS
+    -
+      text: LOSS OF SENSATION
+    -
+      text: LOSS OF FUNCTION
+  Psychological - Denies:
+    -
+      text: depression
+      normal: true
+    -
+      text: anxiety
+      normal: true
+    -
+      text: hallucinations
+      normal: true
+    -
+      text: mood swings
+      normal: true
+  Psychological - REPORTS:
+    -
+      text: DEPRESSION
+    -
+      text: ANXIETY
+    -
+      text: HALLUCINATIONS
+    -
+      text: MOOD SWINGS
+  Hematological, Lymphatic - Denies:
+    -
+      text: abnormal bleeding
+      normal: true
+    -
+      text: easy bruising
+      normal: true
+    -
+      text: skin lumps
+      normal: true
+  Hematological, Lymphatic - REPORTS:
+    -
+      text: ABNORMAL BLEEDING
+    -
+      text: EASY BRUISING
+    -
+      text: SKIN LUMPS
+  Endocrine - Denies:
+    -
+      text: polyuria
+      normal: true
+    -
+      text: polydipsia
+      normal: true
+    -
+      text: breast discharge
+      normal: true
+  Endocrine - REPORTS:
+    -
+      text: POLYURIA
+    -
+      text: POLYDIPSIA
+    -
+      text: BREAST DISCHARGE
+  Skin - Denies:
+    -
+      text: skin rash
+      normal: true
+    -
+      text: skin itching
+      normal: true
+    -
+      text: skin lumps
+      normal: true
+  Skin - REPORTS:
+    -
+      text: SKIN RASH
+    -
+      text: SKIN ITCHING
+    -
+      text: SKIN LUMPS
+  Well Child Check - Breastfeeding:
+    -
+      text: 'Minutes per feeding'
+      input: text
+      age: child
+    -
+      text: 'Hours between feeding'
+      input: text
+      age: child
+    -
+      text: 'Feedings per 24 hours'
+      input: text
+      age: child
+  Well Child Check - Formula feeding:
+    -
+      text: 'Ounces per feeding'
+      input: text
+      age: child
+    -
+      text: 'Source of water'
+      input: text
+      age: child
+    -
+      text: 'Vitamins/fluoride'
+      input: text
+      age: child
+  Well Child Check - Development 1 month:
+    -
+      text: 'If upset, able to calm'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Has started to smile'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: "Recognizes parents' voices:"
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Follows parent with eyes'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Able to lift head when on tummy'
+      input: radio
+      options: yes,no
+      age: child
+  Well Child Check - Development 2 month:
+    -
+      text: 'Lifts head and begins to push up when prone'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Holds head erect for short periods (when held upright)'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Diminished newborn reflexes'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Symmetrical movement'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Indicates boredom when no activity change'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Coos'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Different cries for different needs'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Smiles'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Looks at parent'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Self-comfort'
+      input: radio
+      options: yes,no
+      age: child
+  Well Child Check - Development 4 month:
+    -
+      text: 'Pushes chest up to elbows'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Good head control'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Symmetry in movement'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Begins to roll and reach for objects'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Responds to affection'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Indicates pleasure and displeasure'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Spontaneous expressive babbling'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Social smile'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Elicits social interactions'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Can calm down on own'
+      input: radio
+      options: yes,no
+      age: child
+  Well Child Check - Development 6 month:
+    -
+      text: 'Sits briefly, leaning forward'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Rolls over'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Uses visual exploration'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Beginning to use oral exploration'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Uses a string of words (ah, eh, oh)'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Beginning to recognize own name'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Enjoys vocal turn asking'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Shows pleasure from interactions with parents or others'
+      input: radio
+      options: yes,no
+      age: child
+  Well Child Check - Development 9 month:
+    -
+      text: 'Sits well'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Crawls'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Pulls to feet with support'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Peekaboo'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Object permanence'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Looks at books'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Imitates sounds'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Points out objects'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Stranger anxiety'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Seeks parent for comfort'
+      input: radio
+      options: yes,no
+      age: child
+  Well Child Check - Development 12 month:
+    -
+      text: 'Waves bye-bye'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Tries to do what you do'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Cries when you leave'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Plays peekaboo'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Hands you a book to read'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Speaks 1-2 words'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Babbles'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Tries to make the same sounds you do'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Looks at things you are looking at'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Follows simple directions'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Bangs toys together'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Pulls to stand'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Stands alone'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Drinks from a cup'
+      input: radio
+      options: yes,no
+      age: child
+  Well Child Check - Development 15 month:
+    -
+      text: 'Tries to do what you do'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Helps in the house'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Listens to a story'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Says 2-3 words'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Brings toys over to show you'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Scribbles'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Follows simple commands'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Bends down without falling'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Walks well'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Puts blocks in a cup'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Drinks from a cup with very little spilling'
+      input: radio
+      options: yes,no
+      age: child
+  Well Child Check - Development 18 month:
+    -
+      text: 'Helps in the house'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Laughs in response to others'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Speaks 6 words'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Knows name of favorite book'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Points to 1 body part'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Stacks 2 small blocks'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Runs'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Walks up steps'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Uses spoon and cup without spilling most of the time'
+      input: radio
+      options: yes,no
+      age: child
+  Well Child Check - Development 2 year:
+    -
+      text: 'Copies things you do'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Plays pretend'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Plays alongside other children'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'When talking, puts 2 words together'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Names 1 picture'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Follows 2-step commands'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Stacks small blocks'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Kicks a ball'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Walks up and down stairs 1 step at a time alone while holding wall or railing'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Throws a ball overhand'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Jumps up'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Turns book pages 1 at a time'
+      input: radio
+      options: yes,no
+      age: child
+  Well Child Check - Development 2 1/2 year:
+    -
+      text: 'Plays pretend'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Plays with other children'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Other people can understand what your child is saying half of the time'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'When talking, puts 3 or 4 words together'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Points to 6 body parts'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Knows correct animal sounds'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Jumps up and down in place'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Puts on clothes with help'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Washes and dries hands without help'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Brushes teeth with help'
+      input: radio
+      options: yes,no
+      age: child
+  Well Child Check - Development 3 year:
+    -
+      text: 'Self-care skills'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Imaginative play'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: '2-3 sentences'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Usually understandable'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Names a friend'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Builds tower (6-8 blocks)'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Stands on 1 foot'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Throws ball overhead'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Walks upstairs alternating feet'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Copies circle'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Draws person (2 body parts)'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Toilet trained during the day'
+      input: radio
+      options: yes,no
+      age: child
+  Well Child Check - Development 4 year:
+    -
+      text: 'Interactions with peers'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Fantasy play'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Usually understandable'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Knows name, age, gender'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Names 4 colors'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Draws person (3 body parts)'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Plays board/card games'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Hops on 1 foot'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Balances on 1 foot for 2 seconds'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Builds tower (8 blocks)'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Copies a cross'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Brushes own teeth'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Dresses self'
+      input: radio
+      options: yes,no
+      age: child
+  Well Child Check - Development 5-6 year:
+    -
+      text: 'Balances on 1 foot'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Hops and skips'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Able to tie knot'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Good articulation/language skills'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Draws person (6+ body parts)'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Prints some letters and numbers'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Copies squares, triangles'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Counts to 10'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Names 4 or more colors'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Follows simple directions'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Listens and attends'
+      input: radio
+      options: yes,no
+      age: child
+  Well Child Check - Development 7-8 year:
+    -
+      text: 'Grade'
+      input: text
+      age: child
+    -
+      text: 'Social interaction'
+      input: radio
+      options: normal,abnormal
+      age: child
+    -
+      text: 'Performance'
+      input: radio
+      options: normal,abnormal
+      age: child
+    -
+      text: 'Behavior'
+      input: radio
+      options: normal,abnormal
+      age: child
+    -
+      text: 'Attention'
+      input: radio
+      options: normal,abnormal
+      age: child
+    -
+      text: 'Homework'
+      input: radio
+      options: normal,abnormal
+      age: child
+    -
+      text: 'Parent/Teacher concerns'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Cooperation'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Parent-child interaction'
+      input: radio
+      options: normal,abnormal
+      age: child
+    -
+      text: 'Sibling interaction'
+      input: radio
+      options: normal,abnormal
+      age: child
+    -
+      text: 'Oppositional behavior'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Eats healthy meals and snacks'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Participates in an after-school activity'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Has friends'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Is vigorously active for 1 hour a day'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Is doing well in school'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Does chores when asked'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Gets along with family'
+      input: radio
+      options: yes,no
+      age: child
+  Well Child Check - Development 9-10 year:
+    -
+      text: 'Grade'
+      input: text
+      age: child
+    -
+      text: 'Social interaction'
+      input: radio
+      options: normal,abnormal
+      age: child
+    -
+      text: 'Performance'
+      input: radio
+      options: normal,abnormal
+      age: child
+    -
+      text: 'Behavior'
+      input: radio
+      options: normal,abnormal
+      age: child
+    -
+      text: 'Attention'
+      input: radio
+      options: normal,abnormal
+      age: child
+    -
+      text: 'Homework'
+      input: radio
+      options: normal,abnormal
+      age: child
+    -
+      text: 'Parent/Teacher concerns'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Cooperation'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Parent-child interaction'
+      input: radio
+      options: normal,abnormal
+      age: child
+    -
+      text: 'Sibling interaction'
+      input: radio
+      options: normal,abnormal
+      age: child
+    -
+      text: 'Oppositional behavior'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Eats healthy meals and snacks'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Participates in an after-school activity'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Has friends'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Is vigorously active for 1 hour a day'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Has a caring and supportive family'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Is doing well in school'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Is getting chances to make own decisions'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Feels good about self'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Does an activity really well: ; Describe'
+      input: radio
+      options: yes,no
+      age: child
+  Well Child Check - Risk Assessment 11-14 year:
+    -
+      text: 'Home - Eats meals with family'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Home - Has family members/adult to turn to for help'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Home - Is permitted and is able to make independent decisions'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Education - Grade'
+      input: text
+      age: child
+    -
+      text: 'Education - Performance'
+      input: radio
+      options: normal,abnormal
+      age: child
+    -
+      text: 'Education - Behavior/Attention'
+      input: radio
+      options: normal,abnormal
+      age: child
+    -
+      text: 'Education - Homework'
+      input: radio
+      options: normal,abnormal
+      age: child
+    -
+      text: 'Eating - Eats regular meals including adequate fruits and vegetables'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Eating - Drinks non-sweetened liquids'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Eating - Calcium source'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Eating - Has concerns about body or appearance'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Activities - Has friends'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Activities - At least 1 hour of physical activity/day'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Activities - Screen time (except for homework) less than 2 hours per day'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Activities - Has interests/participates in community activities/volunteers'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Drugs - Uses tobacco/alcohol/drugs'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Safety - Home is free of violence'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Safety - Uses safety belts/safety equipment'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Safety - Has peer relationships free of violence'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Sex - Has had oral sex'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Sex - Has had sexual intercourse (vaginal, anal)'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Suicidality/Mental Health - Has ways to cope with stress'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Suicidality/Mental Health - Displays self-confidence'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Suicidality/Mental Health - Has problems with sleep'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Suicidality/Mental Health - Gets depressed, anxious, or irritable/has mood swings'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Suicidality/Mental Health - Has thoughts about hurting self or considered suicide'
+      input: radio
+      options: yes,no
+      age: child
+  Well Child Check - Risk Assessment 15-21 year:
+    -
+      text: 'Home - Eats meals with family'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Home - Has family members/adult to turn to for help'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Home - Is permitted and is able to make independent decisions'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Education - Grade'
+      input: text
+      age: child
+    -
+      text: 'Education - Performance'
+      input: radio
+      options: normal,abnormal
+      age: child
+    -
+      text: 'Education - Behavior/Attention'
+      input: radio
+      options: normal,abnormal
+      age: child
+    -
+      text: 'Education - Homework'
+      input: radio
+      options: normal,abnormal
+      age: child
+    -
+      text: 'Eating - Eats regular meals including adequate fruits and vegetables'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Eating - Drinks non-sweetened liquids'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Eating - Calcium source'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Eating - Has concerns about body or appearance'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Activities - Has friends'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Activities - At least 1 hour of physical activity/day'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Activities - Screen time (except for homework) less than 2 hours per day'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Activities - Has interests/participates in community activities/volunteers'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Drugs - Uses tobacco/alcohol/drugs'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Safety - Home is free of violence'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Safety - Uses safety belts/safety equipment'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Safety - Impaired/Distracted driving'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Safety - Has peer relationships free of violence'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Sex - Has had oral sex'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Sex - Has had sexual intercourse (vaginal, anal)'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Suicidality/Mental Health - Has ways to cope with stress'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Suicidality/Mental Health - Displays self-confidence'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Suicidality/Mental Health - Has problems with sleep'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Suicidality/Mental Health - Gets depressed, anxious, or irritable/has mood swings'
+      input: radio
+      options: yes,no
+      age: child
+    -
+      text: 'Suicidality/Mental Health - Has thoughts about hurting self or considered suicide'
+      input: radio
+      options: yes,no
+      age: child
+situation:
+t_messages_message:
+tp:
+vitals_other:

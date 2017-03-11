@@ -1,0 +1,57 @@
+               <entry
+                  typeCode="DRIV">
+                  <substanceAdministration
+                     classCode="SBADM"
+                     moodCode="EVN">
+                     <templateId
+                        root="2.16.840.1.113883.10.20.22.4.16"/>
+                     <!-- ** MEDICATION ACTIVITY -->
+                     <id
+                        root="?med_random_id1?"/>
+                     <text>
+                        <reference
+                           value="?med_number?"/>?med_name?</text>
+                     <statusCode
+                        code="completed"/>
+                     <effectiveTime
+                        xsi:type="IVL_TS">
+                        <low
+                           value="?med_date_active?"/>
+                     </effectiveTime>
+                     <effectiveTime xsi:type="PIVL_TS" institutionSpecified="true" operator="A">
+                        <period value="?med_period?" unit="h"/>
+                     </effectiveTime>
+                     <routeCode
+                        code="?med_code?"
+                        codeSystem="2.16.840.1.113883.3.26.1.2"
+                        codeSystemName="NCI Metathesaurus"
+                        displayName="?med_code_description?"/>
+                     <doseQuantity
+                        value="?med_dosage?"
+                        unit="?med_dosage_unit?"/>
+                     <consumable>
+                        <manufacturedProduct
+                           classCode="MANU">
+                           <templateId
+                              root="2.16.840.1.113883.10.20.22.4.23"/>
+                           <id
+                              root="?med_random_id2?"/>
+                           <manufacturedMaterial>
+                              <code
+                                 code="?med_rxnorm_code?"
+                                 codeSystem="2.16.840.1.113883.6.88"
+                                 displayName="?med_name?">
+                                 <originalText><reference
+                                       value="?med_number?"/></originalText>
+                                 <translation
+                                    code="?med_rxnorm_code?"
+                                    displayName="?med_name?"
+                                    codeSystem="2.16.840.1.113883.6.88"
+                                    codeSystemName="RxNorm"/>
+                              </code>
+                           </manufacturedMaterial>
+                        </manufacturedProduct>
+                     </consumable>
+                  </substanceAdministration>
+               </entry>
+

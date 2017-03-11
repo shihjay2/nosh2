@@ -1,0 +1,100 @@
+FAMMEMB,family member
+CHILD,child  
+CHILDADOPT,adopted child
+DAUADOPT,adopted daughter
+SONADOPT,adopted son
+CHLDFOST,foster child
+DAUFOST,foster daughter
+SONFOST,foster son
+CHILDINLAW,child in-law
+DAUINLAW,daughter in-law
+SONINLAW,son in-law
+DAUC,daughter child
+DAU,natural daughter
+STPDAU,stepdaughter
+NCHILD,natural child
+SON,natural son
+SONC,son child
+STPSON,stepson
+STPCHILD,stepchild
+EXT,extended family member
+AUNT,aunt
+MAUNT,maternal aunt
+PAUNT,paternal aunt
+COUSN,cousin
+MCOUSN,maternal cousin
+PCOUSN,paternal cousin
+GGRPRN,great grandparent
+GGRFTH,great grandfather
+GGRMTH,great grandmother
+MGGRFTH,maternal great grandfather
+MGGRMTH,maternal great grandmother
+MGGRPRN,maternal great grandparent
+PGGRFTH,paternal great grandfather
+PGGRMTH,paternal great grandmother
+PGGRPRN,paternal great grandparent
+GRNDCHILD,grandchild
+GRNDDAU,granddaughter
+GRNDSON,grandson
+GRPRN,grandparent
+GRFTH,grandfather
+GRMTH,grandmother
+MGRFTH,maternal grandfather
+MGRMTH,maternal grandmother
+MGRPRN,maternal grandparent
+PGRFTH,paternal grandfather
+PGRMTH,paternal grandmother
+PGRPRN,paternal grandparent
+NIENEPH,neice/nephew
+NEPHEW,nephew
+NIECE,niece
+UNCLE,uncle
+MUNCLE,maternal uncle
+PUNCLE,paternal uncle
+PRN,parent
+FTH,father
+MTH,mother
+NPRN,natural parent
+NFTH,natural father
+NFTHF,natural father of fetus
+NMTH,natural mother
+PRNINLAW,parent in-law
+FTHINLAW,father in-law
+MTHINLAW,mother in-law
+STPPRN,step parent
+STPFTH,stepfather
+STPMTH,stepmother
+SIB,sibling
+BRO,brother
+HSIB,half-sibling
+HBRO,half-brother
+HSIS,half-sister
+NSIB,natural sibling
+NBRO,natural brother
+NSIS,natural sister
+SIBINLAW,sibling in-law
+BROINLAW,brother in-law
+SISINLAW,sister in-law
+SIS ,sister  
+STPSIB,step sibling
+STPBRO,stepbrother
+STPSIS,stepsister
+SIGOTHR,significant other
+DOMPART,domestic partner
+SPS,spouse
+HUSB,husband
+WIFE,wife
+FRND,unrelated friend
+NBOR,neighbor
+ROOM,roommate
+RESPRSN,responsible party
+EXCEST,executor of estate
+GUADLTM,guardian ad lidem
+GUARD,guardian   
+POWATT,power of attorney
+DPOWATT,durable power of attorney
+HPOWATT,healthcare power of attorney
+SPOWATT,special power of attorney
+SELF,self
+TMPGUARD,temporary guardian
+BYSTND,bystander

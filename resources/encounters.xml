@@ -1,0 +1,82 @@
+               <entry
+                  typeCode="DRIV">
+                  <encounter
+                     classCode="ENC"
+                     moodCode="EVN">
+                     <templateId
+                        root="2.16.840.1.113883.10.20.22.4.49"/>
+                     <!-- Encounter Activities -->
+                     <!--  ********  Encounter activity template   ******** -->
+                     <id
+                        root="?encounter_random_id1?"/>
+                     <code code="?encounter_code?" displayName="?encounter_code_desc?" codeSystemName="CPT" codeSystem="2.16.840.1.113883.6.12" codeSystemVersion="4">
+                        <originalText>?encounter_cc?
+                            <reference value="?encounter_number?"/>
+                        </originalText>
+                        <translation code="AMB" codeSystem="2.16.840.1.113883.5.4" displayName="Ambulatory" codeSystemName="HL7 ActEncounterCode"/>
+                    </code>
+                    <effectiveTime
+                        value="?encounter_dos?"/>
+                     <performer>
+                        <assignedEntity classCode="ASSIGNED">
+                        <id extension="?encounter_random_id2?" root="2.201"/>
+                           <addr>
+                              <streetAddressLine>?practiceinfo_street_address?</streetAddressLine>
+                              <city>?practiceinfo_city?</city>
+                              <state>?practiceinfo_state?</state>
+                              <postalCode>?practiceinfo_zip?</postalCode>
+                              <country nullFlavor="UNK"/>
+                           </addr>
+                           <telecom
+                              value="tel:?practiceinfo_phone?"
+                              use="WP"/>
+                           <assignedPerson>
+                              <name>
+                                 <prefix>?provider_title?</prefix>
+                                 <given>?provider_firstname?</given>
+                                 <family>?provider_lastname?</family>
+                              </name>
+                           </assignedPerson>
+                           <representedOrganization>
+                              <id
+                                 root="2.16.840.1.113883.19.5.9999.1393"/>
+                              <name>?practice_name?</name>
+                              <telecom
+                                 value="tel:?practiceinfo_phone?"
+                                 use="WP"/>
+                              <addr>
+                                 <streetAddressLine>?practiceinfo_street_address?</streetAddressLine>
+                                 <city>?practiceinfo_city?</city>
+                                 <state>?practiceinfo_state?</state>
+                                 <postalCode>?practiceinfo_zip?</postalCode>
+                                 <country nullFlavor="UNK"/>
+                              </addr>
+                           </representedOrganization>
+                        </assignedEntity>
+                     </performer>
+                     <participant
+                        typeCode="LOC">
+                        <participantRole
+                           classCode="SDLOC">
+                           <templateId
+                              root="2.16.840.1.113883.10.20.22.4.32"/>
+                           <!-- Service Delivery Location template -->
+                           <code nullFlavor="UNK"/>
+                           <addr>
+                              <streetAddressLine>?practiceinfo_street_address?</streetAddressLine>
+                              <city>?practiceinfo_city?</city>
+                              <state>?practiceinfo_state?</state>
+                              <postalCode>?practiceinfo_zip?</postalCode>
+                              <country>US</country>
+                           </addr>
+                           <telecom
+                              nullFlavor="UNK"/>
+                           <playingEntity
+                              classCode="PLC">
+                              <name>?practice_name?</name>
+                           </playingEntity>
+                        </participantRole>
+                     </participant>
+?encounter_diagnosis?
+                  </encounter>
+               </entry>

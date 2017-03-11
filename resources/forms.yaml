@@ -1,0 +1,1030 @@
+---
+PHQ-9:
+  forms_title: PHQ-9
+  forms_destination: HPI
+  0:
+    input: radio
+    name: little_interest_or_pleasure_in_doing_things
+    text: Little interest or pleasure in doing things
+    options: Not at All,Several Days,More Than Half the Days,Nearly Every Day
+  1:
+    input: radio
+    name: feeling_down_depressed_or_hopeless
+    text: Feeling down, depressed, or hopeless
+    options: Not at All,Several Days,More Than Half the Days,Nearly Every Day
+  2:
+    input: radio
+    name: trouble_falling_or_staying_asleep_or_sleeping_too_much
+    text: Trouble falling or staying asleep, or sleeping too much
+    options: Not at All,Several Days,More Than Half the Days,Nearly Every Day
+  3:
+    input: radio
+    name: feeling_tired_or_having_little_energy
+    text: Feeling tired or having little energy
+    options: Not at All,Several Days,More Than Half the Days,Nearly Every Day
+  4:
+    input: radio
+    name: poor_appetite_or_overeating
+    text: Poor appetite or overeating
+    options: Not at All,Several Days,More Than Half the Days,Nearly Every Day
+  5:
+    input: radio
+    name: feeling_bad_about_yourself_or_that_you_are_a_failure_or_have_let_yourself_or_your_family_down
+    text: Feeling bad about yourself or that you are a failure, or have let yourself or your family down
+    options: Not at All,Several Days,More Than Half the Days,Nearly Every Day
+  6:
+    input: radio
+    name: trouble_concentrating_on_things_such_as_reading_the_newspaper_or_watching_television
+    text: Trouble concentrating on things, such as reading the newspaper or watching television
+    options: Not at All,Several Days,More Than Half the Days,Nearly Every Day
+  7:
+    input: radio
+    name: moving_or_speaking_so_slowly_that_other_people_could_have_noticed_or_the_opposite_being_so_fidgety_or_restless_that_you_have_been_moving_around_a_lot_more_than_usual
+    text: Moving or speaking so slowly that other people could have noticed?  Or the opposite - being so fidgety or restless that you have been moving around a lot more than usual
+    options: Not at All,Several Days,More Than Half the Days,Nearly Every Day
+  8:
+    input: radio
+    name: thoughts_that_you_would_be_better_off_dead_or_of_hurting_yourself_in_some_way
+    text: Thoughts that you would be better off dead or of hurting yourself in some way
+    options: Not at All,Several Days,More Than Half the Days,Nearly Every Day
+  9:
+    input: select
+    name: how_difficult_have_these_problems_made_it_for_you_to_do_your_work_take_care_of_things_at_home_or_get_along_with_other_people
+    text: How difficult have these problems made it for you to do your work, take care of things at home, or get along with other people
+    options: Not difficult at all,Somewhat difficult,Very difficult,Extremely difficult
+  scoring:
+    0-9: Minimal symptoms
+    10-14: Minor depression
+    15-19: Major depression, moderately severe
+    20-27: Major depression, severe
+Past Medical History:
+  forms_title: Past Medical History
+  forms_destination: PMH
+  0:
+    input: radio
+    name: cancer
+    text: Cancer
+    options: No,Yes
+  1:
+    input: radio
+    name: diabetes
+    text: Diabetes
+    options: No,Yes
+  2:
+    input: radio
+    name: hypertension
+    text: Hypertension
+    options: No,Yes
+Past Surgical History:
+  forms_title: Past Surgical History
+  forms_destination: PSH
+  0:
+    input: radio
+    name: appendectomy
+    text: Appendectomy
+    options: No,Yes
+  1:
+    input: radio
+    name: gall_bladder
+    text: Gall bladder
+    options: No,Yes
+  2:
+    input: radio
+    name: lap-band
+    text: Lap-band
+    options: No,Yes
+Social History:
+  forms_title: Social History
+  forms_destination: SH
+  0:
+    input: radio
+    name: children
+    text: Children
+    options: No,Yes
+  1:
+    input: text
+    name: how_many_children
+    text: How many children?
+  2:
+    input: select
+    name: exercise
+    text: Exercise?
+    options: No,Yes,Partial,Mostly
+Family History:
+  forms_title: Family History
+  forms_destination: FH
+  0:
+    input: radio
+    name: diabetes
+    text: Diabetes
+    options: No,Yes
+  1:
+    input: radio
+    name: hypertension
+    text: Hypertension
+    options: No,Yes
+  2:
+    input: radio
+    name: cancer
+    text: Cancer
+    options: No,Yes
+  3:
+    input: text
+    name: family_members_with_cancer
+    text: Family members with cancer
+NICHQ Vanderbilt Assessment Scale for Parents, Part 1:
+  forms_title: NICHQ Vanderbilt Assessment Scale for Parents, Part 1
+  forms_destination: HPI
+  0:
+    input: radio
+    name: does_not_pay_attention_to_details_or_makes_careless_mistakes_with_for_example_homework
+    text: Does not pay attention to details or makes careless mistakes with, for example, homework
+    options: Never,Occasionally,Often,Very Often
+  1:
+    input: radio
+    name: has_difficulty_keeping_attention_to_what_needs_to_be_done
+    text: Has difficulty keeping attention to what needs to be done
+    options: Never,Occasionally,Often,Very Often
+  2:
+    input: radio
+    name: does_not_seem_to_listen_when_spoken_to_directly
+    text: Does not seem to listen when spoken to directly
+    options: Never,Occasionally,Often,Very Often
+  3:
+    input: radio
+    name: does_not_follow_through_on_instructions_and_fails_to_finish_schoolwork_chores_or_duties
+    text: Does not follow through on instructions and fails to finish schoolwork, chores, or duties
+    options: Never,Occasionally,Often,Very Often
+  4:
+    input: radio
+    name: has_difficulty_organizing_tasks_and_activities
+    text: Has difficulty organizing tasks and activities
+    options: Never,Occasionally,Often,Very Often
+  5:
+    input: radio
+    name: avoids_dislikes_or_is_reluctant_to_engage_in_tasks_that_require_sustained_mental_effort_e_g_schoolwork_or_homework
+    text: Avoids, dislikes, or is reluctant to engage in tasks that require sustained mental effort (e.g., schoolwork or homework)
+    options: Never,Occasionally,Often,Very Often
+  6:
+    input: radio
+    name: loses_things_necessary_for_tasks_or_activities_e_g_toys_school_assignments_pencils_books_or_tools
+    text: Loses things necessary for tasks or activities (e.g., toys, school assignments, pencils, books, or tools)
+    options: Never,Occasionally,Often,Very Often
+  7:
+    input: radio
+    name: is_distracted_by_extraneous_stimuli
+    text: Is distracted by extraneous stimuli
+    options: Never,Occasionally,Often,Very Often
+  8:
+    input: radio
+    name: is_forgetful_in_daily_activities
+    text: Is forgetful in daily activities
+    options: Never,Occasionally,Often,Very Often
+  scoring:
+    0-11: Minimal symptoms
+    12-27: ADHD, predominantly inattenive type
+NICHQ Vanderbilt Assessment Scale for Parents, Part 2:
+  forms_title: NICHQ Vanderbilt Assessment Scale for Parents, Part 2
+  forms_destination: HPI
+  0:
+    input: radio
+    name: fidgets_with_hands_or_feet_or_squirms_in_seat
+    text: Fidgets with hands or feet or squirms in seat
+    options: Never,Occasionally,Often,Very Often
+  1:
+    input: radio
+    name: leaves_seat_in_classroom_or_in_other_situations_in_which_remaining_seated_is_expected
+    text: Leaves seat in classroom or in other situations in which remaining seated is expected
+    options: Never,Occasionally,Often,Very Often
+  2:
+    input: radio
+    name: runs_about_or_climbs_excessively_in_situations_in_which_remaining_seated_is_expected
+    text: Runs about or climbs excessively in situations in which remaining seated is expected
+    options: Never,Occasionally,Often,Very Often
+  3:
+    input: radio
+    name: has_difficulty_playing_or_engaging_in_leisure_activities_quietly
+    text: Has difficulty playing or engaging in leisure activities quietly
+    options: Never,Occasionally,Often,Very Often
+  4:
+    input: radio
+    name: is_on_the_go_or_often_acts_as_if_driven_by_a_motor
+    text: Is "on the go" or often acts as if "driven by a motor"
+    options: Never,Occasionally,Often,Very Often
+  5:
+    input: radio
+    name: talks_excessively
+    text: Talks excessively
+    options: Never,Occasionally,Often,Very Often
+  6:
+    input: radio
+    name: blurts_out_answers_before_questions_have_been_completed
+    text: Blurts out answers before questions have been completed
+    options: Never,Occasionally,Often,Very Often
+  7:
+    input: radio
+    name: has_difficulty_waiting_in_line
+    text: Has difficulty waiting in line
+    options: Never,Occasionally,Often,Very Often
+  8:
+    input: radio
+    name: interrupts_or_intrudes_on_others_eg_butts_into_conversations_games
+    text: Interrupts or intrudes on others (eg, butts into conversations/games)
+    options: Never,Occasionally,Often,Very Often
+  scoring:
+    0-11: Minimal symptoms
+    12-27: ADHD, predominantly hyperactive type
+NICHQ Vanderbilt Assessment Scale for Parents, Part 2:
+  forms_title: NICHQ Vanderbilt Assessment Scale for Parents, Part 3
+  forms_destination: HPI
+  0:
+    input: radio
+    name: argues_with_adults
+    text: Argues with adults
+    options: Never,Occasionally,Often,Very Often
+  1:
+    input: radio
+    name: loses_temper
+    text: Loses temper
+    options: Never,Occasionally,Often,Very Often
+  2:
+    input: radio
+    name: deliberately_annoys_people
+    text: Deliberately annoys people
+    options: Never,Occasionally,Often,Very Often
+  3:
+    input: radio
+    name: blames_others_for_his_or_her_mistakes_or_misbehaviors
+    text: Blames others for his or her mistakes or misbehaviors
+    options: Never,Occasionally,Often,Very Often
+  4:
+    input: radio
+    name: is_touchy_or_easily_annoyed_by_others
+    text: Is touchy or easily annoyed by others
+    options: Never,Occasionally,Often,Very Often
+  5:
+    input: radio
+    name: is_angry_or_resentful
+    text: Is angry or resentful
+    options: Never,Occasionally,Often,Very Often
+  6:
+    input: radio
+    name: is_spiteful_and_wants_to_get_even
+    text: Is spiteful and wants to get even
+    options: Never,Occasionally,Often,Very Often
+  scoring:
+    0-7: Minimal symptoms
+    8-24: Oppositional Definant Disorder Screen
+HPQ-How is Your Health:
+  forms_title: HPQ-How is Your Health
+  forms_destination: HPI
+  0:
+    input: radio
+    name: head-headaches_or_migraines
+    text: Head-Headaches or Migraines
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect is not severe,Frequently have it,
+      effect is severe
+  1:
+    input: radio
+    name: head-faintness
+    text: Head-Faintness
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect is not severe,Frequently have it,
+      effect is severe
+  2:
+    input: radio
+    name: head-dizziness
+    text: Head-Dizziness
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  3:
+    input: radio
+    name: head-insomnia
+    text: Head-Insomnia
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  4:
+    input: radio
+    name: eyes-watery_or_itchy_eyes
+    text: Eyes-Watery or itchy eyes
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  5:
+    input: radio
+    name: eyes-swollen,_red_or_sticky_eyes
+    text: Eyes-Swollen, red or sticky eyes
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  6:
+    input: radio
+    name: eyes-bags_or_dark_circles_under_eyes
+    text: Eyes-Bags or dark circles under eyes
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  7:
+    input: radio
+    name: eyes-blurred_or_tunnel_vision
+    text: Eyes-Blurred or tunnel vision
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  8:
+    input: radio
+    name: ears-itchy_ears
+    text: Ears-Itchy ears
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  9:
+    input: radio
+    name: ears-earache,_ear_infection
+    text: Ears-Earache, ear infection
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  10:
+    input: radio
+    name: ears-ear_drainage_or_excessive_wax
+    text: Ears-Ear drainage or excessive wax
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  11:
+    input: radio
+    name: ears-ear_ringing_or_hearing_loss
+    text: Ears-Ear ringing or hearing loss
+    options: >
+      Never or almost never,Occasionally have
+      it, effect is not severe,Occasionally
+      have it, effect is severe,Frequently
+      have it, effect not severe,Frequently
+      have it, effect is severe
+  12:
+    input: radio
+    name: nose-stuffy_nose
+    text: Nose-Stuffy nose
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  13:
+    input: radio
+    name: nose-sinus_problems
+    text: Nose-Sinus problems
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  14:
+    input: radio
+    name: nose-hay_fever
+    text: Nose-Hay fever
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is sever,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  15:
+    input: radio
+    name: nose-sneezing_attacks
+    text: Nose-Sneezing attacks
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  16:
+    input: radio
+    name: nose-excessive_nasal_mucous
+    text: Nose-Excessive nasal mucous
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  17:
+    input: radio
+    name: oral-chronic_cough
+    text: Oral-Chronic cough
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  18:
+    input: radio
+    name: oral-gagging,_clearing_throat
+    text: Oral-Gagging, clearing throat
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  19:
+    input: radio
+    name: oral-sore_throat,_hoarse
+    text: Oral-Sore throat, hoarse
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  20:
+    input: radio
+    name: oral-swollen_tongue,_lips,_gums
+    text: Oral-Swollen tongue, lips, gums
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  21:
+    input: radio
+    name: oral-canker_sores
+    text: Oral-Canker sores
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  22:
+    input: radio
+    name: skin-acne
+    text: Skin-Acne
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  23:
+    input: radio
+    name: skin-hives,_rashes,_dryness
+    text: Skin-Hives, rashes, dryness
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  24:
+    input: radio
+    name: skin-hair_loss
+    text: Skin-Hair loss
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  25:
+    input: radio
+    name: skin-flushing,_hot_flashes
+    text: Skin-Flushing, hot flashes
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  26:
+    input: radio
+    name: skin-excessive_sweating
+    text: Skin-Excessive sweating
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  27:
+    input: radio
+    name: heart-irregular,_skipped_beats
+    text: Heart-Irregular, skipped beats
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  28:
+    input: radio
+    name: heart-rapid,_pounding
+    text: Heart-Rapid, pounding
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  29:
+    input: radio
+    name: heart-chest_pain
+    text: Heart-Chest pain
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  30:
+    input: radio
+    name: lungs-chest_congestion
+    text: Lungs-Chest congestion
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  31:
+    input: radio
+    name: lungs-asthma,_bronchitis
+    text: Lungs-Asthma, bronchitis
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  32:
+    input: radio
+    name: lungs-shortness_of_breath
+    text: Lungs-Shortness of breath
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  33:
+    input: radio
+    name: lungs-difficulty_breathing
+    text: Lungs-Difficulty breathing
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  34:
+    input: radio
+    name: other-frequent_illness
+    text: Other-Frequent illness
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  35:
+    input: radio
+    name: other-frequent/urgent_urination
+    text: Other-Frequent/urgent urination
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  36:
+    input: radio
+    name: other-genital_itch
+    text: Other-Genital itch
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  37:
+    input: radio
+    name: digestion-nausea,_vomiting
+    text: Digestion-Nausea, Vomiting
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  38:
+    input: radio
+    name: digestion-diarrhea_or_loose_stools
+    text: Digestion-Diarrhea or loose stools
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect is not severe,Frequently have it,
+      effect is severe
+  39:
+    input: radio
+    name: digestion-constipation
+    text: Digestion-Constipation
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  40:
+    input: radio
+    name: digestion-bloated_feeling
+    text: Digestion-Bloated feeling
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  41:
+    input: radio
+    name: digestion-belching,_passing_gas
+    text: Digestion-Belching, passing gas
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  42:
+    input: radio
+    name: digestion-heartburn,_acid_reflux
+    text: Digestion-Heartburn, acid reflux
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  43:
+    input: radio
+    name: digestion-stomach_or_intestinal_pain
+    text: Digestion-Stomach or Intestinal pain
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not sever,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  44:
+    input: radio
+    name: joints/muscle-pain_or_aches_in_joints
+    text: Joints/Muscle-Pain or aches in joints
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  45:
+    input: radio
+    name: joints/muscles-arthritis
+    text: Joints/Muscles-Arthritis
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  46:
+    input: radio
+    name: >
+      joints/muscles-stiffness_or_limited_movement
+    text: >
+      Joints/Muscles-Stiffness or limited
+      movement
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  47:
+    input: radio
+    name: joints/muscles-pain_or_aches_in_muscles
+    text: Joints/Muscles-Pain or aches in muscles
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  48:
+    input: radio
+    name: >
+      joints/muscles-feeling_of_weakness_or_tiredness
+    text: >
+      Joints/Muscles-Feeling of weakness or
+      tiredness
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  49:
+    input: radio
+    name: weight-binge_eating/drinking
+    text: Weight-Binge eating/drinking
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  50:
+    input: radio
+    name: weight-craving_certain_foods
+    text: Weight-Craving certain foods
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  51:
+    input: radio
+    name: weight-excess_weight
+    text: Weight-Excess weight
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  52:
+    input: radio
+    name: weight-compulsive_eating
+    text: Weight-Compulsive eating
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  53:
+    input: radio
+    name: weight-water_retention
+    text: Weight-Water retention
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  54:
+    input: radio
+    name: weight-underweight
+    text: Weight-Underweight
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  55:
+    input: radio
+    name: weight-lack_of_appetite
+    text: Weight-Lack of appetite
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  56:
+    input: radio
+    name: energy/activity-fatigue,_sluggishness
+    text: Energy/Activity-Fatigue, sluggishness
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  57:
+    input: radio
+    name: energy/activity-apathy,_lethargy
+    text: Energy/Activity-Apathy, lethargy
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  58:
+    input: radio
+    name: energy/activity-hyperactivity
+    text: Energy/Activity-Hyperactivity
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  59:
+    input: radio
+    name: energy/activity-restlessness
+    text: Energy/Activity-Restlessness
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  60:
+    input: radio
+    name: mind-poor_memory
+    text: Mind-Poor memory
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  61:
+    input: radio
+    name: mind-confusion,_poor_comprehension
+    text: Mind-Confusion, poor comprehension
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  62:
+    input: radio
+    name: mind-poor_concentration
+    text: Mind-Poor concentration
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  63:
+    input: radio
+    name: mind-poor_physical_coordination
+    text: Mind-Poor physical coordination
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  64:
+    input: radio
+    name: mind-difficulty_making_decisions
+    text: Mind-Difficulty making decisions
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  65:
+    input: radio
+    name: mind-stuttering_or_stammering
+    text: Mind-Stuttering or stammering
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  66:
+    input: radio
+    name: mind-slurred_speach
+    text: Mind-Slurred speach
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  67:
+    input: radio
+    name: mind-learning_disabilities
+    text: Mind-Learning disabilities
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  68:
+    input: radio
+    name: emotions-mood_swings
+    text: Emotions-Mood swings
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  69:
+    input: radio
+    name: emotions-anxiety,_fear,_nervousness
+    text: Emotions-Anxiety, fear, nervousness
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  70:
+    input: radio
+    name: >
+      emotions-anger,_irritability,_aggressiveness
+    text: >
+      Emotions-Anger, irritability,
+      aggressiveness
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  71:
+    input: radio
+    name: >
+      emotions-depression,_sadness,_lack_of_joy
+    text: >
+      Emotions-Depression, sadness, lack of
+      joy
+    options: >
+      Never or almost never,Occasionally have
+      it, effect not severe,Occasionally have
+      it, effect is severe,Frequently have it,
+      effect not severe,Frequently have it,
+      effect is severe
+  scoring: >
+    1-15 Low toxic load, 15-49 Moderate
+    toxic load, 50-74 Elevated toxic load,
+    +75 Dangerous toxic levels
+Family Medical History:
+  forms_title: Family Medical History
+  forms_destination: FH
+  0:
+    input: checkbox
+    name: >
+      please_indicate_if_an_immediate_family_member_has_currently_or_has_been_diagnosed_in_the_past_with_any_of_the_following
+    text: 'Please indicate if an immediate family member has currently or has been diagnosed in the past with any of the following:'
+    options: >
+      Allergies,Alcoholism,Asthma,Arteriosclerosis,Heart
+      Disease,Hypertension,Auto-immune
+      Disorders,Arthritis,Diabetes,Seizures,Epilepsy,Stroke,Kidney
+      Disease,Mental Illness,Cancer
+  scoring:

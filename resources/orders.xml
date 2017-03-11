@@ -1,0 +1,22 @@
+               <entry>
+                  <encounter
+                     moodCode="RQO"
+                     classCode="PROC">
+                     <templateId
+                        root="2.16.840.1.113883.10.20.22.4.41"/>
+                     <!--  ****  Plan of Care Activity Encounter template  **** -->
+                     <id
+                        root="?orders_random_id1?"/>
+                     <code
+                        code="?orders_code?"
+                        codeSystem="2.16.840.1.113883.6.96"
+                        displayName="?orders_description?"
+                        codeSystemName="SNOMED-CT"/>
+                     <statusCode
+                        code="new"/>
+                     <effectiveTime>
+                        <center value="?orders_date?"/>
+                     </effectiveTime>
+                  </encounter>
+               </entry>
+               

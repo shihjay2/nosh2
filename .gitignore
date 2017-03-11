@@ -1,0 +1,6 @@
+/vendor
+Homestead.yaml
+Homestead.json
+.env
+.version
+.google

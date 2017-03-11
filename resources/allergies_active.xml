@@ -1,0 +1,157 @@
+               <entry
+                  typeCode="DRIV">
+                  <act
+                     classCode="ACT"
+                     moodCode="EVN">
+                     <templateId
+                        root="2.16.840.1.113883.10.20.22.4.30"/>
+                     <!-- ** Allergy problem act ** -->
+                     <id
+                        root="?allergy_random_id1?"/>
+                     <code
+                        code="48765-2"
+                        codeSystem="2.16.840.1.113883.6.1"
+                        codeSystemName="LOINC"
+                        displayName="Allergies, adverse reactions, alerts"/>
+                     <statusCode
+                        code="completed"/>
+                     <effectiveTime
+                        value="?allergies_date_active?">
+                        <low
+                           value="?allergies_date_active?"/>
+                     </effectiveTime>
+                     <entryRelationship
+                        typeCode="SUBJ">
+                        <observation
+                           classCode="OBS"
+                           moodCode="EVN">
+                           <!-- allergy observation template -->
+                           <templateId
+                              root="2.16.840.1.113883.10.20.22.4.7"/>
+                           <id
+                              root="?allergy_random_id2?"/>
+                           <code
+                              code="ASSERTION"
+                              codeSystem="2.16.840.1.113883.5.4"/>
+                           <statusCode
+                              code="completed"/>
+                           <effectiveTime>
+                              <low
+                                 value="?allergies_date_active?"/>
+                           </effectiveTime>
+                           <value
+                              xsi:type="CD"
+                              code="419511003"
+                              displayName="Propensity to adverse reaction to drug"
+                              codeSystem="2.16.840.1.113883.6.96"
+                              codeSystemName="SNOMED CT">
+                              <originalText>
+                                 <reference
+                                    value="?reaction_number?"/>
+                              </originalText>
+                           </value>
+                           <participant
+                              typeCode="CSM">
+                              <participantRole
+                                 classCode="MANU">
+                                 <playingEntity
+                                    classCode="MMAT">
+                                    <code
+                                       code="?allergies_code?"
+                                       displayName="?allergies_med?"
+                                       codeSystem="2.16.840.1.113883.6.88"
+                                       codeSystemName="RxNorm">
+                                       <originalText>
+                                          <reference
+                                             value="?reaction_number?"/>
+                                       </originalText>
+                                    </code>
+                                 </playingEntity>
+                              </participantRole>
+                           </participant>
+                           <entryRelationship
+                              typeCode="SUBJ"
+                              inversionInd="true">
+                              <observation
+                                 classCode="OBS"
+                                 moodCode="EVN">
+                                 <templateId
+                                    root="2.16.840.1.113883.10.20.22.4.28"/>
+                                 <!-- Allergy status observation template -->
+                                 <code
+                                    code="33999-4"
+                                    codeSystem="2.16.840.1.113883.6.1"
+                                    codeSystemName="LOINC"
+                                    displayName="Status"/>
+                                 <statusCode
+                                    code="completed"/>
+                                 <value
+                                    xsi:type="CE"
+                                    code="55561003"
+                                    codeSystem="2.16.840.1.113883.6.96"
+                                    displayName="?allergies_status?"/>
+                              </observation>
+                           </entryRelationship>
+                           <entryRelationship
+                              typeCode="MFST"
+                              inversionInd="true">
+                              <observation
+                                 classCode="OBS"
+                                 moodCode="EVN">
+                                 <templateId
+                                    root="2.16.840.1.113883.10.20.22.4.9"/>
+                                 <!-- Reaction observation template -->
+                                 <id
+                                    root="?allergy_random_id3?"/>
+                                 <code
+                                    nullFlavor="NA"/>
+                                 <text>
+                                    <reference
+                                       value="?reaction_number?"/>
+                                 </text>
+                                 <statusCode
+                                    code="completed"/>
+                                 <effectiveTime>
+                                    <low
+                                       value="?allergies_date_active?"/>
+                                 </effectiveTime>
+                                 <value xsi:type="CD" nullFlavor="UNK">
+                                    <originalText>
+                                       <reference value="?reaction_number?"/>
+                                    </originalText>
+                                 </value>
+                              </observation>
+                           </entryRelationship>
+                           <entryRelationship
+                              typeCode="SUBJ"
+                              inversionInd="true">
+                              <observation
+                                 classCode="OBS"
+                                 moodCode="EVN">
+                                 <templateId
+                                    root="2.16.840.1.113883.10.20.22.4.8"/>
+                                 <!-- ** Severity observation template ** -->
+                                 <code xsi:type="CE"
+                                    code="SEV"
+                                    displayName="Severity Observation"
+                                    codeSystem="2.16.840.1.113883.5.4"
+                                    codeSystemName="ActCode"/>
+                                 <text>
+                                    <reference
+                                       value="#severity2"/>
+                                 </text>
+                                 <statusCode
+                                    code="completed"/>
+                                 <value
+                                    xsi:type="CD"
+                                    code="?allergies_severity_code?"
+                                    displayName="?allergies_severity?"
+                                    codeSystem="2.16.840.1.113883.6.96"
+                                    codeSystemName="SNOMED CT"/>
+                              </observation>
+                           </entryRelationship>
+                        </observation>
+                     </entryRelationship>
+                  </act>
+               </entry>
+

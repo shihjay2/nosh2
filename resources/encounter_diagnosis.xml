@@ -1,0 +1,70 @@
+                     <entryRelationship
+                        typeCode="RSON">
+                        <observation
+                           classCode="OBS"
+                           moodCode="EVN">
+                           <templateId
+                              root="2.16.840.1.113883.10.20.22.4.19"/>
+                           <id
+                              root="?dx_random_id1?"
+                              extension="45665"/>
+                           <code
+                              code="404684003"
+                              displayName="Finding"
+                              codeSystem="2.16.840.1.113883.6.96"
+                              codeSystemName="SNOMED CT"/>
+                           <statusCode
+                              code="completed"/>
+                           <effectiveTime>
+                              <low
+                                 value="?encounter_dos?"/>
+                           </effectiveTime>
+                           <value
+                              xsi:type="CD"
+                              code="?icd9?"
+                              codeSystem="2.16.840.1.113883.6.103"
+                              displayName="?icd9_description?"/>
+                        </observation>
+                     </entryRelationship>
+                     <entryRelationship
+                        typeCode="SUBJ" inversionInd="false">
+                        <act classCode="ACT" moodCode="EVN">
+                           <!--Encounter diagnosis act -->
+                           <templateId root="2.16.840.1.113883.10.20.22.4.80"/>
+                           
+                           <id root="?dx_random_id2?"/>
+                           <code xsi:type="CE" 
+                              code="29308-4"
+                              codeSystem="2.16.840.1.113883.6.1" 
+                              codeSystemName="LOINC"
+                              displayName="ENCOUNTER DIAGNOSIS"/>
+                           <statusCode code="active"/>
+                           <effectiveTime>
+                              <low value="?encounter_dos?"/>
+                           </effectiveTime>
+                           <entryRelationship typeCode="SUBJ" inversionInd="false">
+                              <observation classCode="OBS" moodCode="EVN" negationInd="false">
+                                 <templateId root="2.16.840.1.113883.10.20.22.4.4"/>
+                                 <!-- Problem Observation -->
+                                 <id
+                                    root="?dx_random_id3?"/>
+                                 <code
+                                    code="282291009"
+                                    codeSystem="2.16.840.1.113883.6.96"
+                                    displayName="Diagnosis"/>
+                                 <statusCode
+                                    code="completed"/>
+                                 <effectiveTime>
+                                    <low
+                                       value="?encounter_dos?"/>
+                                 </effectiveTime>
+                                 <value
+                                    xsi:type="CD"
+                                    code="?icd9?"
+                                    codeSystem="2.16.840.1.113883.6.103"
+                                    displayName="?icd9_description?"/>
+                              </observation>
+                           </entryRelationship>
+                        </act>
+                     </entryRelationship>
+

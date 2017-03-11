@@ -1,0 +1,782 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="CDA.xsl"?>
+<ClinicalDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="urn:hl7-org:v3 ../../../CDA%20R2/cda-schemas-and-samples/infrastructure/cda/CDA.xsd"
+ xmlns="urn:hl7-org:v3"
+ xmlns:cda="urn:hl7-org:v3"
+ xmlns:sdtc="urn:hl7-org:sdtc">
+   
+   <!--
+********************************************************
+  CDA Header
+********************************************************
+	-->
+   <!-- CONF 16791 -->
+   <realmCode
+      code="US"/>
+   
+   <!-- CONF 5361 -->
+   <typeId
+      root="2.16.840.1.113883.1.3"
+      extension="POCD_HD000040"/>
+   
+   <!-- US General Header Template -->
+   <!-- CONF 5252 -->
+   <templateId
+      root="2.16.840.1.113883.10.20.22.1.1"/>
+   <!-- *** Note:  The next templateId, code and title will differ depending on what type of document is being sent. *** -->
+   <!-- conforms to the document specific requirements  -->
+   <templateId
+      root="2.16.840.1.113883.10.20.22.1.2"/>
+   
+   <!-- CONF 5363 -->
+   <id
+      extension="CCDA"
+      root="1.1.1.1.1.1.1.1.1"/>
+   
+   <!-- CONF 5253 "CCD document" -->
+   <code
+      codeSystem="2.16.840.1.113883.6.1"
+      codeSystemName="LOINC"
+      code="34133-9"
+      displayName="Summarization of Episode Note"/>
+   
+   <!-- CONF 5254 -->
+   <title>?practice_name?: Health Summary</title>
+   
+   <!-- CONF 5256 -->
+   <effectiveTime
+      value="?effectiveTime?"/>
+   
+   <!-- 5259 -->
+   <confidentialityCode
+      code="N"
+      codeSystem="2.16.840.1.113883.5.25"/>
+   
+   <!-- 5372 -->
+   <languageCode
+      code="en-US"/>
+   
+   <!-- CONF 5266 -->
+   <recordTarget>
+      
+      <!-- CONF 5267 -->
+      <patientRole>
+         
+         <!-- CONF 5268-->
+         <id
+            extension="?pid?"
+            root="2.16.840.1.113883.4.6"/>
+         <!-- Fake ID using HL7 example OID. -->
+         
+         <!-- Patient SSN recorded as an ID -->
+         <id
+            extension="?ss?"
+            root="2.16.840.1.113883.4.1"/>
+         
+         <!-- CONF 5271 -->
+         <addr
+            use="HP">
+            <!-- HP is "primary home" from codeSystem 2.16.840.1.113883.5.1119 -->
+            <streetAddressLine>?street_address1?</streetAddressLine>
+            <city>?city?</city>
+            <state>?state?</state>
+            <postalCode>?zip?</postalCode>
+            <country nullFlavor="UNK"/>
+            <!-- US is "United States" from ISO 3166-1 Country Codes: 1.0.3166.1 -->
+         </addr>
+         
+         <!-- CONF 5280 -->
+         <telecom
+            value="tel:?phone_home?"
+            use="HP"/>
+         <!-- HP is "primary home" from HL7 AddressUse 2.16.840.1.113883.5.1119 -->
+         
+         <!-- CONF 5283 -->
+         <patient>
+            
+            <!-- CONF 5284 -->
+            <name
+               use="L">
+               <!-- L is "Legal" from HL7 EntityNameUse 2.16.840.1.113883.5.45 -->
+               <given>?firstname?</given>
+               <!-- CL is "Call me" from HL7 EntityNamePartQualifier 2.16.840.1.113883.5.43 -->
+               <family>?lastname?</family>
+            </name>
+            <administrativeGenderCode
+               code="?gender?"
+               codeSystem="2.16.840.1.113883.5.1"
+               displayName="?gender_full?"/>
+            <birthTime
+               value="?dob?"/>
+            
+            <maritalStatusCode
+               code="?marital_code?"
+               displayName="?marital_status?"
+               codeSystem="2.16.840.1.113883.5.2"
+               codeSystemName="MaritalStatusCode"/>
+            <raceCode
+               code="?race_code?"
+               displayName="?race?"
+               codeSystem="2.16.840.1.113883.6.238"
+               codeSystemName="Race and Ethnicity - CDC"/>
+            <ethnicGroupCode
+               code="?ethnicity_code?"
+               displayName="?ethnicity?"
+               codeSystem="2.16.840.1.113883.6.238"
+               codeSystemName="Race and Ethnicity - CDC"/>
+                 
+            <guardian>
+               <code
+                  code="?guardian_code?"
+                  displayName="?guardian_relationship?"
+                  codeSystem="2.16.840.1.113883.5.111"
+                  codeSystemName="HL7 Role code"/>
+               <addr
+                  use="HP">
+                  <!-- HP is "primary home" from codeSystem 2.16.840.1.113883.5.1119 -->
+                  <streetAddressLine>?guardian_address?</streetAddressLine>
+                  <city>?guardian_city?</city>
+                  <state>?guardian_state?</state>
+                  <postalCode>?guardian_zip?</postalCode>
+                  <country nullFlavor="UNK"/>
+                  <!-- US is "United States" from ISO 3166-1 Country Codes: 1.0.3166.1 -->
+               </addr>
+               <telecom
+                  value="tel:?guardian_phone_home?"
+                  use="HP"/>
+               <guardianPerson>
+                  <name>
+                     <given>?guardian_firstname?</given>
+                     <family>?guardian_lastname?</family>
+                  </name>
+               </guardianPerson>
+            </guardian>
+            <birthplace nullFlavor="UNK"/>
+            
+            <!-- FIX  the Code System to be 639.2 -->
+            <languageCommunication>
+               <languageCode
+                  code="?lang_code?"/>
+               <modeCode
+                  code="ESP"
+                  displayName="Expressed spoken"
+                  codeSystem="2.16.840.1.113883.5.60"
+                  codeSystemName="LanguageAbilityMode"/>
+               <preferenceInd
+                  value="true"/>
+            </languageCommunication>
+         </patient>
+         <providerOrganization>
+            <id
+               root="1.1.1.1.1.1.1.1.4"/>
+            <name>?practice_name?</name>
+            <telecom
+               use="WP"
+               value="tel:?practiceinfo_phone?"/>
+            <addr>
+               <streetAddressLine>?practiceinfo_street_address?</streetAddressLine>
+               <city>?practiceinfo_city?</city>
+               <state>?practiceinfo_state?</state>
+               <postalCode>?practiceinfo_zip?</postalCode>
+               <country nullFlavor="UNK"/>
+            </addr>
+         </providerOrganization>
+      </patientRole>
+   </recordTarget>
+   
+   <author>
+      <time
+         value="?effectiveTime?"/>
+      <assignedAuthor>
+         <id
+            extension="?user_id?"
+            root="2.16.840.1.113883.4.6"/>
+         <addr>
+            <streetAddressLine>?practiceinfo_street_address?</streetAddressLine>
+            <city>?practiceinfo_city?</city>
+            <state>?practiceinfo_state?</state>
+            <postalCode>?practiceinfo_zip?</postalCode>
+            <country nullFlavor="UNK"/>
+         </addr>
+         <telecom
+            use="WP"
+            value="tel:?practiceinfo_phone?"/>
+         <assignedPerson>
+            <name>
+               <prefix>?user_title?</prefix>
+               <given>?user_firstname?</given>
+               <family>?user_lastname?</family>
+            </name>
+         </assignedPerson>
+      </assignedAuthor>
+   </author>
+   <dataEnterer>
+      <assignedEntity>
+         <id
+            root="2.16.840.1.113883.4.6"
+            extension="999999943252"/>
+         <addr>
+            <streetAddressLine>?practiceinfo_street_address?</streetAddressLine>
+            <city>?practiceinfo_city?</city>
+            <state>?practiceinfo_state?</state>
+            <postalCode>?practiceinfo_zip?</postalCode>
+            <country nullFlavor="UNK"/>try>
+         </addr>
+         <telecom
+            use="WP"
+            value="tel:?practiceinfo_phone?"/>
+         <assignedPerson>
+            <name>
+               <given>?user_firstname?</given>
+               <family>?user_lastname?</family>
+            </name>
+         </assignedPerson>
+      </assignedEntity>
+   </dataEnterer>
+   <informant>
+      <assignedEntity>
+         <id
+            extension="99999999"
+            root="2.16.840.1.113883.19.5"/>
+         <addr>
+            <streetAddressLine>?practiceinfo_street_address?</streetAddressLine>
+            <city>?practiceinfo_city?</city>
+            <state>?practiceinfo_state?</state>
+            <postalCode>?practiceinfo_zip?</postalCode>
+            <country nullFlavor="UNK"/>
+         </addr>
+         <telecom
+            use="WP"
+            value="tel:?practiceinfo_phone?"/>
+         <assignedPerson>
+            <name>
+               <given>?user_firstname?</given>
+               <family>?user_lastname?</family>
+            </name>
+         </assignedPerson>
+      </assignedEntity>
+   </informant>
+   <custodian>
+      <assignedCustodian>
+         <representedCustodianOrganization>
+            <id
+               extension="99999999"
+               root="2.16.840.1.113883.4.6"/>
+            <name>?practice_name?</name>
+            <telecom
+               value="tel:?practiceinfo_phone?"
+               use="WP"/>
+            <addr
+               use="WP">
+               <streetAddressLine>?practiceinfo_street_address?</streetAddressLine>
+               <city>?practiceinfo_city?</city>
+               <state>?practiceinfo_state?</state>
+               <postalCode>?practiceinfo_zip?</postalCode>
+               <country nullFlavor="UNK"/>
+            </addr>
+         </representedCustodianOrganization>
+      </assignedCustodian>
+   </custodian>
+   <informationRecipient>
+      <intendedRecipient>
+         <informationRecipient>
+            <name>
+               <given></given>
+               <family></family>
+            </name>
+         </informationRecipient>
+         <receivedOrganization>
+            <name>?hippa_provider?</name>
+         </receivedOrganization>
+      </intendedRecipient>
+   </informationRecipient>
+   <legalAuthenticator>
+      <time
+         value="?effectiveTimeShort?"/>
+      <signatureCode
+         code="S"/>
+      <assignedEntity>
+         <id
+            extension="999999999"
+            root="2.16.840.1.113883.4.6"/>
+         <addr>
+            <streetAddressLine>?practiceinfo_street_address?</streetAddressLine>
+            <city>?practiceinfo_city?</city>
+            <state>?practiceinfo_state?</state>
+            <postalCode>?practiceinfo_zip?</postalCode>
+            <country nullFlavor="UNK"/>
+         </addr>
+         <telecom
+            use="WP"
+            value="tel:?practiceinfo_phone?"/>
+         <assignedPerson>
+            <name>
+               <given>?user_firstname?</given>
+               <family>?user_lastname?</family>
+            </name>
+         </assignedPerson>
+      </assignedEntity>
+   </legalAuthenticator>
+   <authenticator>
+      <time
+         value="?effectiveTimeShort?"/>
+      <signatureCode
+         code="S"/>
+      <assignedEntity>
+         <id
+            extension="99999999"
+            root="2.16.840.1.113883.4.6"/>
+         <addr>
+            <streetAddressLine>?practiceinfo_street_address?</streetAddressLine>
+            <city>?practiceinfo_city?</city>
+            <state>?practiceinfo_state?</state>
+            <postalCode>?practiceinfo_zip?</postalCode>
+            <country nullFlavor="UNK"/>
+         </addr>
+         <telecom
+            use="WP"
+            value="tel:?practiceinfo_phone?"/>
+         <assignedPerson>
+            <name>
+               <given>?user_firstname?</given>
+               <family>?user_lastname?</family>
+            </name>
+         </assignedPerson>
+      </assignedEntity>
+   </authenticator>
+   <documentationOf
+      typeCode="DOC">
+      <serviceEvent
+         classCode="PCPR">
+         <code
+            code="?icd9?"
+            codeSystem="2.16.840.1.113883.6.103"
+            codeSystemName="ICD-9-CM"
+            displayName="?icd9_description?"/>
+         <effectiveTime>
+            <low
+               value="?encounter_dos?"/>
+            <high
+               value="?encounter_dos?"/>
+         </effectiveTime>
+         <performer
+            typeCode="PRF">
+            <functionCode
+               code="?encounter_role_code?"
+               displayName="?encounter_role?"
+               codeSystem="2.16.840.1.113883.12.443"
+               codeSystemName="Provider Role">
+               <originalText>?encounter_role?</originalText>
+            </functionCode>
+            <time>
+               <low
+                  value="?encounter_dos?"/>
+               <high
+                  value="?encounter_dos?"/>
+            </time>
+            <assignedEntity>
+               <id
+                  extension="?npi?"
+                  root="2.16.840.1.113883.4.6"/>
+               <code
+                  code="208D00000X"
+                  displayName="General Practice"
+                  codeSystemName="Provider Codes"
+                  codeSystem="2.16.840.1.113883.6.101"/>
+               <addr>
+                  <streetAddressLine>?practiceinfo_street_address?</streetAddressLine>
+                  <city>?practiceinfo_city?</city>
+                  <state>?practiceinfo_state?</state>
+                  <postalCode>?practiceinfo_zip?</postalCode>
+                  <country nullFlavor="UNK"/>
+               </addr>
+               <telecom
+                  value="tel:?practiceinfo_phone?"
+                  use="WP"/>
+               <assignedPerson>
+                  <name>
+                     <prefix>?provider_title?</prefix>
+                     <given>?provider_firstname?</given>
+                     <family>?provider_lastname?</family>
+                  </name>
+               </assignedPerson>
+               <representedOrganization>
+                  <id
+                     root="2.16.840.1.113883.19.5.9999.1393"/>
+                  <name>?practice_name?</name>
+                  <telecom
+                     value="tel:?practiceinfo_phone?"
+                     use="WP"/>
+                  <addr>
+                     <streetAddressLine>?practiceinfo_street_address?</streetAddressLine>
+                     <city>?practiceinfo_city?</city>
+                     <state>?practiceinfo_state?</state>
+                     <postalCode>?practiceinfo_zip?</postalCode>
+                     <country nullFlavor="UNK"/>
+                  </addr>
+               </representedOrganization>
+            </assignedEntity>
+         </performer>
+      </serviceEvent>
+   </documentationOf>
+   
+   <componentOf>
+      <encompassingEncounter>
+         <id extension="?eid?" root="2.16.840.1.113883.4.6"/>
+         <code
+            code="?icd9?"
+            codeSystem="2.16.840.1.113883.6.103"
+            codeSystemName="ICD-9-CM"
+            displayName="?icd9_description?"/>
+         <effectiveTime>
+            <low
+               value="?encounter_dos?"/>
+            <high
+               value="?encounter_dos?"/>
+         </effectiveTime>
+         <responsibleParty>
+            <assignedEntity>
+               <id root="2.16.840.1.113883.4.6"/>
+               <assignedPerson>
+                  <name>
+                     <prefix>?provider_title?</prefix>
+                     <given>?provider_firstname?</given>
+                     <family>?provider_lastname?</family>
+                  </name>
+               </assignedPerson>
+            </assignedEntity>
+         </responsibleParty>
+         <encounterParticipant typeCode="ATND">
+            <assignedEntity>
+               <id root="2.16.840.1.113883.4.6"/>
+               <assignedPerson>
+                  <name>
+                     <prefix>?provider_title?</prefix>
+                     <given>?provider_firstname?</given>
+                     <family>?provider_lastname?</family>
+                  </name>
+               </assignedPerson>
+            </assignedEntity>
+         </encounterParticipant>
+         <location>
+            <healthCareFacility>
+               <id root="2.16.840.1.113883.4.6"/>
+            </healthCareFacility>
+         </location>
+      </encompassingEncounter>
+   </componentOf>
+   <!-- ********************************************************
+     CDA Body
+     ******************************************************** -->
+   <component>
+      <structuredBody>
+         <!-- *********************** -->
+       
+         <!--
+********************************************************
+Allergies, Adverse Reactions, Alerts
+********************************************************
+-->
+         <component>
+            <section>
+               <templateId
+                  root="2.16.840.1.113883.10.20.22.2.6.1"/>
+               <!-- Alerts section template -->
+               <code
+                  code="48765-2"
+                  codeSystem="2.16.840.1.113883.6.1"/>
+               <title>ALLERGIES, ADVERSE REACTIONS, ALERTS</title>
+               <text>
+                  <table
+                     border="1"
+                     width="100%">
+                     <thead>
+                        <tr>
+                           <th>Substance</th>
+                           <th>Reaction</th>
+                           <th>Severity</th>
+                           <th>Status</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        ?allergies_table?
+                     </tbody>
+                  </table>
+               </text>
+?allergies_file?
+            </section>
+         </component>
+         
+         <!--
+********************************************************
+ENCOUNTERS
+********************************************************
+-->
+         <component>
+            <section>
+               <templateId
+                  root="2.16.840.1.113883.10.20.22.2.22.1"/>
+               <!-- Encounters Section - required entries -->
+               <code
+                  code="46240-8"
+                  codeSystem="2.16.840.1.113883.6.1"
+                  codeSystemName="LOINC"
+                  displayName="History of encounters"/>
+               <title>ENCOUNTERS</title>
+               <text>
+                  <table
+                     border="1"
+                     width="100%">
+                     <thead>
+                        <tr>
+                           <th>Encounter</th>
+                           <th>Performer</th>
+                           <th>Location</th>
+                           <th>Date</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        ?encounters_table?
+                     </tbody>
+                  </table>
+               </text>
+?encounters_file?
+            </section>
+         </component>
+        
+         <!--
+********************************************************
+IMMUNIZATIONS
+********************************************************
+-->
+         <component>
+            <section>
+               <templateId
+                  root="2.16.840.1.113883.10.20.22.2.2.1"/>
+               <!-- Entries Required -->
+               <!--  ********  Immunizations section template   ******** -->
+               <code
+                  code="11369-6"
+                  codeSystem="2.16.840.1.113883.6.1"
+                  codeSystemName="LOINC"
+                  displayName="History of immunizations"/>
+               <title>IMMUNIZATIONS</title>
+               <text><content
+                     ID="immunSect"/>
+                  <table
+                     border="1"
+                     width="100%">
+                     <thead>
+                        <tr>
+                           <th>Vaccine</th>
+                           <th>Date</th>
+                           <th>Status</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        ?imm_table?
+                     </tbody>
+                  </table>
+               </text>
+?imm_file?
+            </section>
+         </component>
+         
+        
+         <!--
+********************************************************
+MEDICATIONS
+********************************************************
+-->
+         <component>
+            <section>
+               <templateId
+                  root="2.16.840.1.113883.10.20.22.2.1.1"/>
+               <code
+                  code="10160-0"
+                  codeSystem="2.16.840.1.113883.6.1"
+                  codeSystemName="LOINC"
+                  displayName="HISTORY OF MEDICATION USE"/>
+               <title>Medications</title>
+               <text>
+                  <table
+                     border="1"
+                     width="100%">
+                     <thead>
+                        <tr>
+                           <th>Medication</th>
+                           <th>Directions</th>
+                           <th>Start Date</th>
+                           <th>Status</th>
+                           <th>Indications</th>
+                           <th>Fill Instructions</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        ?med_table?
+                     </tbody>
+                  </table>
+               </text>
+?med_file?
+            </section>
+         </component>
+         
+         <!--
+********************************************************
+CARE PLAN
+********************************************************
+-->
+         <component>
+            <section>
+               <templateId
+                  root="2.16.840.1.113883.10.20.22.2.10"/>
+               <!--  **** Plan of Care section template  **** -->
+               <code
+                  code="18776-5"
+                  codeSystem="2.16.840.1.113883.6.1"
+                  codeSystemName="LOINC"
+                  displayName="Treatment plan"/>
+               <title>CARE PLAN</title>
+               <text>
+                  <table
+                     border="1"
+                     width="100%">
+                     <thead>
+                        <tr>
+                           <th>Planned Activity</th>
+                           <th>Planned Date</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        ?orders_table?
+                     </tbody>
+                  </table>
+               </text>
+?orders_file?
+            </section>
+         </component>
+         
+         <!--
+********************************************************
+PROBLEM LIST
+********************************************************
+-->
+         <component>
+            <section>
+               <templateId
+                  root="2.16.840.1.113883.10.20.22.2.5.1"/>
+               <code
+                  code="11450-4"
+                  codeSystem="2.16.840.1.113883.6.1"
+                  codeSystemName="LOINC"
+                  displayName="PROBLEM LIST"/>
+               <title>PROBLEMS</title>
+               <text><content
+                     ID="problems"/>
+                  ?issues_table?
+               </text>
+?issues_file?
+            </section>
+         </component>
+         
+         <!--
+********************************************************
+PROCEDURES
+********************************************************
+-->
+         <component>
+            <section>
+               <templateId
+                  root="2.16.840.1.113883.10.20.22.2.7.1"/>
+               <!-- Procedures section template -->
+               <code
+                  code="47519-4"
+                  codeSystem="2.16.840.1.113883.6.1"
+                  codeSystemName="LOINC"
+                  displayName="HISTORY OF PROCEDURES"/>
+               <title>PROCEDURES</title>
+               <text>
+                  <table
+                     border="1"
+                     width="100%">
+                     <thead>
+                        <tr>
+                           <th>Procedure</th>
+                           <th>Date</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        ?proc_table?
+                     </tbody>
+                  </table>
+               </text>
+?proc_file?
+            </section>
+         </component>
+         
+         <!--
+********************************************************
+SOCIAL HISTORY
+********************************************************
+-->
+         <component>
+            <!--   Social History ******** -->
+            <section>
+               <templateId
+                  root="2.16.840.1.113883.10.20.22.2.17"/>
+               <!--  ********  Social history section template   ******** -->
+               <code
+                  code="29762-2"
+                  codeSystem="2.16.840.1.113883.6.1"
+                  displayName="Social History"/>
+               <title>SOCIAL HISTORY</title>
+               <text>
+                  <table
+                     border="1"
+                     width="100%">
+                     <thead>
+                        <tr>
+                           <th>Social History Element</th>
+                           <th>Description</th>
+                           <th>Effective Dates</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        ?other_history_table?
+                     </tbody>
+                  </table>
+               </text>
+?other_history_file?
+            </section>
+         </component>
+         
+         <!--
+********************************************************
+VITAL SIGNS
+********************************************************
+-->
+         <component>
+            <section>
+               <templateId
+                  root="2.16.840.1.113883.10.20.22.2.4.1"/>
+               <code
+                  code="8716-3"
+                  codeSystem="2.16.840.1.113883.6.1"
+                  codeSystemName="LOINC"
+                  displayName="VITAL SIGNS"/>
+               <title>VITAL SIGNS</title>
+               <text>
+                  <table
+                     border="1"
+                     width="100%">
+                     ?vitals_table?
+                  </table>
+               </text>
+?vitals_file?
+            </section>
+         </component>
+  
+      </structuredBody>
+   </component>
+</ClinicalDocument>

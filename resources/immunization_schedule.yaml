@@ -1,0 +1,127 @@
+max_dose_count: 5
+immunizations:
+- name: 'HepB'
+  total_doses: 3
+  dose_age_recommendation:
+  - { name: 'Birth', month_span: [0,1] }
+  - { name: '1 - 2 mos', month_span: [1,2] }
+  - { name: '6 - 18 mos', month_span: [6,18] }
+  codes:
+  - { system: 'CVX', code: '45' } # hep b
+  - { system: 'CPT', code: '90731' } # hep b
+  - { system: 'CVX', code: '104' } # hepa-hepb
+  - { system: 'CPT', code: '90636' } # hepa-hepb
+  - { system: 'CVX', code: '110' } # DTaP-Hep B-IPV
+  - { system: 'CPT', code: '90723' } # DTaP-Hep B-IPV
+  - { system: 'CVX', code: '51' } # Hib-Hep B
+  - { system: 'CPT', code: '90748' } # Hib-Hep B
+  name_matches:
+  - 'hepb'
+  - 'hep b'
+  - 'hepatitis b'
+  - 'hepatitisb'
+  - 'pediarix'
+  patientImmunizations: []
+
+- name: 'Rotavirus'
+  total_doses: 3
+  dose_age_recommendation:
+  - { name: '2 mos', month_span: [2] }
+  - { name: '4 mos', month_span: [4] }
+  - { name: '6 mos (3rd dose IF RotaTeq used)', month_span: [6] }
+  name_matches:
+  - 'rotavirus'
+  - 'rv'
+  patientImmunizations: []
+
+- name: 'DTaP/Tdap'
+  total_doses: 5
+  dose_age_recommendation:
+  - { name: '2 mos', month_span: [2] }
+  - { name: '4 mos', month_span: [4] }
+  - { name: '6 mos', month_span: [6] }
+  - { name: '15 - 18 mos', month_span: [15,18] }
+  - { name: '4 - 6 yrs', month_span: [48,72] }
+  name_matches:
+  - 'dtap'
+  patientImmunizations: []
+
+- name: 'Hib'
+  total_doses: 4
+  dose_age_recommendation:
+  - { name: '2 mos', month_span: [2] }
+  - { name: '4 mos', month_span: [4] }
+  - { name: '6 mos (IF ActHIB, MenHibrix, or Pentacel)', month_span: [6] }
+  - { name: '15 - 18 mos (booster)', month_span: [15,18] }
+  name_matches:
+  - 'hib'
+  - 'pentacel'
+  - 'haemophilus influenza type b'
+  patientImmunizations: []
+
+- name: 'PCV'
+  total_doses: 4
+  dose_age_recommendation:
+  - { name: '2 mos', month_span: [2] }
+  - { name: '4 mos', month_span: [4] }
+  - { name: '6 mos', month_span: [6] }
+  - { name: '12 - 15 mos', month_span: [12,15] }
+  name_matches:
+  - 'pcv'
+  - 'prevnar'
+  patientImmunizations: []
+
+- name: 'IPV'
+  total_doses: 4
+  dose_age_recommendation:
+  - { name: '2 mos', month_span: [2] }
+  - { name: '4 mos', month_span: [4] }
+  - { name: '6 - 18 mos', month_span: [6,18] }
+  - { name: '4 - 6 yrs', month_span: [48,72] }
+  name_matches:
+  - 'ipv'
+  - 'polio'
+  patientImmunizations: []
+
+- name: 'MMR'
+  total_doses: 2
+  dose_age_recommendation:
+  - { name: '12 - 15 mos', month_span: [12,15] }
+  - { name: '4 - 6 yrs', month_span: [48,72] }
+  name_matches:
+  - 'mmr'
+  - 'mmrv'
+  patientImmunizations: []
+
+- name: 'Varicella'
+  total_doses: 2
+  dose_age_recommendation:
+  - { name: '12 mos', month_span: [12] }
+  - { name: '4 yrs', month_span: [48] }
+  name_matches:
+  - 'varicella'
+  - 'mmrv'
+  - 'proquad'
+  patientImmunizations: []
+
+- name: 'HepA'
+  total_doses: 2
+  dose_age_recommendation:
+  - { name: '12 - 23 mos', month_span: [12] }
+  - { name: '6 to 18 mos after first dose', month_span: [5000] }
+  name_matches:
+  - 'hep a'
+  - 'hepa'
+  - 'hepatitis a'
+  - 'havrix'
+  patientImmunizations: []
+
+- name: 'HPV'
+  total_doses: 3
+  dose_age_recommendation:
+  - { name: '11 years', month_span: [132] }
+  - { name: '2 mos after first dose', month_span: [5000] }
+  - { name: '6 mos after first dose', month_span: [5000] }
+  name_matches:
+  - 'hpv'
+  patientImmunizations: []
