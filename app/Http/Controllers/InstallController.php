@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App;
 use App\Http\Requests;
 use App\Libraries\OpenIDConnectClient;
+use Artisan;
 use Config;
 use Crypt;
 use DB;
