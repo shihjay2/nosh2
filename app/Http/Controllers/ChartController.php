@@ -286,8 +286,8 @@ class ChartController extends Controller {
         $edit = $this->access_level('7');
         $columns = Schema::getColumnListing('allergies');
         $row_index = $columns[0];
+        $list_array = [];
         if ($result->count()) {
-            $list_array = [];
             foreach ($result as $row) {
                 $arr = [];
                 $arr['label'] = $row->allergies_med . ' - ' . $row->allergies_reaction;
@@ -331,7 +331,10 @@ class ChartController extends Controller {
         if (Session::has('eid') && $type == 'active') {
             if (Session::get('group_id') == '2') {
                 // Mark conditions list as reviewed by physician
-                $allergies_encounter = implode("\n", array_column($list_array, 'label'));
+                $allergies_encounter = '';
+                if (count($list_array) > 0) {
+                    $allergies_encounter .= implode("\n", array_column($list_array, 'label'));
+                }
                 $allergies_encounter .= "\n" . 'Reviewed by ' . Session::get('displayname') . ' on ' . date('Y-m-d');
                 $encounter_query = DB::table('other_history')->where('eid', '=', Session::get('eid'))->first();
                 $encounter_data['oh_allergies'] = $allergies_encounter;
@@ -2081,10 +2084,10 @@ class ChartController extends Controller {
         $edit = $this->access_level('7');
         $columns = Schema::getColumnListing('issues');
         $row_index = $columns[0];
+        $pl_list_array = [];
+        $mh_list_array = [];
+        $sh_list_array = [];
         if ($result->count()) {
-            $pl_list_array = [];
-            $mh_list_array = [];
-            $sh_list_array = [];
             $return .= '<ul class="nav nav-tabs"><li class="active"><a data-toggle="tab" href="#pl">Problems</a></li><li><a data-toggle="tab" href="#mh" title="Medical History">Past</a></li><li><a data-toggle="tab" href="#sh" title="Surgical History">Surgeries</a></li></ul><div class="tab-content" style="margin-top:15px;">';
             foreach ($result as $row) {
                 if ($row->type == 'Problem List') {
@@ -2212,8 +2215,14 @@ class ChartController extends Controller {
         if (Session::has('eid') && $type == 'active') {
             if (Session::get('group_id') == '2') {
                 // Mark conditions list as reviewed by physician
-                $mh_encounter = implode("\n", array_column($mh_list_array, 'label'));
-                $sh_encounter = implode("\n", array_column($sh_list_array, 'label'));
+                $mh_encounter = '';
+                $sh_encounter = '';
+                if (count($mh_list_array) > 0) {
+                    $mh_encounter .= implode("\n", array_column($mh_list_array, 'label'));
+                }
+                if (count($sh_list_array) > 0) {
+                    $sh_encounter .= implode("\n", array_column($sh_list_array, 'label'));
+                }
                 $mh_encounter .= "\n" . 'Reviewed by ' . Session::get('displayname') . ' on ' . date('Y-m-d');
                 $sh_encounter .= "\n" . 'Reviewed by ' . Session::get('displayname') . ' on ' . date('Y-m-d');
                 $encounter_query = DB::table('other_history')->where('eid', '=', Session::get('eid'))->first();
@@ -5745,8 +5754,8 @@ class ChartController extends Controller {
         $edit = $this->access_level('7');
         $columns = Schema::getColumnListing('rx_list');
         $row_index = $columns[0];
+        $list_array = [];
         if ($result->count()) {
-            $list_array = [];
             foreach ($result as $row) {
                 $arr = [];
                 if ($row->rxl_sig == '') {
@@ -5803,10 +5812,13 @@ class ChartController extends Controller {
             $dropdown_array1['items'] = $items1;
             $data['panel_dropdown'] .= '<span class="fa-btn"></span>' . $this->dropdown_build($dropdown_array1);
         }
-        if (Session::has('eid')) {
+        if (Session::has('eid') && $type == 'active') {
             if (Session::get('group_id') == '2') {
                 // Mark medication list as reviewed by physician
-                $medications_encounter = implode("\n", array_column($list_array, 'label'));
+                $medications_encounter = '';
+                if (count($list_array) > 0) {
+                    $medications_encounter .= implode("\n", array_column($list_array, 'label'));
+                }
                 $medications_encounter .= "\n" . 'Reviewed by ' . Session::get('displayname') . ' on ' . date('Y-m-d');
                 $encounter_query = DB::table('other_history')->where('eid', '=', Session::get('eid'))->first();
                 $encounter_data['oh_meds'] = $medications_encounter;
@@ -6860,8 +6872,8 @@ class ChartController extends Controller {
         $edit = $this->access_level('7');
         $columns = Schema::getColumnListing('sup_list');
         $row_index = $columns[0];
+        $list_array = [];
         if ($result->count()) {
-            $list_array = [];
             foreach ($result as $row) {
                 $arr = [];
                 if ($row->sup_sig == '') {
@@ -6911,12 +6923,14 @@ class ChartController extends Controller {
             ];
             $dropdown_array1['items'] = $items1;
             $data['panel_dropdown'] .= '<span class="fa-btn"></span>' . $this->dropdown_build($dropdown_array1);
-
         }
-        if (Session::has('eid')) {
+        if (Session::has('eid') && $type == 'active') {
             if (Session::get('group_id') == '2') {
                 // Mark supplement list as reviewed by physician
-                $supplements_encounter = implode("\n", array_column($list_array, 'label'));
+                $supplements_encounter = '';
+                if (count($list_array) > 0) {
+                    $supplements_encounter .= implode("\n", array_column($list_array, 'label'));
+                }
                 $supplements_encounter .= "\n" . 'Reviewed by ' . Session::get('displayname') . ' on ' . date('Y-m-d');
                 $encounter_query = DB::table('other_history')->where('eid', '=', Session::get('eid'))->first();
                 $encounter_data['oh_supplements'] = $supplements_encounter;
