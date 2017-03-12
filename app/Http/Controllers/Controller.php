@@ -12729,7 +12729,7 @@ class Controller extends BaseController
     {
         $logo = '<br><br><br><br><br>';
         $practice = DB::table('practiceinfo')->where('practice_id', '=', $practice_id)->first();
-        if ($practice->practice_logo !== '') {
+        if ($practice->practice_logo !== '' && $practice->practice_logo !== null) {
             if (file_exists(public_path() . '/' . $practice->practice_logo)) {
                 $link = HTML::image($practice->practice_logo, 'Practice Logo', array('border' => '0', 'height' => '80px'));
                 $logo = str_replace('https', 'http', $link);
