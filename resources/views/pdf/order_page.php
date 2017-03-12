@@ -56,7 +56,7 @@
 		</table>
 		<div style="float:left;width:100%;">
 			<div style="border-bottom: 1px solid #000000; text-align: center; padding-bottom: 3mm; ">
-				<b class="smallcaps">Physician Order</b>
+				<b class="smallcaps"><?php echo $top;?></b>
 			</div>
 		</div>
 		<br>

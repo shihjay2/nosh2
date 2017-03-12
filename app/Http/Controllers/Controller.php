@@ -12079,11 +12079,11 @@ class Controller extends BaseController
         $data['orders_date'] = date('m/d/Y', $this->human_to_unix($data['orders']->orders_date));
         $data['insuranceInfo'] = nl2br($data['orders']->orders_insurance);
         $data['signature'] = $this->signature($data['orders']->id);
+        $data['top'] = 'Physician Order';
         if ($data['orders']->orders_referrals != '') {
-            return view('pdf.referral_page', $data);
-        } else {
-            return view('pdf.order_page', $data);
+            $data['top'] = 'Physician Referral';
         }
+        return view('pdf.order_page', $data);
     }
 
     protected function page_plan($eid)
