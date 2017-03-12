@@ -1265,16 +1265,18 @@ class ChartController extends Controller {
                             $this->audit('Add');
                         } else {
                             $old_alert = DB::table('alerts')->where('orders_id', '=', $row_id1)->first();
-                            $orders_alert_data = [
-                                'alert' => $alert_subject,
-                                'alert_description' => $description,
-                                'alert_date_active' => date('Y-m-d H:i:s', time()),
-                                'alert_date_complete' => '',
-                                'alert_reason_not_complete' => '',
-                                'alert_provider' => Session::get('user_id'),
-                            ];
-                            DB::table('alerts')->where('alert_id', '=', $old_alert->alert_id)->update($orders_alert_data);
-                            $this->audit('Update');
+                            if ($old_alert) {
+                                $orders_alert_data = [
+                                    'alert' => $alert_subject,
+                                    'alert_description' => $description,
+                                    'alert_date_active' => date('Y-m-d H:i:s', time()),
+                                    'alert_date_complete' => '',
+                                    'alert_reason_not_complete' => '',
+                                    'alert_provider' => Session::get('user_id'),
+                                ];
+                                DB::table('alerts')->where('alert_id', '=', $old_alert->alert_id)->update($orders_alert_data);
+                                $this->audit('Update');
+                            }
                         }
                     }
                 }
