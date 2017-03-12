@@ -162,7 +162,7 @@ class AjaxCoreController extends Controller
     }
 
     public function progress(Request $request)
-	{
+    {
         $progress = '0';
         $file = public_path() . '/temp/' . $request->input('id');
         if (file_exists($file)) {
@@ -170,7 +170,7 @@ class AjaxCoreController extends Controller
             $progress = File::get($file);
         }
         return $progress;
-	}
+    }
 
     public function read_message(Request $request)
     {
@@ -191,7 +191,7 @@ class AjaxCoreController extends Controller
         $table = $request->input('table');
         $row = DB::table($table)->where($request->input('index'), '=', $request->input('id'))->first();
         $row1 = DB::table('demographics')->where('pid', '=', $request->input('pid'))->first();
-		$html = '<strong>Patient:</strong>  ' . $row1->firstname . " " . $row1->lastname . '<br><br>';
+        $html = '<strong>Patient:</strong>  ' . $row1->firstname . " " . $row1->lastname . '<br><br>';
         if ($table == 'messaging') {
             $html .= '<strong>Date:</strong>  ' . date('m/d/Y', $this->human_to_unix($row->date)) . '<br><br><strong>Subject:</strong>  ' . $row->subject . '<br><br><strong>Message:</strong> ' . nl2br($row->body);
         }
@@ -200,9 +200,9 @@ class AjaxCoreController extends Controller
         }
         if ($table == 'mtm') {
             if ($row->mtm_date_completed != '') {
-    			$html .= '<strong>Date Completed:</strong>  ' . date('m/d/Y', $this->human_to_unix($row->mtm_date_completed));
-    		}
-    		$html .= '<br><br><strong>Description:</strong>  ' . nl2br($row->mtm_description) . '<br><br><strong>Recommendations:</strong>  ' . nl2br($row->mtm_recommendations) . '<br><br><strong>Beneficiary Notes:</strong>  ' . nl2br($row->mtm_beneficiary_notes) . '<br><br><strong>Action:</strong>  ' . nl2br($row->mtm_action) . '<br><br><strong>Outcomes:</strong>  ' . nl2br($row->mtm_outcomes) . '<br><br><strong>Related Conditions:</strong>  ' . nl2br($row->mtm_related_conditions);
+                $html .= '<strong>Date Completed:</strong>  ' . date('m/d/Y', $this->human_to_unix($row->mtm_date_completed));
+            }
+            $html .= '<br><br><strong>Description:</strong>  ' . nl2br($row->mtm_description) . '<br><br><strong>Recommendations:</strong>  ' . nl2br($row->mtm_recommendations) . '<br><br><strong>Beneficiary Notes:</strong>  ' . nl2br($row->mtm_beneficiary_notes) . '<br><br><strong>Action:</strong>  ' . nl2br($row->mtm_action) . '<br><br><strong>Outcomes:</strong>  ' . nl2br($row->mtm_outcomes) . '<br><br><strong>Related Conditions:</strong>  ' . nl2br($row->mtm_related_conditions);
         }
         return $html;
     }
@@ -228,44 +228,44 @@ class AjaxCoreController extends Controller
 
     // Future Functions
     public function hieofone()
-	{
-		$arr['response'] = 'y';
-		$arr['message'] = "Credentials transferred!";
-		$url = 'https://noshchartingsystem.com/nosh-sso/noshadduser';
-		$user = DB::table('users')->where('id', '=', Session::get('user_id'))->first();
-		if ($request->input('username') != '') {
-			$username = $request->input('username');
-		} else {
-			$username = $user->username;
-		}
-		$provider = DB::table('providers')->where('id', '=', Session::get('user_id'))->first();
-		$data = [
-			'username' => $username,
-			'password' => $user->password,
-			'email' => $user->email,
-			'npi' => $provider->npi,
-			'name' => $user->displayname,
-			'firstname' => $user->firstname,
-			'lastname' => $user->lastname,
-			'middle' => $user->middle
-		];
-		$result = $this->send_api_data($url, $data, '', '');
-		if ($result['url_error'] != '') {
-			$arr['response'] = 'n';
-			$arr['message'] = $result['url_error'];
-		} else {
-			if ($result['error'] == true) {
-				$arr['response'] = 'n';
-				$arr['message'] = $result['message'];
-			} else {
-				$new_data = array(
-					'uid' => $result['uid']
-				);
-				DB::table('users')->where('id', '=', Session::get('user_id'))->update($new_data);
-				$this->audit('Update');
-			}
-		}
-		echo json_encode($arr);
-	}
+    {
+        $arr['response'] = 'y';
+        $arr['message'] = "Credentials transferred!";
+        $url = 'https://noshchartingsystem.com/nosh-sso/noshadduser';
+        $user = DB::table('users')->where('id', '=', Session::get('user_id'))->first();
+        if ($request->input('username') != '') {
+            $username = $request->input('username');
+        } else {
+            $username = $user->username;
+        }
+        $provider = DB::table('providers')->where('id', '=', Session::get('user_id'))->first();
+        $data = [
+            'username' => $username,
+            'password' => $user->password,
+            'email' => $user->email,
+            'npi' => $provider->npi,
+            'name' => $user->displayname,
+            'firstname' => $user->firstname,
+            'lastname' => $user->lastname,
+            'middle' => $user->middle
+        ];
+        $result = $this->send_api_data($url, $data, '', '');
+        if ($result['url_error'] != '') {
+            $arr['response'] = 'n';
+            $arr['message'] = $result['url_error'];
+        } else {
+            if ($result['error'] == true) {
+                $arr['response'] = 'n';
+                $arr['message'] = $result['message'];
+            } else {
+                $new_data = array(
+                    'uid' => $result['uid']
+                );
+                DB::table('users')->where('id', '=', Session::get('user_id'))->update($new_data);
+                $this->audit('Update');
+            }
+        }
+        echo json_encode($arr);
+    }
 
 }

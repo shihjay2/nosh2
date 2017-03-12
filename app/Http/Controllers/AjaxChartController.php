@@ -86,22 +86,22 @@ class AjaxChartController extends Controller
     }
 
     public function test_reminder()
-	{
-		$row = DB::table('demographics')->where('pid', '=', Session::get('pid'))->first();
-		$to = $row->reminder_to;
+    {
+        $row = DB::table('demographics')->where('pid', '=', Session::get('pid'))->first();
+        $to = $row->reminder_to;
         $result = 'No reminder method set.';
-		if ($to != '') {
-			if ($row->reminder_method == 'Cellular Phone') {
-				$data_message['item'] = 'This is a test';
-				$message = view('emails.blank', $data_message)->render();
+        if ($to != '') {
+            if ($row->reminder_method == 'Cellular Phone') {
+                $data_message['item'] = 'This is a test';
+                $message = view('emails.blank', $data_message)->render();
                 $this->textbelt($row->phone_cell, $message);
                 $result = 'SMS sent successfully.';
-			} else {
-				$data_message['item'] = 'This is a test';
-				$this->send_mail('emails.blank', $data_message, 'Test Notification', $to, Session::get('practice_id'));
+            } else {
+                $data_message['item'] = 'This is a test';
+                $this->send_mail('emails.blank', $data_message, 'Test Notification', $to, Session::get('practice_id'));
                 $result = 'Email sent successfully.';
-			}
-		}
-		return $result;
-	}
+            }
+        }
+        return $result;
+    }
 }

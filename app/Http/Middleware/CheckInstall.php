@@ -22,7 +22,7 @@ class CheckInstall
     {
         // Check Database connection
         $env_file = base_path() . '/.env';
-    	if (file_exists($env_file)) {
+        if (file_exists($env_file)) {
             if (env('DB_DATABASE') == 'homestead') {
                 return redirect()->route('update_env');
             } else {
@@ -32,20 +32,20 @@ class CheckInstall
                     return redirect()->route('install_fix');
                 }
             }
-    	} else {
+        } else {
             return redirect()->route('update_env');
         }
 
         // Check if version file exists
         if (!file_exists(base_path() . '/.version')) {
-    		return redirect()->route('set_version');
-    	}
+            return redirect()->route('set_version');
+        }
 
         // Check if Google file for sending email via Gmail exists
         $google_file = base_path() . '/.google';
-    	if (!file_exists($google_file)) {
-    		return redirect()->route('google_start');
-    	}
+        if (!file_exists($google_file)) {
+            return redirect()->route('google_start');
+        }
 
         // Chcek if needing installation
         $install = DB::table('practiceinfo')->first();
@@ -55,28 +55,28 @@ class CheckInstall
 
         // Check for updates
         define('STDIN',fopen("php://stdin","r"));
-    	if (!Schema::hasTable('migrations')) {
-    		Artisan::call('migrate:install', ['--force' => true]);
-    	}
-    	Artisan::call('migrate', ['--force' => true]);
+        if (!Schema::hasTable('migrations')) {
+            Artisan::call('migrate:install', ['--force' => true]);
+        }
+        Artisan::call('migrate', ['--force' => true]);
         $current_version = "1.8.4";
         if ($install->version < $current_version) {
-    		return redirect()->route('update');
-    	}
+            return redirect()->route('update');
+        }
 
         // Check if OpenID Connect beta testing and register if not yet
         if (route('dashboard') == 'https://hieofone.com/nosh' || route('dashboard') == 'https://cloud.noshchartingsystem.com/nosh' || route('dashboard') == 'https://noshchartingsystem.com/nosh' || route('dashboard') == 'https://www.noshchartingsystem.com/nosh' || route('dashboard') == 'https://shihjay.xyz/nosh' || route('dashboard') == 'https://agropper.xyz/nosh') {
-    		if ($install->openidconnect_client_id == '') {
-    			return redirect()->route('oidc_register_client');
-    		}
-    	}
+            if ($install->openidconnect_client_id == '') {
+                return redirect()->route('oidc_register_client');
+            }
+        }
 
         // Check if pNOSH instance
-    	if ($install->patient_centric == 'y') {
-    		if ($install->uma_refresh_token == '') {
-    			return redirect()->route('uma_patient_centric');
-    		}
-    	}
+        if ($install->patient_centric == 'y') {
+            if ($install->uma_refresh_token == '') {
+                return redirect()->route('uma_patient_centric');
+            }
+        }
 
         return $next($request);
     }

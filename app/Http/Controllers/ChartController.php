@@ -186,12 +186,12 @@ class ChartController extends Controller {
         }
         if ($type == 'results') {
             $query->where('alert_date_complete', '=', '0000-00-00 00:00:00')
-    			->where('alert_reason_not_complete', '=', '')
-    			->where(function($query_array1) {
-    				$query_array1->where('alert', '=', 'Laboratory results pending')
-    				->orWhere('alert', '=', 'Radiology results pending')
-    				->orWhere('alert', '=', 'Cardiopulmonary results pending');
-    			});
+                ->where('alert_reason_not_complete', '=', '')
+                ->where(function($query_array1) {
+                    $query_array1->where('alert', '=', 'Laboratory results pending')
+                    ->orWhere('alert', '=', 'Radiology results pending')
+                    ->orWhere('alert', '=', 'Cardiopulmonary results pending');
+                });
         }
         $dropdown_array['items'] = $items;
         $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
@@ -360,11 +360,11 @@ class ChartController extends Controller {
     public function billing_delete_invoice(Request $request, $id)
     {
         DB::table('billing_core')->where('billing_core_id', '=', $id)->delete();
-		$this->audit('Delete');
-		DB::table('billing_core')->where('other_billing_id', '=', $id)->delete();
-		$this->audit('Delete');
-		Session::get('message_action', 'Miscellaneous bill deleted');
-		return redirect(Session::get('last_page'));
+        $this->audit('Delete');
+        DB::table('billing_core')->where('other_billing_id', '=', $id)->delete();
+        $this->audit('Delete');
+        Session::get('message_action', 'Miscellaneous bill deleted');
+        return redirect(Session::get('last_page'));
     }
 
     public function billing_details(Request $request, $id)
@@ -374,29 +374,29 @@ class ChartController extends Controller {
                 'cpt_charge' => 'numeric'
             ]);
             $id = $request->input('other_billing_id');
-    		$query = Billing_core::find($id);
-    		$data = array(
-    			'eid' => '0',
-    			'pid' => Session::get('pid'),
-    			'dos_f' => $request->input('dos_f'),
-    			'cpt_charge' => $request->input('cpt_charge'),
-    			'reason' => $request->input('reason'),
-    			'unit' => '1',
-    			'payment' => '0',
-    			'practice_id' => Session::get('practice_id')
-    		);
-    		if ($id !== 'new') {
-    			DB::table('billing_core')->where('billing_core_id', '=', $id)->update($data);
-    			$this->audit('Update');
-    			$message = 'Miscellaneous bill updated';
-    		} else {
-    			$id1 = DB::table('billing_core')->insertGetId($data);
-    			$this->audit('Add');
-    			$data1['other_billing_id'] = $id1;
-    			DB::table('billing_core')->where('billing_core_id', '=', $id1)->update($data1);
-    			$this->audit('Update');
-    			$message = 'Miscellaneous bill added';
-    		}
+            $query = Billing_core::find($id);
+            $data = array(
+                'eid' => '0',
+                'pid' => Session::get('pid'),
+                'dos_f' => $request->input('dos_f'),
+                'cpt_charge' => $request->input('cpt_charge'),
+                'reason' => $request->input('reason'),
+                'unit' => '1',
+                'payment' => '0',
+                'practice_id' => Session::get('practice_id')
+            );
+            if ($id !== 'new') {
+                DB::table('billing_core')->where('billing_core_id', '=', $id)->update($data);
+                $this->audit('Update');
+                $message = 'Miscellaneous bill updated';
+            } else {
+                $id1 = DB::table('billing_core')->insertGetId($data);
+                $this->audit('Add');
+                $data1['other_billing_id'] = $id1;
+                DB::table('billing_core')->where('billing_core_id', '=', $id1)->update($data1);
+                $this->audit('Update');
+                $message = 'Miscellaneous bill added';
+            }
             Session::put('message_action', $message);
             return redirect(Session::get('last_page'));
         } else {
@@ -500,23 +500,23 @@ class ChartController extends Controller {
                 'payment' => 'numeric'
             ]);
             $data = [
-    			'eid' => $request->input('eid'),
-    			'other_billing_id' => $request->input('other_billing_id'),
-    			'pid' => $request->input('pid'),
-    			'dos_f' => $request->input('dos_f'),
-    			'payment' => $request->input('payment'),
-    			'payment_type' => $request->input('payment_type'),
-    			'practice_id' => Session::get('practice_id')
-    		];
-    		if ($billing_id !== '') {
-    			DB::table('billing_core')->where('billing_core_id', '=', $billing_id)->update($data);
-    			$this->audit('Update');
-    			$message = 'Payment updated';
-    		} else {
-    			DB::table('billing_core')->insert($data);
-    			$this->audit('Add');
-    			$message = 'Payment added';
-    		}
+                'eid' => $request->input('eid'),
+                'other_billing_id' => $request->input('other_billing_id'),
+                'pid' => $request->input('pid'),
+                'dos_f' => $request->input('dos_f'),
+                'payment' => $request->input('payment'),
+                'payment_type' => $request->input('payment_type'),
+                'practice_id' => Session::get('practice_id')
+            ];
+            if ($billing_id !== '') {
+                DB::table('billing_core')->where('billing_core_id', '=', $billing_id)->update($data);
+                $this->audit('Update');
+                $message = 'Payment updated';
+            } else {
+                DB::table('billing_core')->insert($data);
+                $this->audit('Add');
+                $message = 'Payment added';
+            }
             Session::put('message_action', $message);
             return redirect(Session::get('billing_last_page'));
         } else {
@@ -613,9 +613,9 @@ class ChartController extends Controller {
     {
         if ($request->isMethod('post')) {
             $data['billing_notes'] = $request->input('billing_notes');
-    		DB::table('demographics_notes')->where('pid', '=', Session::get('pid'))->where('practice_id', '=', Session::get('practice_id'))->update($data);
-    		$this->audit('Update');
-    		Session::put('message_action', 'Billing notes updated');
+            DB::table('demographics_notes')->where('pid', '=', Session::get('pid'))->where('practice_id', '=', Session::get('practice_id'))->update($data);
+            $this->audit('Update');
+            Session::put('message_action', 'Billing notes updated');
             return redirect(Session::get('last_page'));
         } else {
             $result = DB::table('demographics_notes')->where('pid', '=', Session::get('pid'))->where('practice_id', '=', Session::get('practice_id'))->first();
@@ -706,10 +706,10 @@ class ChartController extends Controller {
     {
         $row = DB::table('demographics')->where('pid', '=', Session::get('pid'))->first();
         $gender = 'Male';
-		if ($row->sex == 'f' || $row->sex == 'u') {
-			$gender = 'Female';
-		}
-		$age = (time() - $this->human_to_unix($row->DOB))/31556926;
+        if ($row->sex == 'f' || $row->sex == 'u') {
+            $gender = 'Female';
+        }
+        $age = (time() - $this->human_to_unix($row->DOB))/31556926;
         $return = '';
         $type_arr = [
             'prevention' => ['Prevention', 'fa-calendar'],
@@ -742,21 +742,21 @@ class ChartController extends Controller {
                 'sexuallyActive' => $row->sexuallyactive,
                 'tobacco' => $row->tobacco
             ]);
-    		$cr = curl_init($url);
+            $cr = curl_init($url);
             curl_setopt($cr, CURLOPT_POST, 1);
             curl_setopt($cr, CURLOPT_POSTFIELDS, $post);
-    		curl_setopt($cr, CURLOPT_RETURNTRANSFER, true);
-    		curl_setopt($cr, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
-    		$data1 = curl_exec($cr);
-    		curl_close($cr);
+            curl_setopt($cr, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($cr, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
+            $data1 = curl_exec($cr);
+            curl_close($cr);
             $epss = json_decode($data1, true);
             if (isset($epss['specificRecommendations'])) {
-        		$return .= '<h4>US Preventative Services Task Force Recommendations</h4>';
+                $return .= '<h4>US Preventative Services Task Force Recommendations</h4>';
                 $grade_ab = '<div class="alert alert-success"><h5>Grades A & B</h5><p>Offer or provide this service:</p><ul>';
                 $grade_c = '<div class="alert alert-warning"><h5>Grade C</h5><p>Offer or provide this service for selected patients depending on individual circumstances:</p><ul>';
                 $grade_d = '<div class="alert alert-danger"><h5>Grade D</h5><p>Discourage the use of this service:</p><ul>';
                 $grade_i = '<div class="alert alert-info"><h5>Grade I</h5><p>Read the clinical considerations section of USPSTF Recommendation Statement. If the service is offered, patients should understand the uncertainty about the balance of benefits and harms:</p><ul>';
-         		foreach ($epss['specificRecommendations'] as $rec) {
+                 foreach ($epss['specificRecommendations'] as $rec) {
                     $rec_text = '<li>' . $rec['title'] . rtrim($rec['text']) . ', Grade: ' . $rec['grade'] .'</li>';
                     if ($rec['grade'] == 'A' || $rec['grade'] == 'B') {
                         $grade_ab .= $rec_text;
@@ -770,9 +770,9 @@ class ChartController extends Controller {
                     if ($rec['grade'] == 'I') {
                         $grade_i .= $rec_text;
                     }
-        		}
-        		$grade_ab .= '</ul></div>';
-            	$grade_c .= '</ul></div>';
+                }
+                $grade_ab .= '</ul></div>';
+                $grade_c .= '</ul></div>';
                 $grade_d .= '</ul></div>';
                 $grade_i .= '</ul></div>';
                 $return .= $grade_ab . $grade_c . $grade_d . $grade_i;
@@ -781,7 +781,7 @@ class ChartController extends Controller {
             }
         }
         if ($type == 'immunizations') {
-    		if (Session::get('agealldays') < 6574.5) {
+            if (Session::get('agealldays') < 6574.5) {
                 $imm_arr['patientImmunizationHistory'] = [];
                 $imm_arr['patientAgeMonths'] = round(Session::get('agealldays')/30.436875);
                 $imms = DB::table('immunizations')->where('pid', '=', Session::get('pid'))->get();
@@ -937,7 +937,9 @@ class ChartController extends Controller {
         foreach ($nosh_action_tables as $nosh_action_table) {
             if ($nosh_action_table == $table) {
                 if (isset($data['nosh_action'])) {
-                    $next_action = $data['nosh_action'];
+                    if ($data['nosh_action'] !== '') {
+                        $next_action = $data['nosh_action'];
+                    }
                     unset($data['nosh_action']);
                 }
             }
@@ -1042,12 +1044,12 @@ class ChartController extends Controller {
             if ($id == '0') {
                 $data['eid'] = Session::get('eid');
                 $encounterInfo = DB::table('encounters')->where('eid', '=', Session::get('eid'))->first();
-    			$demographicsInfo = DB::table('demographics')->where('pid', '=', Session::get('pid'))->first();
-    			$a = $this->human_to_unix($encounterInfo->encounter_DOS);
-    			$b = $this->human_to_unix($demographicsInfo->DOB);
-    			$data['pedsage'] = ($a - $b)/2629743;
-    			$data['vitals_age'] = ($a - $b)/31556926;
-    			$data['vitals_date'] = $encounterInfo->encounter_DOS;
+                $demographicsInfo = DB::table('demographics')->where('pid', '=', Session::get('pid'))->first();
+                $a = $this->human_to_unix($encounterInfo->encounter_DOS);
+                $b = $this->human_to_unix($demographicsInfo->DOB);
+                $data['pedsage'] = ($a - $b)/2629743;
+                $data['vitals_age'] = ($a - $b)/31556926;
+                $data['vitals_date'] = $encounterInfo->encounter_DOS;
             }
         }
         // Alerts-specific data handling
@@ -1074,6 +1076,12 @@ class ChartController extends Controller {
                 'rxl_days' => 'numeric',
                 'rxl_refill' => 'numeric'
             ]);
+        }
+        // Orders specific data handling
+        if ($table == 'orders') {
+            if (isset($data['referral_specialty'])) {
+                unset($data['referral_specialty']);
+            }
         }
         if ($action == 'save') {
             if ($id == '0') {
@@ -1136,18 +1144,18 @@ class ChartController extends Controller {
                 }
                 if ($table == 'sup_list') {
                     $encounter_text = $request->input('sup_supplement') . ' ' . $request->input('sup_dosage');
-				    if ($request->input('sup_dosage_unit') != "") {
-    					$encounter_text .= ' ' . $request->input('sup_dosage_unit');
-    				}
-    				if ($request->input('sup_sig') != "") {
-    					if ($request->input('sup_instructions') != "") {
-    						$encounter_text .= ', ' . $request->input('sup_sig') . ' ' . $request->input('sup_route') . ' ' . $request->input('sup_frequency') . ', ' . $request->input('sup_instructions') . ' for ' . $request->input('sup_reason');
-    					} else {
-    						$encounter_text .= ', ' . $request->input('sup_sig') . ' ' . $request->input('sup_route') . ' ' . $request->input('sup_frequency') . ' for ' . $request->input('sup_reason');
-    					}
-    				} else {
-    					$encounter_text .= ', ' . $request->input('sup_instructions') . ' for ' . $request->input('sup_reason');
-    				}
+                    if ($request->input('sup_dosage_unit') != "") {
+                        $encounter_text .= ' ' . $request->input('sup_dosage_unit');
+                    }
+                    if ($request->input('sup_sig') != "") {
+                        if ($request->input('sup_instructions') != "") {
+                            $encounter_text .= ', ' . $request->input('sup_sig') . ' ' . $request->input('sup_route') . ' ' . $request->input('sup_frequency') . ', ' . $request->input('sup_instructions') . ' for ' . $request->input('sup_reason');
+                        } else {
+                            $encounter_text .= ', ' . $request->input('sup_sig') . ' ' . $request->input('sup_route') . ' ' . $request->input('sup_frequency') . ' for ' . $request->input('sup_reason');
+                        }
+                    } else {
+                        $encounter_text .= ', ' . $request->input('sup_instructions') . ' for ' . $request->input('sup_reason');
+                    }
                     $this->plan_build('sup','order', $encounter_text);
                 }
                 if ($table == 'vitals') {
@@ -1228,46 +1236,46 @@ class ChartController extends Controller {
                     if (isset($data[$type_k])) {
                         $alert_subject = $type_v[1];
                         if (strtotime($data['orders_pending_date']) > time() && $type_k !== 'orders_referrals') {
-                			$alert_subject .= " - NEED TO OBTAIN";
-                		}
+                            $alert_subject .= " - NEED TO OBTAIN";
+                        }
                         $orders_arr = explode("\n", $data[$type_k]);
                         $orders_new_arr = [];
                         foreach ($orders_arr as $orders_item) {
                             $orders_new_arr[] = preg_replace('/\[[^\]]*\]/', '', $orders_item);
                         }
-                		$order_address = DB::table('addressbook')->where('address_id', '=', $data['address_id'])->first();
-                		$description = $type_v[0] . ' sent to ' . $order_address->displayname;
+                        $order_address = DB::table('addressbook')->where('address_id', '=', $data['address_id'])->first();
+                        $description = $type_v[0] . ' sent to ' . $order_address->displayname;
                         if ($type_k !== 'orders_referrals') {
                             $description .= ': '. implode(', ', $orders_new_arr);
                         }
                         if ($id == '0') {
-                			$orders_alert_data = [
-                				'alert' => $alert_subject,
-                				'alert_description' => $description,
-                				'alert_date_active' => date('Y-m-d H:i:s', time()),
-                				'alert_date_complete' => '',
-                				'alert_reason_not_complete' => '',
-                				'alert_provider' => Session::get('user_id'),
-                				'orders_id' => $row_id1,
-                				'pid' => Session::get('pid'),
-                				'practice_id' => Session::get('practice_id'),
-                				'alert_send_message' => 'n'
-                			];
-                			DB::table('alerts')->insert($orders_alert_data);
-                			$this->audit('Add');
-                		} else {
-                			$old_alert = DB::table('alerts')->where('orders_id', '=', $row_id1)->first();
-                			$orders_alert_data = [
-                				'alert' => $alert_subject,
-                				'alert_description' => $description,
-                				'alert_date_active' => date('Y-m-d H:i:s', time()),
-                				'alert_date_complete' => '',
-                				'alert_reason_not_complete' => '',
-                				'alert_provider' => Session::get('user_id'),
-                			];
-                			DB::table('alerts')->where('alert_id', '=', $old_alert->alert_id)->update($orders_alert_data);
-                			$this->audit('Update');
-                		}
+                            $orders_alert_data = [
+                                'alert' => $alert_subject,
+                                'alert_description' => $description,
+                                'alert_date_active' => date('Y-m-d H:i:s', time()),
+                                'alert_date_complete' => '',
+                                'alert_reason_not_complete' => '',
+                                'alert_provider' => Session::get('user_id'),
+                                'orders_id' => $row_id1,
+                                'pid' => Session::get('pid'),
+                                'practice_id' => Session::get('practice_id'),
+                                'alert_send_message' => 'n'
+                            ];
+                            DB::table('alerts')->insert($orders_alert_data);
+                            $this->audit('Add');
+                        } else {
+                            $old_alert = DB::table('alerts')->where('orders_id', '=', $row_id1)->first();
+                            $orders_alert_data = [
+                                'alert' => $alert_subject,
+                                'alert_description' => $description,
+                                'alert_date_active' => date('Y-m-d H:i:s', time()),
+                                'alert_date_complete' => '',
+                                'alert_reason_not_complete' => '',
+                                'alert_provider' => Session::get('user_id'),
+                            ];
+                            DB::table('alerts')->where('alert_id', '=', $old_alert->alert_id)->update($orders_alert_data);
+                            $this->audit('Update');
+                        }
                     }
                 }
             }
@@ -1428,10 +1436,10 @@ class ChartController extends Controller {
                 }
                 if (Session::has('eid')) {
                     if ($request->input('rxl_sig') == '') {
-    					$instructions = $request->input('rxl_instructions');
-    				} else {
-    					$instructions = $request->input('rxl_sig') . ' ' . $request->input('rxl_route') . ' ' . $request->input('rxl_frequency');
-    				}
+                        $instructions = $request->input('rxl_instructions');
+                    } else {
+                        $instructions = $request->input('rxl_sig') . ' ' . $request->input('rxl_route') . ' ' . $request->input('rxl_frequency');
+                    }
                     $encounter_text = $request->input('rxl_medication') . ' ' . $request->input('rxl_dosage') . ' ' . $request->input('rxl_dosage_unit') . ', ' . $instructions . ' for ' . $request->input('rxl_reason') . ', Quantity: ' . $request->input('rxl_quantity') . ', Refills: ' . $request->input('rxl_refill');
                     $this->plan_build('rx', 'prescribe', $encounter_text);
                 }
@@ -1452,12 +1460,12 @@ class ChartController extends Controller {
                     $next_action = route($next_action, [$table, $row_id1, Session::get('pid')]);
                 }
             } else {
-				$data5['rxl_date_old'] = date('Y-m-d H:i:s', time());
-				DB::table($table)->where($index, '=', $id)->update($data5);
-				$this->audit('Update');
-				// $this->api_data('update', 'rx_list', 'rxl_id', $id);
-				$old_rx = DB::table($table)->where($index, '=', $id)->first();
-				$data['rxl_date_active'] = $old_rx->rxl_date_active;
+                $data5['rxl_date_old'] = date('Y-m-d H:i:s', time());
+                DB::table($table)->where($index, '=', $id)->update($data5);
+                $this->audit('Update');
+                // $this->api_data('update', 'rx_list', 'rxl_id', $id);
+                $old_rx = DB::table($table)->where($index, '=', $id)->first();
+                $data['rxl_date_active'] = $old_rx->rxl_date_active;
                 DB::table($table)->where($index, '=', $id)->update($data);
                 $this->audit('Update');
                 foreach ($good_rx_tables as $good_rx_table) {
@@ -1482,10 +1490,10 @@ class ChartController extends Controller {
                 $data6['alert_date_complete'] = date('Y-m-d H:i:s');
                 $orders_query = DB::table($table)->where($index, '=', $id)->first();
                 if ($orders_query->orders_id != '') {
-    				$data7['orders_completed'] = 'Yes';
-    				DB::table('orders')->where('orders_id', '=', $orders_query->orders_id)->update($data7);
-    				$this->audit('Update');
-    			}
+                    $data7['orders_completed'] = 'Yes';
+                    DB::table('orders')->where('orders_id', '=', $orders_query->orders_id)->update($data7);
+                    $this->audit('Update');
+                }
             }
             if ($table == 'orders') {
                 $data6['orders_completed'] = '1';
@@ -1499,50 +1507,50 @@ class ChartController extends Controller {
             if ($table == 'hippa_request') {
                 $data6['received'] = 'Yes';
             }
-			DB::table($table)->where($index, '=', $id)->update($data6);
-			$this->audit('Update');
+            DB::table($table)->where($index, '=', $id)->update($data6);
+            $this->audit('Update');
             $arr['message'] = $message . 'marked as completed!';
         }
         if ($action == 'eie') {
-			$row = DB::table('rx_list')->where('rxl_id', '=', $id)->first();
-			if ($row->rxl_sig == '') {
-				$instructions = $row->rxl_instructions;
-			} else {
-				$instructions = $row->rxl_sig . ' ' . $row->rxl_route . ' ' . $row->rxl_frequency;
-			}
+            $row = DB::table('rx_list')->where('rxl_id', '=', $id)->first();
+            if ($row->rxl_sig == '') {
+                $instructions = $row->rxl_instructions;
+            } else {
+                $instructions = $row->rxl_sig . ' ' . $row->rxl_route . ' ' . $row->rxl_frequency;
+            }
             if (Session::has('eid')) {
-    			$encounter_text =  $row->rxl_medication . ' ' . $row->rxl_dosage . ' ' . $row->rxl_dosage_unit . ', ' . $instructions . ' for ' . $row->rxl_reason;
+                $encounter_text =  $row->rxl_medication . ' ' . $row->rxl_dosage . ' ' . $row->rxl_dosage_unit . ', ' . $instructions . ' for ' . $row->rxl_reason;
                 $this->plan_build('rx', 'eie', $encounter_text);
             }
             $row1 = DB::table('rx_list')
-				->where('rxl_medication', '=', $row->rxl_medication)
-				->where('rxl_date_inactive', '=', '0000-00-00 00:00:00')
-				->where('rxl_date_old', '!=', '0000-00-00 00:00:00')
-				->orderBy('rxl_date_old', 'desc')
-				->first();
-			if ($row1) {
-				$rxl_id = $row1->rxl_id;
-				$eie_data = [
-					'rxl_date_old' => '0000-00-00 00:00:00',
-					'rcopia_sync' => 'nd1'
-				];
-				DB::table('rx_list')->where('rxl_id', '=', $row1->rxl_id)->update($eie_data);
-				$this->audit('Update');
-				// $this->api_data('update', 'rx_list', 'rxl_id', $row1->rxl_id);
-			}
-			if($practice->rcopia_extension == 'y') {
-				$eie_data1['rcopia_sync'] = 'nd';
-				DB::table('rx_list')->where('rxl_id', '=', $old_rxl_id)->update($eie_data1);
-				$this->audit('Update');
-				while(!$this->check_rcopia_delete('rx_list', $old_rxl_id)) {
-					sleep(2);
-				}
-			}
-			DB::table('rx_list')->where('rxl_id', '=', $id)->delete();
-			$this->audit('Delete');
-			// $this->api_data('delete', 'rx_list', 'rxl_id', $old_rxl_id);
-			// UMA placeholder
-			$arr['message'] = "Entered medication in error process complete!";
+                ->where('rxl_medication', '=', $row->rxl_medication)
+                ->where('rxl_date_inactive', '=', '0000-00-00 00:00:00')
+                ->where('rxl_date_old', '!=', '0000-00-00 00:00:00')
+                ->orderBy('rxl_date_old', 'desc')
+                ->first();
+            if ($row1) {
+                $rxl_id = $row1->rxl_id;
+                $eie_data = [
+                    'rxl_date_old' => '0000-00-00 00:00:00',
+                    'rcopia_sync' => 'nd1'
+                ];
+                DB::table('rx_list')->where('rxl_id', '=', $row1->rxl_id)->update($eie_data);
+                $this->audit('Update');
+                // $this->api_data('update', 'rx_list', 'rxl_id', $row1->rxl_id);
+            }
+            if($practice->rcopia_extension == 'y') {
+                $eie_data1['rcopia_sync'] = 'nd';
+                DB::table('rx_list')->where('rxl_id', '=', $old_rxl_id)->update($eie_data1);
+                $this->audit('Update');
+                while(!$this->check_rcopia_delete('rx_list', $old_rxl_id)) {
+                    sleep(2);
+                }
+            }
+            DB::table('rx_list')->where('rxl_id', '=', $id)->delete();
+            $this->audit('Delete');
+            // $this->api_data('delete', 'rx_list', 'rxl_id', $old_rxl_id);
+            // UMA placeholder
+            $arr['message'] = "Entered medication in error process complete!";
         }
         $arr['response'] = 'OK';
         Session::put('message_action', $arr['message']);
@@ -2375,7 +2383,7 @@ class ChartController extends Controller {
         $pid = Session::get('pid');
         if ($request->isMethod('post')) {
             ini_set('memory_limit','196M');
-    		$result = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
+            $result = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
             $html = $this->page_intro('Letter', Session::get('practice_id'))->render();
             $html .= $this->page_letter($request->input('letter_to'), $request->input('letter_body'), $request->input('address_id'));
             $user_id = Session::get('user_id');
@@ -2385,17 +2393,17 @@ class ChartController extends Controller {
                 sleep(2);
             }
             $desc = 'Letter for ' . Session::get('ptname');
-    		$pages_data = [
-    			'documents_url' => $file_path,
-    			'pid' => $pid,
-    			'documents_type' => 'Letters',
-    			'documents_desc' => $desc,
-    			'documents_from' => Session::get('displayname'),
-    			'documents_viewed' => Session::get('displayname'),
-    			'documents_date' => date('Y-m-d H:i:s', time())
-    		];
-    		$id = DB::table('documents')->insertGetId($pages_data);
-    		$this->audit('Add');
+            $pages_data = [
+                'documents_url' => $file_path,
+                'pid' => $pid,
+                'documents_type' => 'Letters',
+                'documents_desc' => $desc,
+                'documents_from' => Session::get('displayname'),
+                'documents_viewed' => Session::get('displayname'),
+                'documents_date' => date('Y-m-d H:i:s', time())
+            ];
+            $id = DB::table('documents')->insertGetId($pages_data);
+            $this->audit('Add');
             return redirect()->route('document_view', [$id]);
         } else {
             $pt = DB::table('demographics')->where('pid', '=', $pid)->first();
@@ -2452,16 +2460,16 @@ class ChartController extends Controller {
     {
         if ($request->isMethod('post')) {
             $pid = Session::get('pid');
-    		$directory = Session::get('documents_dir') . $pid;
+            $directory = Session::get('documents_dir') . $pid;
             $file = $request->file('file_input');
-			$new_name = str_replace('.' . $file->getClientOriginalExtension(), '', $file->getClientOriginalName()) . '_' . time() . '.pdf';
-			$file->move($directory, $new_name);
-			$data = [
-				'documents_url' => $directory . '/' . $new_name,
-				'pid' => $pid
-			];
-			$documents_id = DB::table('documents')->insertGetId($data);
-			$this->audit('Add');
+            $new_name = str_replace('.' . $file->getClientOriginalExtension(), '', $file->getClientOriginalName()) . '_' . time() . '.pdf';
+            $file->move($directory, $new_name);
+            $data = [
+                'documents_url' => $directory . '/' . $new_name,
+                'pid' => $pid
+            ];
+            $documents_id = DB::table('documents')->insertGetId($data);
+            $this->audit('Add');
             return redirect()->route('chart_form', ['documents', 'documents_id', $documents_id]);
         } else {
             $data['documents_active'] = true;
@@ -2482,21 +2490,21 @@ class ChartController extends Controller {
     public function document_view(Request $request, $id)
     {
         $pid = Session::get('pid');
-		$result = DB::table('documents')->where('documents_id', '=', $id)->first();
+        $result = DB::table('documents')->where('documents_id', '=', $id)->first();
         if ($result->documents_type == 'ccda' || $result->documents_type == 'ccr') {
             return redirect()->route('upload_ccda_view', [$id, 'issues']);
         }
-		$file_path = $result->documents_url;
-		$data1['documents_viewed'] = Session::get('displayname');
-		DB::table('documents')->where('documents_id', '=', $id)->update($data1);
-		$this->audit('Update');
-		$name = time() . '_' . $pid . '.pdf';
-		$data['filepath'] = public_path() . '/temp/' . $name;
-		copy($file_path, $data['filepath']);
+        $file_path = $result->documents_url;
+        $data1['documents_viewed'] = Session::get('displayname');
+        DB::table('documents')->where('documents_id', '=', $id)->update($data1);
+        $this->audit('Update');
+        $name = time() . '_' . $pid . '.pdf';
+        $data['filepath'] = public_path() . '/temp/' . $name;
+        copy($file_path, $data['filepath']);
         Session::put('file_path_temp', $data['filepath']);
-		while(!file_exists($data['filepath'])) {
-			sleep(2);
-		}
+        while(!file_exists($data['filepath'])) {
+            sleep(2);
+        }
         $data['document_url'] = asset('temp/' . $name);
         $dropdown_array = [];
         $items = [];
@@ -2997,64 +3005,64 @@ class ChartController extends Controller {
         $return .= $this->actions_build('procedure', 'eid', $eid, 'proc_description');
         $ordersInfo1 = DB::table('orders')->where('eid', '=', $eid)->get();
         $orders_section = '';
-		if ($ordersInfo1->count()) {
-			$orders_section = '<div class="panel panel-default"><div class="panel-heading">Orders</div><div class="panel-body"><p>';
-			$orders_lab_array = [];
-			$orders_radiology_array = [];
-			$orders_cp_array = [];
-			$orders_referrals_array = [];
-			foreach ($ordersInfo1 as $ordersInfo) {
-				$address_row1 = DB::table('addressbook')->where('address_id', '=', $ordersInfo->address_id)->first();
-				if ($address_row1) {
-					$orders_displayname = $address_row1->displayname;
-				} else {
-					$orders_displayname = 'Unknown';
-				}
-				if ($ordersInfo->orders_labs != '') {
-					$orders_lab_array[] = 'Orders sent to ' . $orders_displayname . ': '. nl2br($ordersInfo->orders_labs) . '<br />';
-				}
-				if ($ordersInfo->orders_radiology != '') {
-					$orders_radiology_array[] = 'Orders sent to ' . $orders_displayname . ': '. nl2br($ordersInfo->orders_radiology) . '<br />';
-				}
-				if ($ordersInfo->orders_cp != '') {
-					$orders_cp_array[] = 'Orders sent to ' . $orders_displayname . ': '. nl2br($ordersInfo->orders_cp) . '<br />';
-				}
-				if ($ordersInfo->orders_referrals != '') {
-					$orders_referrals_array[] = 'Referral sent to ' . $orders_displayname . ': '. nl2br($ordersInfo->orders_referrals) . '<br />';
-				}
-			}
-			if (count($orders_lab_array) > 0) {
-				$orders_section .= '<strong>Labs: </strong>';
-				foreach ($orders_lab_array as $lab_item) {
-					$orders_section .= $lab_item;
-				}
-			}
-			if (count($orders_radiology_array) > 0) {
-				$orders_section .= '<strong>Imaging: </strong>';
-				foreach ($orders_radiology_array as $radiology_item) {
-					$orders_section .= $radiology_item;
-				}
-			}
-			if (count($orders_cp_array) > 0) {
-				$orders_section .= '<strong>Cardiopulmonary: </strong>';
-				foreach ($orders_cp_array as $cp_item) {
-					$orders_section .= $cp_item;
-				}
-			}
-			if (count($orders_referrals_array) > 0) {
-				$orders_section .= '<strong>Referrals: </strong>';
-				foreach ($orders_referrals_array as $referrals_item) {
-					$orders_section .= $referrals_item;
-				}
-			}
-			$orders_section .= '</p></div></div>';
-		}
+        if ($ordersInfo1->count()) {
+            $orders_section = '<div class="panel panel-default"><div class="panel-heading">Orders</div><div class="panel-body"><p>';
+            $orders_lab_array = [];
+            $orders_radiology_array = [];
+            $orders_cp_array = [];
+            $orders_referrals_array = [];
+            foreach ($ordersInfo1 as $ordersInfo) {
+                $address_row1 = DB::table('addressbook')->where('address_id', '=', $ordersInfo->address_id)->first();
+                if ($address_row1) {
+                    $orders_displayname = $address_row1->displayname;
+                } else {
+                    $orders_displayname = 'Unknown';
+                }
+                if ($ordersInfo->orders_labs != '') {
+                    $orders_lab_array[] = 'Orders sent to ' . $orders_displayname . ': '. nl2br($ordersInfo->orders_labs) . '<br />';
+                }
+                if ($ordersInfo->orders_radiology != '') {
+                    $orders_radiology_array[] = 'Orders sent to ' . $orders_displayname . ': '. nl2br($ordersInfo->orders_radiology) . '<br />';
+                }
+                if ($ordersInfo->orders_cp != '') {
+                    $orders_cp_array[] = 'Orders sent to ' . $orders_displayname . ': '. nl2br($ordersInfo->orders_cp) . '<br />';
+                }
+                if ($ordersInfo->orders_referrals != '') {
+                    $orders_referrals_array[] = 'Referral sent to ' . $orders_displayname . ': '. nl2br($ordersInfo->orders_referrals) . '<br />';
+                }
+            }
+            if (count($orders_lab_array) > 0) {
+                $orders_section .= '<strong>Labs: </strong>';
+                foreach ($orders_lab_array as $lab_item) {
+                    $orders_section .= $lab_item;
+                }
+            }
+            if (count($orders_radiology_array) > 0) {
+                $orders_section .= '<strong>Imaging: </strong>';
+                foreach ($orders_radiology_array as $radiology_item) {
+                    $orders_section .= $radiology_item;
+                }
+            }
+            if (count($orders_cp_array) > 0) {
+                $orders_section .= '<strong>Cardiopulmonary: </strong>';
+                foreach ($orders_cp_array as $cp_item) {
+                    $orders_section .= $cp_item;
+                }
+            }
+            if (count($orders_referrals_array) > 0) {
+                $orders_section .= '<strong>Referrals: </strong>';
+                foreach ($orders_referrals_array as $referrals_item) {
+                    $orders_section .= $referrals_item;
+                }
+            }
+            $orders_section .= '</p></div></div>';
+        }
         $return .= $orders_section;
         $rx_section = '';
-		$rxInfo = DB::table('rx')->where('eid', '=', $eid)->first();
-		if ($rxInfo) {
+        $rxInfo = DB::table('rx')->where('eid', '=', $eid)->first();
+        if ($rxInfo) {
             $rx_arr = $this->array_rx();
-			$rx_section = '<div class="panel panel-default"><div class="panel-heading">Prescriptions and Immunizations:</div><div class="panel-body"><p>';
+            $rx_section = '<div class="panel panel-default"><div class="panel-heading">Prescriptions and Immunizations:</div><div class="panel-body"><p>';
             foreach ($rx_arr as $rx_k => $rx_v) {
                 if ($rxInfo->{$rx_k} !== '' && $rxInfo->{$rx_k} !== null) {
                     $rx_section .= '<strong>' . $rx_v . ': </strong><br>';
@@ -3065,8 +3073,8 @@ class ChartController extends Controller {
                     $rx_section .= '<br /><br />';
                 }
             }
-			$rx_section .= '</p></div></div>';
-		}
+            $rx_section .= '</p></div></div>';
+        }
         $return .= $rx_section;
         $plan_array = $this->array_plan();
         $plan_val = [];
@@ -3162,6 +3170,30 @@ class ChartController extends Controller {
             'icon' => 'fa-plus',
             'url' => route('action_edit', ['procedure', 'eid', $eid, 'new', 'proc_description']),
         ];
+        $items1[] = [
+            'type' => 'item',
+            'label' => 'Add Lab Order',
+            'icon' => 'fa-plus',
+            'url' => route('chart_form', ['orders', 'orders_id', '0', 'orders_labs'])
+        ];
+        $items1[] = [
+            'type' => 'item',
+            'label' => 'Add Imaging Order',
+            'icon' => 'fa-plus',
+            'url' => route('chart_form', ['orders', 'orders_id', '0', 'orders_radiology'])
+        ];
+        $items1[] = [
+            'type' => 'item',
+            'label' => 'Add Cardiopulmonary Order',
+            'icon' => 'fa-plus',
+            'url' => route('chart_form', ['orders', 'orders_id', '0', 'orders_cp'])
+        ];
+        $items1[] = [
+            'type' => 'item',
+            'label' => 'Add Referral',
+            'icon' => 'fa-plus',
+            'url' => route('chart_form', ['orders', 'orders_id', '0', 'orders_referrals'])
+        ];
         $items[] = [
             'type' => 'item',
             'label' => 'Add Patient Education',
@@ -3206,73 +3238,73 @@ class ChartController extends Controller {
     public function encounter_addendum(Request $request, $eid)
     {
         $encounter = DB::table('encounters')->where('eid', '=', $eid)->first();
-		$data = (array) $encounter;
-		unset($data['eid']);
-		unset($data['encounter_signed']);
-		$data['encounter_signed'] = 'No';
-		$new_eid = DB::table('encounters')->insertGetId($data);
-		$this->audit('Add');
-		$data1['addendum'] = 'y';
-		DB::table('encounters')->where('eid', '=', $eid)->update($data1);
-		$this->audit('Update');
-		if ($encounter->encounter_template == 'standardmedical' || $encounter->encounter_template == 'standardmedical1') {
-			$table_array1 = ["hpi", "ros", "vitals", "pe", "labs", "procedure", "rx", "assessment", "plan"];
-			$table_array2 = ["other_history", "orders", "billing", "billing_core", "image"];
-		}
-		if ($encounter->encounter_template == 'clinicalsupport') {
-			$table_array1 = ["hpi", "labs", "procedure", "rx", "assessment", "plan"];
-			$table_array2 = ["other_history", "orders", "billing", "billing_core", "image"];
-		}
-		if ($encounter->encounter_template == 'standardpsych' || $encounter->encounter_template == 'standardpsych1') {
-			$table_array1 = ["hpi", "ros", "vitals", "pe", "rx", "assessment", "plan"];
-			$table_array2 = ["other_history", "orders", "billing", "billing_core", "image"];
-		}
-		if ($encounter->encounter_template == 'standardmtm') {
-			$table_array1 = ["hpi", "vitals", "assessment", "plan"];
-			$table_array2 = ["other_history", "orders", "billing", "billing_core", "image"];
-		}
-		foreach($table_array1 as $table1) {
-			$table_query1 = DB::table($table1)->where('eid', '=', $eid)->first();
-			if ($table_query1) {
-				$data2 = (array) $table_query1;
-				unset($data2['eid']);
-				$data2['eid'] = $new_eid;
-				DB::table($table1)->insert($data2);
-				$this->audit('Add');
-				// $this->api_data('add', $table1, 'eid', $new_eid);
-			}
-		}
-		foreach($table_array2 as $table2) {
-			$table_query2 = DB::table($table2)->where('eid', '=', $eid)->get();
-			if ($table_query2->count()) {
-				if ($table2 == 'other_history') {
-					$primary = 'oh_id';
-				}
-				if ($table2 == 'orders') {
-					$primary = 'orders_id';
-				}
-				if ($table2 == 'billing') {
-					$primary = 'bill_id';
-				}
-				if ($table2 == 'billing_core') {
-					$primary = 'billing_core_id';
-				}
-				if ($table2 == 'image') {
-					$primary = 'image_id';
-				}
-				foreach ($table_query2 as $table_row) {
-					$data3 = (array) $table_row;
-					unset($data3['eid']);
-					unset($data3[$primary]);
-					$data3['eid'] = $new_eid;
-					DB::table($table2)->insert($data3);
-					$this->audit('Add');
-					// $this->api_data('add', $table2, 'eid', $new_eid);
-				}
-			}
-		}
-		// Session::put('encounter_template', $encounter->encounter_template);
-		// Session::put('encounter_DOS', $encounter->encounter_DOS);
+        $data = (array) $encounter;
+        unset($data['eid']);
+        unset($data['encounter_signed']);
+        $data['encounter_signed'] = 'No';
+        $new_eid = DB::table('encounters')->insertGetId($data);
+        $this->audit('Add');
+        $data1['addendum'] = 'y';
+        DB::table('encounters')->where('eid', '=', $eid)->update($data1);
+        $this->audit('Update');
+        if ($encounter->encounter_template == 'standardmedical' || $encounter->encounter_template == 'standardmedical1') {
+            $table_array1 = ["hpi", "ros", "vitals", "pe", "labs", "procedure", "rx", "assessment", "plan"];
+            $table_array2 = ["other_history", "orders", "billing", "billing_core", "image"];
+        }
+        if ($encounter->encounter_template == 'clinicalsupport') {
+            $table_array1 = ["hpi", "labs", "procedure", "rx", "assessment", "plan"];
+            $table_array2 = ["other_history", "orders", "billing", "billing_core", "image"];
+        }
+        if ($encounter->encounter_template == 'standardpsych' || $encounter->encounter_template == 'standardpsych1') {
+            $table_array1 = ["hpi", "ros", "vitals", "pe", "rx", "assessment", "plan"];
+            $table_array2 = ["other_history", "orders", "billing", "billing_core", "image"];
+        }
+        if ($encounter->encounter_template == 'standardmtm') {
+            $table_array1 = ["hpi", "vitals", "assessment", "plan"];
+            $table_array2 = ["other_history", "orders", "billing", "billing_core", "image"];
+        }
+        foreach($table_array1 as $table1) {
+            $table_query1 = DB::table($table1)->where('eid', '=', $eid)->first();
+            if ($table_query1) {
+                $data2 = (array) $table_query1;
+                unset($data2['eid']);
+                $data2['eid'] = $new_eid;
+                DB::table($table1)->insert($data2);
+                $this->audit('Add');
+                // $this->api_data('add', $table1, 'eid', $new_eid);
+            }
+        }
+        foreach($table_array2 as $table2) {
+            $table_query2 = DB::table($table2)->where('eid', '=', $eid)->get();
+            if ($table_query2->count()) {
+                if ($table2 == 'other_history') {
+                    $primary = 'oh_id';
+                }
+                if ($table2 == 'orders') {
+                    $primary = 'orders_id';
+                }
+                if ($table2 == 'billing') {
+                    $primary = 'bill_id';
+                }
+                if ($table2 == 'billing_core') {
+                    $primary = 'billing_core_id';
+                }
+                if ($table2 == 'image') {
+                    $primary = 'image_id';
+                }
+                foreach ($table_query2 as $table_row) {
+                    $data3 = (array) $table_row;
+                    unset($data3['eid']);
+                    unset($data3[$primary]);
+                    $data3['eid'] = $new_eid;
+                    DB::table($table2)->insert($data3);
+                    $this->audit('Add');
+                    // $this->api_data('add', $table2, 'eid', $new_eid);
+                }
+            }
+        }
+        // Session::put('encounter_template', $encounter->encounter_template);
+        // Session::put('encounter_DOS', $encounter->encounter_DOS);
         if (Session::has('encounter_redirect')) {
             $redirect_url = Session::get('encounter_redirect');
             Session::forget('encounter_redirect');
@@ -3286,7 +3318,7 @@ class ChartController extends Controller {
     {
         if ($request->isMethod('post')) {
             $pid = Session::get('pid');
-    		$directory = Session::get('documents_dir') . $pid;
+            $directory = Session::get('documents_dir') . $pid;
             $file = $request->file('file_input');
             $new_name = str_replace('.' . $file->getClientOriginalExtension(), '', $file->getClientOriginalName()) . '_' . time() . '.' . $file->getClientOriginalExtension();
             $file->move($directory, $new_name);
@@ -3299,8 +3331,8 @@ class ChartController extends Controller {
                 'id' => Session::get('user_id'),
                 'encounter_provider' => Session::get('displayname')
             ];
-			$image_id = DB::table('image')->insertGetId($data);
-			$this->audit('Add');
+            $image_id = DB::table('image')->insertGetId($data);
+            $this->audit('Add');
             return redirect()->route('encounter_edit_image', [$image_id]);
         } else {
             $data['encounters_active'] = true;
@@ -3749,22 +3781,22 @@ class ChartController extends Controller {
             $encounter_type[0] = "";
             $encounter_type[1] = "";
             if ($request->has('encounter_type')) {
-        		if ($request->input('encounter_type') != '') {
-        			$encounter_type = explode(",", $request->input('encounter_type'));
-        		}
+                if ($request->input('encounter_type') != '') {
+                    $encounter_type = explode(",", $request->input('encounter_type'));
+                }
             }
             $user_id = $request->input('encounter_provider');
-    		$user_query = DB::table('users')->where('id', '=',$user_id)->first();
-    		$data_add = [
-    			'pid' => Session::get('pid'),
-    			'appt_id' => $encounter_type[1],
-    			'encounter_age' => Session::get('age'),
-    			'encounter_type' => $encounter_type[0],
-    			'encounter_signed' => 'No',
-    			'addendum' => 'n',
-    			'user_id' => $user_id,
-    			'practice_id' => Session::get('practice_id'),
-    		];
+            $user_query = DB::table('users')->where('id', '=',$user_id)->first();
+            $data_add = [
+                'pid' => Session::get('pid'),
+                'appt_id' => $encounter_type[1],
+                'encounter_age' => Session::get('age'),
+                'encounter_type' => $encounter_type[0],
+                'encounter_signed' => 'No',
+                'addendum' => 'n',
+                'user_id' => $user_id,
+                'practice_id' => Session::get('practice_id'),
+            ];
             $data = $request->all();
             if ($request->has('encounter_type')) {
                 unset($data['encounter_type']);
@@ -3774,18 +3806,18 @@ class ChartController extends Controller {
             $data['encounter_DOS'] = date('Y-m-d H:i:s', strtotime($data['encounter_DOS']));
             $data = array_merge($data, $data_add);
             if ($eid == '0') {
-        		$eid = DB::table('encounters')->insertGetId($data);
-        		$this->audit('Add');
-    		    // $this->api_data('add', 'encounters', 'eid', $eid);
-        		$data2['status'] = 'Attended';
-        		if ($encounter_type[1] != '') {
-        			DB::table('schedule')->where('appt_id', '=', $encounter_type[1])->update($data2);
-        			$this->audit('Update');
-        		}
-        		$data3['addendum_eid'] = $eid;
-        		DB::table('encounters')->where('eid', '=', $eid)->update($data3);
-        		$this->audit('Update');
-    		    // $this->api_data('update', 'encounters', 'eid', $eid);
+                $eid = DB::table('encounters')->insertGetId($data);
+                $this->audit('Add');
+                // $this->api_data('add', 'encounters', 'eid', $eid);
+                $data2['status'] = 'Attended';
+                if ($encounter_type[1] != '') {
+                    DB::table('schedule')->where('appt_id', '=', $encounter_type[1])->update($data2);
+                    $this->audit('Update');
+                }
+                $data3['addendum_eid'] = $eid;
+                DB::table('encounters')->where('eid', '=', $eid)->update($data3);
+                $this->audit('Update');
+                // $this->api_data('update', 'encounters', 'eid', $eid);
                 Session::put('message_action', 'Encounter created.');
                 if (Session::has('encounter_redirect')) {
                     $redirect_url = Session::get('encounter_redirect');
@@ -4326,78 +4358,78 @@ class ChartController extends Controller {
     public function encounter_sign(Request $request, $eid)
     {
         $eid = Session::get('eid');
-		$encounter = DB::table('encounters')->where('eid', '=',$eid)->first();
+        $encounter = DB::table('encounters')->where('eid', '=',$eid)->first();
         // Validation
-		$error_arr = [];
-		$hpi = DB::table('hpi')->where('eid', '=',$eid)->first();
-		$pe = DB::table('pe')->where('eid', '=', $eid)->first();
-		$assessment = DB::table('assessment')->where('eid', '=', $eid)->first();
-		$billing = DB::table('billing')->where('eid', '=', $eid)->first();
-		if (!$hpi) {
-			$error_arr[] = "Subjective";
-		}
-		if ($encounter->encounter_template == 'medical') {
-			if (!$pe) {
-				$error_arr[] = "Objective";
-			}
-		}
-		if (!$assessment) {
-			$error_arr[] = "Assessment";
-		}
-		if (!$billing) {
-			$error_arr[] = "Billing";
-		}
-		if (count($error_arr) > 0) {
+        $error_arr = [];
+        $hpi = DB::table('hpi')->where('eid', '=',$eid)->first();
+        $pe = DB::table('pe')->where('eid', '=', $eid)->first();
+        $assessment = DB::table('assessment')->where('eid', '=', $eid)->first();
+        $billing = DB::table('billing')->where('eid', '=', $eid)->first();
+        if (!$hpi) {
+            $error_arr[] = "Subjective";
+        }
+        if ($encounter->encounter_template == 'medical') {
+            if (!$pe) {
+                $error_arr[] = "Objective";
+            }
+        }
+        if (!$assessment) {
+            $error_arr[] = "Assessment";
+        }
+        if (!$billing) {
+            $error_arr[] = "Billing";
+        }
+        if (count($error_arr) > 0) {
             $error = 'Error - Missing items: ' . implode(', ', $error_arr);
             Session::put('message_action', $error);
             return redirect(Session::get('last_page_encounter'));
         }
-		if (($encounter->encounter_template == 'standardmedical' || $encounter->encounter_template == 'standardmedical1') && Session::get('group_id') == '3') {
-			Session::put('message_action', 'Error - You are not allowed to sign this type of encounter!');
+        if (($encounter->encounter_template == 'standardmedical' || $encounter->encounter_template == 'standardmedical1') && Session::get('group_id') == '3') {
+            Session::put('message_action', 'Error - You are not allowed to sign this type of encounter!');
             return redirect(Session::get('last_page_encounter'));
-		} else {
-			$data = [
-				'encounter_signed' => "Yes",
-				'date_signed' => date('Y-m-d H:i:s', time())
-			];
-			DB::table('encounters')->where('eid', '=', Session::get('eid'))->update($data);
-			$this->audit('Update');
-			// $this->api_data('update', 'encounters', 'eid', Session::get('eid'));
-			if ($encounter->encounter_template == 'standardpsych') {
-				$patient = DB::table('demographics_relate')
-					->where('pid', '=', Session::get('pid'))
-					->where('practice_id', '=', Session::get('practice_id'))
-					->whereNotNull('id')
-					->first();
+        } else {
+            $data = [
+                'encounter_signed' => "Yes",
+                'date_signed' => date('Y-m-d H:i:s', time())
+            ];
+            DB::table('encounters')->where('eid', '=', Session::get('eid'))->update($data);
+            $this->audit('Update');
+            // $this->api_data('update', 'encounters', 'eid', Session::get('eid'));
+            if ($encounter->encounter_template == 'standardpsych') {
+                $patient = DB::table('demographics_relate')
+                    ->where('pid', '=', Session::get('pid'))
+                    ->where('practice_id', '=', Session::get('practice_id'))
+                    ->whereNotNull('id')
+                    ->first();
                 $alert_send_message = 'n';
-				if ($patient) {
-					$alert_send_message = 'y';
-				}
-				$psych_date = strtotime($encounter->encounter_DOS) + 31556926;
-				$description = 'Schedule Annual Psychiatric Evaluation Appointment for ' . date('F jS, Y', $psych_date);
-				$data1 = [
-					'alert' => 'Annual Psychiatric Evaluation Reminder',
-					'alert_description' => $description,
-					'alert_date_active' => date('Y-m-d H:i:s', time()),
-					'alert_date_complete' => '',
-					'alert_reason_not_complete' => '',
-					'alert_provider' => Session::get('user_id'),
-					'orders_id' => '',
-					'pid' => Session::get('pid'),
-					'practice_id' => Session::get('practice_id'),
-					'alert_send_message' => $alert_send_message
-				];
-				$id = DB::table('alerts')->insertGetId($data1);
-				$this->audit('Add');
-				// $this->api_data('add', 'alerts', 'alert_id', $id);
-			}
-			Session::forget('eid');
+                if ($patient) {
+                    $alert_send_message = 'y';
+                }
+                $psych_date = strtotime($encounter->encounter_DOS) + 31556926;
+                $description = 'Schedule Annual Psychiatric Evaluation Appointment for ' . date('F jS, Y', $psych_date);
+                $data1 = [
+                    'alert' => 'Annual Psychiatric Evaluation Reminder',
+                    'alert_description' => $description,
+                    'alert_date_active' => date('Y-m-d H:i:s', time()),
+                    'alert_date_complete' => '',
+                    'alert_reason_not_complete' => '',
+                    'alert_provider' => Session::get('user_id'),
+                    'orders_id' => '',
+                    'pid' => Session::get('pid'),
+                    'practice_id' => Session::get('practice_id'),
+                    'alert_send_message' => $alert_send_message
+                ];
+                $id = DB::table('alerts')->insertGetId($data1);
+                $this->audit('Add');
+                // $this->api_data('add', 'alerts', 'alert_id', $id);
+            }
+            Session::forget('eid');
             Session::forget('last_page_encounter');
             Session::forget('encounter_DOS');
             Session::forget('encounter_template');
-			Session::put('message_action', 'Encounter signed.');
+            Session::put('message_action', 'Encounter signed.');
             return redirect()->route('patient');
-		}
+        }
     }
 
     public function encounter_view(Request $request, $eid, $previous=false)
@@ -4430,18 +4462,18 @@ class ChartController extends Controller {
                     'icon' => 'fa-plus',
                     'url' => route('encounter_addendum', [$eid])
                 ];
-        		$query = DB::table('encounters')->where('addendum_eid', '=', $encounter->addendum_eid)->orderBy('date_signed', 'asc')->get();
-        		if (count($query) > 1) {
-        			foreach ($query as $row) {
-        				if ($row->addendum != "n" && $row->encounter_signed === 'Yes') {
+                $query = DB::table('encounters')->where('addendum_eid', '=', $encounter->addendum_eid)->orderBy('date_signed', 'asc')->get();
+                if (count($query) > 1) {
+                    foreach ($query as $row) {
+                        if ($row->addendum != "n" && $row->encounter_signed === 'Yes') {
                             $items[] = [
                                 'type' => 'item',
                                 'label' => 'Date Signed: ' . $row->date_signed,
                                 'icon' => 'fa-undo',
                                 'url' => route('encounter_view', [$row->eid, true])
                             ];
-        				}
-        			}
+                        }
+                    }
                 }
                 $items[] = [
                     'type' => 'item',
@@ -4553,31 +4585,31 @@ class ChartController extends Controller {
     }
 
     public function encounter_vitals_chart(Request $request, $type)
-	{
-		$pid = Session::get('pid');
-		$demographics = DB::table('demographics')->where('pid', '=', $pid)->first();
+    {
+        $pid = Session::get('pid');
+        $demographics = DB::table('demographics')->where('pid', '=', $pid)->first();
         $vitals_arr = $this->array_vitals();
-		$data['graph_y_title'] = $vitals_arr[$type]['name'] . ',' . $vitals_arr[$type]['unit'];
-		$data['graph_x_title'] = 'Date';
-		$data['graph_series_name'] = $vitals_arr[$type]['name'];
-		$data['graph_title'] = 'Chart of ' . $vitals_arr[$type]['name'] . ' over time for ' . $demographics->firstname . ' ' . $demographics->lastname . ' as of ' . date("Y-m-d, g:i a", time());
-		$query1 = DB::table('vitals')
-			->select($type, 'vitals_date')
-			->where('pid', '=', $pid)
-			->orderBy('vitals_date', 'asc')
+        $data['graph_y_title'] = $vitals_arr[$type]['name'] . ',' . $vitals_arr[$type]['unit'];
+        $data['graph_x_title'] = 'Date';
+        $data['graph_series_name'] = $vitals_arr[$type]['name'];
+        $data['graph_title'] = 'Chart of ' . $vitals_arr[$type]['name'] . ' over time for ' . $demographics->firstname . ' ' . $demographics->lastname . ' as of ' . date("Y-m-d, g:i a", time());
+        $query1 = DB::table('vitals')
+            ->select($type, 'vitals_date')
+            ->where('pid', '=', $pid)
+            ->orderBy('vitals_date', 'asc')
             ->distinct()
-			->get();
+            ->get();
         $json = [];
-		if ($query1->count()) {
-			foreach ($query1 as $row1) {
+        if ($query1->count()) {
+            foreach ($query1 as $row1) {
                 if ($row1->{$type} !== null && $row1->{$type} !== '') {
-    				$json[] = [
+                    $json[] = [
                         $row1->vitals_date,
                         $row1->{$type}
                     ];
                 }
-			}
-		}
+            }
+        }
         $edit = $this->access_level('2');
         $dropdown_array = [];
         $dropdown_array['default_button_text'] = '<i class="fa fa-chevron-left fa-fw fa-btn"></i>Back';
@@ -4595,7 +4627,7 @@ class ChartController extends Controller {
         $data['assets_js'] = $this->assets_js();
         $data['assets_css'] = $this->assets_css();
         return view('graph', $data);
-	}
+    }
 
     public function encounters_list(Request $request)
     {
@@ -4818,155 +4850,155 @@ class ChartController extends Controller {
     }
 
     public function fhir_aat(Request $request)
-	{
-		// Check if call comes from rqp_claims redirect
-		if (Session::has('uma_aat') && Session::has('uma_permission_ticket')) {
-			if (isset($_REQUEST["authorization_state"])) {
-				if ($_REQUEST["authorization_state"] != 'claims_submitted') {
-					if ($_REQUEST["authorization_state"] == 'not_authorized') {
-						$text = 'You are not authorized to have the desired authorization data added.';
-					}
-					if ($_REQUEST["authorization_state"] == 'request_submitted') {
-						$text = 'The authorization server needs additional information in order to determine whether you are authorized to have this authorization data.';
-					}
-					if ($_REQUEST["authorization_state"] == 'need_info') {
-						$text = 'The authorization server requires intervention by the patient to determine whether authorization data can be added. Try again later after receiving any information from the patient regarding updates on your access status.';
-					}
-					return $text;
-				} else {
-					// Great - move on!
-					return redirect()->route('fhir_api');
-				}
-			} else {
-				Session::forget('uma_aat');
-				Session::forget('uma_permission_ticket');
-			}
-		}
-		// Get AAT
-		$url_array = ['/nosh/oidc','/nosh/fhir/oidc'];
-		$as_uri = Session::get('uma_uri');
-		$client_id = Session::get('uma_client_id');
-		$client_secret = Session::get('uma_client_secret');
-		$oidc = new OpenIDConnectClient($as_uri, $client_id, $client_secret);
-		$oidc->requestAAT();
-		Session::put('uma_aat', $oidc->getAccessToken());
-		// Get permission ticket
-		$urlinit = $as_uri . '/nosh/fhir/' . Session::get('type') . '?subject:Patient=1';
-		$result = $this->fhir_request($urlinit,true);
-		if (isset($result['error'])) {
-			// error - return something
-			return $result;
-		}
-		$permission_ticket = $result['ticket'];
-		Session::put('uma_permission_ticket', $permission_ticket);
-		Session::save();
-		$as_uri = $result['as_uri'];
-		$url = route('fhir_aat');
-		// Requesting party claims
-		$oidc->setRedirectURL($url);
-		$oidc->rqp_claims($permission_ticket);
-	}
+    {
+        // Check if call comes from rqp_claims redirect
+        if (Session::has('uma_aat') && Session::has('uma_permission_ticket')) {
+            if (isset($_REQUEST["authorization_state"])) {
+                if ($_REQUEST["authorization_state"] != 'claims_submitted') {
+                    if ($_REQUEST["authorization_state"] == 'not_authorized') {
+                        $text = 'You are not authorized to have the desired authorization data added.';
+                    }
+                    if ($_REQUEST["authorization_state"] == 'request_submitted') {
+                        $text = 'The authorization server needs additional information in order to determine whether you are authorized to have this authorization data.';
+                    }
+                    if ($_REQUEST["authorization_state"] == 'need_info') {
+                        $text = 'The authorization server requires intervention by the patient to determine whether authorization data can be added. Try again later after receiving any information from the patient regarding updates on your access status.';
+                    }
+                    return $text;
+                } else {
+                    // Great - move on!
+                    return redirect()->route('fhir_api');
+                }
+            } else {
+                Session::forget('uma_aat');
+                Session::forget('uma_permission_ticket');
+            }
+        }
+        // Get AAT
+        $url_array = ['/nosh/oidc','/nosh/fhir/oidc'];
+        $as_uri = Session::get('uma_uri');
+        $client_id = Session::get('uma_client_id');
+        $client_secret = Session::get('uma_client_secret');
+        $oidc = new OpenIDConnectClient($as_uri, $client_id, $client_secret);
+        $oidc->requestAAT();
+        Session::put('uma_aat', $oidc->getAccessToken());
+        // Get permission ticket
+        $urlinit = $as_uri . '/nosh/fhir/' . Session::get('type') . '?subject:Patient=1';
+        $result = $this->fhir_request($urlinit,true);
+        if (isset($result['error'])) {
+            // error - return something
+            return $result;
+        }
+        $permission_ticket = $result['ticket'];
+        Session::put('uma_permission_ticket', $permission_ticket);
+        Session::save();
+        $as_uri = $result['as_uri'];
+        $url = route('fhir_aat');
+        // Requesting party claims
+        $oidc->setRedirectURL($url);
+        $oidc->rqp_claims($permission_ticket);
+    }
 
-	public function fhir_api(Request $request)
-	{
-		$as_uri = Session::get('uma_uri');
-		if (!Session::has('rpt')) {
-			// Send permission ticket + AAT to Authorization Server to get RPT
-			$permission_ticket = Session::get('uma_permission_ticket');
-			$client_id = Session::get('uma_client_id');
-			$client_secret = Session::get('uma_client_secret');
-			$url = route('fhir_api');
-			$oidc = new OpenIDConnectClient($as_uri, $client_id, $client_secret);
-			$oidc->setAccessToken(Session::get('uma_aat'));
-			$oidc->setRedirectURL($url);
-			$result1 = $oidc->rpt_request($permission_ticket);
-			if (isset($result1['error'])) {
-				// error - return something
-				if ($result1['error'] == 'expired_ticket') {
-					Session::forget('uma_aat');
-					Session::forget('uma_permission_ticket');
-					return redirect()->route('uma_aat');
-				} else {
-					$data['title'] = 'Error getting data';
-					$data['back'] = '<a href="' . URL::to('resources') . '/' . $request->session()->get('current_client_id') . '" class="btn btn-default" role="button"><i class="fa fa-btn fa-chevron-left"></i> Patient Summary</a>';
-					$data['content'] = 'Description:<br>' . $result1['error'];
-					return view('home', $data);
-				}
-			}
-			$rpt = $result1['rpt'];
-			// Save RPT in session in case for future calls in same session
-			Session::put('rpt', $rpt);
-			Session::save();
-		} else {
-			$rpt = Session::get('rpt');
-		}
-		// Contact pNOSH again, now with RPT
-		$urlinit = $as_uri . '/nosh/fhir/' . Session::get('type') . '?subject:Patient=1';
-		$result3 = $this->fhir_request($urlinit,false,$rpt);
-		if (isset($result3['ticket'])) {
-			// New permission ticket issued, expire rpt session
-			Session::forget('rpt');
-			Session::put('uma_permission_ticket', $result3['ticket']);
-			Session::save();
-			// Get new RPT
-			return redirect()->route('fhir_api');
-		}
-		// Format the result into a nice display
-		$data['message_action'] = Session::get('message_action');
-		Session::forget('message_action');
-		$id = Session::get('current_client_id');
-		$client = DB::table('oauth_rp')->where('id', '=', $request->session()->get('current_client_id'))->first();
-		$title_array = [
-			'Condition' => 'Conditions',
-			'MedicationStatement' => 'Medication List',
-			'AllergyIntolerance' => 'Allergy List',
-			'Immunization' => 'Immunizations',
-			'Patient' => 'Patient Information'
-		];
-		$query = DB::table('resource_set')->where('resource_set_id', '=', $id)->first();
-		$data['title'] = $title_array[$request->session()->get('type')] . ' for ' . $client->as_name;
-		$data['back'] = '<a href="' . URL::to('resources') . '/' . $request->session()->get('current_client_id') . '" class="btn btn-default" role="button"><i class="fa fa-btn fa-chevron-left"></i> Patient Summary</a>';
-		$data['content'] = 'None.';
-		$pt_name = '';
-		if (isset($result3['total'])) {
-			if ($result3['total'] != '0') {
-				$data['content'] = '<ul class="list-group">';
-				foreach ($result3['entry'] as $entry) {
-					if ($request->session()->get('type') == 'Patient' && $request->session()->get('hnosh') == 'true') {
-						$data['title'] = $title_array[$request->session()->get('type')];
-						$data['content'] .= '<li class="list-group-item">' . $entry['resource']['text']['div'];
-						$urlinit1 = $as_uri . '/nosh/fhir/MedicationStatement?subject:Patient=1';
-						$result4 = $this->fhir_request($urlinit1,false,$rpt);
-						if (isset($result4['total'])) {
-							if ($result4['total'] != '0') {
-								$data['content'] .= '<strong>Medications</strong><ul>';
-								foreach ($result4['entry'] as $entry1) {
-									$data['content'] .= '<li>' . $entry1['resource']['text']['div'] . '</li>';
-								}
-								$data['content'] .= '</ul>';
-							}
-						}
-						$data['content'] .= '</li>';
-					} else  {
-						$data['content'] .= '<li class="list-group-item">' . $entry['resource']['text']['div'] . '</li>';
-					}
-					if ($request->session()->get('type') == 'Patient') {
-						$pt_name = $entry['resource']['name'][0]['given'][0] . ' ' . $entry['resource']['name'][0]['family'][0] . ' (DOB: ' . $entry['resource']['birthDate'] . ')';
-					}
-				}
-				$data['content'] .= '</ul>';
-			}
-		}
-		if ($request->session()->get('hnosh') == 'true') {
-			$data['demo_title'] = "Dr. Second's Practice EHR";
-			$data['hnosh'] = true;
-			if ($pt_name !== '') {
-				$data['back'] = '<a href="' . URL::to('add_patient_hnosh') . '/' . $request->session()->get('current_client_id') . '" class="btn btn-default" role="button"><i class="fa fa-btn fa-plus"></i> Add Patient</a>';
-				$request->session()->put('hnosh_pt_name', $pt_name);
-			}
-		}
-		return view('home', $data);
-	}
+    public function fhir_api(Request $request)
+    {
+        $as_uri = Session::get('uma_uri');
+        if (!Session::has('rpt')) {
+            // Send permission ticket + AAT to Authorization Server to get RPT
+            $permission_ticket = Session::get('uma_permission_ticket');
+            $client_id = Session::get('uma_client_id');
+            $client_secret = Session::get('uma_client_secret');
+            $url = route('fhir_api');
+            $oidc = new OpenIDConnectClient($as_uri, $client_id, $client_secret);
+            $oidc->setAccessToken(Session::get('uma_aat'));
+            $oidc->setRedirectURL($url);
+            $result1 = $oidc->rpt_request($permission_ticket);
+            if (isset($result1['error'])) {
+                // error - return something
+                if ($result1['error'] == 'expired_ticket') {
+                    Session::forget('uma_aat');
+                    Session::forget('uma_permission_ticket');
+                    return redirect()->route('uma_aat');
+                } else {
+                    $data['title'] = 'Error getting data';
+                    $data['back'] = '<a href="' . URL::to('resources') . '/' . $request->session()->get('current_client_id') . '" class="btn btn-default" role="button"><i class="fa fa-btn fa-chevron-left"></i> Patient Summary</a>';
+                    $data['content'] = 'Description:<br>' . $result1['error'];
+                    return view('home', $data);
+                }
+            }
+            $rpt = $result1['rpt'];
+            // Save RPT in session in case for future calls in same session
+            Session::put('rpt', $rpt);
+            Session::save();
+        } else {
+            $rpt = Session::get('rpt');
+        }
+        // Contact pNOSH again, now with RPT
+        $urlinit = $as_uri . '/nosh/fhir/' . Session::get('type') . '?subject:Patient=1';
+        $result3 = $this->fhir_request($urlinit,false,$rpt);
+        if (isset($result3['ticket'])) {
+            // New permission ticket issued, expire rpt session
+            Session::forget('rpt');
+            Session::put('uma_permission_ticket', $result3['ticket']);
+            Session::save();
+            // Get new RPT
+            return redirect()->route('fhir_api');
+        }
+        // Format the result into a nice display
+        $data['message_action'] = Session::get('message_action');
+        Session::forget('message_action');
+        $id = Session::get('current_client_id');
+        $client = DB::table('oauth_rp')->where('id', '=', $request->session()->get('current_client_id'))->first();
+        $title_array = [
+            'Condition' => 'Conditions',
+            'MedicationStatement' => 'Medication List',
+            'AllergyIntolerance' => 'Allergy List',
+            'Immunization' => 'Immunizations',
+            'Patient' => 'Patient Information'
+        ];
+        $query = DB::table('resource_set')->where('resource_set_id', '=', $id)->first();
+        $data['title'] = $title_array[$request->session()->get('type')] . ' for ' . $client->as_name;
+        $data['back'] = '<a href="' . URL::to('resources') . '/' . $request->session()->get('current_client_id') . '" class="btn btn-default" role="button"><i class="fa fa-btn fa-chevron-left"></i> Patient Summary</a>';
+        $data['content'] = 'None.';
+        $pt_name = '';
+        if (isset($result3['total'])) {
+            if ($result3['total'] != '0') {
+                $data['content'] = '<ul class="list-group">';
+                foreach ($result3['entry'] as $entry) {
+                    if ($request->session()->get('type') == 'Patient' && $request->session()->get('hnosh') == 'true') {
+                        $data['title'] = $title_array[$request->session()->get('type')];
+                        $data['content'] .= '<li class="list-group-item">' . $entry['resource']['text']['div'];
+                        $urlinit1 = $as_uri . '/nosh/fhir/MedicationStatement?subject:Patient=1';
+                        $result4 = $this->fhir_request($urlinit1,false,$rpt);
+                        if (isset($result4['total'])) {
+                            if ($result4['total'] != '0') {
+                                $data['content'] .= '<strong>Medications</strong><ul>';
+                                foreach ($result4['entry'] as $entry1) {
+                                    $data['content'] .= '<li>' . $entry1['resource']['text']['div'] . '</li>';
+                                }
+                                $data['content'] .= '</ul>';
+                            }
+                        }
+                        $data['content'] .= '</li>';
+                    } else  {
+                        $data['content'] .= '<li class="list-group-item">' . $entry['resource']['text']['div'] . '</li>';
+                    }
+                    if ($request->session()->get('type') == 'Patient') {
+                        $pt_name = $entry['resource']['name'][0]['given'][0] . ' ' . $entry['resource']['name'][0]['family'][0] . ' (DOB: ' . $entry['resource']['birthDate'] . ')';
+                    }
+                }
+                $data['content'] .= '</ul>';
+            }
+        }
+        if ($request->session()->get('hnosh') == 'true') {
+            $data['demo_title'] = "Dr. Second's Practice EHR";
+            $data['hnosh'] = true;
+            if ($pt_name !== '') {
+                $data['back'] = '<a href="' . URL::to('add_patient_hnosh') . '/' . $request->session()->get('current_client_id') . '" class="btn btn-default" role="button"><i class="fa fa-btn fa-plus"></i> Add Patient</a>';
+                $request->session()->put('hnosh_pt_name', $pt_name);
+            }
+        }
+        return view('home', $data);
+    }
 
     public function form_list(Request $request, $type)
     {
@@ -5272,57 +5304,57 @@ class ChartController extends Controller {
         return view('chart', $data);
     }
 
-	public function generate_hcfa1($flatten, $eid, $insurance_id_1, $insurance_id_2='')
-	{
-		$result = $this->billing_save_common($insurance_id_1, $insurance_id_2, $eid);
-		$file_path = $this->hcfa($eid, $flatten);
-		if ($file_path) {
-			return response()->download($file_path);
-		} else {
+    public function generate_hcfa1($flatten, $eid, $insurance_id_1, $insurance_id_2='')
+    {
+        $result = $this->billing_save_common($insurance_id_1, $insurance_id_2, $eid);
+        $file_path = $this->hcfa($eid, $flatten);
+        if ($file_path) {
+            return response()->download($file_path);
+        } else {
             Session::put('message_action', 'Error - No HCFA to print.');
             return redirect(Session::get('last_page'));
-		}
-	}
+        }
+    }
 
     public function growth_chart(Request $request, $type)
-	{
-		$pid = Session::get('pid');
-		$displayname = Session::get('displayname');
-		$demographics = DB::table('demographics')->where('pid', '=', $pid)->first();
-		$gender = Session::get('gender');
+    {
+        $pid = Session::get('pid');
+        $displayname = Session::get('displayname');
+        $demographics = DB::table('demographics')->where('pid', '=', $pid)->first();
+        $gender = Session::get('gender');
         $sex = 'f';
         if ($gender == 'male') {
             $sex = 'm';
         }
-		$time = time();
-		$dob = $this->human_to_unix($demographics->DOB);
-		$pedsage = ($time - $dob);
-		$datenow = date(DATE_RFC822, $time);
-		if ($type == 'bmi-age') {
+        $time = time();
+        $dob = $this->human_to_unix($demographics->DOB);
+        $pedsage = ($time - $dob);
+        $datenow = date(DATE_RFC822, $time);
+        if ($type == 'bmi-age') {
             $data = $this->gc_bmi_age($sex, $pid);
-			$data['title'] = 'BMI-for-age percentiles for ' . $demographics->firstname . ' ' . $demographics->lastname . ' as of ' . $datenow;
+            $data['title'] = 'BMI-for-age percentiles for ' . $demographics->firstname . ' ' . $demographics->lastname . ' as of ' . $datenow;
             $data['graph_type'] = 'growth-chart';
-    	}
-		if ($type == 'weight-age') {
-			$data = $this->gc_weight_age($sex, $pid);
+        }
+        if ($type == 'weight-age') {
+            $data = $this->gc_weight_age($sex, $pid);
             $data['title'] = 'Weight-for-age percentiles for ' . $demographics->firstname . ' ' . $demographics->lastname . ' as of ' . $datenow;
             $data['graph_type'] = 'growth-chart';
-    	}
-		if ($type == 'height-age') {
+        }
+        if ($type == 'height-age') {
             $data = $this->gc_height_age($sex, $pid);
             $data['title'] = 'Height-for-age percentiles for ' . $demographics->firstname . ' ' . $demographics->lastname . ' as of ' . $datenow;
             $data['graph_type'] = 'growth-chart';
-    	}
-		if ($type == 'head-age') {
+        }
+        if ($type == 'head-age') {
             $data = $this->gc_head_age($sex, $pid);
             $data['title'] = 'Head circumference-for-age percentiles for ' . $demographics->firstname . ' ' . $demographics->lastname . ' as of ' . $datenow;
             $data['graph_type'] = 'growth-chart';
         }
-		if ($type == 'weight-height') {
+        if ($type == 'weight-height') {
             $data = $this->gc_weight_height($sex, $pid);
             $data['title'] = 'Weight-height for ' . $demographics->firstname . ' ' . $demographics->lastname . ' as of ' . $datenow;
             $data['graph_type'] = 'growth-chart1';
-		}
+        }
         $data['patientname'] = $demographics->firstname . ' ' . $demographics->lastname;
         // $data['results_active'] = true;
         $data['panel_header'] = $data['title'];
@@ -5330,7 +5362,7 @@ class ChartController extends Controller {
         $data['assets_js'] = $this->assets_js();
         $data['assets_css'] = $this->assets_css();
         return view('graph', $data);
-	}
+    }
 
     public function immunizations_csv(Request $request)
     {
@@ -5475,9 +5507,9 @@ class ChartController extends Controller {
     {
         if ($request->isMethod('post')) {
             $data['imm_notes'] = $request->input('imm_notes');
-    		DB::table('demographics_notes')->where('pid', '=', Session::get('pid'))->where('practice_id', '=', Session::get('practice_id'))->update($data);
-    		$this->audit('Update');
-    		Session::put('message_action', 'Immunization note updated');
+            DB::table('demographics_notes')->where('pid', '=', Session::get('pid'))->where('practice_id', '=', Session::get('practice_id'))->update($data);
+            $this->audit('Update');
+            Session::put('message_action', 'Immunization note updated');
             return redirect(Session::get('last_page'));
         } else {
             $result = DB::table('demographics_notes')->where('pid', '=', Session::get('pid'))->where('practice_id', '=', Session::get('practice_id'))->first();
@@ -5648,9 +5680,9 @@ class ChartController extends Controller {
             }
             if ($action == 'immunizations') {
                 $vaccine_id = $request->input('vaccine_id');
-				$inventory_result = DB::table('vaccine_inventory')->where('vaccine_id', '=', $request->input('vaccine_id'))->first();
-				$inventory_data['quantity'] = $inventory_result->quantity - $request->input('amount');
-				DB::table('vaccine_inventory')->where('vaccine_id', '=', $vaccine_id)->update($inventory_data);
+                $inventory_result = DB::table('vaccine_inventory')->where('vaccine_id', '=', $request->input('vaccine_id'))->first();
+                $inventory_data['quantity'] = $inventory_result->quantity - $request->input('amount');
+                DB::table('vaccine_inventory')->where('vaccine_id', '=', $vaccine_id)->update($inventory_data);
                 $this->audit('Update');
                 $message = 'Vaccine inventory updated';
             }
@@ -6009,7 +6041,7 @@ class ChartController extends Controller {
             'type' => 'item',
             'label' => 'Add Insurance',
             'icon' => 'fa-plus',
-            'url' => route('chart_form', ['sup_list', $row_index, '0'])
+            'url' => route('core_form', ['addressbook', 'address_id', '0', 'Insurance'])
         ];
         if ($cc_active == true) {
             $items1[] = [
@@ -6100,6 +6132,10 @@ class ChartController extends Controller {
             foreach ($result as $row) {
                 $arr = [];
                 $arr['label'] = '<b>' . date('Y-m-d', $this->human_to_unix($row->orders_date)) . '</b> - ' . $row->{$type};
+                if ($type == 'orders_referrals') {
+                    $address = DB::table('addressbook')->where('address_id', '=', $row->address_id)->first();
+                    $arr['label'] = '<b>' . date('Y-m-d', $this->human_to_unix($row->orders_date)) . '</b> - ' . $address->specialty . ': ' . $address->displayname;
+                }
                 if ($edit == true) {
                     $arr['edit'] = route('chart_form', ['orders', $row_index, $row->$row_index, $type]);
                     $arr['complete'] = route('chart_action', ['table' => 'orders', 'action' => 'complete', 'index' => $row_index, 'id' => $row->$row_index]);
@@ -6266,53 +6302,53 @@ class ChartController extends Controller {
 
     public function register_patient(Request $request)
     {
-		$pid = Session::get('pid');
-		$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-		$token = '';
-		for ($i = 0; $i < 6; $i++) {
-			$token .= $characters[mt_rand(0, strlen($characters)-1)];
-		}
-		$data['registration_code'] = $token;
-		DB::table('demographics')->where('pid', '=', $pid)->update($data);
-		$this->audit('Update');
-		$result = DB::table('demographics')->where('pid', '=', $pid)->first();
-		if ($result->email != '') {
-			$practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
-			$data1 = [
-				'practicename' => $practice->practice_name,
-				'url' => route('dashboard'),
-				'token' => $token
-			];
-			$this->send_mail('emails.loginregistrationcode', $data1, 'Patient Portal Registration Code', $result->email, Session::get('practice_id'));
+        $pid = Session::get('pid');
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $token = '';
+        for ($i = 0; $i < 6; $i++) {
+            $token .= $characters[mt_rand(0, strlen($characters)-1)];
         }
-		Session::put('message_action', "Registration Code: " . $token);
+        $data['registration_code'] = $token;
+        DB::table('demographics')->where('pid', '=', $pid)->update($data);
+        $this->audit('Update');
+        $result = DB::table('demographics')->where('pid', '=', $pid)->first();
+        if ($result->email != '') {
+            $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
+            $data1 = [
+                'practicename' => $practice->practice_name,
+                'url' => route('dashboard'),
+                'token' => $token
+            ];
+            $this->send_mail('emails.loginregistrationcode', $data1, 'Patient Portal Registration Code', $result->email, Session::get('practice_id'));
+        }
+        Session::put('message_action', "Registration Code: " . $token);
         return redirect(Session::get('last_page'));
     }
 
     public function results_chart(Request $request, $id)
-	{
-		$pid = Session::get('pid');
-		$demographics = DB::table('demographics')->where('pid', '=', $pid)->first();
-		$row0 = DB::table('tests')->where('tests_id', '=', $id)->first();
-		// $data['patient'] = [];
-		$data['graph_y_title'] = $row0->test_units;
-		$data['graph_x_title'] = 'Date';
-		$data['graph_series_name'] = $row0->test_name;
-		$data['graph_title'] = 'Chart of ' . $row0->test_name . ' over time for ' . $demographics->firstname . ' ' . $demographics->lastname . ' as of ' . date("Y-m-d, g:i a", time());
-		$query1 = DB::table('tests')
-			->where('test_name', '=', $row0->test_name)
-			->where('pid', '=', $pid)
-			->orderBy('test_datetime', 'asc')
-			->get();
+    {
+        $pid = Session::get('pid');
+        $demographics = DB::table('demographics')->where('pid', '=', $pid)->first();
+        $row0 = DB::table('tests')->where('tests_id', '=', $id)->first();
+        // $data['patient'] = [];
+        $data['graph_y_title'] = $row0->test_units;
+        $data['graph_x_title'] = 'Date';
+        $data['graph_series_name'] = $row0->test_name;
+        $data['graph_title'] = 'Chart of ' . $row0->test_name . ' over time for ' . $demographics->firstname . ' ' . $demographics->lastname . ' as of ' . date("Y-m-d, g:i a", time());
+        $query1 = DB::table('tests')
+            ->where('test_name', '=', $row0->test_name)
+            ->where('pid', '=', $pid)
+            ->orderBy('test_datetime', 'asc')
+            ->get();
         $json = [];
-		if ($query1->count()) {
-			foreach ($query1 as $row1) {
-				$json[] = [
+        if ($query1->count()) {
+            foreach ($query1 as $row1) {
+                $json[] = [
                     $row1->test_datetime,
                     $row1->test_result
                 ];
-			}
-		}
+            }
+        }
         $edit = $this->access_level('2');
         $dropdown_array = [];
         $dropdown_array['default_button_text'] = '<i class="fa fa-chevron-left fa-fw fa-btn"></i>Back';
@@ -6342,7 +6378,7 @@ class ChartController extends Controller {
         $data['assets_js'] = $this->assets_js('');
         $data['assets_css'] = $this->assets_css('');
         return view('graph', $data);
-	}
+    }
 
     public function results_list(Request $request)
     {
@@ -6429,9 +6465,9 @@ class ChartController extends Controller {
                     $data1['alert_date_complete'] = date('Y-m-d H:i:s');
                     $orders_query = DB::table('alerts')->where('alert_id', '=', $test)->first();
                     if ($orders_query->orders_id != '') {
-        				$data2['orders_completed'] = 'Yes';
-        				DB::table('orders')->where('orders_id', '=', $orders_query->orders_id)->update($data2);
-        				$this->audit('Update');
+                        $data2['orders_completed'] = 'Yes';
+                        DB::table('orders')->where('orders_id', '=', $orders_query->orders_id)->update($data2);
+                        $this->audit('Update');
                         $orders_query1 = DB::table('orders')->where('orders_id', '=', $orders_query->orders_id)->first();
                         if ($orders_query1->orders_labs !== '') {
                             $body .= "\n" . $orders_query1->orders_labs;
@@ -6442,7 +6478,7 @@ class ChartController extends Controller {
                         if ($orders_query1->orders_cp !== '') {
                             $body .= "\n" . $orders_query1->orders_cp;
                         }
-        			}
+                    }
                     DB::table('alerts')->where('alert_id', '=', $test)->update($data1);
                     $this->audit('Update');
                 }
@@ -6471,65 +6507,65 @@ class ChartController extends Controller {
                 $message = 'Letter generated';
             }
             if ($request->input('action') == 'portal') {
-    			$patient = DB::table('demographics')->where('pid', '=', $pid)->first();
-    			$row_relate = DB::table('demographics_relate')
-    				->where('pid', '=', $pid)
-    				->where('practice_id', '=', Session::get('practice_id'))
-    				->first();
-    			$data_message = array(
-    				'displayname' => Session::get('displayname'),
-    				'email' => $practice->email,
-    				'patient_portal' => $practice->patient_portal
-    			);
-    			if ($row_relate->id == '') {
-    				if ($row->email == '') {
-    					$message = 'Error - No message sent due to no email address for patient';
-    				} else {
-    					$data_message['portal'] = false;
-    					$this->send_mail('emails.newresult', $data_message, 'Test Results Available', $patient->email, Session::get('practice_id'));
-    					$message = 'E-mail notification sent';
-    				}
-    			} else {
-    				$from = Session::get('user_id');
-    				$patient_name = $patient->lastname . ', ' . $patient->firstname . ' (DOB: ' . date('m/d/Y', strtotime($patient->DOB)) . ') (ID: ' . $pid . ')';
-    				$patient_name1 = $patient->lastname . ', ' . $patient->firstname . ' (ID: ' . $pid . ')';
-    				$body .= "\nPlease contact me if you have any questions." . "\n\nSincerely,\n" . Session::get('displayname');
-    				$data = [
-    					'pid' => $pid,
-    					'patient_name' => $patient_name,
-    					'message_to' => $patient_name1,
-    					'cc' => '',
-    					'message_from' => $from,
-    					'subject' => 'Your Test Results',
-    					'body' => $body,
-    					'status' => 'Sent',
-    					'mailbox' => $row_relate->id,
-    					'practice_id' => Session::get('practice_id')
-    				];
-    				DB::table('messaging')->insert($data);
-    				$this->audit('Add');
-    				$data1a = [
-    					'pid' => $pid,
-    					'patient_name' => $patient_name,
-    					'message_to' => $patient_name1,
-    					'cc' => '',
-    					'message_from' => $from,
-    					'subject' => 'Your Test Results',
-    					'body' => $body,
-    					'status' => 'Sent',
-    					'mailbox' => '0',
-    					'practice_id' => Session::get('practice_id')
-    				];
-    				DB::table('messaging')->insert($data1a);
-    				$this->audit('Add');
-    				if ($patient->email == '') {
-    					$message = 'Internal message sent';
-    				} else {
-    					$data_message['portal'] = true;
-    					$this->send_mail('emails.newresult', $data_message, 'Test Results Available', $patient->email, Session::get('practice_id'));
-    					$message = 'Internal message sent with e-mail notification';
-    				}
-    			}
+                $patient = DB::table('demographics')->where('pid', '=', $pid)->first();
+                $row_relate = DB::table('demographics_relate')
+                    ->where('pid', '=', $pid)
+                    ->where('practice_id', '=', Session::get('practice_id'))
+                    ->first();
+                $data_message = array(
+                    'displayname' => Session::get('displayname'),
+                    'email' => $practice->email,
+                    'patient_portal' => $practice->patient_portal
+                );
+                if ($row_relate->id == '') {
+                    if ($row->email == '') {
+                        $message = 'Error - No message sent due to no email address for patient';
+                    } else {
+                        $data_message['portal'] = false;
+                        $this->send_mail('emails.newresult', $data_message, 'Test Results Available', $patient->email, Session::get('practice_id'));
+                        $message = 'E-mail notification sent';
+                    }
+                } else {
+                    $from = Session::get('user_id');
+                    $patient_name = $patient->lastname . ', ' . $patient->firstname . ' (DOB: ' . date('m/d/Y', strtotime($patient->DOB)) . ') (ID: ' . $pid . ')';
+                    $patient_name1 = $patient->lastname . ', ' . $patient->firstname . ' (ID: ' . $pid . ')';
+                    $body .= "\nPlease contact me if you have any questions." . "\n\nSincerely,\n" . Session::get('displayname');
+                    $data = [
+                        'pid' => $pid,
+                        'patient_name' => $patient_name,
+                        'message_to' => $patient_name1,
+                        'cc' => '',
+                        'message_from' => $from,
+                        'subject' => 'Your Test Results',
+                        'body' => $body,
+                        'status' => 'Sent',
+                        'mailbox' => $row_relate->id,
+                        'practice_id' => Session::get('practice_id')
+                    ];
+                    DB::table('messaging')->insert($data);
+                    $this->audit('Add');
+                    $data1a = [
+                        'pid' => $pid,
+                        'patient_name' => $patient_name,
+                        'message_to' => $patient_name1,
+                        'cc' => '',
+                        'message_from' => $from,
+                        'subject' => 'Your Test Results',
+                        'body' => $body,
+                        'status' => 'Sent',
+                        'mailbox' => '0',
+                        'practice_id' => Session::get('practice_id')
+                    ];
+                    DB::table('messaging')->insert($data1a);
+                    $this->audit('Add');
+                    if ($patient->email == '') {
+                        $message = 'Internal message sent';
+                    } else {
+                        $data_message['portal'] = true;
+                        $this->send_mail('emails.newresult', $data_message, 'Test Results Available', $patient->email, Session::get('practice_id'));
+                        $message = 'Internal message sent with e-mail notification';
+                    }
+                }
             }
             Session::put('message_action', $message);
             return redirect(Session::get('last_page'));
@@ -6539,12 +6575,12 @@ class ChartController extends Controller {
                 ->where('pid', '=', Session::get('pid'))
                 ->where('practice_id', '=', Session::get('practice_id'))
                 ->where('alert_date_complete', '=', '0000-00-00 00:00:00')
-    			->where('alert_reason_not_complete', '=', '')
-    			->where(function($query_array1) {
-    				$query_array1->where('alert', '=', 'Laboratory results pending')
-    				->orWhere('alert', '=', 'Radiology results pending')
-    				->orWhere('alert', '=', 'Cardiopulmonary results pending');
-    			})
+                ->where('alert_reason_not_complete', '=', '')
+                ->where(function($query_array1) {
+                    $query_array1->where('alert', '=', 'Laboratory results pending')
+                    ->orWhere('alert', '=', 'Radiology results pending')
+                    ->orWhere('alert', '=', 'Cardiopulmonary results pending');
+                })
                 ->get();
             if ($query->count()) {
                 foreach ($query as $item) {
@@ -6619,11 +6655,11 @@ class ChartController extends Controller {
         $return = '<div class="table-responsive"><table class="table table-striped"><thead><tr><th>Date</th><th>Result</th><th>Unit</th><th>Range</th><th>Flag</th></thead><tbody>';
         // Get old results for comparison table
         $query = DB::table('tests')
-			->where('test_name', '=', $test->test_name)
-			->where('pid', '=', Session::get('pid'))
-			->orderBy('test_datetime', 'desc')
-			->get();
-		if ($query->count()) {
+            ->where('test_name', '=', $test->test_name)
+            ->where('pid', '=', Session::get('pid'))
+            ->orderBy('test_datetime', 'desc')
+            ->get();
+        if ($query->count()) {
             foreach ($query as $row) {
                 $return .= '<tr';
                 $class_arr = [];
@@ -7095,43 +7131,43 @@ class ChartController extends Controller {
     }
 
     public function uma_invite(Request $request)
-	{
+    {
         if ($request->isMethod('post')) {
             $this->validate($request, [
-				'email' => 'required_without_all:sms',
+                'email' => 'required_without_all:sms',
                 'sms' => 'required_without_all:email'
-			]);
-    		// $resource_set_ids = implode(',', $request->input('resources'));
+            ]);
+            // $resource_set_ids = implode(',', $request->input('resources'));
             $data_message['temp_url'] = URL::to('/');
-    		$data_message['patient'] = Session::get('displayname');
+            $data_message['patient'] = Session::get('displayname');
             if ($request->input('email') !== '') {
                 $email = $request->input('email');
                 $mesg  = $this->send_mail('emails.apiregister', $data_message, 'URGENT: Invitation to access the personal electronic medical record of ' . Session::get('displayname'), $request->input('email'), '1');
             } else {
                 $email = $request->input('sms');
                 $message = "You've been invited to use" . $data_message['patient'] . "'s personal health record.  Go to " . $data_message['temp_url'] . " to register";
-    			$url = 'http://textbelt.com/text';
-    			$message1 = http_build_query([
-    				'number' => $request->input('sms'),
-    				'message' => $message
-    			]);
-    			$ch = curl_init();
-    			curl_setopt($ch, CURLOPT_URL, $url);
-    			curl_setopt($ch, CURLOPT_POST, 1);
-    			curl_setopt($ch, CURLOPT_POSTFIELDS, $message1);
-    			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    			$output = curl_exec ($ch);
-    			curl_close ($ch);
+                $url = 'http://textbelt.com/text';
+                $message1 = http_build_query([
+                    'number' => $request->input('sms'),
+                    'message' => $message
+                ]);
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $url);
+                curl_setopt($ch, CURLOPT_POST, 1);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $message1);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $output = curl_exec ($ch);
+                curl_close ($ch);
             }
-    		$data = [
-    			'email' => $request->input('email'),
-    			'name' => $request->input('name'),
-    			'invitation_timeout' => time() + 259200
-    			// 'resource_set_ids' => $resource_set_ids
-    		];
-    		DB::table('uma_invitation')->insert($data);
-    		$this->audit('Add');
-    		Session::put('message_action', 'Invitation sent to ' . $email);
+            $data = [
+                'email' => $request->input('email'),
+                'name' => $request->input('name'),
+                'invitation_timeout' => time() + 259200
+                // 'resource_set_ids' => $resource_set_ids
+            ];
+            DB::table('uma_invitation')->insert($data);
+            $this->audit('Add');
+            Session::put('message_action', 'Invitation sent to ' . $email);
             return redirect(Session::get('last_page'));
         } else {
             $items[] = [
@@ -7167,95 +7203,95 @@ class ChartController extends Controller {
             $data['assets_css'] = $this->assets_css('chart');
             return view('chart', $data);
         }
-	}
+    }
 
     public function uma_register(Request $request)
-	{
-		if ($request->isMethod('post')) {
-			$this->validate($request, [
-				'email' => 'required|email'
-			]);
-			Session::forget('type');
-		    Session::forget('client_id');
-			Session::forget('url');
-			$domain = explode('@', $request->input('email'));
-			// webfinger
-			$url = 'https://' . $domain[1] . '/.well-known/webfinger';
-			$query_string = 'resource=acct:' . $request->input('email') . '&rel=http://openid.net/specs/connect/1.0/issuer';
-			$url .= '?' . $query_string ;
-			$ch = curl_init();
-			curl_setopt($ch,CURLOPT_URL, $url);
-			curl_setopt($ch,CURLOPT_FAILONERROR,1);
-			curl_setopt($ch,CURLOPT_FOLLOWLOCATION,1);
-			curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
-			curl_setopt($ch,CURLOPT_TIMEOUT, 60);
-			curl_setopt($ch,CURLOPT_CONNECTTIMEOUT ,0);
-			$result = curl_exec($ch);
-			$result_array = json_decode($result, true);
-			curl_close($ch);
-			if (isset($result_array['subject'])) {
-				$as_uri = $result_array['links'][0]['href'];
-				// $client_name = 'mdNOSH';
+    {
+        if ($request->isMethod('post')) {
+            $this->validate($request, [
+                'email' => 'required|email'
+            ]);
+            Session::forget('type');
+            Session::forget('client_id');
+            Session::forget('url');
+            $domain = explode('@', $request->input('email'));
+            // webfinger
+            $url = 'https://' . $domain[1] . '/.well-known/webfinger';
+            $query_string = 'resource=acct:' . $request->input('email') . '&rel=http://openid.net/specs/connect/1.0/issuer';
+            $url .= '?' . $query_string ;
+            $ch = curl_init();
+            curl_setopt($ch,CURLOPT_URL, $url);
+            curl_setopt($ch,CURLOPT_FAILONERROR,1);
+            curl_setopt($ch,CURLOPT_FOLLOWLOCATION,1);
+            curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+            curl_setopt($ch,CURLOPT_TIMEOUT, 60);
+            curl_setopt($ch,CURLOPT_CONNECTTIMEOUT ,0);
+            $result = curl_exec($ch);
+            $result_array = json_decode($result, true);
+            curl_close($ch);
+            if (isset($result_array['subject'])) {
+                $as_uri = $result_array['links'][0]['href'];
+                // $client_name = 'mdNOSH';
                 $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
-    			$client_name = 'mdNOSH - ' . $practice->practice_name;
-				$url1 = route('uma_auth');
-				$oidc = new OpenIDConnectClient($as_uri);
-				$oidc->setClientName($client_name);
-				$oidc->setRedirectURL($url1);
-				$oidc->addScope('openid');
-				$oidc->addScope('email');
-				$oidc->addScope('profile');
-				$oidc->addScope('address');
-				$oidc->addScope('phone');
-				$oidc->addScope('offline_access');
-				$oidc->addScope('uma_authorization');
-				$oidc->addScope('uma_protection');
-				$oidc->register(true);
-				$client_id = $oidc->getClientID();
-				$client_secret = $oidc->getClientSecret();
-				$data1 = [
-					'hieofone_as_client_id' => $client_id,
-					'hieofone_as_client_secret' => $client_secret,
-					'hieofone_as_url' => $as_uri
-				];
+                $client_name = 'mdNOSH - ' . $practice->practice_name;
+                $url1 = route('uma_auth');
+                $oidc = new OpenIDConnectClient($as_uri);
+                $oidc->setClientName($client_name);
+                $oidc->setRedirectURL($url1);
+                $oidc->addScope('openid');
+                $oidc->addScope('email');
+                $oidc->addScope('profile');
+                $oidc->addScope('address');
+                $oidc->addScope('phone');
+                $oidc->addScope('offline_access');
+                $oidc->addScope('uma_authorization');
+                $oidc->addScope('uma_protection');
+                $oidc->register(true);
+                $client_id = $oidc->getClientID();
+                $client_secret = $oidc->getClientSecret();
+                $data1 = [
+                    'hieofone_as_client_id' => $client_id,
+                    'hieofone_as_client_secret' => $client_secret,
+                    'hieofone_as_url' => $as_uri
+                ];
                 DB::table('demographics')->where('pid', '=', Session::get('pid'))->update($data1);
                 $this->audit('Update');
-			    Session::put('pnosh_client_id', $client_id);
-				Session::put('pnosh_client_secret', $client_secret);
-				Session::put('pnosh_url', $as_uri);
-				Session::save();
-				return redirect()->route('uma_register_auth');
-			} else {
-				return redirect()->back()->withErrors(['tryagain' => 'Try again']);
-			}
-		} else {
-			$data = array_merge($data, $this->sidebar_build('chart'));
+                Session::put('pnosh_client_id', $client_id);
+                Session::put('pnosh_client_secret', $client_secret);
+                Session::put('pnosh_url', $as_uri);
+                Session::save();
+                return redirect()->route('uma_register_auth');
+            } else {
+                return redirect()->back()->withErrors(['tryagain' => 'Try again']);
+            }
+        } else {
+            $data = array_merge($data, $this->sidebar_build('chart'));
             $data['assets_js'] = $this->assets_js('chart');
             $data['assets_css'] = $this->assets_css('chart');
-			return view('uma_register', $data);
-		}
-	}
+            return view('uma_register', $data);
+        }
+    }
 
     public function uma_register_auth(Request $request)
-	{
-		$url = route('uma_register_auth');
-		$open_id_url = Session::get('pnosh_url');
-		$client_id = Session::get('pnosh_client_id');
-		$client_secret = Session::get('pnosh_client_secret');
-		$oidc = new OpenIDConnectClient($open_id_url, $client_id, $client_secret);
-		$oidc->setRedirectURL($url);
-		$oidc->addScope('openid');
-		$oidc->addScope('email');
-		$oidc->addScope('profile');
-		$oidc->addScope('offline_access');
-		$oidc->addScope('uma_authorization');
-		$oidc->addScope('uma_protection');
-		$oidc->authenticate(true);
-		$name = $oidc->requestUserInfo('name');
-		$birthday = $oidc->requestUserInfo('birthday');
+    {
+        $url = route('uma_register_auth');
+        $open_id_url = Session::get('pnosh_url');
+        $client_id = Session::get('pnosh_client_id');
+        $client_secret = Session::get('pnosh_client_secret');
+        $oidc = new OpenIDConnectClient($open_id_url, $client_id, $client_secret);
+        $oidc->setRedirectURL($url);
+        $oidc->addScope('openid');
+        $oidc->addScope('email');
+        $oidc->addScope('profile');
+        $oidc->addScope('offline_access');
+        $oidc->addScope('uma_authorization');
+        $oidc->addScope('uma_protection');
+        $oidc->authenticate(true);
+        $name = $oidc->requestUserInfo('name');
+        $birthday = $oidc->requestUserInfo('birthday');
         $access_token = $oidc->getAccessToken();
-		$patient['hieofone_as_name'] = $name . '(DOB: ' . $birthday . ')';
-		$patient['hieofone_as_picture'] = $oidc->requestUserInfo('picture');
+        $patient['hieofone_as_name'] = $name . '(DOB: ' . $birthday . ')';
+        $patient['hieofone_as_picture'] = $oidc->requestUserInfo('picture');
         DB::table('demographics')->where('pid', '=', Session::get('pid'))->update($patient);
         $this->audit('Update');
         $refresh = [
@@ -7275,36 +7311,36 @@ class ChartController extends Controller {
         $data['assets_js'] = $this->assets_js('chart');
         $data['assets_css'] = $this->assets_css('chart');
         return view('chart', $data);
-	}
+    }
 
     public function upload_ccda(Request $request)
-	{
+    {
         if ($request->isMethod('post')) {
-    		$pid = Session::get('pid');
-    		$directory = Session::get('documents_dir') . $pid;
-    		$file = $request->file('file_input');
-			$new_name = str_replace('.' . $file->getClientOriginalExtension(), '', $file->getClientOriginalName()) . '_' . time() . '.xml';
-			$file->move($directory, $new_name);
-			$file_path = $directory . '/' . $new_name;
-			$ccda = simplexml_load_file($file_path);
-			if ($ccda) {
-				$data = [
-					'documents_url' => $file_path,
-					'documents_type' => 'ccda',
-					'documents_desc' => $ccda->title,
-					'documents_from' => $ccda->recordTarget->patientRole->providerOrganization->name,
-					'documents_date' => date("Y-m-d", strtotime($ccda->effectiveTime['value'])),
-					'pid' => $pid
-				];
-				$documents_id = DB::table('documents')->insertGetId($data);
-				$this->audit('Add');
+            $pid = Session::get('pid');
+            $directory = Session::get('documents_dir') . $pid;
+            $file = $request->file('file_input');
+            $new_name = str_replace('.' . $file->getClientOriginalExtension(), '', $file->getClientOriginalName()) . '_' . time() . '.xml';
+            $file->move($directory, $new_name);
+            $file_path = $directory . '/' . $new_name;
+            $ccda = simplexml_load_file($file_path);
+            if ($ccda) {
+                $data = [
+                    'documents_url' => $file_path,
+                    'documents_type' => 'ccda',
+                    'documents_desc' => $ccda->title,
+                    'documents_from' => $ccda->recordTarget->patientRole->providerOrganization->name,
+                    'documents_date' => date("Y-m-d", strtotime($ccda->effectiveTime['value'])),
+                    'pid' => $pid
+                ];
+                $documents_id = DB::table('documents')->insertGetId($data);
+                $this->audit('Add');
                 Session::put('message_action', 'C-CDA uploaded');
                 return redirect()->route('upload_ccda_view', [$documents_id, 'issues']);
-			} else {
-				unlink($file_path);
+            } else {
+                unlink($file_path);
                 Session::put('message_action', 'Error - This file is not in the correct format.  Try again');
                 return redirect(Session::get('last_page'));
-			}
+            }
         } else {
             $data['records_active'] = true;
             $data['panel_header'] = 'Upload Consolidated Clinical Document (C-CCDA)';
@@ -7319,7 +7355,7 @@ class ChartController extends Controller {
             $data['assets_css'] = $this->assets_css('document_upload');
             return view('document_upload', $data);
         }
-	}
+    }
 
     public function upload_ccda_view(Request $request, $id, $type='issues')
     {
@@ -7554,10 +7590,10 @@ class ChartController extends Controller {
     }
 
     public function upload_ccr(Request $request)
-	{
+    {
         if ($request->isMethod('post')) {
-    		$pid = Session::get('pid');
-    		$directory = Session::get('documents_dir') . $pid;
+            $pid = Session::get('pid');
+            $directory = Session::get('documents_dir') . $pid;
             $file = $request->file('file_input');
             $new_name = str_replace('.' . $file->getClientOriginalExtension(), '', $file->getClientOriginalName()) . '_' . time() . '.xml';
             $file->move($directory, $new_name);
@@ -7571,22 +7607,22 @@ class ChartController extends Controller {
                     }
                 }
                 $data = [
-					'documents_url' => $file_path,
-					'documents_type' => 'ccr',
-					'documents_desc' => 'Continuity of Care Record',
-					'documents_from' => $documents_from,
-					'documents_date' => date("Y-m-d"),
-					'pid' => $pid
-				];
-				$documents_id = DB::table('documents')->insertGetId($data);
-				$this->audit('Add');
+                    'documents_url' => $file_path,
+                    'documents_type' => 'ccr',
+                    'documents_desc' => 'Continuity of Care Record',
+                    'documents_from' => $documents_from,
+                    'documents_date' => date("Y-m-d"),
+                    'pid' => $pid
+                ];
+                $documents_id = DB::table('documents')->insertGetId($data);
+                $this->audit('Add');
                 Session::put('message_action', 'CCR uploaded');
                 return redirect()->route('upload_ccda_view', [$documents_id, 'issues']);
             } else {
-				unlink($file_path);
+                unlink($file_path);
                 Session::put('message_action', 'Error - This file is not in the correct format.  Try again');
                 return redirect(Session::get('last_page'));
-			}
+            }
         } else {
             $data['records_active'] = true;
             $data['panel_header'] = 'Upload Continuity of Care Record (CCR)';
@@ -7601,7 +7637,7 @@ class ChartController extends Controller {
             $data['assets_css'] = $this->assets_css('document_upload');
             return view('document_upload', $data);
         }
-	}
+    }
 
 
 

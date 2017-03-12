@@ -44,7 +44,7 @@ Route::get('update_system', ['as' => 'update_system', 'uses' => 'InstallControll
 // Core routes
 Route::get('/', ['as' => 'dashboard', 'uses' => 'CoreController@dashboard']);
 Route::any('add_patient', ['as' => 'add_patient', 'uses' => 'CoreController@add_patient']);
-Route::get('addressbook{type}', ['as' => 'addressbook', 'uses' => 'CoreController@addressbook']);
+Route::get('addressbook/{type}', ['as' => 'addressbook', 'uses' => 'CoreController@addressbook']);
 Route::get('audit_logs', ['as' => 'audit_logs', 'uses' => 'CoreController@audit_logs']);
 Route::get('billing_list/{type}/{pid}', ['as' => 'billing_list', 'uses' => 'CoreController@billing_list']);
 Route::any('core_action/{table}/{action}/{id}/{index}/{subtype?}', ['as' => 'core_action', 'uses' => 'CoreController@core_action']);
@@ -248,6 +248,7 @@ Route::post('search_loinc', ['as' => 'search_loinc', 'uses' => 'AjaxSearchContro
 Route::post('search_ndc', ['as' => 'search_ndc', 'uses' => 'AjaxSearchController@search_ndc']);
 Route::post('search_patient', ['as' => 'search_patient', 'uses' => 'AjaxSearchController@search_patient']);
 Route::post('search_patient_history', ['as' => 'search_patient_history', 'uses' => 'AjaxSearchController@search_patient_history']);
+Route::post('search_referral_provider', ['as' => 'search_referral_provider', 'uses' => 'AjaxSearchController@search_referral_provider']);
 Route::post('search_rx', ['as' => 'search_rx', 'uses' => 'AjaxSearchController@search_rx']);
 Route::post('search_specialty', ['as' => 'search_specialty', 'uses' => 'AjaxSearchController@search_specialty']);
 Route::post('search_supplement/{order}', ['as' => 'search_supplement', 'uses' => 'AjaxSearchController@search_supplement']);
@@ -273,55 +274,55 @@ Route::get('reminder', ['as' => 'reminder', 'uses' => 'ReminderController@remind
 // FHIR Endpoints
 Route::group(['prefix' => 'fhir'], function () {
 // Route::group(['prefix' => 'fhir', 'middleware' => 'fhir'], function () {
-	Route::resource('AdverseReaction', 'AdverseReactionController');
-	Route::resource('Alert', 'AlertController');
-	Route::resource('AllergyIntolerance', 'AllergyIntoleranceController'); // in use - allergies
-	Route::resource('Binary', 'BinaryController'); // in use - documents
-	Route::resource('CarePlan', 'CarePlanController');
-	Route::resource('Composition', 'CompositionController');
-	Route::resource('ConceptMap', 'ConceptMapController');
-	Route::resource('Condition', 'ConditionController'); //in use - issues, assessments
-	Route::resource('Conformance', 'ConformanceController');
-	Route::resource('Device', 'DeviceController');
-	Route::resource('DeviceObservationReport', 'DeviceObservationReportController');
-	Route::resource('DiagnosticOrder', 'DiagnosticOrderController');
-	Route::resource('DiagnosticReport', 'DiagnosticReportController');
-	Route::resource('DocumentReference', 'DocumentReferenceController');
-	Route::resource('DocumentManifest', 'DocumentManifestController');
-	Route::resource('Encounter', 'EncounterController'); //in use - encounters
-	Route::resource('FamilyHistory', 'FamilyHistoryController'); //in use
-	Route::resource('Group', 'GroupController');
-	Route::resource('ImagingStudy', 'ImagingStudyController');
-	Route::resource('Immunization', 'ImmunizationController'); // in use - immunizations
-	Route::resource('ImmunizationRecommendation', 'ImmunizationRecommendationController');
-	Route::resource('List', 'ListController');
-	Route::resource('Location', 'LocationController');
-	Route::resource('Media', 'MediaController');
-	Route::resource('Medication', 'MedicationController'); //in use - rxnorm
-	Route::resource('MedicationAdministration', 'MedicationAdministrationController');
-	Route::resource('MedicationDispense', 'MedicationDispenseController');
-	Route::resource('MedicationPrescription', 'MedicationPrescriptionController');
-	Route::resource('MedicationStatement', 'MedicationStatementController'); //in use - medication list
-	Route::resource('MessageHeader', 'MessageHeaderController');
-	Route::resource('Observation', 'ObservationController');
-	Route::resource('OperationOutcome', 'OperationOutcomeController');
-	Route::resource('Order', 'OrderController');
-	Route::resource('OrderResponse', 'OrderResponseController');
-	Route::resource('Organization', 'OrganizationController');
-	Route::resource('Other', 'OtherController');
-	Route::resource('Patient', 'PatientController'); //in use
-	Route::resource('Practitioner', 'PractitionerController'); //in use
-	Route::resource('Procedure', 'ProcedureController');
-	Route::resource('Profile', 'ProfileController');
-	Route::resource('Provenance', 'ProvenanceController');
-	Route::resource('Query', 'QueryController');
-	Route::resource('Questionnaire', 'QuestionnaireController');
-	Route::resource('RelatedPerson', 'RelatedPersonController');
-	Route::resource('SecurityEvent', 'SecurityEventController');
-	Route::resource('Specimen', 'SpecimenController');
-	Route::resource('Substance', 'SubstanceController');
-	Route::resource('Supply', 'SupplyController');
-	Route::resource('ValueSet', 'ValueSetController');
+    Route::resource('AdverseReaction', 'AdverseReactionController');
+    Route::resource('Alert', 'AlertController');
+    Route::resource('AllergyIntolerance', 'AllergyIntoleranceController'); // in use - allergies
+    Route::resource('Binary', 'BinaryController'); // in use - documents
+    Route::resource('CarePlan', 'CarePlanController');
+    Route::resource('Composition', 'CompositionController');
+    Route::resource('ConceptMap', 'ConceptMapController');
+    Route::resource('Condition', 'ConditionController'); //in use - issues, assessments
+    Route::resource('Conformance', 'ConformanceController');
+    Route::resource('Device', 'DeviceController');
+    Route::resource('DeviceObservationReport', 'DeviceObservationReportController');
+    Route::resource('DiagnosticOrder', 'DiagnosticOrderController');
+    Route::resource('DiagnosticReport', 'DiagnosticReportController');
+    Route::resource('DocumentReference', 'DocumentReferenceController');
+    Route::resource('DocumentManifest', 'DocumentManifestController');
+    Route::resource('Encounter', 'EncounterController'); //in use - encounters
+    Route::resource('FamilyHistory', 'FamilyHistoryController'); //in use
+    Route::resource('Group', 'GroupController');
+    Route::resource('ImagingStudy', 'ImagingStudyController');
+    Route::resource('Immunization', 'ImmunizationController'); // in use - immunizations
+    Route::resource('ImmunizationRecommendation', 'ImmunizationRecommendationController');
+    Route::resource('List', 'ListController');
+    Route::resource('Location', 'LocationController');
+    Route::resource('Media', 'MediaController');
+    Route::resource('Medication', 'MedicationController'); //in use - rxnorm
+    Route::resource('MedicationAdministration', 'MedicationAdministrationController');
+    Route::resource('MedicationDispense', 'MedicationDispenseController');
+    Route::resource('MedicationPrescription', 'MedicationPrescriptionController');
+    Route::resource('MedicationStatement', 'MedicationStatementController'); //in use - medication list
+    Route::resource('MessageHeader', 'MessageHeaderController');
+    Route::resource('Observation', 'ObservationController');
+    Route::resource('OperationOutcome', 'OperationOutcomeController');
+    Route::resource('Order', 'OrderController');
+    Route::resource('OrderResponse', 'OrderResponseController');
+    Route::resource('Organization', 'OrganizationController');
+    Route::resource('Other', 'OtherController');
+    Route::resource('Patient', 'PatientController'); //in use
+    Route::resource('Practitioner', 'PractitionerController'); //in use
+    Route::resource('Procedure', 'ProcedureController');
+    Route::resource('Profile', 'ProfileController');
+    Route::resource('Provenance', 'ProvenanceController');
+    Route::resource('Query', 'QueryController');
+    Route::resource('Questionnaire', 'QuestionnaireController');
+    Route::resource('RelatedPerson', 'RelatedPersonController');
+    Route::resource('SecurityEvent', 'SecurityEventController');
+    Route::resource('Specimen', 'SpecimenController');
+    Route::resource('Substance', 'SubstanceController');
+    Route::resource('Supply', 'SupplyController');
+    Route::resource('ValueSet', 'ValueSetController');
 });
 
 // API routes

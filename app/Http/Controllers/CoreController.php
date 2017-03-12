@@ -255,13 +255,13 @@ class CoreController extends Controller
                     $query = DB::table('billing_core')->where('eid', '=', $encounter->eid)->get();
                     if ($query->count()) {
                         $charge = 0;
-        				$payment = 0;
-        				foreach ($query as $row) {
-        					$charge += $row->cpt_charge * $row->unit;
-        					$payment += $row->payment;
-        				}
-        				$arr['balance'] = $charge - $payment;
-        				$arr['charges'] = $charge;
+                        $payment = 0;
+                        foreach ($query as $row) {
+                            $charge += $row->cpt_charge * $row->unit;
+                            $payment += $row->payment;
+                        }
+                        $arr['balance'] = $charge - $payment;
+                        $arr['charges'] = $charge;
                     }
                     $result[] = $arr;
                 }
@@ -296,11 +296,11 @@ class CoreController extends Controller
                     $query = DB::table('billing_core')->where('other_billing_id', '=', $other->other_billing_id)->get();
                     if ($query->count()) {
                         $charge = $other->cpt_charge * $other->unit;
-        				$payment = 0;
-        				foreach ($query as $row) {
-        					$payment += $row->payment;
-        				}
-        				$arr['balance'] = $charge - $payment;
+                        $payment = 0;
+                        foreach ($query as $row) {
+                            $payment += $row->payment;
+                        }
+                        $arr['balance'] = $charge - $payment;
                     }
                     $result[] = $arr;
                 }
@@ -472,23 +472,25 @@ class CoreController extends Controller
 
         foreach ($duplicate_tables as $duplicate_table) {
             if ($duplicate_table == $table) {
-                // Validation
+                // $this->validate($request, [
+                //     'username1' => 'required|unique:users,username',
+                // ]);
             }
         }
         if ($table == 'addressbook') {
             $data['displayname'] = $request->input('facility');
             if ($subtype == 'Referral') {
-    			if($request->input('firstname') == '' || $request->input('lastname') == '') {
-    				$data['displayname'] = $request->input('facility');
-    			} else {
-    				if($request->input('suffix') == '') {
-    					$data['displayname'] = $request->input('firstname') . ' ' . $request->input('lastname');
-    				} else {
-    					$data['displayname'] = $request->input('firstname') . ' ' . $request->input('lastname') . ', ' . $request->input('suffix');
-    				}
-    			}
-    			$data['specialty'] = $request->input('specialty');
-    		}
+                if($request->input('firstname') == '' && $request->input('lastname') == '') {
+                    $data['displayname'] = $request->input('facility');
+                } else {
+                    if($request->input('suffix') == '') {
+                        $data['displayname'] = $request->input('firstname') . ' ' . $request->input('lastname');
+                    } else {
+                        $data['displayname'] = $request->input('firstname') . ' ' . $request->input('lastname') . ', ' . $request->input('suffix');
+                    }
+                }
+                $data['specialty'] = $request->input('specialty');
+            }
         }
         if ($table == 'vaccine_inventory') {
             $this->validate($request, [
@@ -506,27 +508,27 @@ class CoreController extends Controller
             ]);
             if ($data['cpt'] == '') {
                 $cpt_query = DB::table('cpt_relate')->where('cpt', 'LIKE', '%sp%')->select('cpt')->get();
-    			if ($cpt_query->count()) {
-    				$cpt_array = [];
-    				$i = 0;
-    				foreach ($cpt_query as $cpt_row) {
-    					$cpt_array[$i]['cpt'] = $cpt_row->cpt;
-    					$i++;
-    				}
-    				rsort($cpt_array);
-    				$cpt_num = str_replace("sp", "", $cpt_array[0]['cpt']);
-    				$cpt_num_new = $cpt_num + 1;
-    				$cpt_num_new = str_pad($cpt_num_new, 3, "0", STR_PAD_LEFT);
-    				$data['cpt'] = 'sp' . $cpt_num_new;
-    			} else {
-    				$data['cpt'] = 'sp001';
-    			}
+                if ($cpt_query->count()) {
+                    $cpt_array = [];
+                    $i = 0;
+                    foreach ($cpt_query as $cpt_row) {
+                        $cpt_array[$i]['cpt'] = $cpt_row->cpt;
+                        $i++;
+                    }
+                    rsort($cpt_array);
+                    $cpt_num = str_replace("sp", "", $cpt_array[0]['cpt']);
+                    $cpt_num_new = $cpt_num + 1;
+                    $cpt_num_new = str_pad($cpt_num_new, 3, "0", STR_PAD_LEFT);
+                    $data['cpt'] = 'sp' . $cpt_num_new;
+                } else {
+                    $data['cpt'] = 'sp001';
+                }
             }
         }
         if ($table == 'messaging') {
             if ($data['patient_name'] !== '') {
-    			$data['subject'] = $data['subject'] . ' [RE: ' . $data['patient_name'] . ']';
-    		}
+                $data['subject'] = $data['subject'] . ' [RE: ' . $data['patient_name'] . ']';
+            }
             $data['mailbox'] = '0';
             $data['status'] = 'Sent';
             if (isset($data['submit'])) {
@@ -537,43 +539,43 @@ class CoreController extends Controller
             } else {
                 $data['status'] = 'Sent';
                 foreach ($mailbox as $mailbox_row) {
-        			if ($mailbox_row !== '') {
-        				$send_data = [
-        					'pid' => $data['pid'],
-        					'patient_name' => $data['patient_name'],
-        					'message_to' => $data['message_to'],
-        					'message_from' => $data['message_from'],
-        					'subject' => $data['subject'],
-        					'body' => $data['body'],
-        					't_messages_id' => $data['t_messages_id'],
-        					'status' => 'Sent',
-        					'mailbox' => $mailbox_row,
-        					'practice_id' => $data['practice_id']
-        				];
+                    if ($mailbox_row !== '') {
+                        $send_data = [
+                            'pid' => $data['pid'],
+                            'patient_name' => $data['patient_name'],
+                            'message_to' => $data['message_to'],
+                            'message_from' => $data['message_from'],
+                            'subject' => $data['subject'],
+                            'body' => $data['body'],
+                            't_messages_id' => $data['t_messages_id'],
+                            'status' => 'Sent',
+                            'mailbox' => $mailbox_row,
+                            'practice_id' => $data['practice_id']
+                        ];
                         if (isset($data['cc'])) {
                             $send_data['cc'] = $data['cc'];
                         }
-        				DB::table('messaging')->insert($send_data);
-        				$this->audit('Add');
-        				$user_row = DB::table('users')->where('id', '=',$mailbox_row)->first();
-        				if ($user_row->group_id === '100') {
-        					$data_message['patient_portal'] = $practice->patient_portal;
-        					$this->send_mail('emails.newmessage', $data_message, 'New Message in your Patient Portal', $user_row->email, Session::get('practice_id'));
-        				}
-        			}
-        		}
+                        DB::table('messaging')->insert($send_data);
+                        $this->audit('Add');
+                        $user_row = DB::table('users')->where('id', '=',$mailbox_row)->first();
+                        if ($user_row->group_id === '100') {
+                            $data_message['patient_portal'] = $practice->patient_portal;
+                            $this->send_mail('emails.newmessage', $data_message, 'New Message in your Patient Portal', $user_row->email, Session::get('practice_id'));
+                        }
+                    }
+                }
                 if ($data['t_messages_id'] !== '' && $data['t_messages_id'] !== '0' && $data['t_messages_id'] !== null) {
-        			$row = DB::table('users')->where('id', '=', $data['message_from'])->first();
-        			$displayname = $row->displayname . ' (' . $row->id . ')';
+                    $row = DB::table('users')->where('id', '=', $data['message_from'])->first();
+                    $displayname = $row->displayname . ' (' . $row->id . ')';
                     $t_message = DB::table('t_messages')->where('t_messages_id', '=', $data['t_messages_id'])->first();
-        			$message = $t_message->t_messages_message . "\n\r" . 'On ' . date('Y-m-d', $this->human_to_unix($data['date'])) . ', ' . $displayname . ' wrote:' . "\n---------------------------------\n" . $data['body'];
-        			$data1 = [
-        				't_messages_message' => $message,
-        				't_messages_to' => ''
-        			];
-        			DB::table('t_messages')->where('t_messages_id', '=', $t_messages_id)->update($data1);
-        			$this->audit('Update');
-        		}
+                    $message = $t_message->t_messages_message . "\n\r" . 'On ' . date('Y-m-d', $this->human_to_unix($data['date'])) . ', ' . $displayname . ' wrote:' . "\n---------------------------------\n" . $data['body'];
+                    $data1 = [
+                        't_messages_message' => $message,
+                        't_messages_to' => ''
+                    ];
+                    DB::table('t_messages')->where('t_messages_id', '=', $t_messages_id)->update($data1);
+                    $this->audit('Update');
+                }
             }
         }
         if ($table == 'providers') {
@@ -588,19 +590,19 @@ class CoreController extends Controller
                         $data['patient_portal'] = rtrim($data['patient_portal'], '/');
                     }
                     $practices = DB::table('practiceinfo')->where('practice_id', '!=', '1')->get();
-        			if ($practices->count()) {
-        				foreach ($practices as $practice_row) {
-        					if ($practice_row->patient_portal != '') {
-        						$portal_array = explode("/", $practice_row->patient_portal);
-        						$practices_data = [
-        							'smtp_user' => $data['smtp_user'],
-        							'patient_portal' => $data['patient_portal'] . "/" . $portal_array[4]
-        						];
-        						DB::table('practiceinfo')->where('practice_id', '=', $practice_row->practice_id)->update($practices_data);
-        						$this->audit('Update');
-        					}
-        				}
-        			}
+                    if ($practices->count()) {
+                        foreach ($practices as $practice_row) {
+                            if ($practice_row->patient_portal != '') {
+                                $portal_array = explode("/", $practice_row->patient_portal);
+                                $practices_data = [
+                                    'smtp_user' => $data['smtp_user'],
+                                    'patient_portal' => $data['patient_portal'] . "/" . $portal_array[4]
+                                ];
+                                DB::table('practiceinfo')->where('practice_id', '=', $practice_row->practice_id)->update($practices_data);
+                                $this->audit('Update');
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -618,8 +620,8 @@ class CoreController extends Controller
             }
             $data['displayname'] = $data['firstname'] . " " . $data['lastname'];
             if($data['title'] !== ''){
-    			$data['displayname'] = $data['firstname'] . " " . $data['lastname'] . ", " . $data['title'];
-    		}
+                $data['displayname'] = $data['firstname'] . " " . $data['lastname'] . ", " . $data['title'];
+            }
             if ($subtype == '2') {
                 foreach ($provider_column_arr as $key3) {
                     if (array_key_exists($key3, $data)) {
@@ -728,8 +730,8 @@ class CoreController extends Controller
             if ($table == 'received') {
                 $file = DB::table($table)->where($index, '=', $id)->first();
                 if (file_exists($file->filePath)) {
-        			unlink($file->filePath);
-        		}
+                    unlink($file->filePath);
+                }
             }
             DB::table($table)->where($index, '=', $id)->delete();
             $this->audit('Delete');
@@ -745,10 +747,10 @@ class CoreController extends Controller
                 $data6['alert_date_complete'] = date('Y-m-d H:i:s');
                 $orders_query = DB::table($table)->where($index, '=', $id)->first();
                 if ($orders_query->orders_id != '') {
-    				$data7['orders_completed'] = 'Yes';
-    				DB::table('orders')->where('orders_id', '=', $orders_query->orders_id)->update($data7);
-    				$this->audit('Update');
-    			}
+                    $data7['orders_completed'] = 'Yes';
+                    DB::table('orders')->where('orders_id', '=', $orders_query->orders_id)->update($data7);
+                    $this->audit('Update');
+                }
             }
             if ($table == 'orders') {
                 $data6['orders_completed'] = '1';
@@ -759,17 +761,19 @@ class CoreController extends Controller
                     $this->audit('Update');
                 }
             }
-			DB::table($table)->where($index, '=', $id)->update($data6);
-			$this->audit('Update');
+            DB::table($table)->where($index, '=', $id)->update($data6);
+            $this->audit('Update');
             $arr['message'] = $message . 'marked as completed!';
         }
         $arr['response'] = 'OK';
         Session::put('message_action', $arr['message']);
         if ($table == 'recipients') {
             return redirect(Session::get('messaging_last_page'));
-        } else {
-            return redirect(Session::get('last_page'));
         }
+        if ($table == 'addressbook' && $subtype == 'Referral') {
+            return redirect(Session::get('addressbook_last_page'));
+        }
+        return redirect(Session::get('last_page'));
     }
 
     public function core_form(Request $request, $table, $index, $id, $subtype='')
@@ -813,6 +817,9 @@ class CoreController extends Controller
         $items = array_merge($items, $this->{$form_function}($result, $table, $id, $subtype));
         // Address Book
         if ($table == 'addressbook') {
+            if ($subtype == 'Referral') {
+                $data['search_specialty'] = 'specialty';
+            }
             if ($id == '0') {
                 $data['panel_header'] = 'Add Address Book Entry';
                 if ($subtype !== '') {
@@ -1421,131 +1428,131 @@ class CoreController extends Controller
         $data['title'] = 'NOSH ChartingSystem';
         $user_id = Session::get('user_id');
         if (Session::get('group_id') == '100') {
-			$row = DB::table('demographics_relate')->where('id', '=', $user_id)->first();
+            $row = DB::table('demographics_relate')->where('id', '=', $user_id)->first();
             $this->setpatient($row->pid);
             return redirect()->route('patient');
-		}
+        }
         if (Session::get('group_id') != '100' && Session::get('patient_centric') == 'yp') {
-    		return redirect()->route('pnosh_provider_redirect');
-    	}
+            return redirect()->route('pnosh_provider_redirect');
+        }
         $data['message_action'] = Session::get('message_action');
         Session::forget('message_action');
-		$practice_id = Session::get('practice_id');
-		$data['practiceinfo'] = DB::table('practiceinfo')->where('practice_id', '=', $practice_id)->first();
-		$result = DB::table('users')->where('id', '=', $user_id)->first();
-		$data['displayname'] = $result->displayname;
-		$displayname = $result->displayname;
-		$fax_query = DB::table('received')->where('practice_id', '=', $practice_id)->count();
-		$from = $displayname . ' (' . $user_id . ')';
-		if (Session::get('group_id') == '2') {
-			$data['number_messages'] = DB::table('messaging')->where('mailbox', '=', $user_id)->where('read', '=', null)->count();
-			$data['number_scans'] = DB::table('scans')->where('practice_id', '=', $practice_id)->count();
-            if ($data['practiceinfo']->fax_type !== '') {
-    			$data['number_faxes'] = DB::table('received')->where('practice_id', '=', $practice_id)->count();
-    		}
-			$data['number_appts'] = $this->getNumberAppts($user_id);
-			$data['number_t_messages'] = DB::table('t_messages')
-				->join('demographics', 't_messages.pid', '=', 'demographics.pid')
-				->where('t_messages.t_messages_from', '=', $from)
-				->where('t_messages.t_messages_signed', '=', 'No')
-				->count();
-			$data['number_encounters'] = DB::table('encounters')
-				->join('demographics', 'encounters.pid', '=', 'demographics.pid')
-				->where('encounters.encounter_provider', '=', $displayname)
-				->where('encounters.encounter_signed', '=', 'No')
-				->count();
-			$data['number_reminders'] = DB::table('alerts')
-				->join('demographics', 'alerts.pid', '=', 'demographics.pid')
-				->where('alerts.alert_provider', '=', $user_id)
-				->where('alerts.alert_date_complete', '=', '0000-00-00 00:00:00')
-				->where('alerts.alert_reason_not_complete', '=', '')
-				->where(function($query_array) {
-					$query_array->where('alerts.alert', '=', 'Laboratory results pending')
-					->orWhere('alerts.alert', '=', 'Radiology results pending')
-					->orWhere('alerts.alert', '=', 'Cardiopulmonary results pending')
-					->orWhere('alerts.alert', '=', 'Referral pending')
-                    ->orWhere('alerts.alert', '=', 'Laboratory results pending - NEED TO OBTAIN')
-                    ->orWhere('alerts.alert', '=', 'Radiology results pending - NEED TO OBTAIN')
-                    ->orWhere('alerts.alert', '=', 'Cardiopulmonary results pending - NEED TO OBTAIN')
-					->orWhere('alerts.alert', '=', 'Reminder')
-					->orWhere('alerts.alert', '=', 'REMINDER');
-				})
-				->count();
-			$data['number_bills'] = DB::table('encounters')->where('bill_submitted', '=', 'No')->where('user_id', '=', $user_id)->count();
-			$data['number_tests'] = DB::table('tests')->whereNull('pid')->where('practice_id', '=', $practice_id)->count();
-			if($data['practiceinfo']->mtm_extension == 'y') {
-				$mtm_users_array = explode(",", $data['practiceinfo']->mtm_alert_users);
-				if (in_array($user_id, $mtm_users_array)) {
-					$data['mtm_alerts'] = DB::table('alerts')->where('alert_date_complete', '=', '0000-00-00 00:00:00')
-						->where('alert_reason_not_complete', '=', '')
-						->where('alert', '=', 'Medication Therapy Management')
-						->where('practice_id', '=', $practice_id)
-						->count();
-					$data['mtm_alerts_status'] = "y";
-				} else {
-					$data['mtm_alerts_status'] = "n";
-				}
-			} else {
-				$data['mtm_alerts_status'] = "n";
-			}
-            $data['panel_header'] = 'Inventory Alerts';
-			$data['content'] = $this->vaccine_supplement_alert($practice_id);
-		}
-		if (Session::get('group_id') == '3') {
+        $practice_id = Session::get('practice_id');
+        $data['practiceinfo'] = DB::table('practiceinfo')->where('practice_id', '=', $practice_id)->first();
+        $result = DB::table('users')->where('id', '=', $user_id)->first();
+        $data['displayname'] = $result->displayname;
+        $displayname = $result->displayname;
+        $fax_query = DB::table('received')->where('practice_id', '=', $practice_id)->count();
+        $from = $displayname . ' (' . $user_id . ')';
+        if (Session::get('group_id') == '2') {
             $data['number_messages'] = DB::table('messaging')->where('mailbox', '=', $user_id)->where('read', '=', null)->count();
             $data['number_scans'] = DB::table('scans')->where('practice_id', '=', $practice_id)->count();
             if ($data['practiceinfo']->fax_type !== '') {
                 $data['number_faxes'] = DB::table('received')->where('practice_id', '=', $practice_id)->count();
             }
-			$data['number_t_messages'] = DB::table('t_messages')
-				->join('demographics', 't_messages.pid', '=', 'demographics.pid')
-				->where('t_messages.t_messages_from', '=', $from)
-				->where('t_messages.t_messages_signed', '=', 'No')
-				->count();
-			$data['number_reminders'] = DB::table('alerts')
-				->join('demographics', 'alerts.pid', '=', 'demographics.pid')
-				->where('alerts.alert_provider', '=', $user_id)
-				->where('alerts.alert_date_complete', '=', '0000-00-00 00:00:00')
-				->where('alerts.alert_reason_not_complete', '=', '')
-				->where(function($query_array) {
-					$query_array->where('alerts.alert', '=', 'Laboratory results pending')
-					->orWhere('alerts.alert', '=', 'Radiology results pending')
-					->orWhere('alerts.alert', '=', 'Cardiopulmonary results pending')
-					->orWhere('alerts.alert', '=', 'Referral pending')
+            $data['number_appts'] = $this->getNumberAppts($user_id);
+            $data['number_t_messages'] = DB::table('t_messages')
+                ->join('demographics', 't_messages.pid', '=', 'demographics.pid')
+                ->where('t_messages.t_messages_from', '=', $from)
+                ->where('t_messages.t_messages_signed', '=', 'No')
+                ->count();
+            $data['number_encounters'] = DB::table('encounters')
+                ->join('demographics', 'encounters.pid', '=', 'demographics.pid')
+                ->where('encounters.encounter_provider', '=', $displayname)
+                ->where('encounters.encounter_signed', '=', 'No')
+                ->count();
+            $data['number_reminders'] = DB::table('alerts')
+                ->join('demographics', 'alerts.pid', '=', 'demographics.pid')
+                ->where('alerts.alert_provider', '=', $user_id)
+                ->where('alerts.alert_date_complete', '=', '0000-00-00 00:00:00')
+                ->where('alerts.alert_reason_not_complete', '=', '')
+                ->where(function($query_array) {
+                    $query_array->where('alerts.alert', '=', 'Laboratory results pending')
+                    ->orWhere('alerts.alert', '=', 'Radiology results pending')
+                    ->orWhere('alerts.alert', '=', 'Cardiopulmonary results pending')
+                    ->orWhere('alerts.alert', '=', 'Referral pending')
                     ->orWhere('alerts.alert', '=', 'Laboratory results pending - NEED TO OBTAIN')
                     ->orWhere('alerts.alert', '=', 'Radiology results pending - NEED TO OBTAIN')
                     ->orWhere('alerts.alert', '=', 'Cardiopulmonary results pending - NEED TO OBTAIN')
-					->orWhere('alerts.alert', '=', 'Reminder')
-					->orWhere('alerts.alert', '=', 'REMINDER');
-				})
-				->count();
+                    ->orWhere('alerts.alert', '=', 'Reminder')
+                    ->orWhere('alerts.alert', '=', 'REMINDER');
+                })
+                ->count();
             $data['number_bills'] = DB::table('encounters')->where('bill_submitted', '=', 'No')->where('user_id', '=', $user_id)->count();
-			$data['number_tests'] = DB::table('tests')->whereNull('pid')->where('practice_id', '=', $practice_id)->count();
-			$data['panel_header'] = 'Inventory Alerts';
+            $data['number_tests'] = DB::table('tests')->whereNull('pid')->where('practice_id', '=', $practice_id)->count();
+            if($data['practiceinfo']->mtm_extension == 'y') {
+                $mtm_users_array = explode(",", $data['practiceinfo']->mtm_alert_users);
+                if (in_array($user_id, $mtm_users_array)) {
+                    $data['mtm_alerts'] = DB::table('alerts')->where('alert_date_complete', '=', '0000-00-00 00:00:00')
+                        ->where('alert_reason_not_complete', '=', '')
+                        ->where('alert', '=', 'Medication Therapy Management')
+                        ->where('practice_id', '=', $practice_id)
+                        ->count();
+                    $data['mtm_alerts_status'] = "y";
+                } else {
+                    $data['mtm_alerts_status'] = "n";
+                }
+            } else {
+                $data['mtm_alerts_status'] = "n";
+            }
+            $data['panel_header'] = 'Inventory Alerts';
             $data['content'] = $this->vaccine_supplement_alert($practice_id);
-		}
-		if (Session::get('group_id') == '4') {
+        }
+        if (Session::get('group_id') == '3') {
+            $data['number_messages'] = DB::table('messaging')->where('mailbox', '=', $user_id)->where('read', '=', null)->count();
+            $data['number_scans'] = DB::table('scans')->where('practice_id', '=', $practice_id)->count();
+            if ($data['practiceinfo']->fax_type !== '') {
+                $data['number_faxes'] = DB::table('received')->where('practice_id', '=', $practice_id)->count();
+            }
+            $data['number_t_messages'] = DB::table('t_messages')
+                ->join('demographics', 't_messages.pid', '=', 'demographics.pid')
+                ->where('t_messages.t_messages_from', '=', $from)
+                ->where('t_messages.t_messages_signed', '=', 'No')
+                ->count();
+            $data['number_reminders'] = DB::table('alerts')
+                ->join('demographics', 'alerts.pid', '=', 'demographics.pid')
+                ->where('alerts.alert_provider', '=', $user_id)
+                ->where('alerts.alert_date_complete', '=', '0000-00-00 00:00:00')
+                ->where('alerts.alert_reason_not_complete', '=', '')
+                ->where(function($query_array) {
+                    $query_array->where('alerts.alert', '=', 'Laboratory results pending')
+                    ->orWhere('alerts.alert', '=', 'Radiology results pending')
+                    ->orWhere('alerts.alert', '=', 'Cardiopulmonary results pending')
+                    ->orWhere('alerts.alert', '=', 'Referral pending')
+                    ->orWhere('alerts.alert', '=', 'Laboratory results pending - NEED TO OBTAIN')
+                    ->orWhere('alerts.alert', '=', 'Radiology results pending - NEED TO OBTAIN')
+                    ->orWhere('alerts.alert', '=', 'Cardiopulmonary results pending - NEED TO OBTAIN')
+                    ->orWhere('alerts.alert', '=', 'Reminder')
+                    ->orWhere('alerts.alert', '=', 'REMINDER');
+                })
+                ->count();
+            $data['number_bills'] = DB::table('encounters')->where('bill_submitted', '=', 'No')->where('user_id', '=', $user_id)->count();
+            $data['number_tests'] = DB::table('tests')->whereNull('pid')->where('practice_id', '=', $practice_id)->count();
+            $data['panel_header'] = 'Inventory Alerts';
+            $data['content'] = $this->vaccine_supplement_alert($practice_id);
+        }
+        if (Session::get('group_id') == '4') {
             $data['number_messages'] = DB::table('messaging')->where('mailbox', '=', $user_id)->where('read', '=', null)->count();
             $data['number_bills'] = DB::table('encounters')->where('bill_submitted', '=', 'No')->where('user_id', '=', $user_id)->count();
             $data['number_scans'] = DB::table('scans')->where('practice_id', '=', $practice_id)->count() + $fax_query;
             if ($data['practiceinfo']->fax_type !== '') {
                 $data['number_faxes'] = DB::table('received')->where('practice_id', '=', $practice_id)->count();
             }
-		}
-		if (Session::get('group_id') == '1') {
+        }
+        if (Session::get('group_id') == '1') {
             if ($practice_id == '1') {
-				$data['saas_admin'] = 'y';
-			}
-			if (Session::get('patient_centric') !== 'y') {
-				$users = DB::table('users')->where('group_id', '=', '2')->where('practice_id', '=', Session::get('practice_id'))->first();
-				if (!$users) {
-					$data['users_needed'] = 'y';
-				}
+                $data['saas_admin'] = 'y';
+            }
+            if (Session::get('patient_centric') !== 'y') {
+                $users = DB::table('users')->where('group_id', '=', '2')->where('practice_id', '=', Session::get('practice_id'))->first();
+                if (!$users) {
+                    $data['users_needed'] = 'y';
+                }
                 $schedule = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->whereNull('minTime')->first();
-				if ($schedule) {
-					$data['schedule_needed'] = 'y';
-				}
-			}
+                if ($schedule) {
+                    $data['schedule_needed'] = 'y';
+                }
+            }
             if (Session::has('download_now')) {
                 $data['download_now'] = route('download_now');
             }
@@ -1579,23 +1586,23 @@ class CoreController extends Controller
             }
             $data['panel_header'] = 'Audit Logs';
             $data['content'] = $return;
-		}
+        }
         $data['weekends'] = 'false';
         $data['schedule_increment'] = '15';
-		if ($data['practiceinfo']->weekends == '1') {
-			$data['weekends'] = 'true';
-		}
-		$data['minTime'] = ltrim($data['practiceinfo']->minTime,"0");
-		$data['maxTime'] = ltrim($data['practiceinfo']->maxTime,"0");
-		if (Session::get('group_id') == '2') {
-			$provider = DB::table('providers')->where('id', '=', Session::get('user_id'))->first();
-			$data['schedule_increment'] = $provider->schedule_increment;
-		}
-		if ($data['practiceinfo']->fax_type != "") {
-			$data1['fax'] = true;
-		} else {
-			$data1['fax'] = false;
-		}
+        if ($data['practiceinfo']->weekends == '1') {
+            $data['weekends'] = 'true';
+        }
+        $data['minTime'] = ltrim($data['practiceinfo']->minTime,"0");
+        $data['maxTime'] = ltrim($data['practiceinfo']->maxTime,"0");
+        if (Session::get('group_id') == '2') {
+            $provider = DB::table('providers')->where('id', '=', Session::get('user_id'))->first();
+            $data['schedule_increment'] = $provider->schedule_increment;
+        }
+        if ($data['practiceinfo']->fax_type != "") {
+            $data1['fax'] = true;
+        } else {
+            $data1['fax'] = false;
+        }
         Session::put('last_page', $request->fullUrl());
         // $data['name'] = 'Test';
         // $data['template_content'] = 'test';
@@ -1744,51 +1751,51 @@ class CoreController extends Controller
                 }
             }
             $patient_row = DB::table('demographics')->where('pid', '=', $pid)->first();
-			$dob_message = date("m/d/Y", strtotime($patient_row->DOB));
-			$patient_name =  $patient_row->lastname . ', ' . $patient_row->firstname . ' (DOB: ' . $dob_message . ') (ID: ' . $pid . ')';
-			$practice_row = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
-			$directory = $practice_row->documents_dir . $pid;
-			$file_path = $directory . '/tests_' . time() . '.pdf';
-			$html = $this->page_intro('Test Results', Session::get('practice_id'));
-			$html .= $this->page_results($pid, $results, $patient_name, $from);
-			$this->generate_pdf($html, $file_path);
-			$pages_data = [
-				'documents_url' => $file_path,
-				'pid' => $pid,
-				'documents_type' => $test_type,
-				'documents_desc' => 'Test results for ' . $patient_name,
-				'documents_from' => $from,
-				'documents_date' => date("Y-m-d H:i:s", time())
-			];
-			if (Session::get('group_id') == '2') {
-				$pages_data['documents_viewed'] = Session::get('displayname');
-			}
-			$documents_id = DB::table('documents')->insertGetId($pages_data);
-			$this->audit('Add');
-			if (Session::get('group_id') == '3') {
-				$provider_row = DB::table('users')->where('id', '=', $provider_id)->first();
-				$provider_name = $provider_row->firstname . " " . $provider_row->lastname . ", " . $provider_row->title . " (" . $provider_id . ")";
-				$body = "Test results for " . $patient_name . "\n\n";
-				foreach ($results as $results_row1) {
-					$body .= $results_row1['test_name'] . ": " . $results_row1['test_result'] . ", Units: " . $results_row1['test_units'] . ", Normal reference range: " . $results_row1['test_reference'] . ", Date: " . $results_row1['test_datetime'] . "\n";
-				}
-				$body .= "\n" . $from;
-				$data_message = [
-					'pid' => $pid,
-					'message_to' => $provider_name,
-					'message_from' => Session::get('user_id'),
-					'subject' => 'Test results for ' . $patient_name,
-					'body' => $body,
-					'patient_name' => $patient_name,
-					'status' => 'Sent',
-					'mailbox' => $provider_id,
-					'practice_id' => Session::get('practice_id'),
-					'documents_id' => $documents_id
-				];
-				DB::table('messaging')->insert($data_message);
-				$this->audit('Add');
+            $dob_message = date("m/d/Y", strtotime($patient_row->DOB));
+            $patient_name =  $patient_row->lastname . ', ' . $patient_row->firstname . ' (DOB: ' . $dob_message . ') (ID: ' . $pid . ')';
+            $practice_row = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
+            $directory = $practice_row->documents_dir . $pid;
+            $file_path = $directory . '/tests_' . time() . '.pdf';
+            $html = $this->page_intro('Test Results', Session::get('practice_id'));
+            $html .= $this->page_results($pid, $results, $patient_name, $from);
+            $this->generate_pdf($html, $file_path);
+            $pages_data = [
+                'documents_url' => $file_path,
+                'pid' => $pid,
+                'documents_type' => $test_type,
+                'documents_desc' => 'Test results for ' . $patient_name,
+                'documents_from' => $from,
+                'documents_date' => date("Y-m-d H:i:s", time())
+            ];
+            if (Session::get('group_id') == '2') {
+                $pages_data['documents_viewed'] = Session::get('displayname');
+            }
+            $documents_id = DB::table('documents')->insertGetId($pages_data);
+            $this->audit('Add');
+            if (Session::get('group_id') == '3') {
+                $provider_row = DB::table('users')->where('id', '=', $provider_id)->first();
+                $provider_name = $provider_row->firstname . " " . $provider_row->lastname . ", " . $provider_row->title . " (" . $provider_id . ")";
+                $body = "Test results for " . $patient_name . "\n\n";
+                foreach ($results as $results_row1) {
+                    $body .= $results_row1['test_name'] . ": " . $results_row1['test_result'] . ", Units: " . $results_row1['test_units'] . ", Normal reference range: " . $results_row1['test_reference'] . ", Date: " . $results_row1['test_datetime'] . "\n";
+                }
+                $body .= "\n" . $from;
+                $data_message = [
+                    'pid' => $pid,
+                    'message_to' => $provider_name,
+                    'message_from' => Session::get('user_id'),
+                    'subject' => 'Test results for ' . $patient_name,
+                    'body' => $body,
+                    'patient_name' => $patient_name,
+                    'status' => 'Sent',
+                    'mailbox' => $provider_id,
+                    'practice_id' => Session::get('practice_id'),
+                    'documents_id' => $documents_id
+                ];
+                DB::table('messaging')->insert($data_message);
+                $this->audit('Add');
                 $message = 'Tests reconciled, saved in patient chart, and provider alerted';
-			}
+            }
             $message = 'Tests reconciled and saved in patient chart';
             Session::put('message_action', $message);
             return redirect()->route('dashboard_tests');
@@ -1898,512 +1905,512 @@ class CoreController extends Controller
     }
 
     public function database_export(Request $request, $track_id='')
-	{
+    {
         if ($track_id !== '') {
             File::put(public_path() . '/temp/' . $track_id, '0');
-    		ini_set('memory_limit','196M');
-    		ini_set('max_execution_time', 300);
-    		$zip_file_name = time() . '_noshexport_' . Session::get('practice_id') . '.zip';
-    		$zip_file = public_path() . '/temp/' . $zip_file_name;
-    		$zip = new ZipArchive;
-    		$zip->open($zip_file, ZipArchive::CREATE);
-    		$documents_dir = Session::get('documents_dir');
-    		$database = env('DB_DATABASE') . "_copy";
-    		$connect = mysqli_connect('localhost', env('DB_USERNAME'), env('DB_PASSWORD'));
-    		if ($connect) {
-    			if (mysqli_select_db($connect, $database)) {
-    				$sql = "DROP DATABASE " . $database;
-    				mysqli_query($connect,$sql);
-    			}
-    			$sql = "CREATE DATABASE " . $database;
-    			if (mysqli_query($connect,$sql)) {
-    				$command = "mysqldump --no-data -u " . $config['mysql_username'] . " -p". $config['mysql_password'] . " " . $config['mysql_database'] . " | mysql -u " . $config['mysql_username'] . " -p". $config['mysql_password'] . " " . $database;
-    				system($command);
-    				Schema::connection('mysql2')->drop('audit');
-    				Schema::connection('mysql2')->drop('ci_sessions');
-    				Schema::connection('mysql2')->drop('cpt');
-    				Schema::connection('mysql2')->drop('curr_associationrefset_d');
-    				Schema::connection('mysql2')->drop('curr_attributevaluerefset_f');
-    				Schema::connection('mysql2')->drop('curr_complexmaprefset_f');
-    				Schema::connection('mysql2')->drop('curr_concept_f');
-    				Schema::connection('mysql2')->drop('curr_description_f');
-    				Schema::connection('mysql2')->drop('curr_langrefset_f');
-    				Schema::connection('mysql2')->drop('curr_relationship_f');
-    				Schema::connection('mysql2')->drop('curr_simplemaprefset_f');
-    				Schema::connection('mysql2')->drop('curr_simplerefset_f');
-    				Schema::connection('mysql2')->drop('curr_stated_relationship_f');
-    				Schema::connection('mysql2')->drop('curr_textdefinition_f');
-    				Schema::connection('mysql2')->drop('cvx');
-    				Schema::connection('mysql2')->drop('extensions_log');
-    				Schema::connection('mysql2')->drop('gc');
-    				Schema::connection('mysql2')->drop('groups');
-    				Schema::connection('mysql2')->drop('guardian_roles');
-    				Schema::connection('mysql2')->drop('icd9');
-    				Schema::connection('mysql2')->drop('icd10');
-    				Schema::connection('mysql2')->drop('lang');
-    				Schema::connection('mysql2')->drop('meds_full');
-    				Schema::connection('mysql2')->drop('meds_full_package');
-    				Schema::connection('mysql2')->drop('migrations');
-    				Schema::connection('mysql2')->drop('npi');
-    				Schema::connection('mysql2')->drop('orderslist1');
-    				Schema::connection('mysql2')->drop('pos');
-    				Schema::connection('mysql2')->drop('sessions');
-    				Schema::connection('mysql2')->drop('snomed_procedure_imaging');
-    				Schema::connection('mysql2')->drop('snomed_procedure_path');
-    				Schema::connection('mysql2')->drop('supplements_list');
-    				File::put($track,'10');
-    				$practiceinfo = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
-    				$practiceinfo_data = (array) $practiceinfo;
-    				$practiceinfo_data['practice_id'] = '1';
-    				DB::connection('mysql2')->table('practiceinfo')->insert($practiceinfo_data);
-    				if ($practiceinfo->practice_logo != '') {
-    					$practice_logo_file = public_path() . '/assets/images/' . $practiceinfo->practice_logo;
-    					$localPath4 = str_replace($documents_dir,'/',$practice_logo_file);
-    					if (file_exists($practice_logo_file)) {
-    						$zip->addFile($practice_logo_file,$localPath4);
-    					}
-    				}
-    				$addressbook = DB::table('addressbook')->get();
-    				if ($addressbook->count()) {
-    					foreach ($addressbook as $addressbook_row) {
-    						DB::connection('mysql2')->table('addressbook')->insert((array) $addressbook_row);
-    					}
-    				}
-    				$calendar = DB::table('calendar')->where('practice_id', '=', Session::get('practice_id'))->get();
-    				if ($calendar->count()) {
-    					foreach ($calendar as $calendar_row) {
-    						DB::connection('mysql2')->table('calendar')->insert((array) $calendar_row);
-    					}
-    				}
-    				DB::connection('mysql2')->table('calendar')->update(['practice_id' => '1']);
-    				$cpt_relate = DB::table('cpt_relate')->where('practice_id', '=', Session::get('practice_id'))->get();
-    				if ($cpt_relate->count()) {
-    					foreach ($cpt_relate as $cpt_relate_row) {
-    						DB::connection('mysql2')->table('cpt_relate')->insert((array) $cpt_relate_row);
-    					}
-    				}
-    				DB::connection('mysql2')->table('cpt_relate')->update(['practice_id' => '1']);
-    				$pid_arr = [];
-    				$demographics_relate = DB::table('demographics_relate')->where('practice_id', '=', Session::get('practice_id'))->get();
-    				if ($demographics_relate) {
-    					foreach ($demographics_relate as $demographics_relate_row) {
-    						DB::connection('mysql2')->table('demographics_relate')->insert((array) $demographics_relate_row);
-    						$pid_arr[] = $demographics_relate_row->pid;
-    					}
-    				}
-    				DB::connection('mysql2')->table('demographics_relate')->update(['practice_id' => '1']);
-    				$era = DB::table('era')->where('practice_id', '=', Session::get('practice_id'))->get();
-    				if ($era->count()) {
-    					foreach ($era as $era_row) {
-    						DB::connection('mysql2')->table('era')->insert((array) $era_row);
-    					}
-    				}
-    				DB::connection('mysql2')->table('era')->update(['practice_id' => '1']);
-    				$messaging = DB::table('messaging')->where('practice_id', '=', Session::get('practice_id'))->get();
-    				if ($messaging->count()) {
-    					foreach ($messaging as $messaging_row) {
-    						DB::connection('mysql2')->table('messaging')->insert((array) $messaging_row);
-    					}
-    				}
-    				DB::connection('mysql2')->table('messaging')->update(['practice_id' => '1']);
-    				$orderslist = DB::table('orderslist')->where('practice_id', '=', Session::get('practice_id'))->get();
-    				if ($orderslist->count()) {
-    					foreach ($orderslist as $orderslist_row) {
-    						DB::connection('mysql2')->table('orderslist')->insert((array) $orderslist_row);
-    					}
-    				}
-    				DB::connection('mysql2')->table('orderslist')->update(['practice_id' => '1']);
-    				$provider_id_arr = [];
-    				$providers = DB::table('providers')->where('practice_id', '=', Session::get('practice_id'))->get();
-    				if ($providers->count()) {
-    					foreach ($providers as $providers_row) {
-    						DB::connection('mysql2')->table('providers')->insert((array) $providers_row);
-    						$provider_id_arr[] = $providers_row->id;
-    						if ($providers_row->signature != '') {
-    							$signature_file = $providers_row->signature;
-    							$localPath5 = str_replace($documents_dir,'/',$signature_file);
-    							if (file_exists($signature_file)) {
-    								$zip->addFile($signature_file,$localPath5);
-    							}
-    						}
-    					}
-    				}
-    				DB::connection('mysql2')->table('providers')->update(['practice_id' => '1']);
-    				$procedurelist = DB::table('procedurelist')->where('practice_id', '=', Session::get('practice_id'))->get();
-    				if ($procedurelist->count()) {
-    					foreach ($procedurelist as $procedurelist_row) {
-    						DB::connection('mysql2')->table('procedurelist')->insert((array) $procedurelist_row);
-    					}
-    				}
-    				DB::connection('mysql2')->table('procedurelist')->update(['practice_id' => '1']);
-    				$received = DB::table('received')->where('practice_id', '=', Session::get('practice_id'))->get();
-    				if ($received->count()) {
-    					foreach ($received as $received_row) {
-    						DB::connection('mysql2')->table('received')->insert((array) $received_row);
-    						if ($received_row->filePath != '') {
-    							$localPath3 = str_replace($documents_dir,'/',$scans_row->filePath);
-    							if (file_exists($received_row->filePath)) {
-    								$zip->addFile($received_row->filePath,$localPath3);
-    							}
-    						}
-    					}
-    				}
-    				DB::connection('mysql2')->table('received')->update(['practice_id' => '1']);
-    				$scans = DB::table('scans')->where('practice_id', '=', Session::get('practice_id'))->get();
-    				if ($scans->count()) {
-    					foreach ($scans as $scans_row) {
-    						DB::connection('mysql2')->table('scans')->insert((array) $scans_row);
-    						if ($scans_row->filePath != '') {
-    							$localPath2 = str_replace($documents_dir,'/',$scans_row->filePath);
-    							if (file_exists($scans_row->filePath)) {
-    								$zip->addFile($scans_row->filePath,$localPath2);
-    							}
-    						}
-    					}
-    				}
-    				DB::connection('mysql2')->table('scans')->update(['practice_id' => '1']);
-    				$job_id_arr = [];
-    				$sendfax = DB::table('sendfax')->where('practice_id', '=', Session::get('practice_id'))->get();
-    				if ($sendfax->count()) {
-    					foreach ($sendfax as $sendfax_row) {
-    						DB::connection('mysql2')->table('sendfax')->insert((array) $sendfax_row);
-    						$job_id_arr[] = $sendfax_row->job_id;
-    					}
-    				}
-    				DB::connection('mysql2')->table('sendfax')->update(['practice_id' => '1']);
-    				$supplement_inventory = DB::table('supplement_inventory')->where('practice_id', '=', Session::get('practice_id'))->get();
-    				if ($supplement_inventory->count()) {
-    					foreach ($supplement_inventory as $supplement_inventory_row) {
-    						DB::connection('mysql2')->table('supplement_inventory')->insert((array) $supplement_inventory_row);
-    					}
-    				}
-    				DB::connection('mysql2')->table('supplement_inventory')->update(['practice_id' => '1']);
-    				$tags_id_arr = [];
-    				$tags_relate = DB::table('tags_relate')->where('practice_id', '=', Session::get('practice_id'))->get();
-    				if ($tags_relate->count()) {
-    					foreach ($tags_relate as $tags_relate_row) {
-    						DB::connection('mysql2')->table('tags_relate')->insert((array) $tags_relate_row);
-    						$tags_id_arr[] = $tags_relate_row->tags_id;
-    					}
-    				}
-    				DB::connection('mysql2')->table('tags_relate')->update(['practice_id' => '1']);
-    				$templates = DB::table('templates')->where('practice_id', '=', Session::get('practice_id'))->get();
-    				if ($templates->count()) {
-    					foreach ($templates as $templates_row) {
-    						DB::connection('mysql2')->table('templates')->insert((array) $templates_row);
-    					}
-    				}
-    				DB::connection('mysql2')->table('templates')->update(['practice_id' => '1']);
-    				$users = DB::table('users')->where('practice_id', '=', Session::get('practice_id'))->get();
-    				if ($users->count()) {
-    					foreach ($users as $users_row) {
-    						DB::connection('mysql2')->table('users')->insert((array) $users_row);
-    					}
-    				}
-    				DB::connection('mysql2')->table('users')->update(['practice_id' => '1']);
-    				$vaccine_inventory = DB::table('vaccine_inventory')->where('practice_id', '=', Session::get('practice_id'))->get();
-    				if ($vaccine_inventory) {
-    					foreach ($vaccine_inventory as $vaccine_inventory_row) {
-    						DB::connection('mysql2')->table('vaccine_inventory')->insert((array) $vaccine_inventory_row);
-    					}
-    				}
-    				DB::connection('mysql2')->table('vaccine_inventory')->update(['practice_id' => '1']);
-    				$vaccine_temp = DB::table('vaccine_temp')->where('practice_id', '=', Session::get('practice_id'))->get();
-    				if ($vaccine_temp->count()) {
-    					foreach ($vaccine_temp as $vaccine_temp_row) {
-    						DB::connection('mysql2')->table('vaccine_temp')->insert((array) $vaccine_temp_row);
-    					}
-    				}
-    				DB::connection('mysql2')->table('vaccine_temp')->update(['practice_id' => '1']);
+            ini_set('memory_limit','196M');
+            ini_set('max_execution_time', 300);
+            $zip_file_name = time() . '_noshexport_' . Session::get('practice_id') . '.zip';
+            $zip_file = public_path() . '/temp/' . $zip_file_name;
+            $zip = new ZipArchive;
+            $zip->open($zip_file, ZipArchive::CREATE);
+            $documents_dir = Session::get('documents_dir');
+            $database = env('DB_DATABASE') . "_copy";
+            $connect = mysqli_connect('localhost', env('DB_USERNAME'), env('DB_PASSWORD'));
+            if ($connect) {
+                if (mysqli_select_db($connect, $database)) {
+                    $sql = "DROP DATABASE " . $database;
+                    mysqli_query($connect,$sql);
+                }
+                $sql = "CREATE DATABASE " . $database;
+                if (mysqli_query($connect,$sql)) {
+                    $command = "mysqldump --no-data -u " . $config['mysql_username'] . " -p". $config['mysql_password'] . " " . $config['mysql_database'] . " | mysql -u " . $config['mysql_username'] . " -p". $config['mysql_password'] . " " . $database;
+                    system($command);
+                    Schema::connection('mysql2')->drop('audit');
+                    Schema::connection('mysql2')->drop('ci_sessions');
+                    Schema::connection('mysql2')->drop('cpt');
+                    Schema::connection('mysql2')->drop('curr_associationrefset_d');
+                    Schema::connection('mysql2')->drop('curr_attributevaluerefset_f');
+                    Schema::connection('mysql2')->drop('curr_complexmaprefset_f');
+                    Schema::connection('mysql2')->drop('curr_concept_f');
+                    Schema::connection('mysql2')->drop('curr_description_f');
+                    Schema::connection('mysql2')->drop('curr_langrefset_f');
+                    Schema::connection('mysql2')->drop('curr_relationship_f');
+                    Schema::connection('mysql2')->drop('curr_simplemaprefset_f');
+                    Schema::connection('mysql2')->drop('curr_simplerefset_f');
+                    Schema::connection('mysql2')->drop('curr_stated_relationship_f');
+                    Schema::connection('mysql2')->drop('curr_textdefinition_f');
+                    Schema::connection('mysql2')->drop('cvx');
+                    Schema::connection('mysql2')->drop('extensions_log');
+                    Schema::connection('mysql2')->drop('gc');
+                    Schema::connection('mysql2')->drop('groups');
+                    Schema::connection('mysql2')->drop('guardian_roles');
+                    Schema::connection('mysql2')->drop('icd9');
+                    Schema::connection('mysql2')->drop('icd10');
+                    Schema::connection('mysql2')->drop('lang');
+                    Schema::connection('mysql2')->drop('meds_full');
+                    Schema::connection('mysql2')->drop('meds_full_package');
+                    Schema::connection('mysql2')->drop('migrations');
+                    Schema::connection('mysql2')->drop('npi');
+                    Schema::connection('mysql2')->drop('orderslist1');
+                    Schema::connection('mysql2')->drop('pos');
+                    Schema::connection('mysql2')->drop('sessions');
+                    Schema::connection('mysql2')->drop('snomed_procedure_imaging');
+                    Schema::connection('mysql2')->drop('snomed_procedure_path');
+                    Schema::connection('mysql2')->drop('supplements_list');
+                    File::put($track,'10');
+                    $practiceinfo = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
+                    $practiceinfo_data = (array) $practiceinfo;
+                    $practiceinfo_data['practice_id'] = '1';
+                    DB::connection('mysql2')->table('practiceinfo')->insert($practiceinfo_data);
+                    if ($practiceinfo->practice_logo != '') {
+                        $practice_logo_file = public_path() . '/assets/images/' . $practiceinfo->practice_logo;
+                        $localPath4 = str_replace($documents_dir,'/',$practice_logo_file);
+                        if (file_exists($practice_logo_file)) {
+                            $zip->addFile($practice_logo_file,$localPath4);
+                        }
+                    }
+                    $addressbook = DB::table('addressbook')->get();
+                    if ($addressbook->count()) {
+                        foreach ($addressbook as $addressbook_row) {
+                            DB::connection('mysql2')->table('addressbook')->insert((array) $addressbook_row);
+                        }
+                    }
+                    $calendar = DB::table('calendar')->where('practice_id', '=', Session::get('practice_id'))->get();
+                    if ($calendar->count()) {
+                        foreach ($calendar as $calendar_row) {
+                            DB::connection('mysql2')->table('calendar')->insert((array) $calendar_row);
+                        }
+                    }
+                    DB::connection('mysql2')->table('calendar')->update(['practice_id' => '1']);
+                    $cpt_relate = DB::table('cpt_relate')->where('practice_id', '=', Session::get('practice_id'))->get();
+                    if ($cpt_relate->count()) {
+                        foreach ($cpt_relate as $cpt_relate_row) {
+                            DB::connection('mysql2')->table('cpt_relate')->insert((array) $cpt_relate_row);
+                        }
+                    }
+                    DB::connection('mysql2')->table('cpt_relate')->update(['practice_id' => '1']);
+                    $pid_arr = [];
+                    $demographics_relate = DB::table('demographics_relate')->where('practice_id', '=', Session::get('practice_id'))->get();
+                    if ($demographics_relate) {
+                        foreach ($demographics_relate as $demographics_relate_row) {
+                            DB::connection('mysql2')->table('demographics_relate')->insert((array) $demographics_relate_row);
+                            $pid_arr[] = $demographics_relate_row->pid;
+                        }
+                    }
+                    DB::connection('mysql2')->table('demographics_relate')->update(['practice_id' => '1']);
+                    $era = DB::table('era')->where('practice_id', '=', Session::get('practice_id'))->get();
+                    if ($era->count()) {
+                        foreach ($era as $era_row) {
+                            DB::connection('mysql2')->table('era')->insert((array) $era_row);
+                        }
+                    }
+                    DB::connection('mysql2')->table('era')->update(['practice_id' => '1']);
+                    $messaging = DB::table('messaging')->where('practice_id', '=', Session::get('practice_id'))->get();
+                    if ($messaging->count()) {
+                        foreach ($messaging as $messaging_row) {
+                            DB::connection('mysql2')->table('messaging')->insert((array) $messaging_row);
+                        }
+                    }
+                    DB::connection('mysql2')->table('messaging')->update(['practice_id' => '1']);
+                    $orderslist = DB::table('orderslist')->where('practice_id', '=', Session::get('practice_id'))->get();
+                    if ($orderslist->count()) {
+                        foreach ($orderslist as $orderslist_row) {
+                            DB::connection('mysql2')->table('orderslist')->insert((array) $orderslist_row);
+                        }
+                    }
+                    DB::connection('mysql2')->table('orderslist')->update(['practice_id' => '1']);
+                    $provider_id_arr = [];
+                    $providers = DB::table('providers')->where('practice_id', '=', Session::get('practice_id'))->get();
+                    if ($providers->count()) {
+                        foreach ($providers as $providers_row) {
+                            DB::connection('mysql2')->table('providers')->insert((array) $providers_row);
+                            $provider_id_arr[] = $providers_row->id;
+                            if ($providers_row->signature != '') {
+                                $signature_file = $providers_row->signature;
+                                $localPath5 = str_replace($documents_dir,'/',$signature_file);
+                                if (file_exists($signature_file)) {
+                                    $zip->addFile($signature_file,$localPath5);
+                                }
+                            }
+                        }
+                    }
+                    DB::connection('mysql2')->table('providers')->update(['practice_id' => '1']);
+                    $procedurelist = DB::table('procedurelist')->where('practice_id', '=', Session::get('practice_id'))->get();
+                    if ($procedurelist->count()) {
+                        foreach ($procedurelist as $procedurelist_row) {
+                            DB::connection('mysql2')->table('procedurelist')->insert((array) $procedurelist_row);
+                        }
+                    }
+                    DB::connection('mysql2')->table('procedurelist')->update(['practice_id' => '1']);
+                    $received = DB::table('received')->where('practice_id', '=', Session::get('practice_id'))->get();
+                    if ($received->count()) {
+                        foreach ($received as $received_row) {
+                            DB::connection('mysql2')->table('received')->insert((array) $received_row);
+                            if ($received_row->filePath != '') {
+                                $localPath3 = str_replace($documents_dir,'/',$scans_row->filePath);
+                                if (file_exists($received_row->filePath)) {
+                                    $zip->addFile($received_row->filePath,$localPath3);
+                                }
+                            }
+                        }
+                    }
+                    DB::connection('mysql2')->table('received')->update(['practice_id' => '1']);
+                    $scans = DB::table('scans')->where('practice_id', '=', Session::get('practice_id'))->get();
+                    if ($scans->count()) {
+                        foreach ($scans as $scans_row) {
+                            DB::connection('mysql2')->table('scans')->insert((array) $scans_row);
+                            if ($scans_row->filePath != '') {
+                                $localPath2 = str_replace($documents_dir,'/',$scans_row->filePath);
+                                if (file_exists($scans_row->filePath)) {
+                                    $zip->addFile($scans_row->filePath,$localPath2);
+                                }
+                            }
+                        }
+                    }
+                    DB::connection('mysql2')->table('scans')->update(['practice_id' => '1']);
+                    $job_id_arr = [];
+                    $sendfax = DB::table('sendfax')->where('practice_id', '=', Session::get('practice_id'))->get();
+                    if ($sendfax->count()) {
+                        foreach ($sendfax as $sendfax_row) {
+                            DB::connection('mysql2')->table('sendfax')->insert((array) $sendfax_row);
+                            $job_id_arr[] = $sendfax_row->job_id;
+                        }
+                    }
+                    DB::connection('mysql2')->table('sendfax')->update(['practice_id' => '1']);
+                    $supplement_inventory = DB::table('supplement_inventory')->where('practice_id', '=', Session::get('practice_id'))->get();
+                    if ($supplement_inventory->count()) {
+                        foreach ($supplement_inventory as $supplement_inventory_row) {
+                            DB::connection('mysql2')->table('supplement_inventory')->insert((array) $supplement_inventory_row);
+                        }
+                    }
+                    DB::connection('mysql2')->table('supplement_inventory')->update(['practice_id' => '1']);
+                    $tags_id_arr = [];
+                    $tags_relate = DB::table('tags_relate')->where('practice_id', '=', Session::get('practice_id'))->get();
+                    if ($tags_relate->count()) {
+                        foreach ($tags_relate as $tags_relate_row) {
+                            DB::connection('mysql2')->table('tags_relate')->insert((array) $tags_relate_row);
+                            $tags_id_arr[] = $tags_relate_row->tags_id;
+                        }
+                    }
+                    DB::connection('mysql2')->table('tags_relate')->update(['practice_id' => '1']);
+                    $templates = DB::table('templates')->where('practice_id', '=', Session::get('practice_id'))->get();
+                    if ($templates->count()) {
+                        foreach ($templates as $templates_row) {
+                            DB::connection('mysql2')->table('templates')->insert((array) $templates_row);
+                        }
+                    }
+                    DB::connection('mysql2')->table('templates')->update(['practice_id' => '1']);
+                    $users = DB::table('users')->where('practice_id', '=', Session::get('practice_id'))->get();
+                    if ($users->count()) {
+                        foreach ($users as $users_row) {
+                            DB::connection('mysql2')->table('users')->insert((array) $users_row);
+                        }
+                    }
+                    DB::connection('mysql2')->table('users')->update(['practice_id' => '1']);
+                    $vaccine_inventory = DB::table('vaccine_inventory')->where('practice_id', '=', Session::get('practice_id'))->get();
+                    if ($vaccine_inventory) {
+                        foreach ($vaccine_inventory as $vaccine_inventory_row) {
+                            DB::connection('mysql2')->table('vaccine_inventory')->insert((array) $vaccine_inventory_row);
+                        }
+                    }
+                    DB::connection('mysql2')->table('vaccine_inventory')->update(['practice_id' => '1']);
+                    $vaccine_temp = DB::table('vaccine_temp')->where('practice_id', '=', Session::get('practice_id'))->get();
+                    if ($vaccine_temp->count()) {
+                        foreach ($vaccine_temp as $vaccine_temp_row) {
+                            DB::connection('mysql2')->table('vaccine_temp')->insert((array) $vaccine_temp_row);
+                        }
+                    }
+                    DB::connection('mysql2')->table('vaccine_temp')->update(['practice_id' => '1']);
                     File::put(public_path() . '/temp/' . $track_id, '20');
-    				if (!empty($pid_arr)) {
-    					$i = 0;
-    					$pid_count = count($pid_arr);
-    					foreach ($pid_arr as $pid) {
-    						$demographics = DB::table('demographics')->where('pid', '=', $pid)->first();
-    						DB::connection('mysql2')->table('demographics')->insert((array) $demographics);
-    						$alerts = DB::table('alerts')->where('pid', '=', $pid)->where('practice_id', '=', Session::get('practice_id'))->get();
+                    if (!empty($pid_arr)) {
+                        $i = 0;
+                        $pid_count = count($pid_arr);
+                        foreach ($pid_arr as $pid) {
+                            $demographics = DB::table('demographics')->where('pid', '=', $pid)->first();
+                            DB::connection('mysql2')->table('demographics')->insert((array) $demographics);
+                            $alerts = DB::table('alerts')->where('pid', '=', $pid)->where('practice_id', '=', Session::get('practice_id'))->get();
                             if ($alerts->count()) {
                                 foreach ($alerts as $alerts_row) {
-        							DB::connection('mysql2')->table('alerts')->insert((array) $alerts_row);
-        						}
-        						DB::connection('mysql2')->table('alerts')->update(['practice_id' => '1']);
+                                    DB::connection('mysql2')->table('alerts')->insert((array) $alerts_row);
+                                }
+                                DB::connection('mysql2')->table('alerts')->update(['practice_id' => '1']);
                             }
-    						$allergies = DB::table('allergies')->where('pid', '=', $pid)->get();
+                            $allergies = DB::table('allergies')->where('pid', '=', $pid)->get();
                             if ($allergies->count()) {
-        						foreach ($allergies as $allergies_row) {
-        							DB::connection('mysql2')->table('allergies')->insert((array) $allergies_row);
-        						}
+                                foreach ($allergies as $allergies_row) {
+                                    DB::connection('mysql2')->table('allergies')->insert((array) $allergies_row);
+                                }
                             }
-    						$billing_core1 = DB::table('billing_core')->where('pid', '=', $pid)->where('eid', '=', '0')->where('practice_id', '=', Session::get('practice_id'))->get();
+                            $billing_core1 = DB::table('billing_core')->where('pid', '=', $pid)->where('eid', '=', '0')->where('practice_id', '=', Session::get('practice_id'))->get();
                             if ($billing_core1->count()) {
                                 foreach ($billing_core1 as $billing_core1_row) {
-        							DB::connection('mysql2')->table('billing_core')->insert((array) $billing_core1_row);
-        						}
-        						DB::connection('mysql2')->table('billing_core')->update(['practice_id' => '1']);
+                                    DB::connection('mysql2')->table('billing_core')->insert((array) $billing_core1_row);
+                                }
+                                DB::connection('mysql2')->table('billing_core')->update(['practice_id' => '1']);
                             }
-    						$demographics_notes = DB::table('demographics_notes')->where('pid', '=', $pid)->where('practice_id', '=', Session::get('practice_id'))->get();
+                            $demographics_notes = DB::table('demographics_notes')->where('pid', '=', $pid)->where('practice_id', '=', Session::get('practice_id'))->get();
                             if ($demographics_notes->count()) {
                                 foreach ($demographics_notes as $demographics_notes_row) {
-        							DB::connection('mysql2')->table('demographics_notes')->insert((array) $demographics_notes_row);
-        						}
-        						DB::connection('mysql2')->table('demographics_notes')->update(['practice_id' => '1']);
+                                    DB::connection('mysql2')->table('demographics_notes')->insert((array) $demographics_notes_row);
+                                }
+                                DB::connection('mysql2')->table('demographics_notes')->update(['practice_id' => '1']);
                             }
-    						$documents = DB::table('documents')->where('pid', '=', $pid)->get();
+                            $documents = DB::table('documents')->where('pid', '=', $pid)->get();
                             if ($documents->count()) {
                                 foreach ($documents as $documents_row) {
-        							DB::connection('mysql2')->table('documents')->insert((array) $documents_row);
-        						}
+                                    DB::connection('mysql2')->table('documents')->insert((array) $documents_row);
+                                }
                             }
-    						$eid_arr = [];
-    						$encounters = DB::table('encounters')->where('pid', '=', $pid)->where('practice_id', '=', Session::get('practice_id'))->get();
+                            $eid_arr = [];
+                            $encounters = DB::table('encounters')->where('pid', '=', $pid)->where('practice_id', '=', Session::get('practice_id'))->get();
                             if ($encounters->count()) {
                                 foreach ($encounters as $encounters_row) {
-        							DB::connection('mysql2')->table('encounters')->insert((array) $encounters_row);
-        							$eid_arr[] = $encounters_row->eid;
-        						}
-        						DB::connection('mysql2')->table('encounters')->update(['practice_id' => '1']);
+                                    DB::connection('mysql2')->table('encounters')->insert((array) $encounters_row);
+                                    $eid_arr[] = $encounters_row->eid;
+                                }
+                                DB::connection('mysql2')->table('encounters')->update(['practice_id' => '1']);
                             }
-    						$forms = DB::table('forms')->where('pid', '=', $pid)->get();
+                            $forms = DB::table('forms')->where('pid', '=', $pid)->get();
                             if ($forms->count()) {
-        						foreach ($forms as $forms_row) {
-        							DB::connection('mysql2')->table('forms')->insert((array) $forms_row);
-        						}
+                                foreach ($forms as $forms_row) {
+                                    DB::connection('mysql2')->table('forms')->insert((array) $forms_row);
+                                }
                             }
-        					$hippa = DB::table('hippa')->where('pid', '=', $pid)->where('practice_id', '=', Session::get('practice_id'))->get();
+                            $hippa = DB::table('hippa')->where('pid', '=', $pid)->where('practice_id', '=', Session::get('practice_id'))->get();
                             if ($hippa->count()) {
                                 foreach ($hippa as $hippa_row) {
-        							DB::connection('mysql2')->table('hippa')->insert((array) $hippa_row);
-        						}
-        						DB::connection('mysql2')->table('hippa')->update(['practice_id' => '1']);
+                                    DB::connection('mysql2')->table('hippa')->insert((array) $hippa_row);
+                                }
+                                DB::connection('mysql2')->table('hippa')->update(['practice_id' => '1']);
                             }
-    						$hippa_request = DB::table('hippa_request')->where('pid', '=', $pid)->where('practice_id', '=', Session::get('practice_id'))->get();
+                            $hippa_request = DB::table('hippa_request')->where('pid', '=', $pid)->where('practice_id', '=', Session::get('practice_id'))->get();
                             if ($hippa_request->count()) {
                                 foreach ($hippa_request as $hippa_request_row) {
-        							DB::connection('mysql2')->table('hippa_request')->insert((array) $hippa_request_row);
-        						}
-        						DB::connection('mysql2')->table('hippa_request')->update(['practice_id' => '1']);
+                                    DB::connection('mysql2')->table('hippa_request')->insert((array) $hippa_request_row);
+                                }
+                                DB::connection('mysql2')->table('hippa_request')->update(['practice_id' => '1']);
                             }
-    						$immunizations = DB::table('immunizations')->where('pid', '=', $pid)->get();
+                            $immunizations = DB::table('immunizations')->where('pid', '=', $pid)->get();
                             if ($immunizations->count()) {
-        						foreach ($immunizations as $immunizations_row) {
-        							DB::connection('mysql2')->table('immunizations')->insert((array) $immunizations_row);
-        						}
+                                foreach ($immunizations as $immunizations_row) {
+                                    DB::connection('mysql2')->table('immunizations')->insert((array) $immunizations_row);
+                                }
                             }
-    						$insurance = DB::table('insurance')->where('pid', '=', $pid)->get();
+                            $insurance = DB::table('insurance')->where('pid', '=', $pid)->get();
                             if ($insurance->count()) {
-        						foreach ($insurance as $insurance_row) {
-        							DB::connection('mysql2')->table('insurance')->insert((array) $insurance_row);
-        						}
+                                foreach ($insurance as $insurance_row) {
+                                    DB::connection('mysql2')->table('insurance')->insert((array) $insurance_row);
+                                }
                             }
-    						$issues = DB::table('issues')->where('pid', '=', $pid)->get();
+                            $issues = DB::table('issues')->where('pid', '=', $pid)->get();
                             if ($issues->count()) {
-        						foreach ($issues as $issues_row) {
-        							DB::connection('mysql2')->table('issues')->insert((array) $issues_row);
-        						}
+                                foreach ($issues as $issues_row) {
+                                    DB::connection('mysql2')->table('issues')->insert((array) $issues_row);
+                                }
                             }
-    						$mtm = DB::table('mtm')->where('pid', '=', $pid)->where('practice_id', '=', Session::get('practice_id'))->get();
+                            $mtm = DB::table('mtm')->where('pid', '=', $pid)->where('practice_id', '=', Session::get('practice_id'))->get();
                             if ($mtm->count()) {
                                 foreach ($mtm as $mtm_row) {
-        							DB::connection('mysql2')->table('mtm')->insert((array) $mtm_row);
-        						}
-        						DB::connection('mysql2')->table('mtm')->update(['practice_id' => '1']);
+                                    DB::connection('mysql2')->table('mtm')->insert((array) $mtm_row);
+                                }
+                                DB::connection('mysql2')->table('mtm')->update(['practice_id' => '1']);
                             }
-    						$orders = DB::table('orders')->where('pid', '=', $pid)->get();
+                            $orders = DB::table('orders')->where('pid', '=', $pid)->get();
                             if ($orders->count()) {
-        						foreach ($orders as $orders_row) {
-        							DB::connection('mysql2')->table('orders')->insert((array) $orders_row);
-        						}
+                                foreach ($orders as $orders_row) {
+                                    DB::connection('mysql2')->table('orders')->insert((array) $orders_row);
+                                }
                             }
-    						$rx_list = DB::table('rx_list')->where('pid', '=', $pid)->get();
+                            $rx_list = DB::table('rx_list')->where('pid', '=', $pid)->get();
                             if ($rx_list->count()) {
-        						foreach ($rx_list as $rx_list_row) {
-        							DB::connection('mysql2')->table('rx_list')->insert((array) $rx_list_row);
-        						}
+                                foreach ($rx_list as $rx_list_row) {
+                                    DB::connection('mysql2')->table('rx_list')->insert((array) $rx_list_row);
+                                }
                             }
-    						$sup_list = DB::table('sup_list')->where('pid', '=', $pid)->get();
+                            $sup_list = DB::table('sup_list')->where('pid', '=', $pid)->get();
                             if ($sup_list->count()) {
                                 foreach ($sup_list as $sup_list_row) {
-        							DB::connection('mysql2')->table('sup_list')->insert((array) $sup_list_row);
-        						}
+                                    DB::connection('mysql2')->table('sup_list')->insert((array) $sup_list_row);
+                                }
                             }
                             $tests = DB::table('tests')->where('pid', '=', $pid)->where('practice_id', '=', Session::get('practice_id'))->get();
                             if ($tests->count()) {
                                 foreach ($tests as $tests_row) {
-        							DB::connection('mysql2')->table('tests')->insert((array) $tests_row);
-        						}
+                                    DB::connection('mysql2')->table('tests')->insert((array) $tests_row);
+                                }
                                 DB::connection('mysql2')->table('tests')->update(['practice_id' => '1']);
                             }
-    						$t_messages = DB::table('t_messages')->where('pid', '=', $pid)->where('practice_id', '=', Session::get('practice_id'))->get();
+                            $t_messages = DB::table('t_messages')->where('pid', '=', $pid)->where('practice_id', '=', Session::get('practice_id'))->get();
                             if ($t_messages->count()) {
                                 foreach ($t_messages as $t_messages_row) {
-        							DB::connection('mysql2')->table('t_messages')->insert((array) $t_messages_row);
-        						}
-    						    DB::connection('mysql2')->table('t_messages')->update(['practice_id' => '1']);
+                                    DB::connection('mysql2')->table('t_messages')->insert((array) $t_messages_row);
+                                }
+                                DB::connection('mysql2')->table('t_messages')->update(['practice_id' => '1']);
                             }
-    						$rootPath = realpath($documents_dir . $pid);
-    						if (file_exists($rootPath)) {
-    							$files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($rootPath), RecursiveIteratorIterator::SELF_FIRST);
-    							foreach ($files as $name => $file) {
-    								if(in_array(substr($file, strrpos($file, '/')+1), ['.', '..'])) {
-    									continue;
-    								} else {
-    									if (is_dir($file) === true) {
-    										continue;
-    									} else {
-    										$filePath = $file->getRealPath();
-    										$localPath = str_replace($documents_dir,'/',$filePath);
-    										if ($filePath != '' && file_exists($filePath)) {
-    											$zip->addFile($filePath,$localPath);
-    										}
-    									}
-    								}
-    							}
-    						}
-    						$i++;
-    						$percent = round($i/$pid_count*50) + 20;
-    						File::put(public_path() . '/temp/' . $track_id, $percent);
-    					}
-    				}
-    				if (!empty($provider_id_arr)) {
-    					foreach ($provider_id_arr as $provider_id) {
-    						$repeat_schedule = DB::table('repeat_schedule')->where('provider_id', '=', $provider_id)->get();
+                            $rootPath = realpath($documents_dir . $pid);
+                            if (file_exists($rootPath)) {
+                                $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($rootPath), RecursiveIteratorIterator::SELF_FIRST);
+                                foreach ($files as $name => $file) {
+                                    if(in_array(substr($file, strrpos($file, '/')+1), ['.', '..'])) {
+                                        continue;
+                                    } else {
+                                        if (is_dir($file) === true) {
+                                            continue;
+                                        } else {
+                                            $filePath = $file->getRealPath();
+                                            $localPath = str_replace($documents_dir,'/',$filePath);
+                                            if ($filePath != '' && file_exists($filePath)) {
+                                                $zip->addFile($filePath,$localPath);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            $i++;
+                            $percent = round($i/$pid_count*50) + 20;
+                            File::put(public_path() . '/temp/' . $track_id, $percent);
+                        }
+                    }
+                    if (!empty($provider_id_arr)) {
+                        foreach ($provider_id_arr as $provider_id) {
+                            $repeat_schedule = DB::table('repeat_schedule')->where('provider_id', '=', $provider_id)->get();
                             if ($repeat_schedule->count()) {
-        						foreach ($repeat_schedule as $repeat_schedule_row) {
-        							DB::connection('mysql2')->table('repeat_schedule')->insert((array) $repeat_schedule_row);
-        						}
+                                foreach ($repeat_schedule as $repeat_schedule_row) {
+                                    DB::connection('mysql2')->table('repeat_schedule')->insert((array) $repeat_schedule_row);
+                                }
                             }
-    					}
-    				}
-    				if (!empty($job_id_arr)) {
-    					foreach ($job_id_arr as $job_id) {
-    						$pages = DB::table('pages')->where('job_id', '=', $job_id)->get();
+                        }
+                    }
+                    if (!empty($job_id_arr)) {
+                        foreach ($job_id_arr as $job_id) {
+                            $pages = DB::table('pages')->where('job_id', '=', $job_id)->get();
                             if ($pages->count()) {
-        						foreach ($pages as $pages_row) {
-        							DB::connection('mysql2')->table('pages')->insert((array) $pages_row);
-        						}
+                                foreach ($pages as $pages_row) {
+                                    DB::connection('mysql2')->table('pages')->insert((array) $pages_row);
+                                }
                             }
-    						$recipients = DB::table('recipients')->where('job_id', '=', $job_id)->get();
+                            $recipients = DB::table('recipients')->where('job_id', '=', $job_id)->get();
                             if ($recipients->count()) {
-        						foreach ($recipients as $recipients_row) {
-        							DB::connection('mysql2')->table('recipients')->insert((array) $recipients_row);
-        						}
+                                foreach ($recipients as $recipients_row) {
+                                    DB::connection('mysql2')->table('recipients')->insert((array) $recipients_row);
+                                }
                             }
-    						$rootPath1 = realpath($documents_dir . 'sentfax/' . $job_id);
-    						if (file_exists($rootPath1)) {
-    							$files1 = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($rootPath1), RecursiveIteratorIterator::SELF_FIRST);
-    							foreach ($files1 as $name1 => $file1) {
-    								if(in_array(substr($file1, strrpos($file1, '/')+1), ['.', '..'])) {
-    									continue;
-    								} else {
-    									if (is_dir($file1) === true) {
-    										continue;
-    									} else {
-    										$filePath1 = $file1->getRealPath();
-    										$localPath1 = str_replace($documents_dir,'/',$filePath1);
-    										if ($filePath1 != '' && file_exists($filePath1)) {
-    											$zip->addFile($filePath1,$localPath1);
-    										}
-    									}
-    								}
-    							}
-    						}
-    					}
-    				}
-    				if (!empty($tags_id_arr)) {
-    					foreach ($tags_id_arr as $tags_id) {
-    						$tags = DB::table('tags')->where('tags_id', '=', $tags_id)->get();
+                            $rootPath1 = realpath($documents_dir . 'sentfax/' . $job_id);
+                            if (file_exists($rootPath1)) {
+                                $files1 = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($rootPath1), RecursiveIteratorIterator::SELF_FIRST);
+                                foreach ($files1 as $name1 => $file1) {
+                                    if(in_array(substr($file1, strrpos($file1, '/')+1), ['.', '..'])) {
+                                        continue;
+                                    } else {
+                                        if (is_dir($file1) === true) {
+                                            continue;
+                                        } else {
+                                            $filePath1 = $file1->getRealPath();
+                                            $localPath1 = str_replace($documents_dir,'/',$filePath1);
+                                            if ($filePath1 != '' && file_exists($filePath1)) {
+                                                $zip->addFile($filePath1,$localPath1);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (!empty($tags_id_arr)) {
+                        foreach ($tags_id_arr as $tags_id) {
+                            $tags = DB::table('tags')->where('tags_id', '=', $tags_id)->get();
                             if ($tags->count()) {
-        						foreach ($tags as $tags_row) {
-        							$tagstest = DB::connection('mysql2')->table('tags')->where('tags_id', '=', $tags_id)->first();
-        							if (!$tagstest) {
-        								DB::connection('mysql2')->table('tags')->insert((array) $tags_row);
-        							}
-        						}
+                                foreach ($tags as $tags_row) {
+                                    $tagstest = DB::connection('mysql2')->table('tags')->where('tags_id', '=', $tags_id)->first();
+                                    if (!$tagstest) {
+                                        DB::connection('mysql2')->table('tags')->insert((array) $tags_row);
+                                    }
+                                }
                             }
-    					}
-    				}
-    				if (!empty($eid_arr)) {
-    					$j = 0;
-    					$eid_count = count($eid_arr);
-    					foreach ($eid_arr as $eid) {
-    						$assessment = DB::table('assessment')->where('eid', '=', $eid)->first();
-    						if ($assessment) {
-    							DB::connection('mysql2')->table('assessment')->insert((array) $assessment);
-    						}
-    						$billing = DB::table('billing')->where('eid', '=', $eid)->get();
-    						foreach ($billing as $billing_row) {
-    							DB::connection('mysql2')->table('billing')->insert((array) $billing_row);
-    						}
-    						$billing_core2 = DB::table('billing_core')->where('pid', '=', $pid)->where('eid', '=',  $eid)->where('practice_id', '=', Session::get('practice_id'))->get();
-    						foreach ($billing_core2 as $billing_core2_row) {
-    							DB::connection('mysql2')->table('billing_core')->insert((array) $billing_core2_row);
-    						}
-    						DB::connection('mysql2')->table('billing_core')->update(['practice_id' => '1']);
-    						$hpi = DB::table('hpi')->where('eid', '=', $eid)->first();
-    						if ($hpi) {
-    							DB::connection('mysql2')->table('hpi')->insert((array) $hpi);
-    						}
-    						$image = DB::table('image')->where('eid', '=', $eid)->get();
+                        }
+                    }
+                    if (!empty($eid_arr)) {
+                        $j = 0;
+                        $eid_count = count($eid_arr);
+                        foreach ($eid_arr as $eid) {
+                            $assessment = DB::table('assessment')->where('eid', '=', $eid)->first();
+                            if ($assessment) {
+                                DB::connection('mysql2')->table('assessment')->insert((array) $assessment);
+                            }
+                            $billing = DB::table('billing')->where('eid', '=', $eid)->get();
+                            foreach ($billing as $billing_row) {
+                                DB::connection('mysql2')->table('billing')->insert((array) $billing_row);
+                            }
+                            $billing_core2 = DB::table('billing_core')->where('pid', '=', $pid)->where('eid', '=',  $eid)->where('practice_id', '=', Session::get('practice_id'))->get();
+                            foreach ($billing_core2 as $billing_core2_row) {
+                                DB::connection('mysql2')->table('billing_core')->insert((array) $billing_core2_row);
+                            }
+                            DB::connection('mysql2')->table('billing_core')->update(['practice_id' => '1']);
+                            $hpi = DB::table('hpi')->where('eid', '=', $eid)->first();
+                            if ($hpi) {
+                                DB::connection('mysql2')->table('hpi')->insert((array) $hpi);
+                            }
+                            $image = DB::table('image')->where('eid', '=', $eid)->get();
                             if ($image->count()) {
-        						foreach ($image as $image_row) {
-        							DB::connection('mysql2')->table('image')->insert((array) $image_row);
-        						}
+                                foreach ($image as $image_row) {
+                                    DB::connection('mysql2')->table('image')->insert((array) $image_row);
+                                }
                             }
-    						$labs = DB::table('labs')->where('eid', '=', $eid)->first();
-    						if ($labs) {
-    							DB::connection('mysql2')->table('labs')->insert((array) $labs);
-    						}
-    						$other_history = DB::table('other_history')->where('eid', '=', $eid)->get();
+                            $labs = DB::table('labs')->where('eid', '=', $eid)->first();
+                            if ($labs) {
+                                DB::connection('mysql2')->table('labs')->insert((array) $labs);
+                            }
+                            $other_history = DB::table('other_history')->where('eid', '=', $eid)->get();
                             if ($other_history->count()) {
-        						foreach ($other_history as $other_history_row) {
-        							DB::connection('mysql2')->table('other_history')->insert((array) $other_history_row);
-        						}
+                                foreach ($other_history as $other_history_row) {
+                                    DB::connection('mysql2')->table('other_history')->insert((array) $other_history_row);
+                                }
                             }
-    						$pe = DB::table('pe')->where('eid', '=', $eid)->first();
-    						if ($pe) {
-    							DB::connection('mysql2')->table('pe')->insert((array) $pe);
-    						}
-    						$plan = DB::table('plan')->where('eid', '=', $eid)->first();
-    						if ($plan) {
-    							DB::connection('mysql2')->table('plan')->insert((array) $plan);
-    						}
-    						$procedure = DB::table('procedure')->where('eid', '=', $eid)->first();
-    						if ($procedure) {
-    							DB::connection('mysql2')->table('procedure')->insert((array) $procedure);
-    						}
-    						$ros = DB::table('ros')->where('eid', '=', $eid)->first();
-    						if ($ros) {
-    							DB::connection('mysql2')->table('ros')->insert((array) $ros);
-    						}
-    						$rx = DB::table('rx')->where('eid', '=', $eid)->first();
-    						if ($rx) {
-    							DB::connection('mysql2')->table('rx')->insert((array) $rx);
-    						}
-    						$vitals = DB::table('vitals')->where('eid', '=', $eid)->first();
-    						if ($vitals) {
-    							DB::connection('mysql2')->table('vitals')->insert((array) $vitals);
-    						}
-    						$i++;
-    						$percent1 = round($j/$eid_count*25) + 70;
-    						File::put(public_path() . '/temp/' . $track_id, $percent);
-    					}
-    				}
-    				$sqlfilename = time() . '_noshexport.sql';
-    				$sqlfile = public_path() . '/temp/' . $sqlfilename;
-    				$command = "mysqldump -u " . env('DB_USERNAME') . " -p". env('DB_PASSWORD') . " " . $database . " > " . $sqlfile;
-    				system($command);
-    				if (!file_exists($sqlfile)) {
-    					sleep(2);
-    				}
-    				$zip->addFile($sqlfile, $sqlfilename);
-    				$mess = "Export file created successfully!";
-    			} else {
-    				$mess = "Error creating database: " . mysqli_error($connect);
-    			}
-    		}
-    		mysqli_close($connect);
-    		$zip->close();
+                            $pe = DB::table('pe')->where('eid', '=', $eid)->first();
+                            if ($pe) {
+                                DB::connection('mysql2')->table('pe')->insert((array) $pe);
+                            }
+                            $plan = DB::table('plan')->where('eid', '=', $eid)->first();
+                            if ($plan) {
+                                DB::connection('mysql2')->table('plan')->insert((array) $plan);
+                            }
+                            $procedure = DB::table('procedure')->where('eid', '=', $eid)->first();
+                            if ($procedure) {
+                                DB::connection('mysql2')->table('procedure')->insert((array) $procedure);
+                            }
+                            $ros = DB::table('ros')->where('eid', '=', $eid)->first();
+                            if ($ros) {
+                                DB::connection('mysql2')->table('ros')->insert((array) $ros);
+                            }
+                            $rx = DB::table('rx')->where('eid', '=', $eid)->first();
+                            if ($rx) {
+                                DB::connection('mysql2')->table('rx')->insert((array) $rx);
+                            }
+                            $vitals = DB::table('vitals')->where('eid', '=', $eid)->first();
+                            if ($vitals) {
+                                DB::connection('mysql2')->table('vitals')->insert((array) $vitals);
+                            }
+                            $i++;
+                            $percent1 = round($j/$eid_count*25) + 70;
+                            File::put(public_path() . '/temp/' . $track_id, $percent);
+                        }
+                    }
+                    $sqlfilename = time() . '_noshexport.sql';
+                    $sqlfile = public_path() . '/temp/' . $sqlfilename;
+                    $command = "mysqldump -u " . env('DB_USERNAME') . " -p". env('DB_PASSWORD') . " " . $database . " > " . $sqlfile;
+                    system($command);
+                    if (!file_exists($sqlfile)) {
+                        sleep(2);
+                    }
+                    $zip->addFile($sqlfile, $sqlfilename);
+                    $mess = "Export file created successfully!";
+                } else {
+                    $mess = "Error creating database: " . mysqli_error($connect);
+                }
+            }
+            mysqli_close($connect);
+            $zip->close();
             Session::forget('database_export');
             $headers = [
                 'Set-Cookie' => 'fileDownload=true; path=/',
@@ -2415,14 +2422,14 @@ class CoreController extends Controller
         } else {
             $track_id = time() . '_' . Session::get('user_id') . '_track';
             Session::put('database_export', route('database_export', [$track_id]));
-			return redirect()->route('dashboard');
+            return redirect()->route('dashboard');
         }
-	}
+    }
 
-	public function database_import(Request $request)
-	{
+    public function database_import(Request $request)
+    {
         ini_set('memory_limit','196M');
-		ini_set('max_execution_time', 300);
+        ini_set('max_execution_time', 300);
         if ($request->isMethod('post')) {
             $directory = public_path() . '/temp';
             $new_name = str_replace('.' . $file->getClientOriginalExtension(), '', $file->getClientOriginalName()) . '_' . time() . '.' . $file->getClientOriginalExtension();
@@ -2462,50 +2469,50 @@ class CoreController extends Controller
             $data['assets_css'] = $this->assets_css('document_upload');
             return view('document_upload', $data);
         }
-	}
+    }
 
     public function download_ccda_entire(Request $request, $track_id='')
-	{
+    {
         if ($track_id !== '') {
             File::put(public_path() . '/temp/' . $track_id, '0');
             ini_set('memory_limit','196M');
-    		ini_set('max_execution_time', 300);
-    		$practice_id = Session::get('practice_id');
-    		$query = DB::table('demographics_relate')->where('practice_id', '=', $practice_id)->get();
-    		$zip_file_name = time() . '_ccda_' . $practice_id . '.zip';
-    		$zip_file = public_path() . '/temp/' . $zip_file_name;
-    	    $zip = new ZipArchive();
-    		if ($zip->open($zip_file, ZipArchive::CREATE) !== TRUE) {
-    			exit("Cannot open <$zip_file>\n");
-    		}
-    		$files_array = [];
-    		$i = 0;
-    		$count = $query->count();
+            ini_set('max_execution_time', 300);
+            $practice_id = Session::get('practice_id');
+            $query = DB::table('demographics_relate')->where('practice_id', '=', $practice_id)->get();
+            $zip_file_name = time() . '_ccda_' . $practice_id . '.zip';
+            $zip_file = public_path() . '/temp/' . $zip_file_name;
+            $zip = new ZipArchive();
+            if ($zip->open($zip_file, ZipArchive::CREATE) !== TRUE) {
+                exit("Cannot open <$zip_file>\n");
+            }
+            $files_array = [];
+            $i = 0;
+            $count = $query->count();
             File::put(public_path() . '/temp/' . $track_id, '1');
             if ($query->count()) {
-        		foreach ($query as $row) {
-        			$filename = time() . '_ccda_' . $row->pid . ".xml";
-        			$file = public_path() . '/temp/' . $filename;
-        			$query1 = DB::table('demographics')->where('pid', '=', $row->pid)->first();
-        			if ($query1) {
-        				$ccda = $this->generate_ccda('',$row->pid);
-        				File::put($file, $ccda);
-        				$files_array[$i]['file'] = $file;
-        				$files_array[$i]['filename'] = $filename;
-        				$i++;
-        			}
+                foreach ($query as $row) {
+                    $filename = time() . '_ccda_' . $row->pid . ".xml";
+                    $file = public_path() . '/temp/' . $filename;
+                    $query1 = DB::table('demographics')->where('pid', '=', $row->pid)->first();
+                    if ($query1) {
+                        $ccda = $this->generate_ccda('',$row->pid);
+                        File::put($file, $ccda);
+                        $files_array[$i]['file'] = $file;
+                        $files_array[$i]['filename'] = $filename;
+                        $i++;
+                    }
                     $percent = round($i/$count*100);
                     File::put(public_path() . '/temp/' . $track_id, $percent);
-        		}
+                }
             }
-    		foreach ($files_array as $ccda1) {
-    			$zip->addFile($ccda1['file'], $ccda1['filename']);
-    		}
-    		$zip->close();
+            foreach ($files_array as $ccda1) {
+                $zip->addFile($ccda1['file'], $ccda1['filename']);
+            }
+            $zip->close();
             while(!file_exists($zip_file)) {
-				sleep(2);
-			}
-    		Session::forget('download_ccda_entire');
+                sleep(2);
+            }
+            Session::forget('download_ccda_entire');
             $headers = [
                 'Set-Cookie' => 'fileDownload=true; path=/',
                 'Content-Type' => 'application/zip',
@@ -2516,46 +2523,46 @@ class CoreController extends Controller
         } else {
             $track_id = time() . '_' . Session::get('user_id') . '_track';
             Session::put('download_ccda_entire', route('download_ccda_entire', [$track_id]));
-			return redirect(Session::get('last_page'));
+            return redirect(Session::get('last_page'));
         }
-	}
+    }
 
     public function download_charts_entire(Request $request, $track_id='')
-	{
+    {
         if ($track_id !== '') {
             File::put(public_path() . '/temp/' . $track_id, '0');
-    		ini_set('memory_limit','196M');
-    		ini_set('max_execution_time', 300);
-    		$practice_id = Session::get('practice_id');
-    		$query = DB::table('demographics_relate')->where('practice_id', '=', $practice_id)->get();
-    		$total = $query->count();
+            ini_set('memory_limit','196M');
+            ini_set('max_execution_time', 300);
+            $practice_id = Session::get('practice_id');
+            $query = DB::table('demographics_relate')->where('practice_id', '=', $practice_id)->get();
+            $total = $query->count();
             $files_array = [];
-    		$i = 0;
-    		$data = [];
+            $i = 0;
+            $data = [];
             $zip_file_name = time() . '_charts_' . $practice_id . '.zip';
-    		$zip_file = public_path() . '/temp/' . $zip_file_name;
-    		$zip = new ZipArchive();
-    		if ($zip->open($zip_file, ZipArchive::CREATE) !== TRUE) {
-    			exit("Cannot open <$zip_file>\n");
-    		}
+            $zip_file = public_path() . '/temp/' . $zip_file_name;
+            $zip = new ZipArchive();
+            if ($zip->open($zip_file, ZipArchive::CREATE) !== TRUE) {
+                exit("Cannot open <$zip_file>\n");
+            }
             File::put(public_path() . '/temp/' . $track_id, '1');
             if ($query->count()) {
-        		foreach ($query as $row) {
+                foreach ($query as $row) {
                     $file = $this->print_chart('', $row->pid, 'all');
                     $files_array[$i]['file'] = $file;
                     $files_array[$i]['filename'] = str_replace(public_path() . '/temp/', '', $file);
-        			$i++;
-        			$percent = round($i/$total*100);
+                    $i++;
+                    $percent = round($i/$total*100);
                     File::put(public_path() . '/temp/' . $track_id, $percent);
-        		}
+                }
             }
             foreach ($files_array as $chart1) {
-    			$zip->addFile($chart1['file'], $chart1['filename']);
-    		}
-    		$zip->close();
+                $zip->addFile($chart1['file'], $chart1['filename']);
+            }
+            $zip->close();
             while(!file_exists($zip_file)) {
-				sleep(2);
-			}
+                sleep(2);
+            }
             Session::forget('download_charts_entire');
             $headers = [
                 'Set-Cookie' => 'fileDownload=true; path=/',
@@ -2569,41 +2576,41 @@ class CoreController extends Controller
             Session::put('download_charts_entire', route('download_charts_entire', [$track_id]));
             return redirect(Session::get('last_page'));
         }
-	}
+    }
 
     public function download_csv_demographics(Request $request, $track_id='')
     {
         if ($track_id !== '') {
             File::put(public_path() . '/temp/' . $track_id, '0');
-			ini_set('memory_limit','196M');
-			ini_set('max_execution_time', 300);
-			$practice_id = Session::get('practice_id');
-			$query = DB::table('demographics_relate')->where('practice_id', '=', $practice_id)->get();
-			$total = count($query);
-			$i=0;
-			$csv = "Last Name;First Name;Gender;Date of Birth;Address;City;State;Zip;Home Phone;Work Phone;Cell Phone";
+            ini_set('memory_limit','196M');
+            ini_set('max_execution_time', 300);
+            $practice_id = Session::get('practice_id');
+            $query = DB::table('demographics_relate')->where('practice_id', '=', $practice_id)->get();
+            $total = count($query);
+            $i=0;
+            $csv = "Last Name;First Name;Gender;Date of Birth;Address;City;State;Zip;Home Phone;Work Phone;Cell Phone";
             if ($query->count()) {
-    			foreach ($query as $row) {
-    				$row1 = DB::table('demographics')
-    					->select('lastname', 'firstname', 'sex', 'DOB', 'address', 'city', 'state', 'zip', 'phone_home', 'phone_work', 'phone_cell')
-    					->where('pid', '=', $row->pid)
-    					->first();
-    				$csv .= "\n";
-    				$array = json_decode(json_encode($row1), true);
-    				$csv .= implode(";", $array);
-    				$i++;
-    				$percent = round($i/$total*100);
-    				File::put(public_path() . '/temp/' . $track_id, $percent);
-    			}
+                foreach ($query as $row) {
+                    $row1 = DB::table('demographics')
+                        ->select('lastname', 'firstname', 'sex', 'DOB', 'address', 'city', 'state', 'zip', 'phone_home', 'phone_work', 'phone_cell')
+                        ->where('pid', '=', $row->pid)
+                        ->first();
+                    $csv .= "\n";
+                    $array = json_decode(json_encode($row1), true);
+                    $csv .= implode(";", $array);
+                    $i++;
+                    $percent = round($i/$total*100);
+                    File::put(public_path() . '/temp/' . $track_id, $percent);
+                }
             } else {
                 File::put(public_path() . '/temp/' . $track_id, '100');
             }
-			$file_name = time() . '_' . Session::get('user_id') . '_demographics.csv';
+            $file_name = time() . '_' . Session::get('user_id') . '_demographics.csv';
             $file_path = public_path() . '/temp/' . $file_name;
-			if (file_exists($file_path)) {
-				unlink($file_path);
-			}
-			File::put($file_path, $csv);
+            if (file_exists($file_path)) {
+                unlink($file_path);
+            }
+            File::put($file_path, $csv);
             Session::forget('download_csv_demographics');
             $headers = [
                 'Set-Cookie' => 'fileDownload=true; path=/',
@@ -2930,12 +2937,12 @@ class CoreController extends Controller
         ];
         if ($type == 'queue') {
             $query = DB::table('encounters')
-    			->join('demographics', 'encounters.pid', '=', 'demographics.pid')
-    			->where('encounters.bill_submitted', '!=', 'Done')
-    			->where('encounters.addendum', '=', 'n')
-    			->where('encounters.practice_id', '=', Session::get('practice_id'))
+                ->join('demographics', 'encounters.pid', '=', 'demographics.pid')
+                ->where('encounters.bill_submitted', '!=', 'Done')
+                ->where('encounters.addendum', '=', 'n')
+                ->where('encounters.practice_id', '=', Session::get('practice_id'))
                 ->orderBy('encounters.encounter_DOS', 'desc')
-    			->get();
+                ->get();
             if ($query->count()) {
                 foreach ($query as $row) {
                     $action = '<a href="' . route('financial_queue', ['Pend']) . '" class="btn fa-btn" role="button" data-toggle="tooltip" title="Add to Print Image Queue"><i class="fa fa-plus-square fa-lg"></i></a>';
@@ -2966,19 +2973,19 @@ class CoreController extends Controller
             ];
             $batch = 0;
             $batch_query1 = DB::table('encounters')
-    			->where('bill_submitted', '=', 'Pend')
-    			->where('addendum', '=', 'n')
-    			->where('practice_id', '=', Session::get('practice_id'))
-    			->get();
-    		if ($batch_query1->count()) {
+                ->where('bill_submitted', '=', 'Pend')
+                ->where('addendum', '=', 'n')
+                ->where('practice_id', '=', Session::get('practice_id'))
+                ->get();
+            if ($batch_query1->count()) {
                 $batch++;
             }
             $batch_query2 = DB::table('encounters')
-    			->where('bill_submitted', '=', 'HCFA')
-    			->where('addendum', '=', 'n')
-    			->where('practice_id', '=', Session::get('practice_id'))
-    			->get();
-    		if ($batch_query2->count()) {
+                ->where('bill_submitted', '=', 'HCFA')
+                ->where('addendum', '=', 'n')
+                ->where('practice_id', '=', Session::get('practice_id'))
+                ->get();
+            if ($batch_query2->count()) {
                 $batch++;
             }
             if ($batch > 0) {
@@ -3016,27 +3023,27 @@ class CoreController extends Controller
         }
         if ($type == 'processed') {
             $query = DB::table('encounters')
-    			->join('demographics', 'encounters.pid', '=', 'demographics.pid')
-    			->where('encounters.bill_submitted', '=', 'Done')
-    			->where('encounters.addendum', '=', 'n')
-    			->where('encounters.practice_id', '=', Session::get('practice_id'))
+                ->join('demographics', 'encounters.pid', '=', 'demographics.pid')
+                ->where('encounters.bill_submitted', '=', 'Done')
+                ->where('encounters.addendum', '=', 'n')
+                ->where('encounters.practice_id', '=', Session::get('practice_id'))
                 ->orderBy('encounters.encounter_DOS', 'desc')
-    			->get();
+                ->get();
             if ($query->count()) {
                 foreach ($query as $row) {
-    				$query1 = DB::table('billing_core')->where('eid', '=', $row->eid)->get();
+                    $query1 = DB::table('billing_core')->where('eid', '=', $row->eid)->get();
                     $balance = 0;
                     $charges = 0;
-    				if ($query1->count()) {
-    					$charge = 0;
-    					$payment = 0;
-    					foreach ($query1 as $row1) {
-    						$charge += $row1->cpt_charge * $row1->unit;
-    						$payment += $row1->payment;
-    					}
-    					$balance = $charge - $payment;
-    					$charges = $charge;
-    				}
+                    if ($query1->count()) {
+                        $charge = 0;
+                        $payment = 0;
+                        foreach ($query1 as $row1) {
+                            $charge += $row1->cpt_charge * $row1->unit;
+                            $payment += $row1->payment;
+                        }
+                        $balance = $charge - $payment;
+                        $charges = $charge;
+                    }
                     $action = '<a href="' . route('financial_patient', ['billing_payment_history', $row->pid, $row->eid]) . '" class="btn fa-btn" role="button" data-toggle="tooltip" title="Payment History"><i class="fa fa-history fa-lg"></i></a>';
                     $action .= '<a href="' . route('financial_patient', ['billing_make_payment', $row->pid, $row->eid]) . '" class="btn fa-btn" role="button" data-toggle="tooltip" title="Make Payment"><i class="fa fa-usd fa-lg"></i></a>';
                     $action .= '<a href="' . route('financial_resubmit', [$row->eid]) . '" class="btn fa-btn" role="button" data-toggle="tooltip" title="Resubmit Bill"><i class="fa fa-repeat fa-lg"></i></a>';
@@ -3064,58 +3071,58 @@ class CoreController extends Controller
         }
         if ($type == 'outstanding') {
             $query = DB::table('demographics')
-    			->join('demographics_relate', 'demographics.pid', '=', 'demographics_relate.pid')
-    			->where('demographics_relate.practice_id', '=', Session::get('practice_id'))
-    			->get();
-    		$count = 0;
-    		$full_array = [];
+                ->join('demographics_relate', 'demographics.pid', '=', 'demographics_relate.pid')
+                ->where('demographics_relate.practice_id', '=', Session::get('practice_id'))
+                ->get();
+            $count = 0;
+            $full_array = [];
             if ($query->count()) {
-        		foreach ($query as $row) {
-        			$notes = DB::table('demographics_notes')->where('pid', '=', $row->pid)->where('practice_id', '=', Session::get('practice_id'))->first();
-        			$query_a = DB::table('encounters')->where('pid', '=', $row->pid)->where('addendum', '=', 'n')->get();
+                foreach ($query as $row) {
+                    $notes = DB::table('demographics_notes')->where('pid', '=', $row->pid)->where('practice_id', '=', Session::get('practice_id'))->first();
+                    $query_a = DB::table('encounters')->where('pid', '=', $row->pid)->where('addendum', '=', 'n')->get();
                     $balance = 0;
-        			if ($query_a->count()) {
-        				foreach ($query_a as $row_a) {
-        					$query_b = DB::table('billing_core')->where('eid', '=', $row_a->eid)->get();
-        					if ($query_b) {
-        						$charge = 0;
-        						$payment = 0;
-        						foreach ($query_b as $row_b) {
-        							$charge += $row_b->cpt_charge * $row_b->unit;
-        							$payment += $row_b->payment;
-        						}
-        						$balance += $charge - $payment;
-        					}
-        				}
-        			}
-        			$query_c = DB::table('billing_core')->where('pid', '=', $row->pid)->where('eid', '=', '0')->where('payment', '=', '0')->get();
+                    if ($query_a->count()) {
+                        foreach ($query_a as $row_a) {
+                            $query_b = DB::table('billing_core')->where('eid', '=', $row_a->eid)->get();
+                            if ($query_b) {
+                                $charge = 0;
+                                $payment = 0;
+                                foreach ($query_b as $row_b) {
+                                    $charge += $row_b->cpt_charge * $row_b->unit;
+                                    $payment += $row_b->payment;
+                                }
+                                $balance += $charge - $payment;
+                            }
+                        }
+                    }
+                    $query_c = DB::table('billing_core')->where('pid', '=', $row->pid)->where('eid', '=', '0')->where('payment', '=', '0')->get();
                     $balance1 = 0;
-        			if ($query_c->count()) {
-        				foreach ($query_c as $row_c) {
-        					$query_d = DB::table('billing_core')->where('other_billing_id', '=', $row_c->other_billing_id)->get();
-        					if ($query_d) {
-        						$charge1 = $row_c->cpt_charge * $row_c->unit;
-        						$payment1 = 0;
-        						foreach ($query_d as $row_d) {
-        							$payment1 += $row_d->payment;
-        						}
-        						$balance1 += $charge1 - $payment1;
-        					}
-        				}
-        			}
-        			$totalbalance = $balance + $balance1;
-        			if ($totalbalance >= 0.01 || $notes->billing_notes != '') {
-        				$count++;
-        				$result[] = [
-        					'pid' => $row->pid,
-        					'lastname' => $row->lastname,
-        					'firstname' => $row->firstname,
-        					'balance' => $totalbalance,
-        					'billing_notes' => $notes->billing_notes,
+                    if ($query_c->count()) {
+                        foreach ($query_c as $row_c) {
+                            $query_d = DB::table('billing_core')->where('other_billing_id', '=', $row_c->other_billing_id)->get();
+                            if ($query_d) {
+                                $charge1 = $row_c->cpt_charge * $row_c->unit;
+                                $payment1 = 0;
+                                foreach ($query_d as $row_d) {
+                                    $payment1 += $row_d->payment;
+                                }
+                                $balance1 += $charge1 - $payment1;
+                            }
+                        }
+                    }
+                    $totalbalance = $balance + $balance1;
+                    if ($totalbalance >= 0.01 || $notes->billing_notes != '') {
+                        $count++;
+                        $result[] = [
+                            'pid' => $row->pid,
+                            'lastname' => $row->lastname,
+                            'firstname' => $row->firstname,
+                            'balance' => $totalbalance,
+                            'billing_notes' => $notes->billing_notes,
                             'click' => route('billing_list', ['encounters', $row->pid])
-        				];
-        			}
-        		}
+                        ];
+                    }
+                }
             }
             $head_arr = [
                 'ID' => 'pid',
@@ -3155,62 +3162,62 @@ class CoreController extends Controller
         }
         if ($type == 'monthly_report') {
             $query = DB::table('encounters')
-    			->select(DB::raw("DATE_FORMAT(encounter_DOS, '%Y-%m') as month, COUNT(*) as patients_seen"))
-    			->where('addendum', '=', 'n')
-    			->where('practice_id', '=', Session::get('practice_id'))
-    			->groupBy('month')
+                ->select(DB::raw("DATE_FORMAT(encounter_DOS, '%Y-%m') as month, COUNT(*) as patients_seen"))
+                ->where('addendum', '=', 'n')
+                ->where('practice_id', '=', Session::get('practice_id'))
+                ->groupBy('month')
                 ->orderby('month', 'desc')
-    			->get();
+                ->get();
             if ($query->count()) {
-    			foreach ($query as $row_obj) {
+                foreach ($query as $row_obj) {
                     $row['patients_seen'] = $row_obj->patients_seen;
                     $row['month'] = $row_obj->month;
-    				$month_piece = explode("-", $row_obj->month);
-    				$year = $month_piece[0];
-    				$month = $month_piece[1];
-    				$row['total_billed'] = 0;
-    				$row['total_payments'] = 0;
-    				$row['dnka'] = 0;
-    				$row['lmc'] = 0;
-    				$query1a = DB::table('encounters')
-    					->select('eid')
-    					->where(DB::raw('YEAR(encounter_DOS)'), '=', $year)
-    					->where(DB::raw('MONTH(encounter_DOS)'), '=', $month)
-    					->where('addendum', '=', 'n')
-    					->where('practice_id', '=', Session::get('practice_id'))
-    					->get();
-    				foreach ($query1a as $row1) {
-    					$query2 = DB::table('billing_core')->where('eid', '=', $row1->eid)->get();
-    					if ($query2) {
-    						$charge = 0;
-    						$payment = 0;
-    						foreach ($query2 as $row2) {
-    							if ($row2->payment_type != "Write-Off") {
-    								$charge += $row2->cpt_charge * $row2->unit;
-    								$payment += $row2->payment;
-    							}
-    						}
-    						$row['total_billed'] += $charge;
-    						$row['total_payments'] += $payment;
-    					}
-    				}
-    				$query1b = DB::table('schedule')
-    					->join('providers', 'providers.id', '=', 'schedule.provider_id')
-    					->where(DB::raw("FROM_UNIXTIME(schedule.end, '%Y')"), '=', $year)
-    					->where(DB::raw("FROM_UNIXTIME(schedule.end, '%m')"), '=', $month)
-    					->where('providers.practice_id', '=', Session::get('practice_id'))
-    					->get();
-    				foreach ($query1b as $row3) {
-    					if ($row3->status == "DNKA") {
-    						$row['dnka'] += 1;
-    					}
-    					if ($row3->status == "LMC") {
-    						$row['lmc'] += 1;
-    					}
-    				}
+                    $month_piece = explode("-", $row_obj->month);
+                    $year = $month_piece[0];
+                    $month = $month_piece[1];
+                    $row['total_billed'] = 0;
+                    $row['total_payments'] = 0;
+                    $row['dnka'] = 0;
+                    $row['lmc'] = 0;
+                    $query1a = DB::table('encounters')
+                        ->select('eid')
+                        ->where(DB::raw('YEAR(encounter_DOS)'), '=', $year)
+                        ->where(DB::raw('MONTH(encounter_DOS)'), '=', $month)
+                        ->where('addendum', '=', 'n')
+                        ->where('practice_id', '=', Session::get('practice_id'))
+                        ->get();
+                    foreach ($query1a as $row1) {
+                        $query2 = DB::table('billing_core')->where('eid', '=', $row1->eid)->get();
+                        if ($query2) {
+                            $charge = 0;
+                            $payment = 0;
+                            foreach ($query2 as $row2) {
+                                if ($row2->payment_type != "Write-Off") {
+                                    $charge += $row2->cpt_charge * $row2->unit;
+                                    $payment += $row2->payment;
+                                }
+                            }
+                            $row['total_billed'] += $charge;
+                            $row['total_payments'] += $payment;
+                        }
+                    }
+                    $query1b = DB::table('schedule')
+                        ->join('providers', 'providers.id', '=', 'schedule.provider_id')
+                        ->where(DB::raw("FROM_UNIXTIME(schedule.end, '%Y')"), '=', $year)
+                        ->where(DB::raw("FROM_UNIXTIME(schedule.end, '%m')"), '=', $month)
+                        ->where('providers.practice_id', '=', Session::get('practice_id'))
+                        ->get();
+                    foreach ($query1b as $row3) {
+                        if ($row3->status == "DNKA") {
+                            $row['dnka'] += 1;
+                        }
+                        if ($row3->status == "LMC") {
+                            $row['lmc'] += 1;
+                        }
+                    }
                     $row['click'] = route('financial_insurance', [$row['month']]);
                     $result[] = $row;
-    			}
+                }
             }
             $head_arr = [
                 'Month' => 'month',
@@ -3223,58 +3230,58 @@ class CoreController extends Controller
         }
         if ($type == 'yearly_report') {
             $query = DB::table('encounters')
-    			->select(DB::raw("DATE_FORMAT(encounter_DOS, '%Y') as year, COUNT(*) as patients_seen"))
-    			->where('addendum', '=', 'n')
-    			->where('practice_id', '=', Session::get('practice_id'))
-    			->groupBy('year')
+                ->select(DB::raw("DATE_FORMAT(encounter_DOS, '%Y') as year, COUNT(*) as patients_seen"))
+                ->where('addendum', '=', 'n')
+                ->where('practice_id', '=', Session::get('practice_id'))
+                ->groupBy('year')
                 ->orderBy('year', 'desc')
-    			->get();
+                ->get();
             if ($query->count()) {
-    			foreach ($query as $row_obj) {
+                foreach ($query as $row_obj) {
                     $row['patients_seen'] = $row_obj->patients_seen;
                     $row['year'] = $row_obj->year;
-    				$row['total_billed'] = 0;
-    				$row['total_payments'] = 0;
-    				$row['dnka'] = 0;
-    				$row['lmc'] = 0;
-    				$query1a = DB::table('encounters')
-    					->select('eid')
-    					->where(DB::raw('YEAR(encounter_DOS)'), '=', $row['year'])
-    					->where('addendum', '=', 'n')
-    					->where('practice_id', '=', Session::get('practice_id'))
-    					->get();
-    				foreach ($query1a as $row1) {
-    					$query2 = DB::table('billing_core')->where('eid', '=', $row1->eid)->get();
-    					if ($query2) {
-    						$charge = 0;
-    						$payment = 0;
-    						foreach ($query2 as $row2) {
-    							if ($row2->payment_type != "Write-Off") {
-    								$charge += $row2->cpt_charge * $row2->unit;
-    								$payment += $row2->payment;
-    							}
-    						}
-    						$row['total_billed'] += $charge;
-    						$row['total_payments'] += $payment;
-    					}
-    				}
-    				$query1b = DB::table('schedule')
-    					->join('providers', 'providers.id', '=', 'schedule.provider_id')
-    					->where(DB::raw("FROM_UNIXTIME(schedule.end, '%Y')"), '=', $row['year'])
-    					->where('providers.practice_id', '=', Session::get('practice_id'))
-    					->get();
-    				foreach ($query1b as $row3) {
-    					if ($row3->status == "DNKA") {
-    						$row['dnka'] += 1;
-    					}
-    					if ($row3->status == "LMC") {
-    						$row['lmc'] += 1;
-    					}
-    				}
+                    $row['total_billed'] = 0;
+                    $row['total_payments'] = 0;
+                    $row['dnka'] = 0;
+                    $row['lmc'] = 0;
+                    $query1a = DB::table('encounters')
+                        ->select('eid')
+                        ->where(DB::raw('YEAR(encounter_DOS)'), '=', $row['year'])
+                        ->where('addendum', '=', 'n')
+                        ->where('practice_id', '=', Session::get('practice_id'))
+                        ->get();
+                    foreach ($query1a as $row1) {
+                        $query2 = DB::table('billing_core')->where('eid', '=', $row1->eid)->get();
+                        if ($query2) {
+                            $charge = 0;
+                            $payment = 0;
+                            foreach ($query2 as $row2) {
+                                if ($row2->payment_type != "Write-Off") {
+                                    $charge += $row2->cpt_charge * $row2->unit;
+                                    $payment += $row2->payment;
+                                }
+                            }
+                            $row['total_billed'] += $charge;
+                            $row['total_payments'] += $payment;
+                        }
+                    }
+                    $query1b = DB::table('schedule')
+                        ->join('providers', 'providers.id', '=', 'schedule.provider_id')
+                        ->where(DB::raw("FROM_UNIXTIME(schedule.end, '%Y')"), '=', $row['year'])
+                        ->where('providers.practice_id', '=', Session::get('practice_id'))
+                        ->get();
+                    foreach ($query1b as $row3) {
+                        if ($row3->status == "DNKA") {
+                            $row['dnka'] += 1;
+                        }
+                        if ($row3->status == "LMC") {
+                            $row['lmc'] += 1;
+                        }
+                    }
                     $row['click'] = route('financial_insurance', [$row['year']]);
-    				$result[] = $row;
-    			}
-    		}
+                    $result[] = $row;
+                }
+            }
             $head_arr = [
                 'Year' => 'year',
                 'Patients Seen' => 'patients_seen',
@@ -3382,68 +3389,68 @@ class CoreController extends Controller
     }
 
     public function financial_era(Request $request, $era_id)
-	{
-		setlocale(LC_MONETARY, 'en_US.UTF-8');
-		$era = DB::table('era')->where('era_id', '=', $era_id)->first();
-		$claim = json_decode(unserialize($era->era), true);
-		$html = '<div class="table-responsive"><table id="era_grid" class="table table-striped">';
-		$html .= '<thead><tr><th style="width:200px">Check Details</th><th style="width:350px">Payer Details</th><th style="width:350px">Payee Details</th></tr></thead><tbody>';
-		$html .= '<tr><td>Check Amount: ' . money_format('%n', $claim['check_amount']) .'<br><br>Check Number: ' . $claim['check_number'] .'<br><br>Check Date: ' . date('m/d/Y', $claim['check_date']) . '<br><br>Production Date: ' . date('m/d/Y', $claim['production_date']) . '</td>';
-		$html .= '<td>Name: ' . $claim['payer_name'] . '<br><br>Tax ID: ' . $claim['payer_tax_id'] . '<br><br>Address: ' . $claim['payer_street'] . '<br>' . $claim['payer_city'] . ', ' . $claim['payer_state'] . ' ' . $claim['payer_zip'] . '</td>';
-		$html .= '<td>Name: ' . $claim['payee_name'] . '<br><br>Tax ID: ' . $claim['payee_tax_id'] . '<br><br>Address: ' . $claim['payee_street'] . '<br>' . $claim['payee_city'] . ', ' . $claim['payee_state'] . ' ' . $claim['payee_zip'] . '</td></tr></tbody></table>';
-		if (count($claim['claim']) > 0) {
-			$i = 0;
-			$html .= '<br><table id="era_grid_' . $i .'" class="table table-striped">';
-			$html .= '<thead><tr><th style="width:200px">Claim Details</th><th style="width:200px">Patient Details</th><th>Line Item Details</th></tr></thead><tbody>';
-			foreach ($claim['claim'] as $row) {
-				if ($row['claim_status_code'] == '1') {
-					$claim_status_code = 'Processed as primary';
-				} elseif ($row['claim_status_code'] == '2') {
-					$claim_status_code = 'Processed as secondary';
-				} elseif ($row['claim_status_code'] == '3') {
-					$claim_status_code = 'Processed as tertiary';
-				} elseif ($row['claim_status_code'] == '22') {
-					$claim_status_code = 'Reversal of previous payment';
-				} else {
-					$claim_status_code = $row['claim_status_code'];
-				}
-				if ($row['claim_forward'] == 0) {
-					$claim_forward = '';
-				} else {
-					$claim_forward = '<br>Claim forwarded to another insurer.';
-				}
-				$html .= '<tr><td>Amount Charged: ' . money_format('%n', $row['amount_charged']);
-				if ($row['amount_approved'] != '') {
-					$html .= '<br><br>Amount Approved: ' . money_format('%n', $row['amount_approved']);
-				}
-				if ($row['amount_patient'] != '') {
-					$html .= '<br><br>Amount assigned to Patient: ' . money_format('%n', $row['amount_patient']);
-				}
-				$html .='<br><br>Date of Service: ' . date('m/d/Y', $row['dos']) . '<br><br>Claim Status: ' . $claim_status_code . '<br><br>Claim ID: ' . $row['payer_claim_id'] . $claim_forward . '</td>';
-				$html .= '<td>Patient: ' . $row['patient_lastname'] . ', ' . $row['patient_firstname'] . ' ' . $row['patient_middle'] . '<br><br>Insurance: ' . $row['payer_insurance'] . '<br><br>Patient Member ID: ' . $row['patient_member_id'] . '<br><br>Subscriber: ' . $row['subscriber_lastname'] . ', ' . $row['subscriber_firstname'] . ' ' . $row['subscriber_middle'] .'</td>';
-				$html .= '<td><ul>';
-				if (count($row['item']) > 0) {
-					foreach ($row['item'] as $row1) {
-						$html .= '<li>CPT: ' . $row1['cpt'];
-						if ($row1['modifier'] != '') {
-							$html .= ', Modifier: ' . $row1['modifier'];
-						}
-						$html .= ', Charge: ' . money_format('%n', $row1['charge']) . ', Paid: ' . money_format('%n', $row1['paid']) . ', Allowed: ' . money_format('%n', $row1['allowed']);
-						if (count($row1['adjustment']) > 0) {
-							$j = 1;
-							foreach ($row1['adjustment'] as $row2) {
-								$html .= '<br><br>Adjustment Reason # ' . $j . ': ' . $this->claim_reason_code($row2['reason_cpt']);;
-								$html .= '<br>Adjustment Amount # ' . $j . ': ' . money_format('%n', $row2['amount']);
-								$j++;
-							}
-						}
-						$html .= '</li>';
-					}
-				}
-				$html .= '</ul></td></tr>';
-			}
-			$html .= '</tbody></table></div>';
-		}
+    {
+        setlocale(LC_MONETARY, 'en_US.UTF-8');
+        $era = DB::table('era')->where('era_id', '=', $era_id)->first();
+        $claim = json_decode(unserialize($era->era), true);
+        $html = '<div class="table-responsive"><table id="era_grid" class="table table-striped">';
+        $html .= '<thead><tr><th style="width:200px">Check Details</th><th style="width:350px">Payer Details</th><th style="width:350px">Payee Details</th></tr></thead><tbody>';
+        $html .= '<tr><td>Check Amount: ' . money_format('%n', $claim['check_amount']) .'<br><br>Check Number: ' . $claim['check_number'] .'<br><br>Check Date: ' . date('m/d/Y', $claim['check_date']) . '<br><br>Production Date: ' . date('m/d/Y', $claim['production_date']) . '</td>';
+        $html .= '<td>Name: ' . $claim['payer_name'] . '<br><br>Tax ID: ' . $claim['payer_tax_id'] . '<br><br>Address: ' . $claim['payer_street'] . '<br>' . $claim['payer_city'] . ', ' . $claim['payer_state'] . ' ' . $claim['payer_zip'] . '</td>';
+        $html .= '<td>Name: ' . $claim['payee_name'] . '<br><br>Tax ID: ' . $claim['payee_tax_id'] . '<br><br>Address: ' . $claim['payee_street'] . '<br>' . $claim['payee_city'] . ', ' . $claim['payee_state'] . ' ' . $claim['payee_zip'] . '</td></tr></tbody></table>';
+        if (count($claim['claim']) > 0) {
+            $i = 0;
+            $html .= '<br><table id="era_grid_' . $i .'" class="table table-striped">';
+            $html .= '<thead><tr><th style="width:200px">Claim Details</th><th style="width:200px">Patient Details</th><th>Line Item Details</th></tr></thead><tbody>';
+            foreach ($claim['claim'] as $row) {
+                if ($row['claim_status_code'] == '1') {
+                    $claim_status_code = 'Processed as primary';
+                } elseif ($row['claim_status_code'] == '2') {
+                    $claim_status_code = 'Processed as secondary';
+                } elseif ($row['claim_status_code'] == '3') {
+                    $claim_status_code = 'Processed as tertiary';
+                } elseif ($row['claim_status_code'] == '22') {
+                    $claim_status_code = 'Reversal of previous payment';
+                } else {
+                    $claim_status_code = $row['claim_status_code'];
+                }
+                if ($row['claim_forward'] == 0) {
+                    $claim_forward = '';
+                } else {
+                    $claim_forward = '<br>Claim forwarded to another insurer.';
+                }
+                $html .= '<tr><td>Amount Charged: ' . money_format('%n', $row['amount_charged']);
+                if ($row['amount_approved'] != '') {
+                    $html .= '<br><br>Amount Approved: ' . money_format('%n', $row['amount_approved']);
+                }
+                if ($row['amount_patient'] != '') {
+                    $html .= '<br><br>Amount assigned to Patient: ' . money_format('%n', $row['amount_patient']);
+                }
+                $html .='<br><br>Date of Service: ' . date('m/d/Y', $row['dos']) . '<br><br>Claim Status: ' . $claim_status_code . '<br><br>Claim ID: ' . $row['payer_claim_id'] . $claim_forward . '</td>';
+                $html .= '<td>Patient: ' . $row['patient_lastname'] . ', ' . $row['patient_firstname'] . ' ' . $row['patient_middle'] . '<br><br>Insurance: ' . $row['payer_insurance'] . '<br><br>Patient Member ID: ' . $row['patient_member_id'] . '<br><br>Subscriber: ' . $row['subscriber_lastname'] . ', ' . $row['subscriber_firstname'] . ' ' . $row['subscriber_middle'] .'</td>';
+                $html .= '<td><ul>';
+                if (count($row['item']) > 0) {
+                    foreach ($row['item'] as $row1) {
+                        $html .= '<li>CPT: ' . $row1['cpt'];
+                        if ($row1['modifier'] != '') {
+                            $html .= ', Modifier: ' . $row1['modifier'];
+                        }
+                        $html .= ', Charge: ' . money_format('%n', $row1['charge']) . ', Paid: ' . money_format('%n', $row1['paid']) . ', Allowed: ' . money_format('%n', $row1['allowed']);
+                        if (count($row1['adjustment']) > 0) {
+                            $j = 1;
+                            foreach ($row1['adjustment'] as $row2) {
+                                $html .= '<br><br>Adjustment Reason # ' . $j . ': ' . $this->claim_reason_code($row2['reason_cpt']);;
+                                $html .= '<br>Adjustment Amount # ' . $j . ': ' . money_format('%n', $row2['amount']);
+                                $j++;
+                            }
+                        }
+                        $html .= '</li>';
+                    }
+                }
+                $html .= '</ul></td></tr>';
+            }
+            $html .= '</tbody></table></div>';
+        }
         $dropdown_array = [
             'default_button_text' => '<i class="fa fa-chevron-left fa-fw fa-btn"></i>Back',
             'default_button_text_url' => Session::get('last_page')
@@ -3454,7 +3461,7 @@ class CoreController extends Controller
         $data['assets_js'] = $this->assets_js();
         $data['assets_css'] = $this->assets_css();
         return view('core', $data);
-	}
+    }
 
     public function financial_era_form(Request $request)
     {
@@ -3462,36 +3469,36 @@ class CoreController extends Controller
         if ($request->isMethod('post')) {
             if ($request->input('submit') !== 'ignore') {
                 $era = DB::table('era')->where('era_id', '=', $arr[0]['era_id'])->first();
-        		$claim = json_decode(unserialize($era->era), true);
+                $claim = json_decode(unserialize($era->era), true);
                 $claim_num = $arr[0]['claim_num'];
                 $data = [
-        			'eid' => $request->input('eid'),
-        			'other_billing_id' => '',
-        			'pid' => $request->input('pid'),
-        			'dos_f' => date('m/d/Y', $claim['claim'][$claim_num]['dos']),
-        			'payment' => $claim['claim'][$claim_num]['amount_approved'],
-        			'payment_type' => 'Insurance Payment, Check #: ' . $claim['check_number'] . ', ERA #: ' . $arr[0]['era_id'],
-        			'practice_id' => Session::get('practice_id')
-        		];
+                    'eid' => $request->input('eid'),
+                    'other_billing_id' => '',
+                    'pid' => $request->input('pid'),
+                    'dos_f' => date('m/d/Y', $claim['claim'][$claim_num]['dos']),
+                    'payment' => $claim['claim'][$claim_num]['amount_approved'],
+                    'payment_type' => 'Insurance Payment, Check #: ' . $claim['check_number'] . ', ERA #: ' . $arr[0]['era_id'],
+                    'practice_id' => Session::get('practice_id')
+                ];
                 DB::table('billing_core')->insert($data);
-        		$this->audit('Add');
+                $this->audit('Add');
                 if ($claim['claim'][$claim_num]['amount_patient'] == '') {
                     $claim['claim'][$claim_num]['amount_patient'] = 0;
                 }
                 $adjtotal = $claim['claim'][$claim_num]['amount_charged'] - $claim['claim'][$claim_num]['amount_approved'] - $claim['claim'][$claim_num]['amount_patient'];
-        		if ($adjtotal != 0) {
-        			$data1 = [
-        				'eid' => $request->input('eid'),
-        				'other_billing_id' => '',
-        				'pid' => $request->input('pid'),
-        				'dos_f' => date('m/d/Y', $claim['claim'][$claim_num]['dos']),
-        				'payment' => $adjtotal,
-        				'payment_type' => 'Insurance Adjustment, ERA #: ' . $arr[0]['era_id'],
-        				'practice_id' => Session::get('practice_id')
-        			];
-        			DB::table('billing_core')->insert($data1);
-        			$this->audit('Add');
-        		}
+                if ($adjtotal != 0) {
+                    $data1 = [
+                        'eid' => $request->input('eid'),
+                        'other_billing_id' => '',
+                        'pid' => $request->input('pid'),
+                        'dos_f' => date('m/d/Y', $claim['claim'][$claim_num]['dos']),
+                        'payment' => $adjtotal,
+                        'payment_type' => 'Insurance Adjustment, ERA #: ' . $arr[0]['era_id'],
+                        'practice_id' => Session::get('practice_id')
+                    ];
+                    DB::table('billing_core')->insert($data1);
+                    $this->audit('Add');
+                }
                 Session::put('message_action', 'Claim associated');
             }
             unset($arr[0]);
@@ -3551,9 +3558,9 @@ class CoreController extends Controller
         $result = [];
         $return = '';
         $query = DB::table(DB::raw('billing as t1'))
-			->leftJoin(DB::raw('insurance as t2'), 't1.insurance_id_1', '=', 't2.insurance_id')
-			->leftJoin(DB::raw('encounters as t3'), 't1.eid', '=', 't3.eid')
-			->select(DB::raw("t2.insurance_plan_name as insuranceplan, COUNT(*) as ins_patients_seen"));
+            ->leftJoin(DB::raw('insurance as t2'), 't1.insurance_id_1', '=', 't2.insurance_id')
+            ->leftJoin(DB::raw('encounters as t3'), 't1.eid', '=', 't3.eid')
+            ->select(DB::raw("t2.insurance_plan_name as insuranceplan, COUNT(*) as ins_patients_seen"));
         $id_arr = explode("-", $id);
         if (count($id_arr) > 1) {
             $query->where(DB::raw("YEAR(t3.encounter_DOS)"), '=', $id_arr[0])->where(DB::raw("MONTH(t3.encounter_DOS)"), '=', $id_arr[1]);
@@ -3562,15 +3569,15 @@ class CoreController extends Controller
             $query->where(DB::raw("YEAR(t3.encounter_DOS)"), '=', $id);
             $data['panel_header'] = 'Yearly Insurance Data';
         }
-		$query->where('t3.addendum', '=', 'n')
-			->where('t3.practice_id', '=', Session::get('practice_id'))
-			->groupBy('insuranceplan');
+        $query->where('t3.addendum', '=', 'n')
+            ->where('t3.practice_id', '=', Session::get('practice_id'))
+            ->groupBy('insuranceplan');
         $query_result = $query->get();
         if ($query_result->count()) {
             foreach ($query_result as $query_row) {
                 if (is_null($query_row->insuranceplan)) {
-					$query_row->insuranceplan = 'Cash Only';
-				}
+                    $query_row->insuranceplan = 'Cash Only';
+                }
                 $result[] = [
                     'insurance' => $query_row->insuranceplan,
                     'patients_seen' => $query_row->ins_patients_seen
@@ -3633,60 +3640,60 @@ class CoreController extends Controller
     {
         $result = [];
         $practice_id = Session::get('practice_id');
-		$query_text1 = DB::table('billing_core')->where('practice_id', '=', $practice_id);
-		$variables_array = $request->input('variables');
-		$type = $request->input('type');
-		$i = 0;
+        $query_text1 = DB::table('billing_core')->where('practice_id', '=', $practice_id);
+        $variables_array = $request->input('variables');
+        $type = $request->input('type');
+        $i = 0;
         $j = 0;
-		foreach ($variables_array as $variable) {
-			if ($i == 0) {
-				$query_text1->where($type, '=', $variable);
-			} else {
-				$query_text1->orWhere($type, '=', $variable);
-			}
-			$i++;
-		}
-		$year_array = $request->input('year');
-		$query_text1->where(function($query_array1) use ($year_array, $j) {
-			foreach ($year_array as $year) {
-				if ($j == 0) {
-					$query_array1->where('dos_f', 'LIKE', "%$year%");
-				} else {
-					$query_array1->orWhere('dos_f', 'LIKE', "%$year%");
-				}
-				$j++;
-			}
-		});
-		$query = $query_text1->get();
-		if ($query->count()) {
-			foreach ($query as $records_row) {
-				$query2_row = DB::table('demographics')->where('pid', '=', $records_row->pid)->first();
-				if ($type == 'payment_type') {
-					$type1 = $records_row->payment_type;
-					$amount = $records_row->payment;
-				} else {
-					$type1 = "CPT code: " . $records_row->cpt;
-					$amount = $records_row->cpt_charge;
-				}
-				$result[] = [
-					'billing_core_id' => $records_row->billing_core_id,
-					'dos_f' => $records_row->dos_f,
-					'lastname' => $query2_row->lastname,
-					'firstname' => $query2_row->firstname,
-					'amount' => $amount,
-					'type' => $type1
-				];
-			}
-		}
+        foreach ($variables_array as $variable) {
+            if ($i == 0) {
+                $query_text1->where($type, '=', $variable);
+            } else {
+                $query_text1->orWhere($type, '=', $variable);
+            }
+            $i++;
+        }
+        $year_array = $request->input('year');
+        $query_text1->where(function($query_array1) use ($year_array, $j) {
+            foreach ($year_array as $year) {
+                if ($j == 0) {
+                    $query_array1->where('dos_f', 'LIKE', "%$year%");
+                } else {
+                    $query_array1->orWhere('dos_f', 'LIKE', "%$year%");
+                }
+                $j++;
+            }
+        });
+        $query = $query_text1->get();
+        if ($query->count()) {
+            foreach ($query as $records_row) {
+                $query2_row = DB::table('demographics')->where('pid', '=', $records_row->pid)->first();
+                if ($type == 'payment_type') {
+                    $type1 = $records_row->payment_type;
+                    $amount = $records_row->payment;
+                } else {
+                    $type1 = "CPT code: " . $records_row->cpt;
+                    $amount = $records_row->cpt_charge;
+                }
+                $result[] = [
+                    'billing_core_id' => $records_row->billing_core_id,
+                    'dos_f' => $records_row->dos_f,
+                    'lastname' => $query2_row->lastname,
+                    'firstname' => $query2_row->firstname,
+                    'amount' => $amount,
+                    'type' => $type1
+                ];
+            }
+        }
         if ($request->input('submit') == 'print') {
             if (count($result) > 0) {
                 $file_path = public_path() . '/temp/' . time() . '_' . Session::get('user_id') . '_financialquery.pdf';
-    			$html = $this->page_intro('Financial Query Results', Session::get('practice_id'));
-    			$html .= $this->page_financial_results($result);
-    			$this->generate_pdf($html, $file_path);
-        		while(!file_exists($file_path)) {
-        			sleep(2);
-        		}
+                $html = $this->page_intro('Financial Query Results', Session::get('practice_id'));
+                $html .= $this->page_financial_results($result);
+                $this->generate_pdf($html, $file_path);
+                while(!file_exists($file_path)) {
+                    sleep(2);
+                }
                 Session::put('download_now', $file_path);
                 return redirect(Session::get('last_page'));
             } else {
@@ -3748,42 +3755,42 @@ class CoreController extends Controller
 
     public function financial_queue(Request $request, $type)
     {
-		$data['bill_submitted'] = $type;
-		DB::table('encounters')->where('eid', '=', $request->input('eid'))->update($data);
-		$this->audit('Update');
-		if ($type == 'Pend') {
-			$message = "Billed encounter added to the print image queue";
-		} else {
-			$message = "Billed encounter added to the print HCFA-1500 queue";
-		}
+        $data['bill_submitted'] = $type;
+        DB::table('encounters')->where('eid', '=', $request->input('eid'))->update($data);
+        $this->audit('Update');
+        if ($type == 'Pend') {
+            $message = "Billed encounter added to the print image queue";
+        } else {
+            $message = "Billed encounter added to the print HCFA-1500 queue";
+        }
         Session::put('message_action', $message);
         return redirect(Session::get('last_page'));
     }
 
     public function financial_resubmit(Request $request, $eid)
-	{
-		$row = DB::table('billing')->where('eid', '=', $eid)->first();
-		$message = "Error - No bill for this encounter";
-		if ($row) {
-			if ($row->insurance_id_1 == '0' || $row->insurance_id_1 == '') {
-				$message = "Error - No insurance was assigned, cannot be resubmitted";
-			} else {
-				$data['bill_submitted'] = 'No';
-				DB::table('encounters')->where('eid', '=', $eid)->update($data);
-				$this->audit('Update');
-				$message = "Billed changed to unsent status";
-			}
-		}
+    {
+        $row = DB::table('billing')->where('eid', '=', $eid)->first();
+        $message = "Error - No bill for this encounter";
+        if ($row) {
+            if ($row->insurance_id_1 == '0' || $row->insurance_id_1 == '') {
+                $message = "Error - No insurance was assigned, cannot be resubmitted";
+            } else {
+                $data['bill_submitted'] = 'No';
+                DB::table('encounters')->where('eid', '=', $eid)->update($data);
+                $this->audit('Update');
+                $message = "Billed changed to unsent status";
+            }
+        }
         Session::put('message_action', $message);
         return redirect(Session::get('last_page'));
-	}
+    }
 
     public function financial_upload_era(Request $request)
     {
         if ($request->isMethod('post')) {
             $file = $request->file('file_input');
             // $pid = Session::get('pid');
-    		// $directory = Session::get('documents_dir') . $pid;
+            // $directory = Session::get('documents_dir') . $pid;
             $new_directory = public_path() . '/temp';
             $new_name = time() . '_' . str_replace('.' . $file->getClientOriginalExtension(), '', $file->getClientOriginalName()) . '.era';
             $file->move($new_directory, $new_name);
@@ -3893,26 +3900,26 @@ class CoreController extends Controller
     }
 
     public function generate_hcfa($flatten, $eid)
-	{
-		$file_path = $this->hcfa($eid, $flatten);
-		if ($file_path) {
-			return response()->download($file_path);
-		} else {
-			Session::put('message_action', 'Error - No HCFA to print.');
+    {
+        $file_path = $this->hcfa($eid, $flatten);
+        if ($file_path) {
+            return response()->download($file_path);
+        } else {
+            Session::put('message_action', 'Error - No HCFA to print.');
             return redirect(Session::get('last_page'));
-		}
-	}
+        }
+    }
 
     public function googleoauth(Request $request)
     {
         $url = route('googleoauth');
-		$file = File::get(base_path() . "/.google");
-		$file_arr = json_decode($file, true);
-		$google = new Google_Client();
-		$google->setRedirectUri($url);
+        $file = File::get(base_path() . "/.google");
+        $file_arr = json_decode($file, true);
+        $google = new Google_Client();
+        $google->setRedirectUri($url);
         $google->setApplicationName('NOSH ChartingSystem');
-		$google->setClientID($file_arr['web']['client_id']);
-		$google->setClientSecret($file_arr['web']['client_secret']);
+        $google->setClientID($file_arr['web']['client_id']);
+        $google->setClientSecret($file_arr['web']['client_secret']);
         $google->setAccessType('offline');
         $google->setApprovalPrompt('force');
         $google->setScopes(array('https://mail.google.com/'));
@@ -4269,7 +4276,7 @@ class CoreController extends Controller
             $dropdown_array1['items'] = $items1;
             $data['panel_dropdown'] .= '<span class="fa-btn"></span>' . $this->dropdown_build($dropdown_array1);
             $signature = DB::table('providers')->where('id', '=', Session::get('user_id'))->first();
-    		if ($signature) {
+            if ($signature) {
                 if ($signature->signature !== '') {
                     if (file_exists($signature->signature)) {
                         $name = time() . '_signature.png';
@@ -4278,7 +4285,7 @@ class CoreController extends Controller
                         copy($signature->signature, $temp_path);
                     }
                 }
-    		}
+            }
             $data['assets_js'] = $this->assets_js('image');
             $data['assets_css'] = $this->assets_css('image');
             return view('image', $data);
@@ -4463,20 +4470,20 @@ class CoreController extends Controller
     {
         $query = DB::table('messaging')->where('message_id', '=', $id)->first();
         $message = 'Internal messaging with patient on: ' . date('Y-m-d', $this->human_to_unix($query->date)) . "\n\r" . $query->body;
-		$message = str_replace("<br>", "", $message);
-		$data = [
-			't_messages_subject' => 'Internal messaging with patient: ' . $query->subject,
-			't_messages_message' => $message,
-			't_messages_dos' => date('Y-m-d H:i:s', time()),
-			't_messages_provider' => Session::get('displayname'),
-			't_messages_signed' => 'No',
-			't_messages_from' => Session::get('displayname') . ' (' . Session::get('user_id') . ')',
-			'pid' => $query->pid,
-			'practice_id' => Session::get('practice_id')
-		];
-		DB::table('t_messages')->insert($data);
-		$this->audit('Add');
-		Session::put('message_action', 'Message exported to the chart as a telephone message');
+        $message = str_replace("<br>", "", $message);
+        $data = [
+            't_messages_subject' => 'Internal messaging with patient: ' . $query->subject,
+            't_messages_message' => $message,
+            't_messages_dos' => date('Y-m-d H:i:s', time()),
+            't_messages_provider' => Session::get('displayname'),
+            't_messages_signed' => 'No',
+            't_messages_from' => Session::get('displayname') . ' (' . Session::get('user_id') . ')',
+            'pid' => $query->pid,
+            'practice_id' => Session::get('practice_id')
+        ];
+        DB::table('t_messages')->insert($data);
+        $this->audit('Add');
+        Session::put('message_action', 'Message exported to the chart as a telephone message');
         return redirect(Session::get('last_page'));
     }
 
@@ -4508,13 +4515,13 @@ class CoreController extends Controller
             // Create job_id if new
             if ($id == '0') {
                 $fax_data = [
-        			'user' => Session::get('displayname'),
-        			'practice_id' => Session::get('practice_id')
-        		];
-        		$id = DB::table('sendfax')->insertGetId($fax_data);
-        		$this->audit('Add');
-        		$directory = Session::get('documents_dir') . 'sentfax/' . $id;
-        		mkdir($directory, 0777);
+                    'user' => Session::get('displayname'),
+                    'practice_id' => Session::get('practice_id')
+                ];
+                $id = DB::table('sendfax')->insertGetId($fax_data);
+                $this->audit('Add');
+                $directory = Session::get('documents_dir') . 'sentfax/' . $id;
+                mkdir($directory, 0777);
                 $sendfax = [
                     'faxsubject' => null,
                     'faxcoverpage' => null,
@@ -4526,17 +4533,17 @@ class CoreController extends Controller
                     Session::forget('fax_now');
                     Session::forget('fax_fileoriginal');
                     $filename_parts = explode("/", $filename);
-            		$fax_filename = $directory . "/" . end($filename_parts);
-            		copy($filename, $fax_filename);
-            		$pages_data = [
-            			'file' => $fax_filename,
-            			'file_original' => $sendfax['faxsubject'],
-            			'file_size' => File::size($fax_filename),
-            			'pagecount' => $this->pagecount($fax_filename),
-            			'job_id' => $id
-            		];
-            		DB::table('pages')->insert($pages_data);
-            		$this->audit('Add');
+                    $fax_filename = $directory . "/" . end($filename_parts);
+                    copy($filename, $fax_filename);
+                    $pages_data = [
+                        'file' => $fax_filename,
+                        'file_original' => $sendfax['faxsubject'],
+                        'file_size' => File::size($fax_filename),
+                        'pagecount' => $this->pagecount($fax_filename),
+                        'job_id' => $id
+                    ];
+                    DB::table('pages')->insert($pages_data);
+                    $this->audit('Add');
                 }
             } else {
                 $query = DB::table('sendfax')->where('job_id', '=', $id)->first();
@@ -4654,25 +4661,25 @@ class CoreController extends Controller
     {
         if ($request->isMethod('post')) {
             $file = $request->file('file_input');
-			$directory = Session::get('documents_dir') . 'sentfax/' . $job_id . '/';
-			$file_size = $file->getSize();
-			$file_original = str_replace('.' . $file->getClientOriginalExtension(), '', $file->getClientOriginalName()) . '_' . time() . '.pdf';
-			$file->move($directory, $file_original);
-			$file_path = $directory . $file_original;
-			while(!file_exists($file_path)) {
-				sleep(2);
-			}
-			$pdftext = File::get($file_path);
-			$pagecount = preg_match_all("/\/Page\W/", $pdftext, $dummy);
-			$data = [
-				'file' => $file_path,
-				'file_original' => $file_original,
-				'file_size' => $file_size,
-				'pagecount' => $pagecount,
-				'job_id' => $job_id
-			];
-			DB::table('pages')->insert($data);
-			$this->audit('Add');
+            $directory = Session::get('documents_dir') . 'sentfax/' . $job_id . '/';
+            $file_size = $file->getSize();
+            $file_original = str_replace('.' . $file->getClientOriginalExtension(), '', $file->getClientOriginalName()) . '_' . time() . '.pdf';
+            $file->move($directory, $file_original);
+            $file_path = $directory . $file_original;
+            while(!file_exists($file_path)) {
+                sleep(2);
+            }
+            $pdftext = File::get($file_path);
+            $pagecount = preg_match_all("/\/Page\W/", $pdftext, $dummy);
+            $data = [
+                'file' => $file_path,
+                'file_original' => $file_original,
+                'file_size' => $file_size,
+                'pagecount' => $pagecount,
+                'job_id' => $job_id
+            ];
+            DB::table('pages')->insert($data);
+            $this->audit('Add');
             Session::get('message_action', 'PDF added to fax queue');
             return redirect(Session::get('last_page'));
         } else {
@@ -4769,11 +4776,11 @@ class CoreController extends Controller
         }
         $name = time() . '_' . Session::get('user_id') . '_doc.pdf';
         $data['filepath'] = public_path() . '/temp/' . $name;
-		copy($file_path, $data['filepath']);
+        copy($file_path, $data['filepath']);
         Session::put('file_path_temp', $data['filepath']);
-		while(!file_exists($data['filepath'])) {
-			sleep(2);
-		}
+        while(!file_exists($data['filepath'])) {
+            sleep(2);
+        }
         $data['document_url'] = asset('temp/' . $name);
         $dropdown_array = [];
         $items = [];
@@ -4884,89 +4891,89 @@ class CoreController extends Controller
     }
 
     public function pnosh_provider_redirect(Request $request)
-	{
-		$this->setpatient('1');
-		$query = DB::table('demographics_relate')->where('practice_id', '=', Session::get('practice_id'))->where('pid', '=', '1')->first();
-		if (!$query) {
-			$query1 = DB::table('demographics_relate')->where('practice_id', '=', '1')->where('pid', '=', '1')->first();
-			$data = [
-				'pid' => '1',
-				'practice_id' => Session::get('practice_id'),
-				'id' => $query1->id
-			];
-			DB::table('demographics_relate')->insert($data);
-			$this->audit('Add');
-		}
-		$practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
-		$practice1 = DB::table('practiceinfo')->where('practice_id', '=', '1')->first();
-		if ($practice->google_refresh_token == '') {
-			$data1['google_refresh_token'] = $practice1->google_refresh_token;
-			DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->update($data1);
-			$this->audit('Update');
-		}
-		if ($practice->email == '') {
-			$data1['email'] = $practice1->email;
-			DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->update($data1);
-			$this->audit('Update');
-		}
-		return redirect()->route('patient');
-	}
+    {
+        $this->setpatient('1');
+        $query = DB::table('demographics_relate')->where('practice_id', '=', Session::get('practice_id'))->where('pid', '=', '1')->first();
+        if (!$query) {
+            $query1 = DB::table('demographics_relate')->where('practice_id', '=', '1')->where('pid', '=', '1')->first();
+            $data = [
+                'pid' => '1',
+                'practice_id' => Session::get('practice_id'),
+                'id' => $query1->id
+            ];
+            DB::table('demographics_relate')->insert($data);
+            $this->audit('Add');
+        }
+        $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
+        $practice1 = DB::table('practiceinfo')->where('practice_id', '=', '1')->first();
+        if ($practice->google_refresh_token == '') {
+            $data1['google_refresh_token'] = $practice1->google_refresh_token;
+            DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->update($data1);
+            $this->audit('Update');
+        }
+        if ($practice->email == '') {
+            $data1['email'] = $practice1->email;
+            DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->update($data1);
+            $this->audit('Update');
+        }
+        return redirect()->route('patient');
+    }
 
     public function practice_cancel(Request $request)
-	{
-		if (Session::get('group_id') != '1') {
-			return redirect()->route('dashboard');
-		} else {
+    {
+        if (Session::get('group_id') != '1') {
+            return redirect()->route('dashboard');
+        } else {
             if ($request->isMethod('post')) {
                 $practice_id = $request->input('practice_id');
-    			$query1 = DB::table('users')->where('practice_id', '=', $practice_id)->where('group_id', '!=', '1')->get();
-    			if ($query1->count()) {
-    				foreach ($query1 as $row1) {
-    					$active = '0';
-    					$disable = 'disable';
-    					$password = Hash::make($disable);
-    					$data = [
-    						'active' => $active,
-    						'password' => $password
-    					];
-    					DB::table('users')->where('id', '=', $row1->id)->update($data);
-    					$this->audit('Update');
-    					$row2 = DB::table('demographics_relate')->where('id', '=', $row1->id)->where('practice_id', '=', $practice_id)->first();
-    					if ($row2) {
-    						$data1['id'] = null;
-    						DB::table('demographics_relate')->where('demographics_relate_id', '=', $row2->demographics_relate_id)->update($data1);
-    						$this->audit('Update');
-    					}
-    				}
-    			}
-    			$data2['active'] = 'N';
-    			DB::table('practiceinfo')->where('practice_id', '=', $practice_id)->update($data2);
-    			$this->audit('Update');
-    			Session::get('message_action', "Practice #" . $practice_id . " manually canceled!");
+                $query1 = DB::table('users')->where('practice_id', '=', $practice_id)->where('group_id', '!=', '1')->get();
+                if ($query1->count()) {
+                    foreach ($query1 as $row1) {
+                        $active = '0';
+                        $disable = 'disable';
+                        $password = Hash::make($disable);
+                        $data = [
+                            'active' => $active,
+                            'password' => $password
+                        ];
+                        DB::table('users')->where('id', '=', $row1->id)->update($data);
+                        $this->audit('Update');
+                        $row2 = DB::table('demographics_relate')->where('id', '=', $row1->id)->where('practice_id', '=', $practice_id)->first();
+                        if ($row2) {
+                            $data1['id'] = null;
+                            DB::table('demographics_relate')->where('demographics_relate_id', '=', $row2->demographics_relate_id)->update($data1);
+                            $this->audit('Update');
+                        }
+                    }
+                }
+                $data2['active'] = 'N';
+                DB::table('practiceinfo')->where('practice_id', '=', $practice_id)->update($data2);
+                $this->audit('Update');
+                Session::get('message_action', "Practice #" . $practice_id . " manually canceled!");
                 return redirect()->route('dashboard');
             } else {
                 $items[] = [
-    				'name' => 'practice_id',
-    				'label' => 'Pick Practice',
-    				'type' => 'select',
+                    'name' => 'practice_id',
+                    'label' => 'Pick Practice',
+                    'type' => 'select',
                     'select_items' => $this->array_practices('y'),
-    				'required' => true,
-    				'default_value' => null
-    			];
-    			$form_array = [
-    				'form_id' => 'practice_cancel_form',
-    				'action' => route('practice_cancel'),
-    				'items' => $items,
-    				'save_button_label' => 'Save'
-    			];
-    			$data['panel_header'] = 'Cancel Practice';
-    			$data['content'] = $this->form_build($form_array);
-    			$data['assets_js'] = $this->assets_js();
-    			$data['assets_css'] = $this->assets_css();
-    			return view('core', $data);
+                    'required' => true,
+                    'default_value' => null
+                ];
+                $form_array = [
+                    'form_id' => 'practice_cancel_form',
+                    'action' => route('practice_cancel'),
+                    'items' => $items,
+                    'save_button_label' => 'Save'
+                ];
+                $data['panel_header'] = 'Cancel Practice';
+                $data['content'] = $this->form_build($form_array);
+                $data['assets_js'] = $this->assets_js();
+                $data['assets_css'] = $this->assets_css();
+                return view('core', $data);
             }
-		}
-	}
+        }
+    }
 
     public function practice_logo_upload(Request $request)
     {
@@ -5007,47 +5014,47 @@ class CoreController extends Controller
     }
 
     public function print_batch($type, $flatten)
-	{
-		$query = DB::table('encounters')
-			->where('bill_submitted', '=', $type)
-			->where('addendum', '=', 'n')
-			->where('practice_id', '=', Session::get('practice_id'))
-			->get();
-		if ($query->count()) {
-			if ($type == 'Pend') {
-				$printimage = '';
-				foreach ($query as $row) {
-					$printimage .= $this->printimage($row->eid);
-				}
-				$file_path = public_path() . '/temp/' . time() . '_' . Session::get('user_id') . '_printimage_batch.pdf';
-				File::put($file_path, $printimage);
-			} else {
-				$entire = '';
-				foreach ($query as $row) {
-					if ($entire === '') {
-						$entire .= $this->hcfa($row->eid, $flatten);
-					} else {
-						$entire .= ' ' . $this->hcfa($row->eid, $flatten);
-					}
-				}
+    {
+        $query = DB::table('encounters')
+            ->where('bill_submitted', '=', $type)
+            ->where('addendum', '=', 'n')
+            ->where('practice_id', '=', Session::get('practice_id'))
+            ->get();
+        if ($query->count()) {
+            if ($type == 'Pend') {
+                $printimage = '';
+                foreach ($query as $row) {
+                    $printimage .= $this->printimage($row->eid);
+                }
+                $file_path = public_path() . '/temp/' . time() . '_' . Session::get('user_id') . '_printimage_batch.pdf';
+                File::put($file_path, $printimage);
+            } else {
+                $entire = '';
+                foreach ($query as $row) {
+                    if ($entire === '') {
+                        $entire .= $this->hcfa($row->eid, $flatten);
+                    } else {
+                        $entire .= ' ' . $this->hcfa($row->eid, $flatten);
+                    }
+                }
                 $file_path = public_path() . '/temp/' . time() . '_' . Session::get('user_id') . '_printhcfa_batch.pdf';
-				$commandpdf2 = "pdftk " . $entire . " cat output " . $file_path;
-				$commandpdf3 = escapeshellcmd($commandpdf2);
-				exec($commandpdf3);
-				$files = explode(" ", $entire);
-				foreach ($files as $row1) {
-					unlink($row1);
-				}
-			}
+                $commandpdf2 = "pdftk " . $entire . " cat output " . $file_path;
+                $commandpdf3 = escapeshellcmd($commandpdf2);
+                exec($commandpdf3);
+                $files = explode(" ", $entire);
+                foreach ($files as $row1) {
+                    unlink($row1);
+                }
+            }
             while(!file_exists($file_path)) {
                 sleep(2);
             }
-    		return response()->download($file_path);
-		} else {
+            return response()->download($file_path);
+        } else {
             Session::put('message_action', 'Error - Nothing in print queue');
             return redirect(Session::get('last_page'));
         }
-	}
+    }
 
     public function print_chart_admin(Request $request, $id)
     {
@@ -5083,31 +5090,31 @@ class CoreController extends Controller
     }
 
     public function print_invoice1($eid, $insurance_id_1, $insurance_id_2)
-	{
-		ini_set('memory_limit','196M');
-		if ($insurance_id_1 !== '0') {
-			$result = $this->billing_save_common($insurance_id_1, $insurance_id_2, $eid);
-		}
-		$file_path = public_path() . "/temp/" . time() . "_invoice_" . Session::get('user_id') . ".pdf";
-		$html = $this->page_invoice1($eid);
-		$this->generate_pdf($html, $file_path);
-		while(!file_exists($file_path)) {
-			sleep(2);
-		}
-		return response()->download($file_path);
-	}
+    {
+        ini_set('memory_limit','196M');
+        if ($insurance_id_1 !== '0') {
+            $result = $this->billing_save_common($insurance_id_1, $insurance_id_2, $eid);
+        }
+        $file_path = public_path() . "/temp/" . time() . "_invoice_" . Session::get('user_id') . ".pdf";
+        $html = $this->page_invoice1($eid);
+        $this->generate_pdf($html, $file_path);
+        while(!file_exists($file_path)) {
+            sleep(2);
+        }
+        return response()->download($file_path);
+    }
 
-	public function print_invoice2($id, $pid)
-	{
-		ini_set('memory_limit','196M');
-		$file_path = public_path() . "/temp/" . time() . "_invoice_" . Session::get('user_id') . ".pdf";
-		$html = $this->page_invoice2($id, $pid);
-		$this->generate_pdf($html, $file_path);
-		while(!file_exists($file_path)) {
-			sleep(2);
-		}
-		return response()->download($file_path);
-	}
+    public function print_invoice2($id, $pid)
+    {
+        ini_set('memory_limit','196M');
+        $file_path = public_path() . "/temp/" . time() . "_invoice_" . Session::get('user_id') . ".pdf";
+        $html = $this->page_invoice2($id, $pid);
+        $this->generate_pdf($html, $file_path);
+        while(!file_exists($file_path)) {
+            sleep(2);
+        }
+        return response()->download($file_path);
+    }
 
     public function print_medication($id, $pid, $download=true)
     {
@@ -5226,45 +5233,45 @@ class CoreController extends Controller
     {
         if ($request->isMethod('post')) {
             $file = $request->input('backup');
-			$command = "mysql -u " . env('DB_USERNAME') . " -p". env('DB_PASSWORD') . " " . env('DB_DATABASE') . " < " . $file;
-			system($command);
-			Session::put('message_action', 'Backup restored');
+            $command = "mysql -u " . env('DB_USERNAME') . " -p". env('DB_PASSWORD') . " " . env('DB_DATABASE') . " < " . $file;
+            system($command);
+            Session::put('message_action', 'Backup restored');
             return redirect()->route('dashboard');
-		} else {
+        } else {
             $practice = DB::table('practiceinfo')->first();
-			$dir = $practice->documents_dir;
-			$files = glob($dir . "*.sql");
-			$backup_arr = [];
-			arsort($files);
-			foreach ($files as $file) {
-				$explode = explode("_", $file);
-				$time = intval(str_replace(".sql","",$explode[1]));
-				$backup_arr[$file] = date("Y-m-d H:i:s", $time);
-			}
-			$items[] = [
-				'name' => 'backup',
-				'label' => 'Select Backup',
-				'type' => 'select',
+            $dir = $practice->documents_dir;
+            $files = glob($dir . "*.sql");
+            $backup_arr = [];
+            arsort($files);
+            foreach ($files as $file) {
+                $explode = explode("_", $file);
+                $time = intval(str_replace(".sql","",$explode[1]));
+                $backup_arr[$file] = date("Y-m-d H:i:s", $time);
+            }
+            $items[] = [
+                'name' => 'backup',
+                'label' => 'Select Backup',
+                'type' => 'select',
                 'select_items' => $backup_arr,
-				'required' => true,
-				'default_value' => null
-			];
-			$form_array = [
-				'form_id' => 'restore_backup_form',
-				'action' => route('restore_backup'),
-				'items' => $items,
-				'save_button_label' => 'Restore'
-			];
-			$data['panel_header'] = 'Restore Backup Database';
-			$data['content'] = $this->form_build($form_array);
-			$data['assets_js'] = $this->assets_js();
-			$data['assets_css'] = $this->assets_css();
-			return view('core', $data);
-		}
+                'required' => true,
+                'default_value' => null
+            ];
+            $form_array = [
+                'form_id' => 'restore_backup_form',
+                'action' => route('restore_backup'),
+                'items' => $items,
+                'save_button_label' => 'Restore'
+            ];
+            $data['panel_header'] = 'Restore Backup Database';
+            $data['content'] = $this->form_build($form_array);
+            $data['assets_js'] = $this->assets_js();
+            $data['assets_css'] = $this->assets_css();
+            return view('core', $data);
+        }
     }
 
     public function schedule(Request $request, $provider_id='')
-	{
+    {
         if ($provider_id == '') {
             // Check if this is the provider logging in
             $provider_query = DB::table('providers')->where('id', '=', Session::get('user_id'))->first();
@@ -5324,7 +5331,7 @@ class CoreController extends Controller
         $data['assets_js'] = $this->assets_js('schedule');
         $data['assets_css'] = $this->assets_css('schedule');
         return view('schedule', $data);
-	}
+    }
 
     public function schedule_provider_exceptions(Request $request, $type)
     {
@@ -5351,7 +5358,7 @@ class CoreController extends Controller
         $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
         $query = DB::table('repeat_schedule');
         if ($type !== '0') {
-			$query->where('provider_id', '=', $type);
+            $query->where('provider_id', '=', $type);
         }
         $result = $query->get();
         $columns = Schema::getColumnListing('repeat_schedule');
@@ -5436,8 +5443,8 @@ class CoreController extends Controller
         $dropdown_array['items'] = $items;
         $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
         $query = DB::table('calendar')
-			->where('active', '=', $type)
-			->where('practice_id', '=', Session::get('practice_id'));
+            ->where('active', '=', $type)
+            ->where('practice_id', '=', Session::get('practice_id'));
         $result = $query->get();
         $columns = Schema::getColumnListing('calendar');
         $row_index = $columns[0];
@@ -5511,10 +5518,10 @@ class CoreController extends Controller
     }
 
     public function set_patient(Request $request, $pid)
-	{
-		$this->setpatient($pid);
-		return redirect()->route('patient');
-	}
+    {
+        $this->setpatient($pid);
+        return redirect()->route('patient');
+    }
 
     public function setup(Request $request)
     {
@@ -5646,13 +5653,13 @@ class CoreController extends Controller
             }
             $return .= '</div>';
             $return .= $this->header_build($header_arr, 'Practice Logo');
-    		if ($result->practice_logo !== '') {
+            if ($result->practice_logo !== '') {
                 if (file_exists(public_path() . '/' . $result->practice_logo)) {
-        			$return .= HTML::image($result->practice_logo, 'Practice Logo', array('border' => '0'));
+                    $return .= HTML::image($result->practice_logo, 'Practice Logo', array('border' => '0'));
                 } else {
                     $return .= 'None';
                 }
-    		} else {
+            } else {
                 $return .= 'None';
             }
             $return .= '</div></div></div>';
@@ -5680,13 +5687,13 @@ class CoreController extends Controller
         $table = '';
         if ($request->isMethod('post')) {
             $practice_id = Session::get('practice_id');
-    		$search_field = $request->input('search_field');
-    		$search_op = $request->input('search_op');
-    		$search_desc = $request->input('search_desc');
-    		$search_join = $request->input('search_join');
-    		$search_active_only = $request->input('search_active_only');
-    		$search_no_insurance_only = $request->input('search_no_insurance_only');
-    		$search_gender = $request->input('search_gender');
+            $search_field = $request->input('search_field');
+            $search_op = $request->input('search_op');
+            $search_desc = $request->input('search_desc');
+            $search_join = $request->input('search_join');
+            $search_active_only = $request->input('search_active_only');
+            $search_no_insurance_only = $request->input('search_no_insurance_only');
+            $search_gender = $request->input('search_gender');
             if ($request->input('submit') !== 'run') {
                 $message = 'Report updated';
                 if ($type == '0') {
@@ -5730,387 +5737,387 @@ class CoreController extends Controller
                 }
             }
             $query_text1 = DB::table('demographics')
-    			->join('demographics_relate', 'demographics.pid', '=', 'demographics_relate.pid')
-    			->select('demographics.pid','demographics.lastname','demographics.firstname','demographics.DOB')
-    			->distinct()
-    			->where('demographics_relate.practice_id', '=', $practice_id);
-    		for ($i = 0; $i < count($search_field); $i++) {
-    			if (isset($search_field[$i])) {
+                ->join('demographics_relate', 'demographics.pid', '=', 'demographics_relate.pid')
+                ->select('demographics.pid','demographics.lastname','demographics.firstname','demographics.DOB')
+                ->distinct()
+                ->where('demographics_relate.practice_id', '=', $practice_id);
+            for ($i = 0; $i < count($search_field); $i++) {
+                if (isset($search_field[$i])) {
                     if ($search_field[$i] == 'age') {
-    					$query_text1->where(function($query_array0) use ($search_op, $search_desc, $search_join, $i) {
-    						$ago = strtotime($search_desc[$i] . " years ago");
-    						$unix_target1 = $ago - 15778463;
-    						$unix_target2 = $ago + 15778463;
-    						$target1 = date('Y-m-d 00:00:00', $unix_target1);
-    						$target2 = date('Y-m-d 00:00:00', $unix_target2);
-    						if($search_op[$i] == 'equal') {
-    							if($search_join[$i] !== "start") {
-    								if($search_join[$i] == 'AND') {
-    									$query_array0->whereBetween('demographics.DOB', [$target1, $target2]);
-    								} else {
-    									$query_array0->orWhereBetween('demographics.DOB', [$target1, $target2]);
-    								}
-    							} else {
-    								$query_array0->whereBetween('demographics.DOB', [$target1, $target2]);
-    							}
-    						}
-    						if($search_op[$i] == 'greater than') {
-    							if($search_join[$i] !== "start") {
-    								if($search_join[$i] == 'AND') {
-    									$query_array0->where('demographics.DOB', '<', $target1);
-    								} else {
-    									$query_array0->orWhere('demographics.DOB', '<', $target1);
-    								}
-    							} else {
-    								$query_array0->where('demographics.DOB', '<', $target1);
-    							}
-    						}
-    						if($search_op[$i] == 'less than') {
-    							if($search_join[$i] !== "start") {
-    								if($search_join[$i] == 'AND') {
-    									$query_array0->where('demographics.DOB', '>', $target2);
-    								} else {
-    									$query_array0->orWhere('demographics.DOB', '>', $target2);
-    								}
-    							} else {
-    								$query_array0->where('demographics.DOB', '>', $target2);
-    							}
-    						}
-    					});
-    				}
-    				if($search_field[$i] == 'insurance') {
-    					$query_text1->join('insurance', 'insurance.pid', '=', 'demographics.pid');
-    					$query_text1->where(function($query_array1) use ($search_op, $search_desc, $search_join, $i) {
-    						if($search_op[$i] == 'equal') {
-    							if($search_join[$i] !== "start") {
-    								if($search_join[$i] == 'AND') {
-    									$query_array1->where('insurance.insurance_order', '=', 'Primary')
-    										->where('insurance.insurance_plan_active', '=', 'Yes')
-    										->where('insurance.insurance_plan_name', '=',  $search_desc[$i]);
-    								} else {
-    									$query_array1->where('insurance.insurance_order', '=', 'Primary')
-    										->where('insurance.insurance_plan_active', '=', 'Yes')
-    										->orWhere('insurance.insurance_plan_name', '=',  $search_desc[$i]);
-    								}
-    							} else {
-    								$query_array1->where('insurance.insurance_order', '=', 'Primary')
-    									->where('insurance.insurance_plan_active', '=', 'Yes')
-    									->where('insurance.insurance_plan_name', '=',  $search_desc[$i]);
-    							}
-    						}
-    						if($search_op[$i] == 'contains') {
-    							if($search_join[$i] !== "start") {
-    								if($search_join[$i] == 'AND') {
-    									$query_array1->where('insurance.insurance_order', '=', 'Primary')
-    										->where('insurance.insurance_plan_active', '=', 'Yes')
-    										->where('insurance.insurance_plan_name', 'LIKE', "%$search_desc[$i]%");
-    								} else {
-    									$query_array1->where('insurance.insurance_order', '=', 'Primary')
-    										->where('insurance.insurance_plan_active', '=', 'Yes')
-    										->orWhere('insurance.insurance_plan_name', 'LIKE', "%$search_desc[$i]%");
-    								}
-    							} else {
-    								$query_array1->where('insurance.insurance_order', '=', 'Primary')
-    									->where('insurance.insurance_plan_active', '=', 'Yes')
-    									->where('insurance.insurance_plan_name', 'LIKE', "%$search_desc[$i]%");
-    							}
-    						}
-    					});
-    				}
-    				if($search_field[$i] == 'issue') {
-    					$query_text1->join('issues', 'issues.pid', '=', 'demographics.pid');
-    					$query_text1->where(function($query_array2) use ($search_op, $search_desc, $search_join, $i) {
-    						if($search_op[$i] == 'equal') {
-    							if($search_join[$i] !== "start") {
-    								if($search_join[$i] == 'AND') {
-    									$query_array2->where('issues.issue', '=', $search_desc[$i]);
-    								} else {
-    									$query_array2->orWhere('issues.issue', '=', $search_desc[$i]);
-    								}
-    							} else {
-    								$query_array2->where('issues.issue', '=', $search_desc[$i]);
-    							}
-    						}
-    						if($search_op[$i] == 'contains') {
-    							if($search_join[$i] !== "start") {
-    								if($search_join[$i] == 'AND') {
-    									$query_array2->where('issues.issue', 'LIKE', "%$search_desc[$i]%");
-    								} else {
-    									$query_array2->orWhere('issues.issue', 'LIKE', "%$search_desc[$i]%");
-    								}
-    							} else {
-    								$query_array2->where('issues.issue', 'LIKE', "%$search_desc[$i]%");
-    							}
-    						}
-    						if($search_op[$i] == 'not equal') {
-    							if($search_join[$i] != "start") {
-    								if($search_join[$i] == 'AND') {
-    									$query_array2->where('issues.issue', '!=', $search_desc[$i]);
-    								} else {
-    									$query_array2->orWhere('issues.issue', '!=', $search_desc[$i]);
-    								}
-    							} else {
-    								$query_array2->where('issues.issue', '!=', $search_desc[$i]);
-    							}
-    						}
-    						$query_array2->where('issues.issue_date_inactive', '=', '0000-00-00 00:00:00');
-    					});
-    				}
-    				if($search_field[$i] == 'billing') {
-    					$query_text1->join('billing_core', 'billing_core.pid', '=', 'demographics.pid');
-    					$query_text1->where(function($query_array3) use ($search_op, $search_desc, $search_join, $i) {
-    						if($search_op[$i] == 'equal') {
-    							if($search_join[$i] !== "start") {
-    								if($search_join[$i] == 'AND') {
-    									$query_array3->where('billing_core.cpt', '=', $search_desc[$i]);
-    								} else {
-    									$query_array3->orWhere('billing_core.cpt', '=', $search_desc[$i]);
-    								}
-    							} else {
-    								$query_array3->where('billing_core.cpt', '=', $search_desc[$i]);
-    							}
-    						}
-    						if($search_op[$i] == 'not equal') {
-    							if($search_join[$i] != "start") {
-    								if($search_join[$i] == 'AND') {
-    									$query_array3->where('billing_core.cpt', '!=', $search_desc[$i]);
-    								} else {
-    									$query_array3->orWhere('billing_core.cpt', '!=', $search_desc[$i]);
-    								}
-    							} else {
-    								$query_array3->where('billing_core.cpt', '!=', $search_desc[$i]);
-    							}
-    						}
-    					});
-    				}
-    				if($search_field[$i] == 'rxl_medication') {
-    					$query_text1->join('rx_list', 'rx_list.pid', '=', 'demographics.pid');
-    					$query_text1->where(function($query_array4) use ($search_op, $search_desc, $search_join, $i) {
-    						if($search_op[$i] == 'equal') {
-    							if($search_join[$i] !== "start") {
-    								if($search_join[$i] == 'AND') {
-    									$query_array4->where('rx_list.rxl_medication', '=', $search_desc[$i]);
-    								} else {
-    									$query_array4->orWhere('rx_list.rxl_medication', '=', $search_desc[$i]);
-    								}
-    							} else {
-    								$query_array4->where('rx_list.rxl_medication', '=', $search_desc[$i]);
-    							}
-    						}
-    						if($search_op[$i] == 'contains') {
-    							if($search_join[$i] !== "start") {
-    								if($search_join[$i] == 'AND') {
-    									$query_array4->where('rx_list.rxl_medication', 'LIKE', "%$search_desc[$i]%");
-    								} else {
-    									$query_array4->orWhere('rx_list.rxl_medication', 'LIKE', "%$search_desc[$i]%");
-    								}
-    							} else {
-    								$query_array4->where('rx_list.rxl_medication', 'LIKE', "%$search_desc[$i]%");
-    							}
-    						}
-    						if($search_op[$i] == 'not equal') {
-    							if($search_join[$i] !== "start") {
-    								if($search_join[$i] == 'AND') {
-    									$query_array4->where('rx_list.rxl_medication', '!=', $search_desc[$i]);
-    								} else {
-    									$query_array4->orWhere('rx_list.rxl_medication', '!=', $search_desc[$i]);
-    								}
-    							} else {
-    								$query_array4->where('rx_list.rxl_medication', '!=', $search_desc[$i]);
-    							}
-    						}
-    						$query_array4->where('rx_list.rxl_date_inactive', '=', '0000-00-00 00:00:00')->where('rx_list.rxl_date_old', '=', '0000-00-00 00:00:00');
-    					});
-    				}
-    				if($search_field[$i] == 'imm_immunization') {
-    					$query_text1->join('immunizations', 'immunizations.pid', '=', 'demographics.pid');
-    					$query_text1->where(function($query_array5) use ($search_op, $search_desc, $search_join, $i) {
-    						if($search_op[$i] == 'equal') {
-    							if($search_join[$i] !== "start") {
-    								if($search_join[$i] == 'AND') {
-    									$query_array5->where('immunizations.imm_immunization', '=', $search_desc[$i]);
-    								} else {
-    									$query_array5->orWhere('immunizations.imm_immunization', '=', $search_desc[$i]);
-    								}
-    							} else {
-    								$query_array5->where('immunizations.imm_immunization', '=', $search_desc[$i]);
-    							}
-    						}
-    						if($search_op[$i] == 'contains') {
-    							if($search_join[$i] !== "start") {
-    								if($search_join[$i] == 'AND') {
-    									$query_array5->where('immunizations.imm_immunization', 'LIKE', "%$search_desc[$i]%");
-    								} else {
-    									$query_array5->orWhere('immunizations.imm_immunization', 'LIKE', "%$search_desc[$i]%");
-    								}
-    							} else {
-    								$query_array5->where('immunizations.imm_immunization', 'LIKE', "%$search_desc[$i]%");
-    							}
-    						}
-    						if($search_op[$i] == 'not equal') {
-    							if($search_join[$i] !== "start") {
-    								if($search_join[$i] == 'AND') {
-    									$query_array5->where('immunizations.imm_immunization', '!=', $search_desc[$i]);
-    								} else {
-    									$query_array5->orWhere('immunizations.imm_immunization', '!=', $search_desc[$i]);
-    								}
-    							} else {
-    								$query_array5->where('immunizations.imm_immunization', '!=', $search_desc[$i]);
-    							}
-    						}
-    					});
-    				}
-    				if($search_field[$i] == 'sup_supplement') {
-    					$query_text1->join('sup_list', 'sup_list.pid', '=', 'demographics.pid');
-    					$query_text1->where(function($query_array6) use ($search_op, $search_desc, $search_join, $i) {
-    						if($search_op[$i] == 'equal') {
-    							if($search_join[$i] !== "start") {
-    								if($search_join[$i] == 'AND') {
-    									$query_array6->where('sup_list.sup_supplement', '=', $search_desc[$i]);
-    								} else {
-    									$query_array6->orWhere('sup_list.sup_supplement', '=', $search_desc[$i]);
-    								}
-    							} else {
-    								$query_array6->where('sup_list.sup_supplement', '=', $search_desc[$i]);
-    							}
-    						}
-    						if($search_op[$i] == 'contains') {
-    							if($search_join[$i] !== "start") {
-    								if($search_join[$i] == 'AND') {
-    									$query_array6->where('sup_list.sup_supplement', 'LIKE', "%$search_desc[$i]%");
-    								} else {
-    									$query_array6->orWhere('sup_list.sup_supplement', 'LIKE', "%$search_desc[$i]%");
-    								}
-    							} else {
-    								$query_array6->where('sup_list.sup_supplement', 'LIKE', "%$search_desc[$i]%");
-    							}
-    						}
-    						if($search_op[$i] == 'not equal') {
-    							if($search_join[$i] !== "start") {
-    								if($search_join[$i] == 'AND') {
-    									$query_array6->where('sup_list.sup_supplement', '!=', $search_desc[$i]);
-    								} else {
-    									$query_array6->orWhere('sup_list.sup_supplement', '!=', $search_desc[$i]);
-    								}
-    							} else {
-    								$query_array6->where('sup_list.sup_supplement', '!=', $search_desc[$i]);
-    							}
-    						}
-    						$query_array6->where('sup_list.sup_date_inactive', '=', '0000-00-00 00:00:00');
-    					});
-    				}
-    				if($search_field[$i] == 'zip') {
-    					$query_text1->where(function($query_array7) use ($search_op, $search_desc, $search_join, $i) {
-    						if($search_op[$i] == 'equal') {
-    							if($search_join[$i] !== "start") {
-    								if($search_join[$i] == 'AND') {
-    									$query_array7->where('demographics.zip', '=', $search_desc[$i]);
-    								} else {
-    									$query_array7->orWhere('demographics.zip', '=', $search_desc[$i]);
-    								}
-    							} else {
-    								$query_array7->where('demographics.zip', '=', $search_desc[$i]);
-    							}
-    						}
-    						if($search_op[$i] == 'contains') {
-    							if($search_join[$i] !== "start") {
-    								if($search_join[$i] == 'AND') {
-    									$query_array7->where('demographics.zip', 'LIKE', "%$search_desc[$i]%");
-    								} else {
-    									$query_array7->orWhere('demographics.zip', 'LIKE', "%$search_desc[$i]%");
-    								}
-    							} else {
-    								$query_array7->where('demographics.zip', 'LIKE', "%$search_desc[$i]%");
-    							}
-    						}
-    						if($search_op[$i] == 'not equal') {
-    							if($search_join[$i] != "start") {
-    								if($search_join[$i] == 'AND') {
-    									$query_array7->where('demographics.zip', '!=', $search_desc[$i]);
-    								} else {
-    									$query_array7->orWhere('demographics.zip', '!=', $search_desc[$i]);
-    								}
-    							} else {
-    								$query_array7->where('demographics.zip', '!=', $search_desc[$i]);
-    							}
-    						}
-    					});
-    				}
-    				if($search_field[$i] == 'city') {
-    					$query_text1->where(function($query_array8) use ($search_op, $search_desc, $search_join, $i) {
-    						if($search_op[$i] == 'equal') {
-    							if($search_join[$i] != "start") {
-    								if($search_join[$i] == 'AND') {
-    									$query_array8->where('demographics.city', '=', $search_desc[$i]);
-    								} else {
-    									$query_array8->orWhere('demographics.city', '=', $search_desc[$i]);
-    								}
-    							} else {
-    								$query_array8->where('demographics.city', '=', $search_desc[$i]);
-    							}
-    						}
-    						if($search_op[$i] == 'contains') {
-    							if($search_join[$i] !== "start") {
-    								if($search_join[$i] == 'AND') {
-    									$query_array8->where('demographics.city', 'LIKE', "%$search_desc[$i]%");
-    								} else {
-    									$query_array8->orWhere('demographics.city', 'LIKE', "%$search_desc[$i]%");
-    								}
-    							} else {
-    								$query_array8->where('demographics.city', 'LIKE', "%$search_desc[$i]%");
-    							}
-    						}
-    						if($search_op[$i] == 'not equal') {
-    							if($search_join[$i] !== "start") {
-    								if($search_join[$i] == 'AND') {
-    									$query_array8->where('demographics.city', '!=', $search_desc[$i]);
-    								} else {
-    									$query_array8->orWhere('demographics.city', '!=', $search_desc[$i]);
-    								}
-    							} else {
-    								$query_array8->where('demographics.city', '!=', $search_desc[$i]);
-    							}
-    						}
-    					});
-    				}
-    				if($search_field[$i] == 'month') {
-    					$query_text1->where(function($query_array8) use ($search_op, $search_desc, $search_join, $i) {
-    						$query_date = date('-m-', strtotime($search_desc[$i]));
-    						if($search_op[$i] == 'equal') {
-    							if($search_join[$i] !== "start") {
-    								if($search_join[$i] == 'AND') {
-    									$query_array8->where('demographics.DOB', 'LIKE', "%$query_date%");
-    								} else {
-    									$query_array8->orWhere('demographics.DOB', 'LIKE', "%$query_date%");
-    								}
-    							} else {
-    								$query_array8->where('demographics.DOB', 'LIKE', "%$query_date%");
-    							}
-    						}
-    						if($search_op[$i] == 'not equal') {
-    							if($search_join[$i] !== "start") {
-    								if($search_join[$i] == 'AND') {
-    									$query_array8->where('demographics.DOB', 'NOT LIKE', "%$query_date%");
-    								} else {
-    									$query_array8->orWhere('demographics.DOB', 'NOT LIKE', "%$query_date%");
-    								}
-    							} else {
-    								$query_array8->where('demographics.DOB', 'NOT LIKE', "%$query_date%");
-    							}
-    						}
-    					});
-    				}
-    			}
-    		}
-    		if($search_active_only == "Yes") {
-    			$query_text1->where('demographics.active', '=', '1');
-    		}
-    		if($search_no_insurance_only == "Yes") {
-    			$query_text1->leftJoin('insurance as insurance1', 'insurance1.pid', '=', 'demographics.pid')->whereNull('insurance1.pid');
-    		}
-    		if($search_gender == "m" || $search_gender == "f" || $search_gender == "u") {
-    			$query_text1->where('demographics.sex', '=', $search_gender);
-    		}
+                        $query_text1->where(function($query_array0) use ($search_op, $search_desc, $search_join, $i) {
+                            $ago = strtotime($search_desc[$i] . " years ago");
+                            $unix_target1 = $ago - 15778463;
+                            $unix_target2 = $ago + 15778463;
+                            $target1 = date('Y-m-d 00:00:00', $unix_target1);
+                            $target2 = date('Y-m-d 00:00:00', $unix_target2);
+                            if($search_op[$i] == 'equal') {
+                                if($search_join[$i] !== "start") {
+                                    if($search_join[$i] == 'AND') {
+                                        $query_array0->whereBetween('demographics.DOB', [$target1, $target2]);
+                                    } else {
+                                        $query_array0->orWhereBetween('demographics.DOB', [$target1, $target2]);
+                                    }
+                                } else {
+                                    $query_array0->whereBetween('demographics.DOB', [$target1, $target2]);
+                                }
+                            }
+                            if($search_op[$i] == 'greater than') {
+                                if($search_join[$i] !== "start") {
+                                    if($search_join[$i] == 'AND') {
+                                        $query_array0->where('demographics.DOB', '<', $target1);
+                                    } else {
+                                        $query_array0->orWhere('demographics.DOB', '<', $target1);
+                                    }
+                                } else {
+                                    $query_array0->where('demographics.DOB', '<', $target1);
+                                }
+                            }
+                            if($search_op[$i] == 'less than') {
+                                if($search_join[$i] !== "start") {
+                                    if($search_join[$i] == 'AND') {
+                                        $query_array0->where('demographics.DOB', '>', $target2);
+                                    } else {
+                                        $query_array0->orWhere('demographics.DOB', '>', $target2);
+                                    }
+                                } else {
+                                    $query_array0->where('demographics.DOB', '>', $target2);
+                                }
+                            }
+                        });
+                    }
+                    if($search_field[$i] == 'insurance') {
+                        $query_text1->join('insurance', 'insurance.pid', '=', 'demographics.pid');
+                        $query_text1->where(function($query_array1) use ($search_op, $search_desc, $search_join, $i) {
+                            if($search_op[$i] == 'equal') {
+                                if($search_join[$i] !== "start") {
+                                    if($search_join[$i] == 'AND') {
+                                        $query_array1->where('insurance.insurance_order', '=', 'Primary')
+                                            ->where('insurance.insurance_plan_active', '=', 'Yes')
+                                            ->where('insurance.insurance_plan_name', '=',  $search_desc[$i]);
+                                    } else {
+                                        $query_array1->where('insurance.insurance_order', '=', 'Primary')
+                                            ->where('insurance.insurance_plan_active', '=', 'Yes')
+                                            ->orWhere('insurance.insurance_plan_name', '=',  $search_desc[$i]);
+                                    }
+                                } else {
+                                    $query_array1->where('insurance.insurance_order', '=', 'Primary')
+                                        ->where('insurance.insurance_plan_active', '=', 'Yes')
+                                        ->where('insurance.insurance_plan_name', '=',  $search_desc[$i]);
+                                }
+                            }
+                            if($search_op[$i] == 'contains') {
+                                if($search_join[$i] !== "start") {
+                                    if($search_join[$i] == 'AND') {
+                                        $query_array1->where('insurance.insurance_order', '=', 'Primary')
+                                            ->where('insurance.insurance_plan_active', '=', 'Yes')
+                                            ->where('insurance.insurance_plan_name', 'LIKE', "%$search_desc[$i]%");
+                                    } else {
+                                        $query_array1->where('insurance.insurance_order', '=', 'Primary')
+                                            ->where('insurance.insurance_plan_active', '=', 'Yes')
+                                            ->orWhere('insurance.insurance_plan_name', 'LIKE', "%$search_desc[$i]%");
+                                    }
+                                } else {
+                                    $query_array1->where('insurance.insurance_order', '=', 'Primary')
+                                        ->where('insurance.insurance_plan_active', '=', 'Yes')
+                                        ->where('insurance.insurance_plan_name', 'LIKE', "%$search_desc[$i]%");
+                                }
+                            }
+                        });
+                    }
+                    if($search_field[$i] == 'issue') {
+                        $query_text1->join('issues', 'issues.pid', '=', 'demographics.pid');
+                        $query_text1->where(function($query_array2) use ($search_op, $search_desc, $search_join, $i) {
+                            if($search_op[$i] == 'equal') {
+                                if($search_join[$i] !== "start") {
+                                    if($search_join[$i] == 'AND') {
+                                        $query_array2->where('issues.issue', '=', $search_desc[$i]);
+                                    } else {
+                                        $query_array2->orWhere('issues.issue', '=', $search_desc[$i]);
+                                    }
+                                } else {
+                                    $query_array2->where('issues.issue', '=', $search_desc[$i]);
+                                }
+                            }
+                            if($search_op[$i] == 'contains') {
+                                if($search_join[$i] !== "start") {
+                                    if($search_join[$i] == 'AND') {
+                                        $query_array2->where('issues.issue', 'LIKE', "%$search_desc[$i]%");
+                                    } else {
+                                        $query_array2->orWhere('issues.issue', 'LIKE', "%$search_desc[$i]%");
+                                    }
+                                } else {
+                                    $query_array2->where('issues.issue', 'LIKE', "%$search_desc[$i]%");
+                                }
+                            }
+                            if($search_op[$i] == 'not equal') {
+                                if($search_join[$i] != "start") {
+                                    if($search_join[$i] == 'AND') {
+                                        $query_array2->where('issues.issue', '!=', $search_desc[$i]);
+                                    } else {
+                                        $query_array2->orWhere('issues.issue', '!=', $search_desc[$i]);
+                                    }
+                                } else {
+                                    $query_array2->where('issues.issue', '!=', $search_desc[$i]);
+                                }
+                            }
+                            $query_array2->where('issues.issue_date_inactive', '=', '0000-00-00 00:00:00');
+                        });
+                    }
+                    if($search_field[$i] == 'billing') {
+                        $query_text1->join('billing_core', 'billing_core.pid', '=', 'demographics.pid');
+                        $query_text1->where(function($query_array3) use ($search_op, $search_desc, $search_join, $i) {
+                            if($search_op[$i] == 'equal') {
+                                if($search_join[$i] !== "start") {
+                                    if($search_join[$i] == 'AND') {
+                                        $query_array3->where('billing_core.cpt', '=', $search_desc[$i]);
+                                    } else {
+                                        $query_array3->orWhere('billing_core.cpt', '=', $search_desc[$i]);
+                                    }
+                                } else {
+                                    $query_array3->where('billing_core.cpt', '=', $search_desc[$i]);
+                                }
+                            }
+                            if($search_op[$i] == 'not equal') {
+                                if($search_join[$i] != "start") {
+                                    if($search_join[$i] == 'AND') {
+                                        $query_array3->where('billing_core.cpt', '!=', $search_desc[$i]);
+                                    } else {
+                                        $query_array3->orWhere('billing_core.cpt', '!=', $search_desc[$i]);
+                                    }
+                                } else {
+                                    $query_array3->where('billing_core.cpt', '!=', $search_desc[$i]);
+                                }
+                            }
+                        });
+                    }
+                    if($search_field[$i] == 'rxl_medication') {
+                        $query_text1->join('rx_list', 'rx_list.pid', '=', 'demographics.pid');
+                        $query_text1->where(function($query_array4) use ($search_op, $search_desc, $search_join, $i) {
+                            if($search_op[$i] == 'equal') {
+                                if($search_join[$i] !== "start") {
+                                    if($search_join[$i] == 'AND') {
+                                        $query_array4->where('rx_list.rxl_medication', '=', $search_desc[$i]);
+                                    } else {
+                                        $query_array4->orWhere('rx_list.rxl_medication', '=', $search_desc[$i]);
+                                    }
+                                } else {
+                                    $query_array4->where('rx_list.rxl_medication', '=', $search_desc[$i]);
+                                }
+                            }
+                            if($search_op[$i] == 'contains') {
+                                if($search_join[$i] !== "start") {
+                                    if($search_join[$i] == 'AND') {
+                                        $query_array4->where('rx_list.rxl_medication', 'LIKE', "%$search_desc[$i]%");
+                                    } else {
+                                        $query_array4->orWhere('rx_list.rxl_medication', 'LIKE', "%$search_desc[$i]%");
+                                    }
+                                } else {
+                                    $query_array4->where('rx_list.rxl_medication', 'LIKE', "%$search_desc[$i]%");
+                                }
+                            }
+                            if($search_op[$i] == 'not equal') {
+                                if($search_join[$i] !== "start") {
+                                    if($search_join[$i] == 'AND') {
+                                        $query_array4->where('rx_list.rxl_medication', '!=', $search_desc[$i]);
+                                    } else {
+                                        $query_array4->orWhere('rx_list.rxl_medication', '!=', $search_desc[$i]);
+                                    }
+                                } else {
+                                    $query_array4->where('rx_list.rxl_medication', '!=', $search_desc[$i]);
+                                }
+                            }
+                            $query_array4->where('rx_list.rxl_date_inactive', '=', '0000-00-00 00:00:00')->where('rx_list.rxl_date_old', '=', '0000-00-00 00:00:00');
+                        });
+                    }
+                    if($search_field[$i] == 'imm_immunization') {
+                        $query_text1->join('immunizations', 'immunizations.pid', '=', 'demographics.pid');
+                        $query_text1->where(function($query_array5) use ($search_op, $search_desc, $search_join, $i) {
+                            if($search_op[$i] == 'equal') {
+                                if($search_join[$i] !== "start") {
+                                    if($search_join[$i] == 'AND') {
+                                        $query_array5->where('immunizations.imm_immunization', '=', $search_desc[$i]);
+                                    } else {
+                                        $query_array5->orWhere('immunizations.imm_immunization', '=', $search_desc[$i]);
+                                    }
+                                } else {
+                                    $query_array5->where('immunizations.imm_immunization', '=', $search_desc[$i]);
+                                }
+                            }
+                            if($search_op[$i] == 'contains') {
+                                if($search_join[$i] !== "start") {
+                                    if($search_join[$i] == 'AND') {
+                                        $query_array5->where('immunizations.imm_immunization', 'LIKE', "%$search_desc[$i]%");
+                                    } else {
+                                        $query_array5->orWhere('immunizations.imm_immunization', 'LIKE', "%$search_desc[$i]%");
+                                    }
+                                } else {
+                                    $query_array5->where('immunizations.imm_immunization', 'LIKE', "%$search_desc[$i]%");
+                                }
+                            }
+                            if($search_op[$i] == 'not equal') {
+                                if($search_join[$i] !== "start") {
+                                    if($search_join[$i] == 'AND') {
+                                        $query_array5->where('immunizations.imm_immunization', '!=', $search_desc[$i]);
+                                    } else {
+                                        $query_array5->orWhere('immunizations.imm_immunization', '!=', $search_desc[$i]);
+                                    }
+                                } else {
+                                    $query_array5->where('immunizations.imm_immunization', '!=', $search_desc[$i]);
+                                }
+                            }
+                        });
+                    }
+                    if($search_field[$i] == 'sup_supplement') {
+                        $query_text1->join('sup_list', 'sup_list.pid', '=', 'demographics.pid');
+                        $query_text1->where(function($query_array6) use ($search_op, $search_desc, $search_join, $i) {
+                            if($search_op[$i] == 'equal') {
+                                if($search_join[$i] !== "start") {
+                                    if($search_join[$i] == 'AND') {
+                                        $query_array6->where('sup_list.sup_supplement', '=', $search_desc[$i]);
+                                    } else {
+                                        $query_array6->orWhere('sup_list.sup_supplement', '=', $search_desc[$i]);
+                                    }
+                                } else {
+                                    $query_array6->where('sup_list.sup_supplement', '=', $search_desc[$i]);
+                                }
+                            }
+                            if($search_op[$i] == 'contains') {
+                                if($search_join[$i] !== "start") {
+                                    if($search_join[$i] == 'AND') {
+                                        $query_array6->where('sup_list.sup_supplement', 'LIKE', "%$search_desc[$i]%");
+                                    } else {
+                                        $query_array6->orWhere('sup_list.sup_supplement', 'LIKE', "%$search_desc[$i]%");
+                                    }
+                                } else {
+                                    $query_array6->where('sup_list.sup_supplement', 'LIKE', "%$search_desc[$i]%");
+                                }
+                            }
+                            if($search_op[$i] == 'not equal') {
+                                if($search_join[$i] !== "start") {
+                                    if($search_join[$i] == 'AND') {
+                                        $query_array6->where('sup_list.sup_supplement', '!=', $search_desc[$i]);
+                                    } else {
+                                        $query_array6->orWhere('sup_list.sup_supplement', '!=', $search_desc[$i]);
+                                    }
+                                } else {
+                                    $query_array6->where('sup_list.sup_supplement', '!=', $search_desc[$i]);
+                                }
+                            }
+                            $query_array6->where('sup_list.sup_date_inactive', '=', '0000-00-00 00:00:00');
+                        });
+                    }
+                    if($search_field[$i] == 'zip') {
+                        $query_text1->where(function($query_array7) use ($search_op, $search_desc, $search_join, $i) {
+                            if($search_op[$i] == 'equal') {
+                                if($search_join[$i] !== "start") {
+                                    if($search_join[$i] == 'AND') {
+                                        $query_array7->where('demographics.zip', '=', $search_desc[$i]);
+                                    } else {
+                                        $query_array7->orWhere('demographics.zip', '=', $search_desc[$i]);
+                                    }
+                                } else {
+                                    $query_array7->where('demographics.zip', '=', $search_desc[$i]);
+                                }
+                            }
+                            if($search_op[$i] == 'contains') {
+                                if($search_join[$i] !== "start") {
+                                    if($search_join[$i] == 'AND') {
+                                        $query_array7->where('demographics.zip', 'LIKE', "%$search_desc[$i]%");
+                                    } else {
+                                        $query_array7->orWhere('demographics.zip', 'LIKE', "%$search_desc[$i]%");
+                                    }
+                                } else {
+                                    $query_array7->where('demographics.zip', 'LIKE', "%$search_desc[$i]%");
+                                }
+                            }
+                            if($search_op[$i] == 'not equal') {
+                                if($search_join[$i] != "start") {
+                                    if($search_join[$i] == 'AND') {
+                                        $query_array7->where('demographics.zip', '!=', $search_desc[$i]);
+                                    } else {
+                                        $query_array7->orWhere('demographics.zip', '!=', $search_desc[$i]);
+                                    }
+                                } else {
+                                    $query_array7->where('demographics.zip', '!=', $search_desc[$i]);
+                                }
+                            }
+                        });
+                    }
+                    if($search_field[$i] == 'city') {
+                        $query_text1->where(function($query_array8) use ($search_op, $search_desc, $search_join, $i) {
+                            if($search_op[$i] == 'equal') {
+                                if($search_join[$i] != "start") {
+                                    if($search_join[$i] == 'AND') {
+                                        $query_array8->where('demographics.city', '=', $search_desc[$i]);
+                                    } else {
+                                        $query_array8->orWhere('demographics.city', '=', $search_desc[$i]);
+                                    }
+                                } else {
+                                    $query_array8->where('demographics.city', '=', $search_desc[$i]);
+                                }
+                            }
+                            if($search_op[$i] == 'contains') {
+                                if($search_join[$i] !== "start") {
+                                    if($search_join[$i] == 'AND') {
+                                        $query_array8->where('demographics.city', 'LIKE', "%$search_desc[$i]%");
+                                    } else {
+                                        $query_array8->orWhere('demographics.city', 'LIKE', "%$search_desc[$i]%");
+                                    }
+                                } else {
+                                    $query_array8->where('demographics.city', 'LIKE', "%$search_desc[$i]%");
+                                }
+                            }
+                            if($search_op[$i] == 'not equal') {
+                                if($search_join[$i] !== "start") {
+                                    if($search_join[$i] == 'AND') {
+                                        $query_array8->where('demographics.city', '!=', $search_desc[$i]);
+                                    } else {
+                                        $query_array8->orWhere('demographics.city', '!=', $search_desc[$i]);
+                                    }
+                                } else {
+                                    $query_array8->where('demographics.city', '!=', $search_desc[$i]);
+                                }
+                            }
+                        });
+                    }
+                    if($search_field[$i] == 'month') {
+                        $query_text1->where(function($query_array8) use ($search_op, $search_desc, $search_join, $i) {
+                            $query_date = date('-m-', strtotime($search_desc[$i]));
+                            if($search_op[$i] == 'equal') {
+                                if($search_join[$i] !== "start") {
+                                    if($search_join[$i] == 'AND') {
+                                        $query_array8->where('demographics.DOB', 'LIKE', "%$query_date%");
+                                    } else {
+                                        $query_array8->orWhere('demographics.DOB', 'LIKE', "%$query_date%");
+                                    }
+                                } else {
+                                    $query_array8->where('demographics.DOB', 'LIKE', "%$query_date%");
+                                }
+                            }
+                            if($search_op[$i] == 'not equal') {
+                                if($search_join[$i] !== "start") {
+                                    if($search_join[$i] == 'AND') {
+                                        $query_array8->where('demographics.DOB', 'NOT LIKE', "%$query_date%");
+                                    } else {
+                                        $query_array8->orWhere('demographics.DOB', 'NOT LIKE', "%$query_date%");
+                                    }
+                                } else {
+                                    $query_array8->where('demographics.DOB', 'NOT LIKE', "%$query_date%");
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+            if($search_active_only == "Yes") {
+                $query_text1->where('demographics.active', '=', '1');
+            }
+            if($search_no_insurance_only == "Yes") {
+                $query_text1->leftJoin('insurance as insurance1', 'insurance1.pid', '=', 'demographics.pid')->whereNull('insurance1.pid');
+            }
+            if($search_gender == "m" || $search_gender == "f" || $search_gender == "u") {
+                $query_text1->where('demographics.sex', '=', $search_gender);
+            }
             $result = $query_text1->get();
             if ($result->count()) {
                 $list_array = [];
@@ -6247,8 +6254,8 @@ class CoreController extends Controller
         $data['panel_header'] = 'HEDIS Report';
         if ($request->isMethod('post')) {
             if ($type == 'spec') {
-    			$type = date('m/d/Y', strtotime($request->input('time')));
-    		}
+                $type = date('m/d/Y', strtotime($request->input('time')));
+            }
             $items = [];
             $items[] = [
                 'name' => 'time',
@@ -6289,7 +6296,7 @@ class CoreController extends Controller
                     'origin' => route('superquery_list')
                 ];
                 $html .= $this->form_build($form_array);
-    		}
+            }
         }
         if ($type !== 'spec') {
             if ($type == 'all' || $type == 'year') {
@@ -6299,179 +6306,179 @@ class CoreController extends Controller
                 Session::put('hedis_query_date', $type);
             }
             $demographics = DB::table('demographics_relate')->where('practice_id', '=', Session::get('practice_id'))->get();
-    		if ($demographics->count()) {
-    			$html .= '<h4>HEDIS Audit Results</h4>';
-    			$html .= '<div class="table-responsive"><table class="table table-striped">';
-    			$html .= '<thead><tr><th>Measure</th><th>Description</th><th>Result</th><th>Rectify</th></tr></thead><tbody>';
-    			$arr = [];
-    			$total_count = 0;
-    			foreach ($demographics as $demographic) {
-    				$arr[$demographic->pid] = $this->hedis_audit($type, 'office', $demographic->pid);
-    				$total_count++;
-    			}
-    			$measures = ['aba','wcc','cis','ima','hpv','lsc','bcs','ccs','col','chl','gso','cwp','uri','aab','spr','pce','asm','amr','cmc','pbh','cbp','cdc','art','omw','lbp','amm','add'];
-    			$counter = [];
-    			foreach ($measures as $measure) {
-    				$counter[$measure]['count'] = 0;
-    				$counter[$measure]['rectify'] = '';
-    				if ($measure != 'cwp' && $measure != 'uri' && $measure != 'aab' && $measure != 'pce' && $measure != 'lbp') {
-    					$counter[$measure]['goal'] = 0;
-    				} else {
-    					if ($measure == 'cwp') {
-    						$counter[$measure]['test'] = 0;
-    						$counter[$measure]['abx'] = 0;
-    						$counter[$measure]['abx_no_test'] = 0;
-    					}
-    					if ($measure == 'uri' || $measure == 'aab') {
-    						$counter[$measure]['abx'] = 0;
-    					}
-    					if ($measure == 'pce') {
-    						$counter[$measure]['tx'] = 0;
-    					}
-    					if ($measure == 'lbp') {
-    						$counter[$measure]['no_rad'] = 0;
-    					}
-    				}
-    			}
-    			foreach ($arr as $pid => $audit) {
-    				$patient = DB::table('demographics')->where('pid', '=', $pid)->first();
-    				$dob = date('m/d/Y', strtotime($patient->DOB));
-    				$name = $patient->lastname . ', ' . $patient->firstname . ' (DOB: ' . $dob . ') (ID: ' . $patient->pid . ')';
+            if ($demographics->count()) {
+                $html .= '<h4>HEDIS Audit Results</h4>';
+                $html .= '<div class="table-responsive"><table class="table table-striped">';
+                $html .= '<thead><tr><th>Measure</th><th>Description</th><th>Result</th><th>Rectify</th></tr></thead><tbody>';
+                $arr = [];
+                $total_count = 0;
+                foreach ($demographics as $demographic) {
+                    $arr[$demographic->pid] = $this->hedis_audit($type, 'office', $demographic->pid);
+                    $total_count++;
+                }
+                $measures = ['aba','wcc','cis','ima','hpv','lsc','bcs','ccs','col','chl','gso','cwp','uri','aab','spr','pce','asm','amr','cmc','pbh','cbp','cdc','art','omw','lbp','amm','add'];
+                $counter = [];
+                foreach ($measures as $measure) {
+                    $counter[$measure]['count'] = 0;
+                    $counter[$measure]['rectify'] = '';
+                    if ($measure != 'cwp' && $measure != 'uri' && $measure != 'aab' && $measure != 'pce' && $measure != 'lbp') {
+                        $counter[$measure]['goal'] = 0;
+                    } else {
+                        if ($measure == 'cwp') {
+                            $counter[$measure]['test'] = 0;
+                            $counter[$measure]['abx'] = 0;
+                            $counter[$measure]['abx_no_test'] = 0;
+                        }
+                        if ($measure == 'uri' || $measure == 'aab') {
+                            $counter[$measure]['abx'] = 0;
+                        }
+                        if ($measure == 'pce') {
+                            $counter[$measure]['tx'] = 0;
+                        }
+                        if ($measure == 'lbp') {
+                            $counter[$measure]['no_rad'] = 0;
+                        }
+                    }
+                }
+                foreach ($arr as $pid => $audit) {
+                    $patient = DB::table('demographics')->where('pid', '=', $pid)->first();
+                    $dob = date('m/d/Y', strtotime($patient->DOB));
+                    $name = $patient->lastname . ', ' . $patient->firstname . ' (DOB: ' . $dob . ') (ID: ' . $patient->pid . ')';
                     $rectify = '<a href="' . route('superquery_patient', ['care_opportunities', $pid, 'hedis']) . '" class="btn fa-btn" role="button" data-toggle="tooltip" title="Open Chart"><i class="fa fa-arrow-right fa-lg"></i> ' . $name . '</a>';
-    				foreach ($audit as $item => $row) {
-    					$counter[$item]['count']++;
-    					if ($item != 'cwp' && $item != 'uri' && $item != 'aab' && $item != 'pce' && $item != 'lbp') {
-    						if($row['goal'] == 'y') {
-    							$counter[$item]['goal']++;
-    						} else {
-    							$counter[$item]['rectify'] .= $rectify;
-    						}
-    					} else {
-    						if ($item == 'cwp') {
-    							$counter[$item]['test'] += $row['test'];
-    							$counter[$item]['abx'] += $row['abx'];
-    							$counter[$item]['abx_no_test'] += $row['abx_no_test'];
-    						}
-    						if ($item == 'uri' || $item == 'aab') {
-    							$counter[$item]['abx'] += $row['abx'];
-    						}
-    						if ($item == 'pce') {
-    							$counter[$item]['tx'] += $row['tx'];
-    						}
-    						if ($item == 'lbp') {
-    							$counter[$item]['no_rad'] += $row['no_rad'];
-    						}
-    					}
-    				}
-    			}
-    			foreach ($measures as $measure1) {
-    				if ($measure1 != 'cwp' && $measure1 != 'uri' && $measure1 != 'aab' && $measure1 != 'pce' && $measure1 != 'lbp') {
-    					if ($counter[$measure1]['count'] != 0) {
-    						$counter[$measure1]['percent_goal'] = round($counter[$measure1]['goal']/$counter[$measure1]['count']*100);
-    					} else {
-    						$counter[$measure1]['percent_goal'] = 0;
-    					}
-    				} else {
-    					if ($measure1 == 'cwp') {
-    						if ($counter[$measure1]['count'] != 0) {
-    							$counter[$measure1]['percent_test'] = round($counter[$measure1]['test']/$counter[$measure1]['count']*100);
-    							$counter[$measure1]['percent_abx'] = round($counter[$measure1]['abx']/$counter[$measure1]['count']*100);
-    							$counter[$measure1]['percent_abx_no_test'] = round($counter[$measure1]['abx_no_test']/$counter[$measure1]['count']*100);
-    						} else {
-    							$counter[$measure1]['percent_test'] = 0;
-    							$counter[$measure1]['percent_abx'] = 0;
-    							$counter[$measure1]['percent_abx_no_test'] = 0;
-    						}
-    					}
-    					if ($measure1 == 'uri' || $measure1 == 'aab') {
-    						if ($counter[$measure1]['count'] != 0) {
-    							$counter[$measure1]['percent_abx'] = round($counter[$measure1]['abx']/$counter[$measure1]['count']*100);
-    						} else {
-    							$counter[$measure1]['percent_abx'] = 0;
-    						}
-    					}
-    					if ($measure1 == 'pce') {
-    						if ($counter[$measure1]['count'] != 0) {
-    							$counter[$measure1]['percent_tx'] = round($counter[$measure1]['tx']/$counter[$measure1]['count']*100);
-    						} else {
-    							$counter[$measure1]['percent_tx'] = 0;
-    						}
-    					}
-    					if ($measure1 == 'lbp') {
-    						if ($counter[$measure1]['count'] != 0) {
-    							$counter[$measure1]['percent_no_rad'] = round($counter[$measure1]['no_rad']/$counter[$measure1]['count']*100);
-    						} else {
-    							$counter[$measure1]['percent_no_rad'] = 0;
-    						}
-    					}
-    				}
-    			}
-    			// ABA
-    			$html .= '<tr><td>Adult BMI Assessment</td><td>Percentage of members 18-74 who had their BMI and weight documented at an outpatient visit</td><td>' . $counter['aba']['percent_goal'] .'%</td><td>' . $counter['aba']['rectify'] .'</td></tr>';
-    			// WCC
-    			$html .= '<tr><td>Weight Assessment and Counseling for Nutrition and Physical Activity for Children and Adolescents</td><td>Percentage of members 3-17 who had an outpatient visit with a PCP or OB/GYN which included evidence of BMI documentation with corresponding height&weight, counseling for nutrition and/or counseling for physical activity</td><td>' . $counter['wcc']['percent_goal'] .'%</td><td>' . $counter['wcc']['rectify'] .'</td></tr>';
-    			// CIS
-    			$html .= '<tr><td>Childhood Immunization Status</td><td>Percentage of children two years of age with appropriate childhood immunizations</td><td>' . $counter['cis']['percent_goal'] .'%</td><td>' . $counter['cis']['rectify'] .'</td></tr>';
-    			// IMA
-    			$html .= '<tr><td>Immunizations for Adolescents</td><td>Percentage of adolescents 13 years of age with appropriate immunizations</td><td>' . $counter['ima']['percent_goal'] .'%</td><td>' . $counter['ima']['rectify'] .'</td></tr>';
-    			// HPV
-    			$html .= '<tr><td>Human Papillomavirus Vaccine for Female Adolescents</td><td>Percentage of female adolescents 13 years of age who had three doses of HPV vaccine between 9th and 13th birthdays</td><td>' . $counter['hpv']['percent_goal'] .'%</td><td>' . $counter['hpv']['rectify'] .'</td></tr>';
-    			// LSC
-    			$html .= '<tr><td>Lead Screening in Children</td><td>Percentage of children 2 years of age screened for lead poisoning</td><td>' . $counter['lsc']['percent_goal'] .'%</td><td>' . $counter['lsc']['rectify'] .'</td></tr>';
-    			// BCS
-    			$html .= '<tr><td>Breast Cancer Screening</td><td>Percentage of women 40-69 years of age who had a mammogram</td><td>' . $counter['bcs']['percent_goal'] .'%</td><td>' . $counter['bcs']['rectify'] .'</td></tr>';
-    			// CCS
-    			$html .= '<tr><td>Cervical Cancer Screening</td><td>Percentage of women 21-64 years of age who had a Pap test</td><td>' . $counter['ccs']['percent_goal'] .'%</td><td>' . $counter['ccs']['rectify'] .'</td></tr>';
-    			// COL
-    			$html .= '<tr><td>Colorectal Cancer Screening</td><td>Percentage of members 50-75 years of age who had appropriate screening for colorectal cancer</td><td>' . $counter['col']['percent_goal'] .'%</td><td>' . $counter['col']['rectify'] .'</td></tr>';
-    			// CHL
-    			$html .= '<tr><td>Chlamydia Screening in Women</td><td>Sexually active women 16-24 with annual chlamydia screening</td><td>' . $counter['chl']['percent_goal'] .'%</td><td>' . $counter['chl']['rectify'] .'</td></tr>';
-    			// GSO
-    			$html .= '<tr><td>Glaucoma Screening Older Adults</td><td>Sexually active women 1Percentage of members 65 or older who received a glaucoma eye exam (no prior history)</td><td>' . $counter['gso']['percent_goal'] .'%</td><td>' . $counter['gso']['rectify'] .'</td></tr>';
-    			// CWP
-    			$html .= '<tr><td>Appropriate Testing for Children With Pharyngitis</td><td>Percentage of children ages 2-18 diagnosed with pharyngitis, prescribed an antibiotic and tested for strep</td><td>';
-    			$html .= '<ul><li>Percentage tested: ' . $counter['cwp']['percent_test'] . '%</li>';
-    			$html .= '<li>Percentage treated with antibiotics: ' . $counter['cwp']['percent_abx'] . '%</li>';
-    			$html .= '<li>Percentage treated with antibiotics without testing: ' . $counter['cwp']['percent_abx_no_test'] . '%</li></ul>';
-    			$html .= '</td><td>' . $counter['cwp']['rectify'] .'</td></tr>';
-    			// URI
-    			$html .= '<tr><td>Appropriate Treatment for Children With Upper Respiratory Infection</td><td>Percentage of children 3 months-18 years diagnosed with ONLY upper respiratory infection diagnosis and NOT dispensed an antibiotic</td><td>';
-    			$html .= '<ul><li>Percentage treated with antibiotics: ' . $counter['uri']['percent_abx'] . '%</li></ul>';
-    			$html .= '</td><td>' . $counter['uri']['rectify'] .'</td></tr>';
-    			// AAB
-    			$html .= '<tr><td>Avoidance of Antibiotic Treatment for Adults with Acute Bronchitis</td><td>Percentage of adults 18-64 years diagnosed with acute bronchitis who were NOT dispensed an antibiotic</td><td>';
-    			$html .= '<ul><li>Percentage treated with antibiotics: ' . $counter['aab']['percent_abx'] . '%</li></ul>';
-    			$html .= '</td><td>' . $counter['aab']['rectify'] .'</td></tr>';
-    			// SPR
-    			$html .= '<tr><td>Use of Spirometry Testing in the Assessment and Diagnosis of COPD</td><td>Percentage of members age 40 and older w/ COPD and spirometry testing</td><td>' . $counter['spr']['percent_goal'] .'%</td><td>' . $counter['spr']['rectify'] .'</td></tr>';
-    			// PCE
-    			$html .= '<tr><td>Pharmacotherapy Management of COPD Exacerbation</td><td>Members dispensed systemic corticosteroid & bronchodilator after COPD exacerbation</td><td>';
-    			$html .= '<ul><li>Percentage treated for COPD exacerbations: ' . $counter['pce']['percent_tx'] . '%</li></ul>';
-    			$html .= '</td><td>' . $counter['pce']['rectify'] .'</td></tr>';
-    			// ASM and AMR
-    			$html .= '<tr><td>Use of Appropriate Medications for People with Asthma</td><td>Percentage of members 5-56 years with asthma and appropriately prescribed medications</td><td>' . $counter['asm']['percent_goal'] .'%</td><td>' . $counter['asm']['rectify'] .'</td></tr>';
-    			$html .= '<tr><td>Asthma Medication Ratio</td><td>Percentage of members 5-64 years with asthma who had a ratio of controller medications to total asthma medications of .5 or greater</td><td>' . $counter['amr']['percent_goal'] .'%</td><td>' . $counter['amr']['rectify'] .'</td></tr>';
-    			// CMC and PBH
-    			$html .= '<tr><td>Cholesterol Management for Patients With Cardiovascular Conditions</td><td>Percentage of members 18-75 who were discharged alive for acute myocardial infarction, coronary artery bypass graft or percutaneous coronary interventions, or who had a diagnosis of ischemic vascular diasease who had LDL-C screenings</td><td>' . $counter['cmc']['percent_goal'] .'%</td><td>' . $counter['cmc']['rectify'] .'</td></tr>';
-    			$html .= '<tr><td>Persistence of Beta-Blocker Treatment After a Heart Attack</td><td>Percentage of members 18 years or older, discharged with a diagnosis of acute myocardial infarction and received a beta-blocker treatment for 6 months</td><td>' . $counter['pbh']['percent_goal'] .'%</td><td>' . $counter['pbh']['rectify'] .'</td></tr>';
-    			// CBP
-    			$html .= '<tr><td>Controlling High Blood Pressure</td><td>Percentage of members 18-85 with a diagnosis of hypertension and whose blood pressure was controlled</td><td>' . $counter['cbp']['percent_goal'] .'%</td><td>' . $counter['cbp']['rectify'] .'</td></tr>';
-    			// CDC
-    			$html .= '<tr><td>Comprehensive Diabetes Care</td><td>The percentage of members 18-75 years of age with diabetes (type 1 or type 2) who had each of the following: 1) HbA1c, 2) LDL Screening, 3) Nephropathy Screening, 4) Retinal Eye Exam, 5) Blood Pressure control.</td><td>' . $counter['cdc']['percent_goal'] .'%</td><td>' . $counter['cdc']['rectify'] .'</td></tr>';
-    			// ART
-    			$html .= '<tr><td>Disease Modifying Anti-Rheumatic Drug Therapy for Rheumatoid Arthritis</td><td>Percentage of members w/ RA dispensed a DMARD</td><td>' . $counter['art']['percent_goal'] .'%</td><td>' . $counter['art']['rectify'] .'</td></tr>';
-    			// OMW
-    			$html .= '<tr><td>Osteoporosis Management in Women Who Had Fracture</td><td>Percentage of women 67 years or older who suffered a fracture and then a DEXA scan or osteoporosis medication within 6 months of incident</td><td>' . $counter['omw']['percent_goal'] .'%</td><td>' . $counter['omw']['rectify'] .'</td></tr>';
-    			// LBP
-    			$html .= '<tr><td>Osteoporosis Management in Women Who Had Fracture</td><td>Percentage of members with a primary diagnosis of low back pain who did not have an imaging study within 28 days of diagnosis</td><td>';
-    			$html .= '<ul><li>Percentage of instances where no imaging study was performed for a diagnosis of low back pain: ' . $counter['lbp']['percent_no_rad'] . '%</li></ul>';
-    			$html .= '</td><td>' . $counter['lbp']['rectify'] .'</td></tr>';
-    			// AMM
-    			$html .= '<tr><td>Antidepressant Medication Management</td><td>Percentage of members 18 years or older diagnosed with depression and treated with antidepressant meds</td><td>' . $counter['amm']['percent_goal'] .'%</td><td>' . $counter['amm']['rectify'] .'</td></tr>';
-    			// ADD
-    			$html .= '<tr><td>Follow-Up Care for Children Prescribed ADHD Medication</td><td>Percentage of children 6-12 with newly diagnosed ADHD who received the appropriate follow-up treatment and medication</td><td>' . $counter['add']['percent_goal'] .'%</td><td>' . $counter['add']['rectify'] .'</td></tr>';
-    			$html .= '</tbody></table>';
-    		} else {
+                    foreach ($audit as $item => $row) {
+                        $counter[$item]['count']++;
+                        if ($item != 'cwp' && $item != 'uri' && $item != 'aab' && $item != 'pce' && $item != 'lbp') {
+                            if($row['goal'] == 'y') {
+                                $counter[$item]['goal']++;
+                            } else {
+                                $counter[$item]['rectify'] .= $rectify;
+                            }
+                        } else {
+                            if ($item == 'cwp') {
+                                $counter[$item]['test'] += $row['test'];
+                                $counter[$item]['abx'] += $row['abx'];
+                                $counter[$item]['abx_no_test'] += $row['abx_no_test'];
+                            }
+                            if ($item == 'uri' || $item == 'aab') {
+                                $counter[$item]['abx'] += $row['abx'];
+                            }
+                            if ($item == 'pce') {
+                                $counter[$item]['tx'] += $row['tx'];
+                            }
+                            if ($item == 'lbp') {
+                                $counter[$item]['no_rad'] += $row['no_rad'];
+                            }
+                        }
+                    }
+                }
+                foreach ($measures as $measure1) {
+                    if ($measure1 != 'cwp' && $measure1 != 'uri' && $measure1 != 'aab' && $measure1 != 'pce' && $measure1 != 'lbp') {
+                        if ($counter[$measure1]['count'] != 0) {
+                            $counter[$measure1]['percent_goal'] = round($counter[$measure1]['goal']/$counter[$measure1]['count']*100);
+                        } else {
+                            $counter[$measure1]['percent_goal'] = 0;
+                        }
+                    } else {
+                        if ($measure1 == 'cwp') {
+                            if ($counter[$measure1]['count'] != 0) {
+                                $counter[$measure1]['percent_test'] = round($counter[$measure1]['test']/$counter[$measure1]['count']*100);
+                                $counter[$measure1]['percent_abx'] = round($counter[$measure1]['abx']/$counter[$measure1]['count']*100);
+                                $counter[$measure1]['percent_abx_no_test'] = round($counter[$measure1]['abx_no_test']/$counter[$measure1]['count']*100);
+                            } else {
+                                $counter[$measure1]['percent_test'] = 0;
+                                $counter[$measure1]['percent_abx'] = 0;
+                                $counter[$measure1]['percent_abx_no_test'] = 0;
+                            }
+                        }
+                        if ($measure1 == 'uri' || $measure1 == 'aab') {
+                            if ($counter[$measure1]['count'] != 0) {
+                                $counter[$measure1]['percent_abx'] = round($counter[$measure1]['abx']/$counter[$measure1]['count']*100);
+                            } else {
+                                $counter[$measure1]['percent_abx'] = 0;
+                            }
+                        }
+                        if ($measure1 == 'pce') {
+                            if ($counter[$measure1]['count'] != 0) {
+                                $counter[$measure1]['percent_tx'] = round($counter[$measure1]['tx']/$counter[$measure1]['count']*100);
+                            } else {
+                                $counter[$measure1]['percent_tx'] = 0;
+                            }
+                        }
+                        if ($measure1 == 'lbp') {
+                            if ($counter[$measure1]['count'] != 0) {
+                                $counter[$measure1]['percent_no_rad'] = round($counter[$measure1]['no_rad']/$counter[$measure1]['count']*100);
+                            } else {
+                                $counter[$measure1]['percent_no_rad'] = 0;
+                            }
+                        }
+                    }
+                }
+                // ABA
+                $html .= '<tr><td>Adult BMI Assessment</td><td>Percentage of members 18-74 who had their BMI and weight documented at an outpatient visit</td><td>' . $counter['aba']['percent_goal'] .'%</td><td>' . $counter['aba']['rectify'] .'</td></tr>';
+                // WCC
+                $html .= '<tr><td>Weight Assessment and Counseling for Nutrition and Physical Activity for Children and Adolescents</td><td>Percentage of members 3-17 who had an outpatient visit with a PCP or OB/GYN which included evidence of BMI documentation with corresponding height&weight, counseling for nutrition and/or counseling for physical activity</td><td>' . $counter['wcc']['percent_goal'] .'%</td><td>' . $counter['wcc']['rectify'] .'</td></tr>';
+                // CIS
+                $html .= '<tr><td>Childhood Immunization Status</td><td>Percentage of children two years of age with appropriate childhood immunizations</td><td>' . $counter['cis']['percent_goal'] .'%</td><td>' . $counter['cis']['rectify'] .'</td></tr>';
+                // IMA
+                $html .= '<tr><td>Immunizations for Adolescents</td><td>Percentage of adolescents 13 years of age with appropriate immunizations</td><td>' . $counter['ima']['percent_goal'] .'%</td><td>' . $counter['ima']['rectify'] .'</td></tr>';
+                // HPV
+                $html .= '<tr><td>Human Papillomavirus Vaccine for Female Adolescents</td><td>Percentage of female adolescents 13 years of age who had three doses of HPV vaccine between 9th and 13th birthdays</td><td>' . $counter['hpv']['percent_goal'] .'%</td><td>' . $counter['hpv']['rectify'] .'</td></tr>';
+                // LSC
+                $html .= '<tr><td>Lead Screening in Children</td><td>Percentage of children 2 years of age screened for lead poisoning</td><td>' . $counter['lsc']['percent_goal'] .'%</td><td>' . $counter['lsc']['rectify'] .'</td></tr>';
+                // BCS
+                $html .= '<tr><td>Breast Cancer Screening</td><td>Percentage of women 40-69 years of age who had a mammogram</td><td>' . $counter['bcs']['percent_goal'] .'%</td><td>' . $counter['bcs']['rectify'] .'</td></tr>';
+                // CCS
+                $html .= '<tr><td>Cervical Cancer Screening</td><td>Percentage of women 21-64 years of age who had a Pap test</td><td>' . $counter['ccs']['percent_goal'] .'%</td><td>' . $counter['ccs']['rectify'] .'</td></tr>';
+                // COL
+                $html .= '<tr><td>Colorectal Cancer Screening</td><td>Percentage of members 50-75 years of age who had appropriate screening for colorectal cancer</td><td>' . $counter['col']['percent_goal'] .'%</td><td>' . $counter['col']['rectify'] .'</td></tr>';
+                // CHL
+                $html .= '<tr><td>Chlamydia Screening in Women</td><td>Sexually active women 16-24 with annual chlamydia screening</td><td>' . $counter['chl']['percent_goal'] .'%</td><td>' . $counter['chl']['rectify'] .'</td></tr>';
+                // GSO
+                $html .= '<tr><td>Glaucoma Screening Older Adults</td><td>Sexually active women 1Percentage of members 65 or older who received a glaucoma eye exam (no prior history)</td><td>' . $counter['gso']['percent_goal'] .'%</td><td>' . $counter['gso']['rectify'] .'</td></tr>';
+                // CWP
+                $html .= '<tr><td>Appropriate Testing for Children With Pharyngitis</td><td>Percentage of children ages 2-18 diagnosed with pharyngitis, prescribed an antibiotic and tested for strep</td><td>';
+                $html .= '<ul><li>Percentage tested: ' . $counter['cwp']['percent_test'] . '%</li>';
+                $html .= '<li>Percentage treated with antibiotics: ' . $counter['cwp']['percent_abx'] . '%</li>';
+                $html .= '<li>Percentage treated with antibiotics without testing: ' . $counter['cwp']['percent_abx_no_test'] . '%</li></ul>';
+                $html .= '</td><td>' . $counter['cwp']['rectify'] .'</td></tr>';
+                // URI
+                $html .= '<tr><td>Appropriate Treatment for Children With Upper Respiratory Infection</td><td>Percentage of children 3 months-18 years diagnosed with ONLY upper respiratory infection diagnosis and NOT dispensed an antibiotic</td><td>';
+                $html .= '<ul><li>Percentage treated with antibiotics: ' . $counter['uri']['percent_abx'] . '%</li></ul>';
+                $html .= '</td><td>' . $counter['uri']['rectify'] .'</td></tr>';
+                // AAB
+                $html .= '<tr><td>Avoidance of Antibiotic Treatment for Adults with Acute Bronchitis</td><td>Percentage of adults 18-64 years diagnosed with acute bronchitis who were NOT dispensed an antibiotic</td><td>';
+                $html .= '<ul><li>Percentage treated with antibiotics: ' . $counter['aab']['percent_abx'] . '%</li></ul>';
+                $html .= '</td><td>' . $counter['aab']['rectify'] .'</td></tr>';
+                // SPR
+                $html .= '<tr><td>Use of Spirometry Testing in the Assessment and Diagnosis of COPD</td><td>Percentage of members age 40 and older w/ COPD and spirometry testing</td><td>' . $counter['spr']['percent_goal'] .'%</td><td>' . $counter['spr']['rectify'] .'</td></tr>';
+                // PCE
+                $html .= '<tr><td>Pharmacotherapy Management of COPD Exacerbation</td><td>Members dispensed systemic corticosteroid & bronchodilator after COPD exacerbation</td><td>';
+                $html .= '<ul><li>Percentage treated for COPD exacerbations: ' . $counter['pce']['percent_tx'] . '%</li></ul>';
+                $html .= '</td><td>' . $counter['pce']['rectify'] .'</td></tr>';
+                // ASM and AMR
+                $html .= '<tr><td>Use of Appropriate Medications for People with Asthma</td><td>Percentage of members 5-56 years with asthma and appropriately prescribed medications</td><td>' . $counter['asm']['percent_goal'] .'%</td><td>' . $counter['asm']['rectify'] .'</td></tr>';
+                $html .= '<tr><td>Asthma Medication Ratio</td><td>Percentage of members 5-64 years with asthma who had a ratio of controller medications to total asthma medications of .5 or greater</td><td>' . $counter['amr']['percent_goal'] .'%</td><td>' . $counter['amr']['rectify'] .'</td></tr>';
+                // CMC and PBH
+                $html .= '<tr><td>Cholesterol Management for Patients With Cardiovascular Conditions</td><td>Percentage of members 18-75 who were discharged alive for acute myocardial infarction, coronary artery bypass graft or percutaneous coronary interventions, or who had a diagnosis of ischemic vascular diasease who had LDL-C screenings</td><td>' . $counter['cmc']['percent_goal'] .'%</td><td>' . $counter['cmc']['rectify'] .'</td></tr>';
+                $html .= '<tr><td>Persistence of Beta-Blocker Treatment After a Heart Attack</td><td>Percentage of members 18 years or older, discharged with a diagnosis of acute myocardial infarction and received a beta-blocker treatment for 6 months</td><td>' . $counter['pbh']['percent_goal'] .'%</td><td>' . $counter['pbh']['rectify'] .'</td></tr>';
+                // CBP
+                $html .= '<tr><td>Controlling High Blood Pressure</td><td>Percentage of members 18-85 with a diagnosis of hypertension and whose blood pressure was controlled</td><td>' . $counter['cbp']['percent_goal'] .'%</td><td>' . $counter['cbp']['rectify'] .'</td></tr>';
+                // CDC
+                $html .= '<tr><td>Comprehensive Diabetes Care</td><td>The percentage of members 18-75 years of age with diabetes (type 1 or type 2) who had each of the following: 1) HbA1c, 2) LDL Screening, 3) Nephropathy Screening, 4) Retinal Eye Exam, 5) Blood Pressure control.</td><td>' . $counter['cdc']['percent_goal'] .'%</td><td>' . $counter['cdc']['rectify'] .'</td></tr>';
+                // ART
+                $html .= '<tr><td>Disease Modifying Anti-Rheumatic Drug Therapy for Rheumatoid Arthritis</td><td>Percentage of members w/ RA dispensed a DMARD</td><td>' . $counter['art']['percent_goal'] .'%</td><td>' . $counter['art']['rectify'] .'</td></tr>';
+                // OMW
+                $html .= '<tr><td>Osteoporosis Management in Women Who Had Fracture</td><td>Percentage of women 67 years or older who suffered a fracture and then a DEXA scan or osteoporosis medication within 6 months of incident</td><td>' . $counter['omw']['percent_goal'] .'%</td><td>' . $counter['omw']['rectify'] .'</td></tr>';
+                // LBP
+                $html .= '<tr><td>Osteoporosis Management in Women Who Had Fracture</td><td>Percentage of members with a primary diagnosis of low back pain who did not have an imaging study within 28 days of diagnosis</td><td>';
+                $html .= '<ul><li>Percentage of instances where no imaging study was performed for a diagnosis of low back pain: ' . $counter['lbp']['percent_no_rad'] . '%</li></ul>';
+                $html .= '</td><td>' . $counter['lbp']['rectify'] .'</td></tr>';
+                // AMM
+                $html .= '<tr><td>Antidepressant Medication Management</td><td>Percentage of members 18 years or older diagnosed with depression and treated with antidepressant meds</td><td>' . $counter['amm']['percent_goal'] .'%</td><td>' . $counter['amm']['rectify'] .'</td></tr>';
+                // ADD
+                $html .= '<tr><td>Follow-Up Care for Children Prescribed ADHD Medication</td><td>Percentage of children 6-12 with newly diagnosed ADHD who received the appropriate follow-up treatment and medication</td><td>' . $counter['add']['percent_goal'] .'%</td><td>' . $counter['add']['rectify'] .'</td></tr>';
+                $html .= '</tbody></table>';
+            } else {
                 $html .= 'No results.';
             }
         }
@@ -6618,7 +6625,7 @@ class CoreController extends Controller
             ];
             $html .= $this->form_build($form_array);
             $practice_id = Session::get('practice_id');
-    		$query_text = DB::table('tags_relate');
+            $query_text = DB::table('tags_relate');
             $query_text->where(function($query_array1) use ($tags_array) {
                 $j = 0;
                 foreach ($tags_array as $tag) {
@@ -6630,112 +6637,112 @@ class CoreController extends Controller
                     $j++;
                 }
             });
-    		if ($pid !== null && $pid !== '') {
-    			$query_text->where('pid', '=', $pid);
+            if ($pid !== null && $pid !== '') {
+                $query_text->where('pid', '=', $pid);
                 Session::put('tags_pid', $pid);
-    		} else {
+            } else {
                 Session::forget('tags_pid');
             }
             $query = $query_text->get();
             $records1 = [];
             if ($query->count()) {
-    			$i = 0;
-    			foreach ($query as $row) {
-    				if ($row->eid !== '') {
+                $i = 0;
+                foreach ($query as $row) {
+                    if ($row->eid !== '') {
                         $row2 = DB::table('encounters')->where('eid', '=', $row->eid)->first();
                         if ($row2) {
-        					$records1[$i]['doc_date'] = date('Y-m-d', $this->human_to_unix($row2->encounter_DOS));
-        					$records1[$i]['doctype'] = 'Encounter';
+                            $records1[$i]['doc_date'] = date('Y-m-d', $this->human_to_unix($row2->encounter_DOS));
+                            $records1[$i]['doctype'] = 'Encounter';
                             $records1[$i]['click'] = route('superquery_patient', ['encounter_view', $row->pid, $row->eid]);
-        					$records1[$i]['doctype_index'] = 'eid';
-        					$records1[$i]['doc_id'] = $row->eid;
+                            $records1[$i]['doctype_index'] = 'eid';
+                            $records1[$i]['doc_id'] = $row->eid;
                         }
-    				}
-    				if ($row->t_messages_id !== '') {
+                    }
+                    if ($row->t_messages_id !== '') {
                         $row3 = DB::table('t_messages')->where('t_messages_id', '=', $row->t_messages_id)->first();
                         if ($row3) {
-        					$records1[$i]['doc_date'] = date('Y-m-d', $this->human_to_unix($row3->t_messages_date));
-        					$records1[$i]['doctype'] = 'Telephone Message';
+                            $records1[$i]['doc_date'] = date('Y-m-d', $this->human_to_unix($row3->t_messages_date));
+                            $records1[$i]['doctype'] = 'Telephone Message';
                             $records1[$i]['click'] = route('superquery_patient', ['t_message_view', $row->pid, $row->t_messages_id]);
-        					$records1[$i]['doctype_index'] = 't_messages_id';
-        					$records1[$i]['doc_id'] = $row->t_messages_id;
+                            $records1[$i]['doctype_index'] = 't_messages_id';
+                            $records1[$i]['doc_id'] = $row->t_messages_id;
                         }
-    				}
-    				if ($row->message_id !== '') {
+                    }
+                    if ($row->message_id !== '') {
                         $row4 = DB::table('messaging')->where('message_id', '=', $row->message_id)->first();
                         if ($row4) {
-        					$records1[$i]['doc_date'] = date('Y-m-d', $this->human_to_unix($row4->date));
-        					$records1[$i]['doctype'] = 'Message';
+                            $records1[$i]['doc_date'] = date('Y-m-d', $this->human_to_unix($row4->date));
+                            $records1[$i]['doctype'] = 'Message';
                             $records1[$i]['clickview'] = route('superquery_tag_view');
                             $records1[$i]['doctype_table'] = 'messaging';
-        					$records1[$i]['doctype_index'] = 'message_id';
-        					$records1[$i]['doc_id'] = $row->message_id;
+                            $records1[$i]['doctype_index'] = 'message_id';
+                            $records1[$i]['doc_id'] = $row->message_id;
                         }
-    				}
-    				if ($row->documents_id !== '') {
+                    }
+                    if ($row->documents_id !== '') {
                         $row5 = DB::table('documents')->where('documents_id', '=', $row->documents_id)->first();
                         if ($row5) {
                             if (file_exists($row5->documents_url)) {
-            					$records1[$i]['doc_date'] = date('Y-m-d', $this->human_to_unix($row5->documents_date));
-            					$records1[$i]['doctype'] = 'Documents';
+                                $records1[$i]['doc_date'] = date('Y-m-d', $this->human_to_unix($row5->documents_date));
+                                $records1[$i]['doctype'] = 'Documents';
                                 $records1[$i]['click'] = route('superquery_patient', ['document_view', $row->pid, $row->documents_id]);
-            					$records1[$i]['doctype_index'] = 'documents_id';
-            					$records1[$i]['doc_id'] = $row->documents_id;
+                                $records1[$i]['doctype_index'] = 'documents_id';
+                                $records1[$i]['doc_id'] = $row->documents_id;
                             }
                         }
-    				}
-    				if ($row->hippa_id !== '') {
+                    }
+                    if ($row->hippa_id !== '') {
                         $row6 = DB::table('hippa')->where('hippa_id', '=', $row->hippa_id)->first();
                         if ($row6) {
-        					$records1[$i]['doc_date'] = date('Y-m-d', $this->human_to_unix($row6->hippa_date_release));
-        					$records1[$i]['doctype'] = 'Records Release';
+                            $records1[$i]['doc_date'] = date('Y-m-d', $this->human_to_unix($row6->hippa_date_release));
+                            $records1[$i]['doctype'] = 'Records Release';
                             $records1[$i]['click'] = route('superquery_patient', ['records_list', $row->pid, 'release']);
-        					$records1[$i]['doctype_index'] = 'hippa_id';
-        					$records1[$i]['doc_id'] = $row->hippa_id;
+                            $records1[$i]['doctype_index'] = 'hippa_id';
+                            $records1[$i]['doc_id'] = $row->hippa_id;
                         }
-    				}
-    				if ($row->appt_id !== '') {
+                    }
+                    if ($row->appt_id !== '') {
                         $row7 = DB::table('schedule')->where('appt_id', '=', $row->appt_id)->first();
                         if ($row7) {
-        					$records1[$i]['doc_date'] = date('Y-m-d', $this->human_to_unix($row7->timestamp));
-        					$records1[$i]['doctype'] = 'Appointment';
+                            $records1[$i]['doc_date'] = date('Y-m-d', $this->human_to_unix($row7->timestamp));
+                            $records1[$i]['doctype'] = 'Appointment';
                             $records1[$i]['clickview'] = route('superquery_tag_view');
                             $records1[$i]['doctype_table'] = 'schedule';
-        					$records1[$i]['doctype_index'] = 'appt_id';
-        					$records1[$i]['doc_id'] = $row->appt_id;
+                            $records1[$i]['doctype_index'] = 'appt_id';
+                            $records1[$i]['doc_id'] = $row->appt_id;
                         }
-    				}
-    				if ($row->tests_id !== '') {
+                    }
+                    if ($row->tests_id !== '') {
                         $row8 = DB::table('tests')->where('tests_id', '=', $row->tests_id)->first();
                         if ($row8) {
-        					$records1[$i]['doc_date'] = date('Y-m-d', $this->human_to_unix($row8->test_datetime));
-        					$records1[$i]['doctype'] = 'Test Results';
+                            $records1[$i]['doc_date'] = date('Y-m-d', $this->human_to_unix($row8->test_datetime));
+                            $records1[$i]['doctype'] = 'Test Results';
                             $records1[$i]['click'] = route('superquery_patient', ['results_view', $row->pid, $row->tests_id]);
-        					$records1[$i]['doctype_index'] = 'tests_id';
-        					$records1[$i]['doc_id'] = $row->tests_id;
+                            $records1[$i]['doctype_index'] = 'tests_id';
+                            $records1[$i]['doc_id'] = $row->tests_id;
                         }
-    				}
-    				if ($row->mtm_id !== '') {
+                    }
+                    if ($row->mtm_id !== '') {
                         $row9 = DB::table('mtm')->where('mtm_id', '=', $row->mtm_id)->first();
                         if ($row9) {
-        					$records1[$i]['doc_date'] = date('Y-m-d', $this->human_to_unix($row9->mtm_date_completed));
-        					$records1[$i]['doctype'] = 'Medication Therapy Management';
+                            $records1[$i]['doc_date'] = date('Y-m-d', $this->human_to_unix($row9->mtm_date_completed));
+                            $records1[$i]['doctype'] = 'Medication Therapy Management';
                             $records1[$i]['clickview'] = route('superquery_tag_view');
                             $records1[$i]['doctype_table'] = 'mtm';
-        					$records1[$i]['doctype_index'] = 'mtm_id';
-        					$records1[$i]['doc_id'] = $row->mtm_id;
+                            $records1[$i]['doctype_index'] = 'mtm_id';
+                            $records1[$i]['doc_id'] = $row->mtm_id;
                         }
-    				}
+                    }
                     if (isset($records1[$i]['doc_date']) && isset($records1[$i]['doctype'])) {
                         $records1[$i]['index'] = $i;
-        				$records1[$i]['pid'] = $row->pid;
+                        $records1[$i]['pid'] = $row->pid;
                         $row1 = DB::table('demographics')->where('pid', '=', $row->pid)->first();
-        				$records1[$i]['lastname'] = $row1->lastname;
-        				$records1[$i]['firstname'] = $row1->firstname;
+                        $records1[$i]['lastname'] = $row1->lastname;
+                        $records1[$i]['firstname'] = $row1->firstname;
                     }
-    				$i++;
-    			}
-    		}
+                    $i++;
+                }
+            }
             $head_arr = [
                 'Last Name' => 'lastname',
                 'First Name' => 'firstname',
@@ -6836,10 +6843,10 @@ class CoreController extends Controller
         $return = '';
         if ($type == 'inventory') {
             $query = DB::table('supplement_inventory')
-    			->where('quantity1', '>', '0')
-    			->where('practice_id', '=', Session::get('practice_id'))
+                ->where('quantity1', '>', '0')
+                ->where('practice_id', '=', Session::get('practice_id'))
                 ->orderBy('sup_description', 'asc')
-    			->get();
+                ->get();
             $columns = Schema::getColumnListing('supplement_inventory');
             $row_index = $columns[0];
             if ($query->count()) {
@@ -6870,10 +6877,10 @@ class CoreController extends Controller
         }
         if ($type == 'old_inventory') {
             $query = DB::table('supplement_inventory')
-    			->where('quantity1', '<=', '0')
-    			->where('practice_id', '=', Session::get('practice_id'))
+                ->where('quantity1', '<=', '0')
+                ->where('practice_id', '=', Session::get('practice_id'))
                 ->orderBy('sup_description', 'asc')
-    			->get();
+                ->get();
             $columns = Schema::getColumnListing('supplement_inventory');
             $row_index = $columns[0];
             if ($query->count()) {
@@ -6927,54 +6934,54 @@ class CoreController extends Controller
     }
 
     public function uma_aat(Request $request)
-	{
-		// Check if call comes from rqp_claims redirect
-		if (Session::has('uma_aat') && Session::has('uma_permission_ticket')) {
-			if (isset($_REQUEST["authorization_state"])) {
-				if ($_REQUEST["authorization_state"] != 'claims_submitted') {
-					if ($_REQUEST["authorization_state"] == 'not_authorized') {
-						$text = 'You are not authorized to have the desired authorization data added.';
-					}
-					if ($_REQUEST["authorization_state"] == 'request_submitted') {
-						$text = 'The authorization server needs additional information in order to determine whether you are authorized to have this authorization data.';
-					}
-					if ($_REQUEST["authorization_state"] == 'need_info') {
-						$text = 'The authorization server requires intervention by the patient to determine whether authorization data can be added. Try again later after receiving any information from the patient regarding updates on your access status.';
-					}
-					return $text;
-				} else {
-					// Great - move on!
-					return redirect()->route('uma_api');
-				}
-			} else {
-				Session::forget('uma_aat');
-				Session::forget('uma_permission_ticket');
-			}
-		}
-		// Get AAT
-		$url_array = array('/nosh/oidc','/nosh/fhir/oidc');
-		$as_uri = Session::get('uma_uri');
-		$client_id = Session::get('uma_client_id');
-		$client_secret = Session::get('uma_client_secret');
-		$oidc = new OpenIDConnectClient($as_uri, $client_id, $client_secret);
-		$oidc->requestAAT();
-		Session::put('uma_aat', $oidc->getAccessToken());
-		// Get permission ticket
-		$urlinit = $as_uri . '/nosh/fhir/' . Session::get('type') . '?subject:Patient=1';
-		$result = $this->fhir_request($urlinit,true);
-		if (isset($result['error'])) {
-			// error - return something
-			return $result;
-		}
-		$permission_ticket = $result['ticket'];
-		Session::put('uma_permission_ticket', $permission_ticket);
-		Session::save();
-		$as_uri = $result['as_uri'];
-		$url = route('uma_aat');
-		// Requesting party claims
-		$oidc->setRedirectURL($url);
-		$oidc->rqp_claims($permission_ticket);
-	}
+    {
+        // Check if call comes from rqp_claims redirect
+        if (Session::has('uma_aat') && Session::has('uma_permission_ticket')) {
+            if (isset($_REQUEST["authorization_state"])) {
+                if ($_REQUEST["authorization_state"] != 'claims_submitted') {
+                    if ($_REQUEST["authorization_state"] == 'not_authorized') {
+                        $text = 'You are not authorized to have the desired authorization data added.';
+                    }
+                    if ($_REQUEST["authorization_state"] == 'request_submitted') {
+                        $text = 'The authorization server needs additional information in order to determine whether you are authorized to have this authorization data.';
+                    }
+                    if ($_REQUEST["authorization_state"] == 'need_info') {
+                        $text = 'The authorization server requires intervention by the patient to determine whether authorization data can be added. Try again later after receiving any information from the patient regarding updates on your access status.';
+                    }
+                    return $text;
+                } else {
+                    // Great - move on!
+                    return redirect()->route('uma_api');
+                }
+            } else {
+                Session::forget('uma_aat');
+                Session::forget('uma_permission_ticket');
+            }
+        }
+        // Get AAT
+        $url_array = array('/nosh/oidc','/nosh/fhir/oidc');
+        $as_uri = Session::get('uma_uri');
+        $client_id = Session::get('uma_client_id');
+        $client_secret = Session::get('uma_client_secret');
+        $oidc = new OpenIDConnectClient($as_uri, $client_id, $client_secret);
+        $oidc->requestAAT();
+        Session::put('uma_aat', $oidc->getAccessToken());
+        // Get permission ticket
+        $urlinit = $as_uri . '/nosh/fhir/' . Session::get('type') . '?subject:Patient=1';
+        $result = $this->fhir_request($urlinit,true);
+        if (isset($result['error'])) {
+            // error - return something
+            return $result;
+        }
+        $permission_ticket = $result['ticket'];
+        Session::put('uma_permission_ticket', $permission_ticket);
+        Session::save();
+        $as_uri = $result['as_uri'];
+        $url = route('uma_aat');
+        // Requesting party claims
+        $oidc->setRedirectURL($url);
+        $oidc->rqp_claims($permission_ticket);
+    }
 
     public function uma_add_patient(Request $request, $type='')
     {
@@ -7007,28 +7014,28 @@ class CoreController extends Controller
         return redirect()->route('uma_list');
     }
 
-	public function uma_api(Request $request)
-	{
-		$as_uri = Session::get('uma_uri');
-		if (!Session::has('rpt')) {
-			// Send permission ticket + AAT to Authorization Server to get RPT
-			$permission_ticket = Session::get('uma_permission_ticket');
-			$client_id = Session::get('uma_client_id');
-			$client_secret = Session::get('uma_client_secret');
-			$url = route('uma_api');
-			$oidc = new OpenIDConnectClient($as_uri, $client_id, $client_secret);
-			$oidc->setAccessToken(Session::get('uma_aat'));
-			$oidc->setRedirectURL($url);
-			$result1 = $oidc->rpt_request($permission_ticket);
-			if (isset($result1['error'])) {
-				// error - return something
-				if ($result1['error'] == 'expired_ticket') {
-					Session::forget('uma_aat');
-					Session::forget('uma_permission_ticket');
-					return redirect()->route('uma_aat');
-				} else {
-					$data['panel_header'] = 'Error getting data';
-					$data['content'] = 'Description:<br>' . $result1['error'];
+    public function uma_api(Request $request)
+    {
+        $as_uri = Session::get('uma_uri');
+        if (!Session::has('rpt')) {
+            // Send permission ticket + AAT to Authorization Server to get RPT
+            $permission_ticket = Session::get('uma_permission_ticket');
+            $client_id = Session::get('uma_client_id');
+            $client_secret = Session::get('uma_client_secret');
+            $url = route('uma_api');
+            $oidc = new OpenIDConnectClient($as_uri, $client_id, $client_secret);
+            $oidc->setAccessToken(Session::get('uma_aat'));
+            $oidc->setRedirectURL($url);
+            $result1 = $oidc->rpt_request($permission_ticket);
+            if (isset($result1['error'])) {
+                // error - return something
+                if ($result1['error'] == 'expired_ticket') {
+                    Session::forget('uma_aat');
+                    Session::forget('uma_permission_ticket');
+                    return redirect()->route('uma_aat');
+                } else {
+                    $data['panel_header'] = 'Error getting data';
+                    $data['content'] = 'Description:<br>' . $result1['error'];
                     $dropdown_array = [];
                     $items = [];
                     $items[] = [
@@ -7042,40 +7049,40 @@ class CoreController extends Controller
                     $data['assets_js'] = $this->assets_js();
                     $data['assets_css'] = $this->assets_css();
                     return view('core', $data);
-				}
-			}
-			$rpt = $result1['rpt'];
-			// Save RPT in session in case for future calls in same session
-			Session::put('rpt', $rpt);
-			Session::save();
-		} else {
-			$rpt = Session::get('rpt');
-		}
-		// Contact pNOSH again, now with RPT
-		$urlinit = $as_uri . '/nosh/fhir/' . Session::get('type') . '?subject:Patient=1';
-		$result3 = $this->fhir_request($urlinit,false,$rpt);
-		if (isset($result3['ticket'])) {
-			// New permission ticket issued, expire rpt session
-			Session::forget('rpt');
-			Session::put('uma_permission_ticket', $result3['ticket']);
-			Session::save();
-			// Get new RPT
-			return redirect()->route('uma_api');
-		}
-		// Format the result into a nice display
-		$data['message_action'] = Session::get('message_action');
-		Session::forget('message_action');
-		$id = Session::get('current_client_id');
-		$client = DB::table('oauth_rp')->where('id', '=', Session::get('current_client_id'))->first();
-		$title_array = [
-			'Condition' => 'Conditions',
-			'MedicationStatement' => 'Medication List',
-			'AllergyIntolerance' => 'Allergy List',
-			'Immunization' => 'Immunizations',
-			'Patient' => 'Patient Information'
-		];
-		$query = DB::table('resource_set')->where('resource_set_id', '=', $id)->first();
-		$data['panel_header'] = $title_array[Session::get('type')] . ' for ' . $client->as_name;
+                }
+            }
+            $rpt = $result1['rpt'];
+            // Save RPT in session in case for future calls in same session
+            Session::put('rpt', $rpt);
+            Session::save();
+        } else {
+            $rpt = Session::get('rpt');
+        }
+        // Contact pNOSH again, now with RPT
+        $urlinit = $as_uri . '/nosh/fhir/' . Session::get('type') . '?subject:Patient=1';
+        $result3 = $this->fhir_request($urlinit,false,$rpt);
+        if (isset($result3['ticket'])) {
+            // New permission ticket issued, expire rpt session
+            Session::forget('rpt');
+            Session::put('uma_permission_ticket', $result3['ticket']);
+            Session::save();
+            // Get new RPT
+            return redirect()->route('uma_api');
+        }
+        // Format the result into a nice display
+        $data['message_action'] = Session::get('message_action');
+        Session::forget('message_action');
+        $id = Session::get('current_client_id');
+        $client = DB::table('oauth_rp')->where('id', '=', Session::get('current_client_id'))->first();
+        $title_array = [
+            'Condition' => 'Conditions',
+            'MedicationStatement' => 'Medication List',
+            'AllergyIntolerance' => 'Allergy List',
+            'Immunization' => 'Immunizations',
+            'Patient' => 'Patient Information'
+        ];
+        $query = DB::table('resource_set')->where('resource_set_id', '=', $id)->first();
+        $data['panel_header'] = $title_array[Session::get('type')] . ' for ' . $client->as_name;
         $dropdown_array = [];
         $items = [];
         if (Session::has('uma_add_patient')) {
@@ -7095,12 +7102,12 @@ class CoreController extends Controller
         }
         $dropdown_array['items'] = $items;
         $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
-		$data['content'] = 'None.';
-		if (isset($result3['total'])) {
-			if ($result3['total'] != '0') {
-				$data['content'] = '<ul class="list-group">';
-				foreach ($result3['entry'] as $entry) {
-					if (Session::has('uma_add_patient')) {
+        $data['content'] = 'None.';
+        if (isset($result3['total'])) {
+            if ($result3['total'] != '0') {
+                $data['content'] = '<ul class="list-group">';
+                foreach ($result3['entry'] as $entry) {
+                    if (Session::has('uma_add_patient')) {
                         $data1 = Session::get('uma_add_patient');
                         $add_data1 = [
                             'lastname' => $entry['resource']['name'][0]['family'][0],
@@ -7127,81 +7134,81 @@ class CoreController extends Controller
                         ];
                         $dropdown_array1['items'] = $items1;
                         $data['panel_dropdown'] .= '<span class="fa-btn"></span>' . $this->dropdown_build($dropdown_array1);
-						$data['panel_header'] = 'Add Patient';
-						$data['content'] .= '<li class="list-group-item">' . $entry['resource']['text']['div'];
+                        $data['panel_header'] = 'Add Patient';
+                        $data['content'] .= '<li class="list-group-item">' . $entry['resource']['text']['div'];
                         // Preview medication list
-						$urlinit1 = $as_uri . '/nosh/fhir/MedicationStatement?subject:Patient=1';
-						$result4 = $this->fhir_request($urlinit1,false,$rpt);
-						if (isset($result4['total'])) {
-							if ($result4['total'] != '0') {
-								$data['content'] .= '<strong>Medications</strong><ul>';
-								foreach ($result4['entry'] as $entry1) {
-									$data['content'] .= '<li>' . $entry1['resource']['text']['div'] . '</li>';
-								}
-								$data['content'] .= '</ul>';
-							}
-						}
-						$data['content'] .= '</li>';
-					} else  {
-						$data['content'] .= '<li class="list-group-item">' . $entry['resource']['text']['div'] . '</li>';
-					}
-				}
-				$data['content'] .= '</ul>';
-			}
-		}
+                        $urlinit1 = $as_uri . '/nosh/fhir/MedicationStatement?subject:Patient=1';
+                        $result4 = $this->fhir_request($urlinit1,false,$rpt);
+                        if (isset($result4['total'])) {
+                            if ($result4['total'] != '0') {
+                                $data['content'] .= '<strong>Medications</strong><ul>';
+                                foreach ($result4['entry'] as $entry1) {
+                                    $data['content'] .= '<li>' . $entry1['resource']['text']['div'] . '</li>';
+                                }
+                                $data['content'] .= '</ul>';
+                            }
+                        }
+                        $data['content'] .= '</li>';
+                    } else  {
+                        $data['content'] .= '<li class="list-group-item">' . $entry['resource']['text']['div'] . '</li>';
+                    }
+                }
+                $data['content'] .= '</ul>';
+            }
+        }
         $data['assets_js'] = $this->assets_js();
         $data['assets_css'] = $this->assets_css();
         return view('core', $data);
-	}
+    }
 
     public function uma_list(Request $request)
     {
         if ($request->isMethod('post')) {
-			$this->validate($request, [
-		        'url' => 'required|url'
-		    ]);
-			// Register to HIE of One AS
-			Session::forget('type');
-			Session::forget('client_id');
-			Session::forget('url');
-			$ch = curl_init($request->input('url'));
-			curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			$data = curl_exec($ch);
-			$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-			curl_close($ch);
-			if($httpcode>=200 && $httpcode<302){
-				$url_arr = parse_url($request->input('url'));
-				$as_uri = $url_arr['scheme'] . '://' . $url_arr['host'];
-			} else {
-	            return redirect()->back()->withErrors(['url' => 'Try again, URL is invalid, httpcode: ' . $httpcode . ', URL: ' . $request->input('url')]);
-			}
+            $this->validate($request, [
+                'url' => 'required|url'
+            ]);
+            // Register to HIE of One AS
+            Session::forget('type');
+            Session::forget('client_id');
+            Session::forget('url');
+            $ch = curl_init($request->input('url'));
+            curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $data = curl_exec($ch);
+            $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+            if($httpcode>=200 && $httpcode<302){
+                $url_arr = parse_url($request->input('url'));
+                $as_uri = $url_arr['scheme'] . '://' . $url_arr['host'];
+            } else {
+                return redirect()->back()->withErrors(['url' => 'Try again, URL is invalid, httpcode: ' . $httpcode . ', URL: ' . $request->input('url')]);
+            }
             $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
-			$client_name = 'mdNOSH - ' . $practice->practice_name;
-			$url1 = route('uma_auth');
-			$oidc = new OpenIDConnectClient($as_uri);
-			$oidc->setClientName($client_name);
-			$oidc->setRedirectURL($url1);
-			$oidc->addScope('openid');
-			$oidc->addScope('email');
-			$oidc->addScope('profile');
-			$oidc->addScope('address');
-			$oidc->addScope('phone');
-			$oidc->addScope('offline_access');
-			$oidc->addScope('uma_authorization');
-			$oidc->register(true);
-			$client_id = $oidc->getClientID();
-			$client_secret = $oidc->getClientSecret();
+            $client_name = 'mdNOSH - ' . $practice->practice_name;
+            $url1 = route('uma_auth');
+            $oidc = new OpenIDConnectClient($as_uri);
+            $oidc->setClientName($client_name);
+            $oidc->setRedirectURL($url1);
+            $oidc->addScope('openid');
+            $oidc->addScope('email');
+            $oidc->addScope('profile');
+            $oidc->addScope('address');
+            $oidc->addScope('phone');
+            $oidc->addScope('offline_access');
+            $oidc->addScope('uma_authorization');
+            $oidc->register(true);
+            $client_id = $oidc->getClientID();
+            $client_secret = $oidc->getClientSecret();
             $data1 = [
                 'hieofone_as_client_id' => $client_id,
                 'hieofone_as_client_secret' => $client_secret,
                 'hieofone_as_url' => $as_uri
             ];
             Session::put('uma_add_patient', $data1);
-			Session::save();
-			return redirect()->route('uma_resource_view', ['type' => 'Patient']);
-		} else {
+            Session::save();
+            return redirect()->route('uma_resource_view', ['type' => 'Patient']);
+        } else {
             $items[] = [
                 'name' => 'url',
                 'label' => 'URL of Patient Chart (pNOSH)',
@@ -7235,16 +7242,16 @@ class CoreController extends Controller
             $data['assets_js'] = $this->assets_js();
             $data['assets_css'] = $this->assets_css();
             return view('core', $data);
-		}
+        }
     }
 
     public function uma_resources(Request $request, $id)
-	{
-		$patient = DB::table('demographics')->where('id', '=', $id)->first();
-		$data['panel_header'] = $patient->firstname . ' ' . $patient->lastname . "'s Patient Summary";
-		$data['content'] = 'No resources available yet.';
-		$data['message_action'] = Session::get('message_action');
-		Session::forget('message_action');
+    {
+        $patient = DB::table('demographics')->where('id', '=', $id)->first();
+        $data['panel_header'] = $patient->firstname . ' ' . $patient->lastname . "'s Patient Summary";
+        $data['content'] = 'No resources available yet.';
+        $data['message_action'] = Session::get('message_action');
+        Session::forget('message_action');
         $dropdown_array = [];
         $items = [];
         $items[] = [
@@ -7255,25 +7262,25 @@ class CoreController extends Controller
         ];
         $dropdown_array['items'] = $items;
         $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
-		// Look for pNOSH link through registered client to mdNOSH Gateway
-		$query = DB::table('oauth_clients')->where('client_uri', '=', $client->as_uri . "/nosh")->first();
-		if ($query) {
-			$data['content'] = '<div class="list-group">';
-			$data['content'] .= '<a href="' . $patient->hieofone_as_url . '/nosh/uma_auth" target="_blank" class="list-group-item"><span style="margin:10px;">Patient Centered Health Record (pNOSH) for ' . $client->hieofone_as_name . '</span><span class="label label-success">Patient Centered Health Record</span></a>';
-			$data['content'] .= '<a href="' . route('uma_resource_view', ['Condition']) . '" class="list-group-item"><i class="fa fa-bars fa-fw"></i><span style="margin:10px;">Conditions</span></a>';
-			$data['content'] .= '<a href="' . route('uma_resource_view', ['MedicationStatement']) . '" class="list-group-item"><i class="fa fa-eyedropper fa-fw"></i><span style="margin:10px;">Medication List</span></a>';
-			$data['content'] .= '<a href="' . route('uma_resource_view', ['AllergyIntolerance']) . '" class="list-group-item"><i class="fa fa-exclamation-triangle fa-fw"></i><span style="margin:10px;">Allergy List</span></a>';
-			$data['content'] .= '<a href="' . route('uma_resource_view', ['Immunization']) . '" class="list-group-item"><i class="fa fa-magic fa-fw"></i><span style="margin:10px;">Immunizations</span></a>';
-			$data['content'] .= '</div>';
-		}
-		Session::put('uma_pid', $id);
+        // Look for pNOSH link through registered client to mdNOSH Gateway
+        $query = DB::table('oauth_clients')->where('client_uri', '=', $client->as_uri . "/nosh")->first();
+        if ($query) {
+            $data['content'] = '<div class="list-group">';
+            $data['content'] .= '<a href="' . $patient->hieofone_as_url . '/nosh/uma_auth" target="_blank" class="list-group-item"><span style="margin:10px;">Patient Centered Health Record (pNOSH) for ' . $client->hieofone_as_name . '</span><span class="label label-success">Patient Centered Health Record</span></a>';
+            $data['content'] .= '<a href="' . route('uma_resource_view', ['Condition']) . '" class="list-group-item"><i class="fa fa-bars fa-fw"></i><span style="margin:10px;">Conditions</span></a>';
+            $data['content'] .= '<a href="' . route('uma_resource_view', ['MedicationStatement']) . '" class="list-group-item"><i class="fa fa-eyedropper fa-fw"></i><span style="margin:10px;">Medication List</span></a>';
+            $data['content'] .= '<a href="' . route('uma_resource_view', ['AllergyIntolerance']) . '" class="list-group-item"><i class="fa fa-exclamation-triangle fa-fw"></i><span style="margin:10px;">Allergy List</span></a>';
+            $data['content'] .= '<a href="' . route('uma_resource_view', ['Immunization']) . '" class="list-group-item"><i class="fa fa-magic fa-fw"></i><span style="margin:10px;">Immunizations</span></a>';
+            $data['content'] .= '</div>';
+        }
+        Session::put('uma_pid', $id);
         $data['assets_js'] = $this->assets_js();
         $data['assets_css'] = $this->assets_css();
         return view('core', $data);
-	}
+    }
 
     public function uma_resource_view(Request $request, $type)
-	{
+    {
         if (Session::has('uma_add_patient')) {
             $data = Session::get('uma_add_patient');
             $data1 = [
@@ -7282,22 +7289,22 @@ class CoreController extends Controller
                 'hieofone_as_url' => $as_uri
             ];
             Session::put('uma_uri', $data['hieofone_as_url']);
-    		Session::put('uma_client_id', $data['hieofone_as_client_id']);
-    		Session::put('uma_client_secret', $data['hieofone_as_client_secret']);
+            Session::put('uma_client_id', $data['hieofone_as_client_id']);
+            Session::put('uma_client_secret', $data['hieofone_as_client_secret']);
         } else {
             $patient = DB::table('demographics')->where('id', '=', Session::get('uma_pid'))->first();
             Session::put('uma_uri', $patient->as_uri);
-    		Session::put('uma_client_id', $patient->client_id);
-    		Session::put('uma_client_secret', $patient->client_secret);
+            Session::put('uma_client_id', $patient->client_id);
+            Session::put('uma_client_secret', $patient->client_secret);
         }
-		Session::put('type', $type);
-		Session::save();
-		if (Session::has('rpt')) {
-			return redirect()->route('uma_api');
-		} else {
-			return redirect()->route('uma_aat');
-		}
-	}
+        Session::put('type', $type);
+        Session::save();
+        if (Session::has('rpt')) {
+            return redirect()->route('uma_api');
+        } else {
+            return redirect()->route('uma_aat');
+        }
+    }
 
     public function users(Request $request, $type='2', $active='1')
     {
@@ -7347,24 +7354,24 @@ class CoreController extends Controller
         $dropdown_array['items'] = $items;
         $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
         if ($type == '2') {
-			$query = DB::table('users')
-				->join('providers', 'providers.id', '=', 'users.id')
-				->where('users.group_id', '=', $type)
-				->where('users.active', '=', $active)
-				->where('users.practice_id', '=', Session::get('practice_id'));
-		} elseif ($type == '100') {
-			$query = DB::table('users')
-				->leftJoin('demographics_relate', 'users.id', '=', 'demographics_relate.id')
-				->select('users.*', 'demographics_relate.pid')
-				->where('users.group_id', '=', $type)
-				->where('users.active', '=', $active)
-				->where('users.practice_id', '=', Session::get('practice_id'));
-		} else {
-			$query = DB::table('users')
-				->where('group_id', '=', $type)
-				->where('active', '=', $active)
-				->where('practice_id', '=', Session::get('practice_id'));
-		}
+            $query = DB::table('users')
+                ->join('providers', 'providers.id', '=', 'users.id')
+                ->where('users.group_id', '=', $type)
+                ->where('users.active', '=', $active)
+                ->where('users.practice_id', '=', Session::get('practice_id'));
+        } elseif ($type == '100') {
+            $query = DB::table('users')
+                ->leftJoin('demographics_relate', 'users.id', '=', 'demographics_relate.id')
+                ->select('users.*', 'demographics_relate.pid')
+                ->where('users.group_id', '=', $type)
+                ->where('users.active', '=', $active)
+                ->where('users.practice_id', '=', Session::get('practice_id'));
+        } else {
+            $query = DB::table('users')
+                ->where('group_id', '=', $type)
+                ->where('active', '=', $active)
+                ->where('practice_id', '=', Session::get('practice_id'));
+        }
         $result = $query->get();
         $columns = Schema::getColumnListing('users');
         $row_index = $columns[0];
@@ -7431,29 +7438,29 @@ class CoreController extends Controller
         $signature = DB::table('providers')->where('id', '=', Session::get('user_id'))->first();
         if ($request->isMethod('post')) {
             $id = Session::get('user_id');
-			$user = DB::table('users')->where('id', '=', $id)->first();
-			$name = $user->firstname . " " . $user->lastname;
-			if ($name !== $request->input('name')) {
-				$message = "Error - Incorrect name!  Signature not saved.  Try again";
-			} else {
+            $user = DB::table('users')->where('id', '=', $id)->first();
+            $name = $user->firstname . " " . $user->lastname;
+            if ($name !== $request->input('name')) {
+                $message = "Error - Incorrect name!  Signature not saved.  Try again";
+            } else {
                 if (file_exists($signature->signature)) {
                     unlink($signature->signature);
                 }
                 $file_path = Session::get('documents_dir') . 'signature_' . $id . '_' . time() . '.png';
-				$img = $this->sigJsonToImage($request->input('output'));
-				imagepng($img, $file_path);
-				imagedestroy($img);
-				$data['signature'] = $file_path;
-				DB::table('providers')->where('id', '=', $id)->update($data);
-				$this->audit('Update');
-				$message = "Signature created";
-			}
+                $img = $this->sigJsonToImage($request->input('output'));
+                imagepng($img, $file_path);
+                imagedestroy($img);
+                $data['signature'] = $file_path;
+                DB::table('providers')->where('id', '=', $id)->update($data);
+                $this->audit('Update');
+                $message = "Signature created";
+            }
             Session::put('message_action', $message);
             return redirect()->route('dashboard');
         } else {
             $return = '';
             $status = 'Add your signature:';
-    		if ($signature) {
+            if ($signature) {
                 if ($signature->signature !== '') {
                     if (file_exists($signature->signature)) {
                         $name = time() . '_signature.png';
@@ -7466,7 +7473,7 @@ class CoreController extends Controller
                         $status = 'Update your signature:';
                     }
                 }
-    		}
+            }
             $items[] = [
                 'name' => 'name',
                 'label' => 'Print your Name for Verification',
@@ -7521,10 +7528,10 @@ class CoreController extends Controller
         $return = '';
         if ($type == 'inventory') {
             $query = DB::table('vaccine_inventory')
-    			->where('quantity', '>', '0')
-    			->where('practice_id', '=', Session::get('practice_id'))
+                ->where('quantity', '>', '0')
+                ->where('practice_id', '=', Session::get('practice_id'))
                 ->orderBy('imm_immunization', 'asc')
-    			->get();
+                ->get();
             $columns = Schema::getColumnListing('vaccine_inventory');
             $row_index = $columns[0];
             if ($query->count()) {
@@ -7555,10 +7562,10 @@ class CoreController extends Controller
         }
         if ($type == 'old_inventory') {
             $query = DB::table('vaccine_inventory')
-    			->where('quantity', '<=', '0')
-    			->where('practice_id', '=', Session::get('practice_id'))
+                ->where('quantity', '<=', '0')
+                ->where('practice_id', '=', Session::get('practice_id'))
                 ->orderBy('imm_immunization', 'asc')
-    			->get();
+                ->get();
             $columns = Schema::getColumnListing('vaccine_inventory');
             $row_index = $columns[0];
             if ($query->count()) {

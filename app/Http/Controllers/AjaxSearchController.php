@@ -592,7 +592,7 @@ class AjaxSearchController extends Controller {
     public function search_interactions(Request $request)
     {
         $pid = Session::get('pid');
-		$rxl_medication = $request->input('rxl_medication');
+        $rxl_medication = $request->input('rxl_medication');
         $rxcui = $request->input('rxcui');
         if ($rxcui == '') {
             $rx_query = DB::table('rx_list')->where('rxl_medication', '=', $rxl_medication)->whereNotNull('rxl_ndcid')->first();
@@ -612,27 +612,27 @@ class AjaxSearchController extends Controller {
                 }
             }
         }
-		$rx = explode(" ", $rxl_medication);
+        $rx = explode(" ", $rxl_medication);
         $return['info'] = '';
-		$allergies = DB::table('allergies')
-			->where('pid', '=', $pid)
-			->where('allergies_date_inactive', '=', '0000-00-00 00:00:00')
-			->where('allergies_med', '=', $rxl_medication)
-			->first();
-		if ($allergies) {
+        $allergies = DB::table('allergies')
+            ->where('pid', '=', $pid)
+            ->where('allergies_date_inactive', '=', '0000-00-00 00:00:00')
+            ->where('allergies_med', '=', $rxl_medication)
+            ->first();
+        if ($allergies) {
             // Match any allergies
-			$return['info'] .= '<div class="alert alert-danger"><i class="fa fa-exclamation-triangle fa-fw fa-lg"></i>';
-			$return['info'] .= '<h5>ALERT:</h5>Medication prescribed is in the patient allergy list!';
-			$return['info'] .= '</div>';
-			return $return;
-		}
+            $return['info'] .= '<div class="alert alert-danger"><i class="fa fa-exclamation-triangle fa-fw fa-lg"></i>';
+            $return['info'] .= '<h5>ALERT:</h5>Medication prescribed is in the patient allergy list!';
+            $return['info'] .= '</div>';
+            return $return;
+        }
         $meds = DB::table('rx_list')
-			->where('pid', '=', $pid)
-			->where('rxl_date_inactive', '=', '0000-00-00 00:00:00')
-			->where('rxl_date_old', '=', '0000-00-00 00:00:00')
-			->get();
+            ->where('pid', '=', $pid)
+            ->where('rxl_date_inactive', '=', '0000-00-00 00:00:00')
+            ->where('rxl_date_old', '=', '0000-00-00 00:00:00')
+            ->get();
         $q_arr = [];
-		if ($meds->count()) {
+        if ($meds->count()) {
             // Gather all existing meds and get their rxcuis, if any
             foreach ($meds as $med) {
                 if ($med->rxl_ndcid !== null) {
@@ -670,7 +670,7 @@ class AjaxSearchController extends Controller {
                 foreach ($rxnorm2['fullInteractionTypeGroup'][0]['fullInteractionType'] as $item) {
                     $return['info'] .= '<div class="alert alert-warning"><i class="fa fa-exclamation-circle fa-fw fa-lg"></i><h5>INTERACTION:</h5>';
                     $return['info'] .= $item['interactionPair'][0]['description'];
-					$return['info'] .= '</div><br>';
+                    $return['info'] .= '</div><br>';
                 }
             }
 
@@ -902,6 +902,19 @@ class AjaxSearchController extends Controller {
                     'unit' => implode(';', $unit_arr),
                     'rxcui' => $row['rxcui']
                 ];
+            }
+        }
+        return $data;
+    }
+
+    public function search_referral_provider(Request $request)
+    {
+        $data['response'] = 'n';
+        $query = $this->array_orders_provider('Referral', $request->input('specialty'));
+        if (count($query) > 0) {
+            $data['response'] = 'y';
+            foreach ($query as $k => $v) {
+                $data['options'][$k] = $v;
             }
         }
         return $data;

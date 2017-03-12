@@ -21,11 +21,11 @@ class PostAuth
     {
         $install = DB::table('practiceinfo')->first();
         // Check if Google refresh token registered
-    	if ($install->google_refresh_token == '') {
-    		if (route('dashboard') != 'http://localhost/nosh') {
-    			return redirect()->route('googleoauth');
-    		}
-    	}
+        if ($install->google_refresh_token == '') {
+            if (route('dashboard') != 'http://localhost/nosh') {
+                return redirect()->route('googleoauth');
+            }
+        }
         $messages = DB::table('messaging')->where('mailbox', '=', Session::get('user_id'))->where('read', '=', null)->count();
         Session::put('messages_count', $messages);
         Session::put('notification_run', 'true');
