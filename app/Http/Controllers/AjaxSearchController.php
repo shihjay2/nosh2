@@ -290,6 +290,7 @@ class AjaxSearchController extends Controller {
 
     public function search_icd(Request $request, $assessment=false)
     {
+        ini_set('memory_limit','196M');
         $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
         $q = strtolower($request->input('search_icd'));
         if (!$q) return;
@@ -331,7 +332,7 @@ class AjaxSearchController extends Controller {
             }
         } else {
             $file = File::get(resource_path() . '/icd10cm_order_2017.txt');
-            $arr = explode("\r\n", $file);
+            $arr = preg_split("/\\r\\n|\\r|\\n/", $file);
             foreach ($arr as $row) {
                 $icd10 = rtrim(substr($row,6,7));
                 if (strlen($icd10) !== 3) {
@@ -409,7 +410,7 @@ class AjaxSearchController extends Controller {
     {
         $data = [];
         $file = File::get(resource_path() . '/icd10cm_order_2017.txt');
-        $arr = explode("\r\n", $file);
+        $arr = preg_split("/\\r\\n|\\r|\\n/", $file);
         foreach ($arr as $row) {
             $icd10 = rtrim(substr($row,6,7));
             if (strlen($icd10) !== 3) {
