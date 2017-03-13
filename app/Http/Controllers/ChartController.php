@@ -3397,7 +3397,7 @@ class ChartController extends Controller {
         } else {
             // Get from ICD10
             $file = File::get(resource_path() . '/icd10cm_order_2017.txt');
-            $arr = explode("\r\n", $file);
+            $arr = preg_split("/\\r\\n|\\r|\\n/", $file);
             foreach ($arr as $row) {
                 $icd10 = rtrim(substr($row,6,7));
                 if (strlen($icd10) !== 3) {
