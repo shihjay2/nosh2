@@ -2343,11 +2343,63 @@ class Controller extends BaseController
                 break;
             }
             if ($lev <= $shortest || $shortest < 0) {
-                $closest  = $compare_k;
+                $closest = $compare_k;
                 $shortest = $lev;
             }
         }
         return $closest;
+    }
+
+    protected function common_icd()
+    {
+        $subtypes = [];
+        $core_url = 'http://www.nuemd.com/icd-10/common-codes';
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $core_url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $data = curl_exec($ch);
+        curl_close($ch);
+        $html = new Htmldom($data);
+        $data1 = [];
+        if (isset($html)) {
+            foreach ($html->find('.specialtyList') as $item) {
+                foreach ($item->find('li') as $item1) {
+                    $link = $item1->find('a', 0);
+                    $data1[] = [
+                        'url' => $link->href,
+                        'specialty' => $link->innertext
+                    ];
+                }
+            }
+        }
+        $data3 = [];
+        foreach ($data1 as $item2) {
+            $base_url = 'http://www.nuemd.com';
+            $url = $base_url . $item2['url'];
+            $ch1 = curl_init();
+            curl_setopt($ch1, CURLOPT_URL, $url);
+            curl_setopt($ch1, CURLOPT_RETURNTRANSFER, true);
+            $data2 = curl_exec($ch1);
+            curl_close($ch1);
+            $html1 = new Htmldom($data2);
+            if (isset($html1)) {
+                foreach ($html1->find('.codeList') as $item3) {
+                    foreach ($item3->find('li') as $item4) {
+                        $code = $item4->find('div.code', 0);
+                        $desc = $item4->find('div.desc', 0);
+                        $data3[$item2['specialty']][] = [
+                            'code' => trim($code->plaintext),
+                            'desc' => trim($desc->innertext)
+                        ];
+                    }
+                }
+            }
+        }
+        $formatter1 = Formatter::make($data3, Formatter::ARR);
+        $text = $formatter1->toYaml();
+        $file_path = resource_path() . '/common_icd.yaml';
+        File::put($file_path, $text);
+        return 'OK';
     }
 
     protected function convert_cc()
@@ -11402,7 +11454,7 @@ class Controller extends BaseController
     protected function icd_search($code)
     {
         $file = File::get(resource_path() . '/icd10cm_order_2017.txt');
-        $arr = explode("\r\n", $file);
+        $arr = preg_split("/\\r\\n|\\r|\\n/", $file);
         foreach ($arr as $row) {
             $icd10 = rtrim(substr($row,6,7));
             if (strlen($icd10) !== 3) {

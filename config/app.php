@@ -1,7 +1,7 @@
 <?php
 $tz = 'UTC';
 if(array_key_exists('nosh_tz', $_COOKIE)) {
-	$tz = $_COOKIE['nosh_tz'];
+    $tz = $_COOKIE['nosh_tz'];
 }
 return [
 
@@ -160,7 +160,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         Laravel\Socialite\SocialiteServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,
-		SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class,
+        SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class,
         Jenssegers\Date\DateServiceProvider::class,
         Yangqi\Htmldom\HtmldomServiceProvider::class,
         Devfactory\Minify\MinifyServiceProvider::class,
@@ -214,7 +214,7 @@ return [
         'Socialite' => Laravel\Socialite\Facades\Socialite::class,
         'Form' => Collective\Html\FormFacade::class,
         'HTML' => Collective\Html\HtmlFacade::class,
-		'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class,
+        'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class,
         'Date' => Jenssegers\Date\Date::class,
         'Htmldom' => Yangqi\Htmldom\Htmldom::class,
         'Minify' => Devfactory\Minify\Facades\MinifyFacade::class,

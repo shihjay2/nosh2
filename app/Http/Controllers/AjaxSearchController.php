@@ -331,6 +331,84 @@ class AjaxSearchController extends Controller {
                 }
             }
         } else {
+            $pos = explode(' ', $q);
+            // Get common codes
+            $common = File::get(resource_path() . '/common_icd.yaml');
+            $formatter = Formatter::make($common, Formatter::YAML);
+            $common_arr_pre = $formatter->toArray();
+            $common_arr = [];
+            // Add all primary care codes
+            $default_arr = ['Family Practice', 'Internal Medicine', 'Obstetrics & Gynaecology', 'Primary Care', 'Pediatrics'];
+            foreach ($default_arr as $default) {
+                foreach ($common_arr_pre[$default] as $common1) {
+                    if (array_search($common1['code'], array_column($common_arr, 'code')) === false) {
+                        $common_arr[] = $common1;
+                    }
+                }
+                unset($common_arr_pre[$default]);
+            }
+            $common_arr_keys = array_keys($common_arr_pre);
+            if (Session::get('group_id') == '2') {
+                $user = DB::table('providers')->where('id', '=', Session::get('user_id'))->first();
+                $specialty = $user->specialty;
+                $common_key_index = $this->closest_match($specialty, $common_arr_keys);
+                $common_key = $common_arr_keys[$common_key_index];
+                foreach ($common_arr_pre[$common_key] as $common2) {
+                    if (array_search($common2['code'], array_column($common_arr, 'code')) === false) {
+                        $common_arr[] = $common2;
+                    }
+                }
+            }
+            if (count($pos) == 1) {
+                $common_result = array_where($common_arr, function($value, $key) use ($q) {
+                    if (stripos($value['desc'] , $q) !== false) {
+                        return true;
+                    }
+                });
+                $common_result1 = array_where($common_arr, function($value, $key) use ($q) {
+                    if (stripos($value['code'] , $q) !== false) {
+                        return true;
+                    }
+                });
+                $common_result = array_merge($common_result, $common_result1);
+            } else {
+                $common_result = array_where($common_arr, function($value, $key) use ($pos) {
+                    if ($this->striposa($value['desc'] , $pos) !== false) {
+                        return true;
+                    }
+                });
+            }
+            if ($common_result) {
+                $data['message'] = [];
+                $data['response'] = 'li';
+                if ($assessment == true) {
+                    $data['response'] = 'div';
+                }
+                foreach ($common_result as $common_row) {
+                    $common_records = $common_row['desc'] . ' [' . $common_row['code'] . ']';
+                    // $records = $row->icd10_description . ' [' . $row->icd10 . ']';
+                    if ($assessment == true) {
+                        $data['message'][] = [
+                            'id' => $common_row['code'],
+                            'label' => $common_records,
+                            'value' => $common_records,
+                            'href' => route('encounter_assessment_add', ['icd', $common_row['code']]),
+                            'category' => 'Common Codes',
+                            'category_id' => 'common_icd_result',
+                            'icd10type' => '1',
+                        ];
+                    } else {
+                        $data['message'][] = [
+                            'id' => $common_row['code'],
+                            'label' => $common_records,
+                            'value' => $common_records,
+                            'category' => 'Common Codes',
+                            'category_id' => 'common_icd_result',
+                            'icd10type' => '1',
+                        ];
+                    }
+                }
+            }
             $file = File::get(resource_path() . '/icd10cm_order_2017.txt');
             $arr = preg_split("/\\r\\n|\\r|\\n/", $file);
             foreach ($arr as $row) {
@@ -345,7 +423,6 @@ class AjaxSearchController extends Controller {
                 ];
             }
             $result = [];
-            $pos = explode(' ', $q);
             if (count($pos) == 1) {
                 $result = array_where($preicd, function($value, $key) use ($q) {
                     if (stripos($value['desc'] , $q) !== false) {
@@ -365,39 +442,34 @@ class AjaxSearchController extends Controller {
                     }
                 });
             }
-            // $query = DB::table('icd10');
-            // $pos = explode(',', $q);
-            // if ($pos == FALSE) {
-            //     $query->where('icd10_description', 'LIKE', "%$q%");
-            // } else {
-            //     foreach ($pos as $p) {
-            //         $query->where('icd10_description', 'LIKE', "%$p%");
-            //     }
-            // }
-            // $query->orWhere('icd10', 'LIKE', "%$q%");
-            // $result = $query->get();
             if ($result) {
-                $data['message'] = [];
+                if (!isset($data['message'])) {
+                    $data['message'] = [];
+                }
                 $data['response'] = 'li';
                 if ($assessment == true) {
                     $data['response'] = 'div';
                 }
                 foreach ($result as $row) {
                     $records = $row['desc'] . ' [' . $row['icd10'] . ']';
-                    // $records = $row->icd10_description . ' [' . $row->icd10 . ']';
                     if ($assessment == true) {
                         $data['message'][] = [
                             'id' => $row['icd10'],
                             'label' => $records,
                             'value' => $records,
-                            'href' => route('encounter_assessment_add', ['icd', $row['icd10']])
+                            'href' => route('encounter_assessment_add', ['icd', $row['icd10']]),
+                            'icd10type' => $row['type'],
+                            'category' => 'Universal Codes',
+                            'category_id' => 'universal_icd_result'
                         ];
                     } else {
                         $data['message'][] = [
                             'id' => $row['icd10'],
                             'label' => $records,
                             'value' => $records,
-                            'icd10type' => $row['type']
+                            'icd10type' => $row['type'],
+                            'category' => 'Universal Codes',
+                            'category_id' => 'universal_icd_result'
                         ];
                     }
                 }

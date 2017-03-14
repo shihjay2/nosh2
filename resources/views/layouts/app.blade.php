@@ -1320,13 +1320,36 @@
                         $target.html(html);
                     }
                     if (response.response == 'div') {
+                        $target.html('');
                         $.each(response.message, function (i, val) {
                             if (val.value !== null) {
-                                html += '<a href="' + val.href + '" class="list-group-item" data-nosh-value="' + val.value +'" data-nosh-id="' + val.id + '">' + val.label + '</a>';
+                                if (typeof val.category_id !== 'undefined') {
+                                    $target.removeClass('list-group');
+                                    $target.addClass('list-category text-primary');
+                                    if ($('#' + val.category_id).length === 0) {
+                                        $target.append('<h5 class="list-category-title">' + val.category + '</h3><ul id="' + val.category_id + '" class="list-group"></ul>');
+                                    }
+                                }
+                                html += '<a href="' + val.href + '" class="list-group-item';
+                                if (typeof val.icd10type !== 'undefined') {
+                                    if (val.icd10type == '0') {
+                                        html += ' nosh-icd10 list-group-item-danger';
+                                    } else {
+                                        html += ' nosh-icd10 list-group-item-success';
+                                    }
+                                }
+                                html += ' data-nosh-value="' + val.value +'" data-nosh-id="' + val.id + '">' + val.label + '</a>';
+                                if (typeof val.category_id !== 'undefined') {
+                                    $('#'+ val.category_id).append(html);
+                                    html = '';
+                                }
                             }
                         });
-                        $target.html(html);
-                        $('.list-group-item').first().focus();
+                        if (html !== '') {
+                            $target.addClass('list-group');
+                            $target.html(html);
+                            $('.list-group-item').first().focus();
+                        }
                     }
                     if (response.response == 'li') {
                         $target.html('');

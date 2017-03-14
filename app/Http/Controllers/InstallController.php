@@ -13,6 +13,7 @@ use File;
 use Form;
 use Hash;
 use HTML;
+use Htmldom;
 use Illuminate\Http\Request;
 use Illuminate\Support\MessageBag;
 use Laravel\LegacyEncrypter\McryptEncrypter;
@@ -23,6 +24,7 @@ use Session;
 use URL;
 use DateTime;
 use DateTimeZone;
+use SoapBox\Formatter\Formatter;
 
 class InstallController extends Controller {
 
@@ -766,9 +768,6 @@ public function install_fix(Request $request)
 
     public function test1(Request $request)
     {
-        date_default_timezone_set("UTC");
-        $str=date('d-m-Y H:i:s','1489050000');
-        date_default_timezone_set("America/Los_Angeles");
-        return strtotime($str);
+        
     }
 }
