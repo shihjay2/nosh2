@@ -13949,7 +13949,7 @@ class Controller extends BaseController
         $i = 0;
         $parameters = array();
         foreach ($data as $key => $value) {
-            if ($key!='page' && $key !='sort') {
+            if ($key != 'page' && $key != 'sort') {
                 $exact = false;
                 $missing = false;
                 $text = false;

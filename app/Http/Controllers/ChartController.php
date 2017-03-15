@@ -3152,6 +3152,9 @@ class ChartController extends Controller {
             'icon' => 'fa-search',
             'url' => route('encounter_view', [$eid])
         ];
+        $items[] = [
+            'type' => 'separator'
+        ];
         if ($encounter->encounter_template !== 'virtual') {
             $items[] = [
                 'type' => 'item',
@@ -3172,29 +3175,35 @@ class ChartController extends Controller {
             'icon' => 'fa-plus',
             'url' => route('action_edit', ['procedure', 'eid', $eid, 'new', 'proc_description']),
         ];
-        $items1[] = [
+        $items[] = [
+            'type' => 'separator'
+        ];
+        $items[] = [
             'type' => 'item',
             'label' => 'Add Lab Order',
-            'icon' => 'fa-plus',
+            'icon' => 'fa-thumbs-o-up',
             'url' => route('chart_form', ['orders', 'orders_id', '0', 'orders_labs'])
         ];
-        $items1[] = [
+        $items[] = [
             'type' => 'item',
             'label' => 'Add Imaging Order',
-            'icon' => 'fa-plus',
+            'icon' => 'fa-thumbs-o-up',
             'url' => route('chart_form', ['orders', 'orders_id', '0', 'orders_radiology'])
         ];
-        $items1[] = [
+        $items[] = [
             'type' => 'item',
             'label' => 'Add Cardiopulmonary Order',
-            'icon' => 'fa-plus',
+            'icon' => 'fa-thumbs-o-up',
             'url' => route('chart_form', ['orders', 'orders_id', '0', 'orders_cp'])
         ];
-        $items1[] = [
+        $items[] = [
             'type' => 'item',
             'label' => 'Add Referral',
-            'icon' => 'fa-plus',
+            'icon' => 'fa-thumbs-o-up',
             'url' => route('chart_form', ['orders', 'orders_id', '0', 'orders_referrals'])
+        ];
+        $items[] = [
+            'type' => 'separator'
         ];
         $items[] = [
             'type' => 'item',
@@ -3213,6 +3222,9 @@ class ChartController extends Controller {
             'label' => 'Print Plan',
             'icon' => 'fa-print',
             'url' => route('encounter_print_plan', [$eid])
+        ];
+        $items[] = [
+            'type' => 'separator'
         ];
         $items[] = [
             'type' => 'item',

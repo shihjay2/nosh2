@@ -276,8 +276,9 @@ Route::group(['prefix' => 'fhir'], function () {
 // Route::group(['prefix' => 'fhir', 'middleware' => 'fhir'], function () {
     Route::resource('AdverseReaction', 'AdverseReactionController');
     Route::resource('Alert', 'AlertController');
-    Route::resource('AllergyIntolerance', 'AllergyIntoleranceController'); // in use - allergies
-    Route::resource('Binary', 'BinaryController'); // in use - documents
+    Route::resource('AllergyIntolerance', 'AllergyIntoleranceController'); //in use - allergies
+    Route::resource('Appointment', 'AppointmentController'); //in use - appointments
+    Route::resource('Binary', 'BinaryController'); //in use - documents
     Route::resource('CarePlan', 'CarePlanController');
     Route::resource('Composition', 'CompositionController');
     Route::resource('ConceptMap', 'ConceptMapController');
@@ -293,7 +294,7 @@ Route::group(['prefix' => 'fhir'], function () {
     Route::resource('FamilyHistory', 'FamilyHistoryController'); //in use
     Route::resource('Group', 'GroupController');
     Route::resource('ImagingStudy', 'ImagingStudyController');
-    Route::resource('Immunization', 'ImmunizationController'); // in use - immunizations
+    Route::resource('Immunization', 'ImmunizationController'); //in use - immunizations
     Route::resource('ImmunizationRecommendation', 'ImmunizationRecommendationController');
     Route::resource('List', 'ListController');
     Route::resource('Location', 'LocationController');
@@ -301,12 +302,12 @@ Route::group(['prefix' => 'fhir'], function () {
     Route::resource('Medication', 'MedicationController'); //in use - rxnorm
     Route::resource('MedicationAdministration', 'MedicationAdministrationController');
     Route::resource('MedicationDispense', 'MedicationDispenseController');
-    Route::resource('MedicationPrescription', 'MedicationPrescriptionController');
+    Route::resource('MedicationOrder', 'MedicationOrderController');
     Route::resource('MedicationStatement', 'MedicationStatementController'); //in use - medication list
     Route::resource('MessageHeader', 'MessageHeaderController');
-    Route::resource('Observation', 'ObservationController');
+    Route::resource('Observation', 'ObservationController'); //in use - vitals and test results
     Route::resource('OperationOutcome', 'OperationOutcomeController');
-    Route::resource('Order', 'OrderController');
+    Route::resource('Order', 'OrderController'); //in use
     Route::resource('OrderResponse', 'OrderResponseController');
     Route::resource('Organization', 'OrganizationController');
     Route::resource('Other', 'OtherController');
@@ -318,6 +319,7 @@ Route::group(['prefix' => 'fhir'], function () {
     Route::resource('Query', 'QueryController');
     Route::resource('Questionnaire', 'QuestionnaireController');
     Route::resource('RelatedPerson', 'RelatedPersonController');
+    Route::resource('Schedule', 'ScheduleController'); //in use - available appointments
     Route::resource('SecurityEvent', 'SecurityEventController');
     Route::resource('Specimen', 'SpecimenController');
     Route::resource('Substance', 'SubstanceController');

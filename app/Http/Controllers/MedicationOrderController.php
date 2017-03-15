@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Response;
 use URL;
 
-class MedicationStatementController extends Controller {
+class MedicationOrderController extends Controller {
 
 	/**
 	 * Display a listing of the resource.
@@ -20,7 +20,7 @@ class MedicationStatementController extends Controller {
 	{
 		$data = $request->all();
 		if ($data) {
-			$resource = 'MedicationStatement';
+			$resource = 'MedicationOrder';
 			$table = 'rx_list';
 			$table_primary_key = 'rxl_id';
 			$table_key = [
@@ -124,18 +124,7 @@ class MedicationStatementController extends Controller {
 	 */
 	public function show($id)
 	{
-		$resource = 'MedicationStatement';
-		$row = DB::table('rx_list')->where('rxl_id', '=', $id)->first();
-		if ($row) {
-			$statusCode = 200;
-			$response = $this->resource_detail($row, $resource);
-		} else {
-			$response = [
-				'error' => $resource . " doesn't exist."
-			];
-			$statusCode = 404;
-		}
-		return Response::json($response, $statusCode);
+		//
 	}
 
 
