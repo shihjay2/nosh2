@@ -3180,6 +3180,18 @@ class ChartController extends Controller {
         ];
         $items[] = [
             'type' => 'item',
+            'label' => 'Prescribe Medication',
+            'icon' => 'fa-eyedropper',
+            'url' => route('chart_form', ['rx_list', 'rxl_id', '0', 'prescribe'])
+        ];
+        $items[] = [
+            'type' => 'item',
+            'label' => 'Order Supplement',
+            'icon' => 'fa-tree',
+            'url' => route('chart_form', ['sup_list', 'sup_id', '0', 'order'])
+        ];
+        $items[] = [
+            'type' => 'item',
             'label' => 'Add Lab Order',
             'icon' => 'fa-thumbs-o-up',
             'url' => route('chart_form', ['orders', 'orders_id', '0', 'orders_labs'])
@@ -4681,7 +4693,7 @@ class ChartController extends Controller {
             $items1 = [];
             $items1[] = [
                 'type' => 'item',
-                'label' => 'Add Encounter',
+                'label' => 'Add',
                 'icon' => 'fa-plus',
                 'url' => route('encounter_details', ['0'])
             ];
@@ -5843,20 +5855,25 @@ class ChartController extends Controller {
             $items1 = [];
             $items1[] = [
                 'type' => 'item',
-                'label' => 'Add Medication',
+                'label' => 'Add',
                 'icon' => 'fa-plus',
                 'url' => route('chart_form', ['rx_list', $row_index, '0'])
             ];
+            $dropdown_array1['items'] = $items1;
+            $data['panel_dropdown'] .= '<span class="fa-btn"></span>' . $this->dropdown_build($dropdown_array1);
             if (Session::get('group_id') == '2') {
-                $items1[] = [
+                $dropdown_array2 = [
+                    'items_button_icon' => 'fa-plus'
+                ];
+                $items2[] = [
                     'type' => 'item',
-                    'label' => 'Prescribe Medication',
+                    'label' => 'Prescribe',
                     'icon' => 'fa-plus',
                     'url' => route('chart_form', ['rx_list', $row_index, '0', 'prescribe'])
                 ];
+                $dropdown_array2['items'] = $items2;
+                $data['panel_dropdown'] .= '<span class="fa-btn"></span>' . $this->dropdown_build($dropdown_array2);
             }
-            $dropdown_array1['items'] = $items1;
-            $data['panel_dropdown'] .= '<span class="fa-btn"></span>' . $this->dropdown_build($dropdown_array1);
         }
         if (Session::has('eid') && $type == 'active') {
             if (Session::get('group_id') == '2') {
@@ -6313,7 +6330,6 @@ class ChartController extends Controller {
         return view('chart', $data);
     }
 
-
     public function register_patient(Request $request)
     {
         $pid = Session::get('pid');
@@ -6719,6 +6735,33 @@ class ChartController extends Controller {
             'icon' => 'fa-print',
             'url' => route('results_print', [$id])
         ];
+        $items[] = [
+            'type' => 'separator'
+        ];
+        $items[] = [
+            'type' => 'item',
+            'label' => 'Add Lab Order',
+            'icon' => 'fa-thumbs-o-up',
+            'url' => route('chart_form', ['orders', 'orders_id', '0', 'orders_labs'])
+        ];
+        $items[] = [
+            'type' => 'item',
+            'label' => 'Add Imaging Order',
+            'icon' => 'fa-thumbs-o-up',
+            'url' => route('chart_form', ['orders', 'orders_id', '0', 'orders_radiology'])
+        ];
+        $items[] = [
+            'type' => 'item',
+            'label' => 'Add Cardiopulmonary Order',
+            'icon' => 'fa-thumbs-o-up',
+            'url' => route('chart_form', ['orders', 'orders_id', '0', 'orders_cp'])
+        ];
+        $items[] = [
+            'type' => 'item',
+            'label' => 'Add Referral',
+            'icon' => 'fa-thumbs-o-up',
+            'url' => route('chart_form', ['orders', 'orders_id', '0', 'orders_referrals'])
+        ];
         $dropdown_array['items'] = $items;
         $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
         $data['content'] = $return;
@@ -6961,18 +7004,24 @@ class ChartController extends Controller {
             $items1 = [];
             $items1[] = [
                 'type' => 'item',
-                'label' => 'Add Supplement',
+                'label' => 'Add',
                 'icon' => 'fa-plus',
                 'url' => route('chart_form', ['sup_list', $row_index, '0'])
             ];
-            $items1[] = [
+            $dropdown_array1['items'] = $items1;
+            $data['panel_dropdown'] .= '<span class="fa-btn"></span>' . $this->dropdown_build($dropdown_array1);
+            $dropdown_array2 = [
+                'items_button_icon' => 'fa-plus'
+            ];
+            $items2 = [];
+            $items2[] = [
                 'type' => 'item',
-                'label' => 'Order Supplement',
+                'label' => 'Order',
                 'icon' => 'fa-plus',
                 'url' => route('chart_form', ['sup_list', $row_index, '0', 'order'])
             ];
-            $dropdown_array1['items'] = $items1;
-            $data['panel_dropdown'] .= '<span class="fa-btn"></span>' . $this->dropdown_build($dropdown_array1);
+            $dropdown_array2['items'] = $items2;
+            $data['panel_dropdown'] .= '<span class="fa-btn"></span>' . $this->dropdown_build($dropdown_array2);
         }
         if (Session::has('eid') && $type == 'active') {
             if (Session::get('group_id') == '2') {

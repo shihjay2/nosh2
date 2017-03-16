@@ -147,6 +147,8 @@
                                     <li><a href="{{ route('user_signature') }}"><i class="fa fa-btn fa-pencil"></i>Change Signature</a></li>
                                 @endif
                                 <li><a href="{{ route('password_change') }}"><i class="fa fa-btn fa-cog"></i>Change Password</a></li>
+                                <li><a href="https://github.com/shihjay2/nosh2/issues/new" target="_blank" class="nosh-no-load"><i class="fa fa-btn fa-github-alt"></i>Report a Bug</a></li>
+                                <li><a href="https://github.com/shihjay2/nosh2/issues/new" target="_blank" class="nosh-no-load"><i class="fa fa-btn fa-heart"></i>Make a Suggestion</a></li>
                                 <li><a href="{{ route('logout') }}"><i class="fa fa-btn fa-sign-out"></i>Logout</a></li>
                             </ul>
                         </li>
