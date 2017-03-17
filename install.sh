@@ -235,9 +235,9 @@ composer create-project nosh2/nosh2 --prefer-dist --stability dev
 cd $NEWNOSH
 
 # Edit .env file
-sed -i '/^DB_DATABASE=/s/=.*/='"$MYSQL_DATABASE"'/' .env
-sed -i '/^DB_USERNAME=/s/=.*/='"$MYSQL_USERNAME"'/' .env
-sed -i '/^DB_PASSWORD=/s/=.*/='"$MYSQL_PASSWORD"'/' .env
+sed -i '/^DB_DATABASE=/s/=.*/='"$MYSQL_DATABASE"'/' $ENV
+sed -i '/^DB_USERNAME=/s/=.*/='"$MYSQL_USERNAME"'/' $ENV
+sed -i '/^DB_PASSWORD=/s/=.*/='"$MYSQL_PASSWORD"'/' $ENV
 
 chown -R $WEB_GROUP.$WEB_USER $NEWNOSH
 chmod -R 755 $NEWNOSH
@@ -251,10 +251,6 @@ echo "create database $MYSQL_DATABASE" | mysql -u $MYSQL_USERNAME -p$MYSQL_PASSW
 php artisan migrate:install
 php artisan migrate
 log_only "Installed NOSH ChartingSystem database schema."
-mysql -u $MYSQL_USERNAME -p$MYSQL_PASSWORD $MYSQL_DATABASE < $NEWNOSH/import/orderslist1.sql
-log_only "Installed NOSH ChartingSystem order templates."
-mysql -u $MYSQL_USERNAME -p$MYSQL_PASSWORD $MYSQL_DATABASE < $NEWNOSH/import/supplements_list.sql
-log_only "Installed NOSH ChartingSystem supplements database."
 a2enmod ssl
 if [ -e "$WEB_CONF"/nosh2.conf ]; then
 	rm "$WEB_CONF"/nosh2.conf

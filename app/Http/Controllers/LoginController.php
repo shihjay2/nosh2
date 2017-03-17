@@ -284,8 +284,7 @@ class LoginController extends Controller {
                     return view('auth.login', $data);
                 } else {
                     // Not installed yet, go to install page
-                    $data2['noheader'] = true;
-                    return view('install', $data2);
+                    return redirect()->route('install');
                 }
             }
         } else {

@@ -110,7 +110,7 @@ class MedicationStatementController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function store()
+	public function store(Request $request)
 	{
 		//
 	}
@@ -157,7 +157,7 @@ class MedicationStatementController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update($id)
+	public function update(Request $request, $id)
 	{
 		//
 	}

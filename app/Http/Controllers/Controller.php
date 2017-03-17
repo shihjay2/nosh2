@@ -3234,6 +3234,72 @@ class Controller extends BaseController
         return $result;
     }
 
+    protected function fhir_response($data)
+    {
+        $code_arr = [
+            'structure' => 'Structural Issue',
+            'required' => 'Required element missing',
+            'value' => 'Element value invalid',
+            'invariant' => 'Validation rule failed',
+            'security' => 'Security Problem',
+            'login' => 'Login Required',
+            'unknown' => 'Unknown User',
+            'expired' => 'Session Expired',
+            'forbidden' => 'Forbdden',
+            'supressed' => 'Information Suppressed',
+            'processing' => 'Processing Failure',
+            'not-supported' => 'Content not suported',
+            'duplicate' => 'Duplicate',
+            'not-found' => 'Not Found',
+            'too-long' => 'Content Too Long',
+            'code-invalid' => 'Invalid Code',
+            'extension' => 'Unacceptable Extension',
+            'too-costly' => 'Operation Too Costly',
+            'business-rule' => 'Business Rule Violation',
+            'conflict' => 'Edit Version Conflict',
+            'incomplete' => 'Incomplete Results',
+            'transient' => 'Transient Issue',
+            'lock-error' => 'Lock Error',
+            'no-store' => 'No Store Available',
+            'exception' => 'Exception',
+            'timeout' => 'Timeout',
+            'throttled' => 'Throttled',
+            'informational' => 'Informational Note'
+        ];
+        if ($data == 'OK') {
+            $text = [
+                'status' => 'additional',
+                'div' => "<div><p>All OK</p></div>"
+            ];
+            $issue[] = [
+                'severity' => 'information',
+                'code' => 'informational',
+                'details' => [
+                    'text' => 'All OK'
+                ]
+            ];
+        } else {
+            $text = [
+                'status' => 'generated',
+                'div' => "<div><p>" . $code_arr[$data] . "</p></div>"
+            ];
+            $issue[] = [
+                'severity' => 'error',
+                'code' => $data,
+                'details' => [
+                    'text' => $code_arr[$data]
+                ]
+            ];
+        }
+        $return = [
+            'resourceType' => 'OperationOutcome',
+            'id' => $this->gen_uuid(),
+            'text' => $text,
+            'issue' => $issue
+        ];
+        return $return;
+    }
+
     /**
     * Form build
     * @param array  $form_array -

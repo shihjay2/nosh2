@@ -168,9 +168,35 @@ class ConditionController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function store()
+	public function store(Request $request)
 	{
-		//
+		$fhir = $request->all();
+		if (!isset($fhir['id'])) {
+			if (isset($fhir['code']['coding'][0]['code'])) {
+				$data = [
+					'type' => 'Problem List',
+					'issue_date_active' => date('Y-m-d'),
+					'issue_date_inactive' => '',
+					'reconcile' => 'n'
+				];
+				if ($fhir['code']['coding'][0]['system'] == 'http://snomed.info/sct') {
+					$snomed = $this->snomed($fhir['code']['coding'][0]['code']);
+					$data['issue'] = $snomed['desc'] . ' [' . $snomed['code'] . ']';
+				} else {
+					$data['issue'] = $this->icd_search($fhir['code']['coding'][0]['code']) . ' [' . $fhir['code']['coding'][0]['code'] . ']';
+				}
+				$id = DB::table('issues')->insertGetId($data);
+				$header = Request::url() . '/issue_id_' . $id;
+				$response = $this->fhir_response('OK');
+				return response()->json($response, 201)->header('Location', $header);
+			} else {
+				$response = $this->fhir_response('required');
+				return response()->json($respone, 400);
+			}
+		} else {
+			$response = $this->fhir_response('value');
+			return response()->json($response, 400);
+		}
 	}
 
 
@@ -225,9 +251,50 @@ class ConditionController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update($id)
+	public function update(Request $request, $id)
 	{
-		//
+		if (strpos($id, 'issue_id_') >= 0 && strpos($id, 'issue_id_') !== false) {
+			$table = "issues";
+			$table_primary_key = 'issue_id';
+			$value = str_replace('issue_id_', '', $id);
+		}
+		if (strpos($id, 'eid_') >= 0 && strpos($id, 'eid_') !== false) {
+			$table = "assessment";
+			$table_primary_key = 'eid';
+			$value = str_replace('eid_', '', $id);
+		}
+		$fhir = $request->all();
+		if (isset($fhir['id'])) {
+			if (isset($fhir['code']['coding'][0]['code'])) {
+				if ($table == 'issues') {
+					$data = [
+						'type' => 'Problem List',
+						'issue_date_active' => date('Y-m-d'),
+						'issue_date_inactive' => '',
+						'reconcile' => 'n'
+					];
+					if ($fhir['code']['coding'][0]['system'] == 'http://snomed.info/sct') {
+						$snomed = $this->snomed($fhir['code']['coding'][0]['code']);
+						$data['issue'] = $snomed['desc'] . ' [' . $snomed['code'] . ']';
+					} else {
+						$data['issue'] = $this->icd_search($fhir['code']['coding'][0]['code']) . ' [' . $fhir['code']['coding'][0]['code'] . ']';
+					}
+					DB::table($table)->where($table_primary_key, '=', $value)->update($data);
+					$header = Request::url() . '/issue_id_' . $id;
+					$response = $this->fhir_response('OK');
+					return response()->json($response, 201)->header('Location', $header);
+				} else {
+					$response = $this->fhir_response('forbidden');
+					return response()->json($respone, 400);
+				}
+			} else {
+				$response = $this->fhir_response('required');
+				return response()->json($respone, 400);
+			}
+		} else {
+			$response = $this->fhir_response('value');
+			return response()->json($response, 400);
+		}
 	}
 
 
