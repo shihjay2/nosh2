@@ -68,7 +68,11 @@ class InstallController extends Controller {
             $file->move($directory, $new_name);
             Session::put('message_action', 'Google JSON file uploaded successfully');
             if (! $query) {
-                return redirect()->route('install');
+                if (file_exists(base_path() . '/.patientcentric')) {
+                    return redirect()->route('install', ['patient']);
+                } else {
+                    return redirect()->route('install', ['practice']);
+                }
             } else {
                 return redirect()->route('dashboard');
             }
@@ -425,7 +429,7 @@ class InstallController extends Controller {
             ];
             $form_array = [
                 'form_id' => 'install_form',
-                'action' => route('install'),
+                'action' => route('install', [$type]),
                 'items' => $items,
                 'save_button_label' => 'Install'
             ];
@@ -768,6 +772,6 @@ public function install_fix(Request $request)
 
     public function test1(Request $request)
     {
-        
+
     }
 }

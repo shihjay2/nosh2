@@ -50,7 +50,11 @@ class CheckInstall
         // Chcek if needing installation
         $install = DB::table('practiceinfo')->first();
         if (!$install) {
-            return redirect()->route('install');
+            if (file_exists(base_path() . '/.patientcentric')) {
+                return redirect()->route('install', ['patient']);
+            } else {
+                return redirect()->route('install', ['practice']);
+            }
         }
 
         // Check for updates

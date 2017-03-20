@@ -269,9 +269,6 @@ class LoginController extends Controller {
                             }
                         }
                     }
-                    //$data['css_assets'] = $this->css_assets();
-                    //$data['js_assets'] = $this->js_assets('base');
-                    // Add login.js to the view
                     if ((array_key_exists('login_attempts', $_COOKIE)) && ($_COOKIE['login_attempts'] >= 5)){
                         $data['attempts'] = "You have reached the number of limits to login.  Wait 15 minutes then try again.";
                     } else {
@@ -284,7 +281,11 @@ class LoginController extends Controller {
                     return view('auth.login', $data);
                 } else {
                     // Not installed yet, go to install page
-                    return redirect()->route('install');
+                    if (file_exists(base_path() . '/.patientcentric')) {
+                        return redirect()->route('install', ['patient']);
+                    } else {
+                        return redirect()->route('install', ['practice']);
+                    }
                 }
             }
         } else {
