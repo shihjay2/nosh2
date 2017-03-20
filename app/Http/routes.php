@@ -33,7 +33,7 @@ Route::any('uma_logout', ['as' => 'uma_logout', 'uses' => 'LoginController@uma_l
 // Install routes
 Route::any('backup', ['as' => 'backup', 'uses' => 'InstallController@backup']);
 Route::any('google_start', ['as' => 'google_start', 'uses' => 'InstallController@google_start']);
-Route::any('install/{type?}', ['as' => 'install', 'uses' => 'InstallController@install']);
+Route::any('install/{type}', ['as' => 'install', 'uses' => 'InstallController@install']);
 Route::any('install_fix', ['as' => 'install_fix', 'uses' => 'InstallController@install_fix']);
 Route::get('set_version', ['as' => 'set_version', 'uses' => 'InstallController@set_version']);
 Route::get('uma_patient_centric', ['as' => 'uma_patient_centric', 'uses' => 'InstallController@uma_patient_centric']);
