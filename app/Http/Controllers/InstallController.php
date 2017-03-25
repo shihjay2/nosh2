@@ -9,6 +9,7 @@ use Artisan;
 use Auth;
 use Config;
 use Crypt;
+use Date;
 use DB;
 use File;
 use Form;
@@ -414,12 +415,16 @@ class InstallController extends Controller {
                     'default_value' => null
                 ];
             }
+            $documents_dir = '/noshdocuments/';
+            if (file_exists(base_path() . '/.noshdir')) {
+                $documents_dir = trim(File::get(base_path() . '/.noshdir'));
+            }
             $items[] = [
                 'name' => 'documents_dir',
                 'label' => 'Documents Directory',
                 'type' => 'text',
                 'required' => true,
-                'default_value' => null
+                'default_value' => $documents_dir
             ];
             $items[] = [
                 'name' => 'smtp_user',
@@ -773,6 +778,7 @@ public function install_fix(Request $request)
 
     public function test1(Request $request)
     {
-
+        $date = new Date(1490153232);
+        return $date->addYear()->format('Y-m-d');
     }
 }

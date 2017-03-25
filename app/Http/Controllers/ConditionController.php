@@ -180,7 +180,7 @@ class ConditionController extends Controller {
 					'reconcile' => 'n'
 				];
 				if ($fhir['code']['coding'][0]['system'] == 'http://snomed.info/sct') {
-					$snomed = $this->snomed($fhir['code']['coding'][0]['code']);
+					$snomed = $this->snomed($fhir['code']['coding'][0]['code'], true);
 					$data['issue'] = $snomed['desc'] . ' [' . $snomed['code'] . ']';
 				} else {
 					$data['issue'] = $this->icd_search($fhir['code']['coding'][0]['code']) . ' [' . $fhir['code']['coding'][0]['code'] . ']';
@@ -274,7 +274,7 @@ class ConditionController extends Controller {
 						'reconcile' => 'n'
 					];
 					if ($fhir['code']['coding'][0]['system'] == 'http://snomed.info/sct') {
-						$snomed = $this->snomed($fhir['code']['coding'][0]['code']);
+						$snomed = $this->snomed($fhir['code']['coding'][0]['code'], true);
 						$data['issue'] = $snomed['desc'] . ' [' . $snomed['code'] . ']';
 					} else {
 						$data['issue'] = $this->icd_search($fhir['code']['coding'][0]['code']) . ' [' . $fhir['code']['coding'][0]['code'] . ']';

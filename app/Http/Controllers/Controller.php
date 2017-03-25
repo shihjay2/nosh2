@@ -9495,7 +9495,7 @@ class Controller extends BaseController
         $pos1 = strpos($item, ", CPT: ");
         if ($pos !== false) {
             $items = explode(", SNOMED: ", $item);
-            $term_row = $this->snomed($items[1]);
+            $term_row = $this->snomed($items[1], true);
             $orders_file1 = File::get(resource_path() . '/orders.xml');
             $orders_file1 = str_replace('?orders_date?', date('Ymd', $this->human_to_unix($date)), $orders_file1);
             $orders_file1 = str_replace('?orders_code?', $items[1], $orders_file1);
@@ -13650,6 +13650,14 @@ class Controller extends BaseController
             // missing relatedItem
         }
 
+        $med_freq_array_1 = ["once daily", "every 24 hours", "once a day", "1 time a day", "QD"];
+        $med_freq_array_2 = ["twice daily", "every 12 hours", "two times a day", "2 times a day", "BID", "q12h", "Q12h"];
+        $med_freq_array_3 = ["three times daily", "every 8 hours", "three times a day", "3 times daily", "3 times a day", "TID", "q8h", "Q8h"];
+        $med_freq_array_4 = ["every six hours", "every 6 hours", "four times daily", "4 times a day", "four times a day", "4 times daily", "QID", "q6h", "Q6h"];
+        $med_freq_array_5 = ["every four hours", "every 4 hours", "six times a day", "6 times a day", "six times daily", "6 times daily", "q4h", "Q4h"];
+        $med_freq_array_6 = ["every three hours", "every 3 hours", "eight times a day", "8 times a day", "eight times daily", "8 times daily", "q3h", "Q3h"];
+        $med_freq_array_7 = ["every two hours", "every 2 hours", "twelve times a day", "12 times a day", "twelve times daily", "12 times daily", "q2h", "Q2h"];
+        $med_freq_array_8 = ["every hour", "every 1 hour", "every one hour", "q1h", "Q1h"];
         // MedicationStatement
         if ($resource_type == 'MedicationStatement') {
             $response['id'] = $row->rxl_id;
@@ -13667,31 +13675,20 @@ class Controller extends BaseController
             }
             $response['dateAsserted'] = date('Y-m-d');
             $response['effectiveDateTime'] = date('Y-m-d', $this->human_to_unix($row->rxl_date_active));
-            $url = 'https://rxnav.nlm.nih.gov/REST/rxcui.json?idtype=NDC&id=' . $row->rxl_ndcid;
-            $ch = curl_init();
-            curl_setopt($ch,CURLOPT_URL, $url);
-            curl_setopt($ch,CURLOPT_FAILONERROR,1);
-            curl_setopt($ch,CURLOPT_FOLLOWLOCATION,1);
-            curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
-            curl_setopt($ch,CURLOPT_TIMEOUT, 15);
-            $json = curl_exec($ch);
-            curl_close($ch);
-            $rxnorm = json_decode($json, true);
-            if (isset($rxnorm['idGroup']['rxnormId'][0])) {
-                $url1 = 'https://rxnav.nlm.nih.gov/REST/rxcui/' . $rxnorm['idGroup']['rxnormId'][0] . '/properties.json';
-                $ch1 = curl_init();
-                curl_setopt($ch1,CURLOPT_URL, $url1);
-                curl_setopt($ch1,CURLOPT_FAILONERROR,1);
-                curl_setopt($ch1,CURLOPT_FOLLOWLOCATION,1);
-                curl_setopt($ch1,CURLOPT_RETURNTRANSFER,1);
-                curl_setopt($ch1,CURLOPT_TIMEOUT, 15);
-                $json1 = curl_exec($ch1);
-                curl_close($ch1);
-                $rxnorm1 = json_decode($json1, true);
-                $med_name = $rxnorm1['properties']['name'];
-                $response['medicationReference'] = [
-                    'reference' => 'Medication/' . $row->rxl_ndcid,
-                    'display' => $rxnorm1['properties']['name']
+            $medication_reference = $this->resource_medication_reference($row->rxl_ndcid);
+            if (count($medication_reference) > 0) {
+                $response['medicationReference'] = $medication_reference;
+            }
+            $reason_snomed = $this->snomed($row->rxl_reason, true);
+            if (count($reason_snomed) > 0) {
+                $response['reasonCodeableConcept'] = [
+                    'coding' => [
+                        '0' => [
+                            'system' => 'http://snomed.info/sct',
+                            'code' => $reason_snomed['code'],
+                            'display' => $reason_snomed['description']
+                        ]
+                    ]
                 ];
             }
             $med_prn_array = ["as needed", "PRN"];
@@ -13722,14 +13719,6 @@ class Controller extends BaseController
                 $med_code = $route_arr[$med_row->rxl_route][0];
                 $med_code_description = $route_arr[$med_row->rxl_route][1];
                 $med_period = '';
-                $med_freq_array_1 = ["once daily", "every 24 hours", "once a day", "1 time a day", "QD"];
-                $med_freq_array_2 = ["twice daily", "every 12 hours", "two times a day", "2 times a day", "BID", "q12h", "Q12h"];
-                $med_freq_array_3 = ["three times daily", "every 8 hours", "three times a day", "3 times daily", "3 times a day", "TID", "q8h", "Q8h"];
-                $med_freq_array_4 = ["every six hours", "every 6 hours", "four times daily", "4 times a day", "four times a day", "4 times daily", "QID", "q6h", "Q6h"];
-                $med_freq_array_5 = ["every four hours", "every 4 hours", "six times a day", "6 times a day", "six times daily", "6 times daily", "q4h", "Q4h"];
-                $med_freq_array_6 = ["every three hours", "every 3 hours", "eight times a day", "8 times a day", "eight times daily", "8 times daily", "q3h", "Q3h"];
-                $med_freq_array_7 = ["every two hours", "every 2 hours", "twelve times a day", "12 times a day", "twelve times daily", "12 times daily", "q2h", "Q2h"];
-                $med_freq_array_8 = ["every hour", "every 1 hour", "every one hour", "q1h", "Q1h"];
                 if (in_array($row->rxl_frequency, $med_freq_array_1)) {
                     $med_period = "24";
                 }
@@ -13796,6 +13785,171 @@ class Controller extends BaseController
             }
             $response['dosage'][] = $dosage_array;
         }
+
+        // MedicationOrder
+        if ($resource_type == 'MedicationOrder') {
+            $response['id'] = $row->rxl_id;
+            $patient = DB::table('demographics')->where('pid', '=', $row->pid)->first();
+            $response['patient'] = [
+                'reference' => 'Patient/' . $row->pid,
+                'display' => $patient->firstname . ' ' . $patient->lastname
+            ];
+            $provider = DB::table('users')->where('displayname', '=', $row->rxl_provider)->first();
+            if ($provider) {
+                $response['prescriber'] = [
+                    'reference' => 'Practitioner/' . $provider->id,
+                    'display' => $row->rxl_provider
+                ];
+            }
+            $response['dateWritten'] = date('Y-m-d', $this->human_to_unix($row->rxl_date_active));
+            $medication_reference = $this->resource_medication_reference($row->rxl_ndcid);
+            if (count($medication_reference) > 0) {
+                $response['medicationReference'] = $medication_reference;
+            }
+            $reason_snomed = $this->snomed($row->rxl_reason, true);
+            if (count($reason_snomed) > 0) {
+                $response['reasonCodeableConcept'] = [
+                    'coding' => [
+                        '0' => [
+                            'system' => 'http://snomed.info/sct',
+                            'code' => $reason_snomed['code'],
+                            'display' => $reason_snomed['description']
+                        ]
+                    ]
+                ];
+            }
+            $med_prn_array = ["as needed", "PRN"];
+            if ($row->rxl_sig == '') {
+                $response['text']['div'] = '<div>' . $row->rxl_medication . ' ' . $row->rxl_dosage . ' ' . $row->rxl_dosage_unit . ', ' . $row->rxl_instructions . ' for ' . $row->rxl_reason . '</div>';
+                $dosage_text = $row->rxl_instructions . ' for ' . $row->rxl_reason;
+                $asNeededBoolean = false;
+                if (in_array($med_row->rxl_instructions, $med_prn_array)) {
+                    $asNeededBoolean = true;
+                }
+                $dosage_array = [
+                    'text' => $dosage_text,
+                    'asNeededBoolean' => $asNeededBoolean,
+                    'quantityQuantity' => [
+                        'value' => $row->rxl_quantity
+                    ]
+                ];
+            } else {
+                $response['text']['div'] = '<div>' . $row->rxl_medication . ' ' . $row->rxl_dosage . ' ' . $row->rxl_dosage_unit . ', ' . $row->rxl_sig . ' ' . $row->rxl_route . ' ' . $row->rxl_frequency . ' for ' . $row->rxl_reason . '</div>';
+                $dosage_text = $row->rxl_sig . ' ' . $row->rxl_route . ' ' . $row->rxl_frequency . ' for ' . $row->rxl_reason;
+                $med_dosage_parts = explode(" ", $row->rxl_sig);
+                $med_dosage = $med_dosage_parts[0];
+                if (count($med_dosage_parts) > 1) {
+                    $med_dosage_unit = $med_dosage_parts[1];
+                } else {
+                    $med_dosage_unit = '';
+                }
+                $med_code = $route_arr[$med_row->rxl_route][0];
+                $med_code_description = $route_arr[$med_row->rxl_route][1];
+                $med_period = '';
+                if (in_array($row->rxl_frequency, $med_freq_array_1)) {
+                    $med_period = "24";
+                }
+                if (in_array($row->rxl_frequency, $med_freq_array_2)) {
+                    $med_period = "12";
+                }
+                if (in_array($row->rxl_frequency, $med_freq_array_3)) {
+                    $med_period = "8";
+                }
+                if (in_array($row->rxl_frequency, $med_freq_array_4)) {
+                    $med_period = "6";
+                }
+                if (in_array($row->rxl_frequency, $med_freq_array_5)) {
+                    $med_period = "4";
+                }
+                if (in_array($row->rxl_frequency, $med_freq_array_6)) {
+                    $med_period = "3";
+                }
+                if (in_array($row->rxl_frequency, $med_freq_array_7)) {
+                    $med_period = "2";
+                }
+                if (in_array($row->rxl_frequency, $med_freq_array_8)) {
+                    $med_period = "1";
+                }
+                $asNeededBoolean = false;
+                if (in_array($row->rxl_frequency, $med_prn_array)) {
+                    $asNeededBoolean = true;
+                }
+                $dosage_array = [
+                    'text' => $dosage_text,
+                    'asNeededBoolean' => $asNeededBoolean
+                ];
+                if ($med_period != '') {
+                    $dosage_array['timing'] = [
+                        'repeat' => [
+                            'frequency' => $med_period,
+                            'period' => '1',
+                            'periodUnits' => 'd'
+                        ]
+                    ];
+                }
+                if ($med_code != '' && $med_code_description != '') {
+                    $dosage_array['route'] = [
+                        'coding' => [
+                            '0' => [
+                                'system' => 'http://ncimeta.nci.nih.gov',
+                                'code' => $med_code,
+                                'display' => $med_code_description
+                            ]
+                        ]
+                    ];
+                }
+            }
+            $dosage_array['doseQuantity'] = [
+                'value' => $row->rxl_dosage,
+                'unit' => $row->rxl_dosage_unit
+            ];
+            if ($row->rxl_date_inactive == '0000-00-00 00:00:00' && $row->rxl_date_old == '0000-00-00 00:00:00') {
+                $response['status'] = 'active';
+            }
+            if ($row->rxl_date_inactive != '0000-00-00 00:00:00') {
+                $response['status'] = 'completed';
+            }
+            $response['dosageInstruction'][] = $dosage_array;
+            $temp_date = new Date($this->human_to_unix($row->rxl_date_active));
+            $temp_quantity = explode(' ', $row->rxl_quantity);
+            $quantity_arr['value'] = $temp_quantity[0];
+            if (count($temp_quantity) > 1) {
+                $quantity_arr['unit'] = $temp_quantity[1];
+            }
+            $response['dispenseRequest'] = [
+                'medicationReference' => $medication_reference,
+                'validityPeriod' => [
+                    'start' => date('Y-m-d', $this->human_to_unix($row->rxl_date_active)),
+                    'end' => $temp_date->addYear()->format('Y-m-d')
+                ],
+                'numberOfRepeatsAllowed' => $row->rxl_refill,
+                'quantity' => $quantity_arr,
+                'expectedSupplyDuration' => [
+                    'value' => $row->rxl_days,
+                    'unit' => 'days',
+                    'system' => 'http://unitsofmeasure.org',
+                    'code' => 'd'
+                ]
+            ];
+            $sub_code = 'G';
+            $sub_code = 'generic composition';
+            if ($result->rxl_daw !== '' && $result->rxl_daw !== null) {
+                $sub_code = 'BC';
+                $sub_desc = 'brand composition';
+            }
+            $response['substitution'] = [
+                'type' => [
+                    'coding' => [
+                        '0' => [
+                            'system' => 'http://hl7.org/fhir',
+                            'code' => $sub_code,
+                            'description' => $sub_desc
+                        ]
+                    ]
+                ]
+            ];
+        }
+
         // AllergyIntolerance
         if ($resource_type == 'AllergyIntolerance') {
             $response['id'] = $row->allergies_id;
@@ -13903,6 +14057,39 @@ class Controller extends BaseController
         return $response;
     }
 
+    protected function resource_medication_reference($ndcid)
+    {
+        $return = [];
+        $url = 'https://rxnav.nlm.nih.gov/REST/rxcui.json?idtype=NDC&id=' . $ndcid;
+        $ch = curl_init();
+        curl_setopt($ch,CURLOPT_URL, $url);
+        curl_setopt($ch,CURLOPT_FAILONERROR,1);
+        curl_setopt($ch,CURLOPT_FOLLOWLOCATION,1);
+        curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+        curl_setopt($ch,CURLOPT_TIMEOUT, 15);
+        $json = curl_exec($ch);
+        curl_close($ch);
+        $rxnorm = json_decode($json, true);
+        if (isset($rxnorm['idGroup']['rxnormId'][0])) {
+            $url1 = 'https://rxnav.nlm.nih.gov/REST/rxcui/' . $rxnorm['idGroup']['rxnormId'][0] . '/properties.json';
+            $ch1 = curl_init();
+            curl_setopt($ch1,CURLOPT_URL, $url1);
+            curl_setopt($ch1,CURLOPT_FAILONERROR,1);
+            curl_setopt($ch1,CURLOPT_FOLLOWLOCATION,1);
+            curl_setopt($ch1,CURLOPT_RETURNTRANSFER,1);
+            curl_setopt($ch1,CURLOPT_TIMEOUT, 15);
+            $json1 = curl_exec($ch1);
+            curl_close($ch1);
+            $rxnorm1 = json_decode($json1, true);
+            $med_name = $rxnorm1['properties']['name'];
+            $return = [
+                'reference' => 'Medication/' . $ndcid,
+                'display' => $rxnorm1['properties']['name']
+            ];
+        }
+        return $return;
+    }
+
     protected function resource_query_build($query, $table_key, $key1, $comparison, $value1, $or, $resource, $table)
     {
         $proceed = false;
@@ -13937,8 +14124,28 @@ class Controller extends BaseController
                     //not functional
                 }
             }
-        } else {
-            $proceed = true;
+        }
+        if ($resource == 'MedicationOrder') {
+            if ($key1 == 'status') {
+                if ($value1 == 'active') {
+                    $query->where('rxl_date_inactive', '=', '0000-00-00 00:00:00')->where('rxl_date_old', '=', '0000-00-00 00:00:00')->where('prescription', '=', 'pending');
+                }
+                if ($value1 == 'on-hold') {
+                    //not functional
+                }
+                if ($value1 == 'completed') {
+                    //not functional
+                }
+                if ($value1 == 'entered-in-error') {
+                    //not functional
+                }
+                if ($value1 == 'stopped') {
+                    //not functional
+                }
+                if ($value1 == 'draft') {
+                    //not functional
+                }
+            }
         }
         if ($proceed == true) {
             // check if value is a date
@@ -14013,7 +14220,7 @@ class Controller extends BaseController
     protected function resource_translation($data, $table, $table_primary_key, $table_key)
     {
         $i = 0;
-        $parameters = array();
+        $parameters = [];
         foreach ($data as $key => $value) {
             if ($key != 'page' && $key != 'sort') {
                 $exact = false;
@@ -14720,7 +14927,7 @@ class Controller extends BaseController
         imagefilledpolygon($img, $array, (count($array)/2), $colour);
     }
 
-    protected function snomed($query)
+    protected function snomed($query, $single=false)
     {
         if (!Session::has('tgt')) {
             $url = 'https://utslogin.nlm.nih.gov/cas/v1/api-key';
@@ -14777,7 +14984,11 @@ class Controller extends BaseController
                 ];
             }
         }
-        return $return;
+        if ($single == true) {
+            return $return[0];
+        } else {
+            return $return;
+        }
     }
 
     protected function string_format($str, $len)

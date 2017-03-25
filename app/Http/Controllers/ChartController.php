@@ -1427,6 +1427,7 @@ class ChartController extends Controller {
             unset($data['daw']);
             $data['rxl_provider'] = $user->displayname;
             $data['rxl_due_date'] = date('Y-m-d H:i:s', strtotime($request->input('rxl_date_prescribed')) + ($request->input('rxl_days') * 86400));
+            $data['prescription'] = 'pending';
             if ($id == '0') {
                 $data['pid'] = $pid;
                 $row_id1 = DB::table($table)->insertGetId($data);
