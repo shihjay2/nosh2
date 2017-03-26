@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use DB;
+use File;
 use Response;
 use Session;
 use URL;
