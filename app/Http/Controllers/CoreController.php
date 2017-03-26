@@ -616,7 +616,7 @@ class CoreController extends Controller
                 $data['password'] = $this->gen_secret();
                 $url = URL::to('accept_invitation') . '/' . $data['password'];
                 $email['message_data'] = 'You are invited to use the NOSH ChartingSystem for ' . $practice->practice_name . '.<br>Go to ' . $url . ' to get registered.';
-                $this->send_mail('auth.emails.generic', $mail, 'Invitation to NOSH ChartingSystem', $data['email'], Session::get('practice_id'));
+                $this->send_mail('auth.emails.generic', $email, 'Invitation to NOSH ChartingSystem', $data['email'], Session::get('practice_id'));
             }
             $data['displayname'] = $data['firstname'] . " " . $data['lastname'];
             if($data['title'] !== ''){
