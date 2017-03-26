@@ -5467,7 +5467,7 @@ class CoreController extends Controller
                 if ($row->duration !== null) {
                     $arr['label'] .= 'Duration: ' . $duration_arr[$row->duration]. ',';
                 }
-                if ($row->provider_id !== 0) {
+                if ($row->provider_id !== 0 && $row->provider_id !== null) {
                     $provider = DB::table('users')->where('id', '=', $row->provider_id)->first();
                     $arr['label'] .= '<br>Provider: ' . $provider->displayname;
                 } else {
