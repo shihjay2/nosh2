@@ -14762,41 +14762,43 @@ class Controller extends BaseController
     {
         $practice = DB::table('practiceinfo')->where('practice_id', '=', $practice_id)->first();
         $file = File::get(base_path() . "/.google");
-        $file_arr = json_decode($file, true);
-        $google = new Google_Client();
-        $google->setClientID($file_arr['web']['client_id']);
-        $google->setClientSecret($file_arr['web']['client_secret']);
-        $google->refreshToken($practice->google_refresh_token);
-        $credentials = $google->getAccessToken();
-        $data1['smtp_pass'] = $credentials['access_token'];
-        DB::table('practiceinfo')->where('practice_id', '=', $practice_id)->update($data1);
-        $config = [
-            'mail.driver' => 'smtp',
-            'mail.host' => 'smtp.gmail.com',
-            'mail.port' => 465,
-            'mail.from' => ['address' => null, 'name' => null],
-            'mail.encryption' => 'ssl',
-            'mail.username' => $practice->smtp_user,
-            'mail.password' =>  $credentials['access_token'],
-            'mail.sendmail' => '/usr/sbin/sendmail -bs'
-        ];
-        config($config);
-        extract(Config::get('mail'));
-        $transport = Swift_SmtpTransport::newInstance($host, $port, 'ssl');
-        $transport->setAuthMode('XOAUTH2');
-        if (isset($encryption)) {
-            $transport->setEncryption($encryption);
+        if ($file !== '') {
+            $file_arr = json_decode($file, true);
+            $google = new Google_Client();
+            $google->setClientID($file_arr['web']['client_id']);
+            $google->setClientSecret($file_arr['web']['client_secret']);
+            $google->refreshToken($practice->google_refresh_token);
+            $credentials = $google->getAccessToken();
+            $data1['smtp_pass'] = $credentials['access_token'];
+            DB::table('practiceinfo')->where('practice_id', '=', $practice_id)->update($data1);
+            $config = [
+                'mail.driver' => 'smtp',
+                'mail.host' => 'smtp.gmail.com',
+                'mail.port' => 465,
+                'mail.from' => ['address' => null, 'name' => null],
+                'mail.encryption' => 'ssl',
+                'mail.username' => $practice->smtp_user,
+                'mail.password' =>  $credentials['access_token'],
+                'mail.sendmail' => '/usr/sbin/sendmail -bs'
+            ];
+            config($config);
+            extract(Config::get('mail'));
+            $transport = Swift_SmtpTransport::newInstance($host, $port, 'ssl');
+            $transport->setAuthMode('XOAUTH2');
+            if (isset($encryption)) {
+                $transport->setEncryption($encryption);
+            }
+            if (isset($username)) {
+                $transport->setUsername($username);
+                $transport->setPassword($password);
+            }
+            Mail::setSwiftMailer(new Swift_Mailer($transport));
+            Mail::send($template, $data_message, function ($message) use ($to, $subject, $practice) {
+                $message->to($to)
+                    ->from($practice->email, $practice->practice_name)
+                    ->subject($subject);
+            });
         }
-        if (isset($username)) {
-            $transport->setUsername($username);
-            $transport->setPassword($password);
-        }
-        Mail::setSwiftMailer(new Swift_Mailer($transport));
-        Mail::send($template, $data_message, function ($message) use ($to, $subject, $practice) {
-            $message->to($to)
-                ->from($practice->email, $practice->practice_name)
-                ->subject($subject);
-        });
         return true;
     }
 

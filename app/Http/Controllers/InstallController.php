@@ -278,7 +278,7 @@ class InstallController extends Controller {
             Session::put('displayname', $displayname);
             Session::put('documents_dir', $data2['documents_dir']);
             Session::put('patient_centric', $data2['patient_centric']);
-            return redirect()->route('installgoogle');
+            return redirect()->route('dashboard');
         } else {
             $data['panel_header'] = 'NOSH ChartingSystem Installation';
             $items[] = [

@@ -23,7 +23,10 @@ class PostAuth
         // Check if Google refresh token registered
         if ($install->google_refresh_token == '') {
             if (route('dashboard') != 'http://localhost/nosh') {
-                return redirect()->route('googleoauth');
+                $google = File::get(base_path() . "/.google");
+                if ($google !== '') {
+                    return redirect()->route('googleoauth');
+                }
             }
         }
         $messages = DB::table('messaging')->where('mailbox', '=', Session::get('user_id'))->where('read', '=', null)->count();
