@@ -56,7 +56,7 @@ class LoginController extends Controller {
                     if ($query->created_at == null) {
                         $data['created_at'] = date('Y-m-d H:i:s');
                     }
-                    DB::table('users')->where('id', '=', $id)->update($data);
+                    DB::table('users')->where('password', '=', $id)->update($data);
                     $this->audit('Update');
                     Session::put('message_action', 'Your account has been activated.  Please log in');
                     return redirect()->route('login');
