@@ -614,6 +614,7 @@ class CoreController extends Controller
                 ]);
                 // For new users, invitation code will be generated and queried upon acceptance of invite
                 $data['password'] = $this->gen_secret();
+                $data['created_at'] = date('Y-m-d H:i:s');
                 $url = URL::to('accept_invitation') . '/' . $data['password'];
                 $email['message_data'] = 'You are invited to use the NOSH ChartingSystem for ' . $practice->practice_name . '.<br>Go to ' . $url . ' to get registered.';
                 $this->send_mail('auth.emails.generic', $email, 'Invitation to NOSH ChartingSystem', $data['email'], Session::get('practice_id'));

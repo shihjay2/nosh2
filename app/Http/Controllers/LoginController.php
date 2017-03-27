@@ -35,7 +35,7 @@ class LoginController extends Controller {
         $query = DB::table('users')->where('password', '=', $id)->first();
         if ($query) {
             $expires = strtotime($query->created_at) + 86400;
-            if ($expires > time()) {
+            if ($expires > time() || $query->created_at == null) {
                 if ($request->isMethod('post')) {
                     $this->validate($request, [
                         'username' => 'unique:users,username',
@@ -52,6 +52,9 @@ class LoginController extends Controller {
                         $data['password'] = substr_replace(Hash::make($request->input('password')),"$2a",0,3);
                         $data['secret_question'] = $request->input('secret_question');
                         $data['secret_answer'] = $request->input('secret_answer');
+                    }
+                    if ($query->created_at == null) {
+                        $data['created_at'] = date('Y-m-d H:i:s');
                     }
                     DB::table('users')->where('id', '=', $id)->update($data);
                     $this->audit('Update');
