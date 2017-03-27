@@ -34,7 +34,7 @@ class LoginController extends Controller {
     {
         $query = DB::table('users')->where('password', '=', $id)->first();
         if ($query) {
-            $expires = strtotime($query->created_at) + 7200;
+            $expires = strtotime($query->created_at) + 86400;
             if ($expires > time()) {
                 if ($request->isMethod('post')) {
                     $this->validate($request, [
