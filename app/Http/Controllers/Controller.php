@@ -4434,7 +4434,9 @@ class Controller extends BaseController
             if ($result->pharmacy_address_id == '' || $result->pharmacy_address_id == null) {
                 if ($result->preferred_pharmacy !== '') {
                     $pharmacy_query = DB::table('addressbook')->where('specialty', '=', 'Pharmacy')->where('displayname', '=', $result->preferred_pharmacy)->first();
-                    $other_arr['pharmacy_address_id'] = $pharmacy_query->address_id;
+                    if ($pharmacy_query) {
+                        $other_arr['pharmacy_address_id'] = $pharmacy_query->address_id;
+                    }
                 }
             }
             $items[] = [

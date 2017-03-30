@@ -5572,6 +5572,7 @@ class CoreController extends Controller
             $height_unit = null;
             $temp_unit = null;
             $hc_unit = null;
+            $encounter_template = null;
             if ($result->weight_unit !== null) {
                 $weight_unit = $unit_arr[$result->weight_unit];
             }
@@ -5584,6 +5585,9 @@ class CoreController extends Controller
             if ($result->hc_unit !== null) {
                 $hc_unit = $unit_arr[$result->hc_unit];
             }
+            if ($result->encounter_template !== null) {
+                $encounter_template = $encounter_type_arr[$result->encounter_template];
+            }
             $settings_arr = [
                 'Primary Contact' => $result->primary_contact,
                 'Practice NPI' => $result->npi,
@@ -5595,7 +5599,7 @@ class CoreController extends Controller
                 'Height Unit' => $height_unit,
                 'Temperature Unit' => $temp_unit,
                 'Head Circumference Unit' => $hc_unit,
-                'Default Encounter Template' => $encounter_type_arr[$result->encounter_template],
+                'Default Encounter Template' => $encounter_template,
                 'Additional Message in Appointment Reminders' => $result->additional_message
             ];
             $billing_arr = [
