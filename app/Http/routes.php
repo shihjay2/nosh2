@@ -273,8 +273,8 @@ Route::get('phaxio/{id}', ['as' => 'phaxio', 'uses' => 'FaxController@phaxio']);
 Route::get('reminder', ['as' => 'reminder', 'uses' => 'ReminderController@reminder']);
 
 // FHIR Endpoints
-Route::group(['prefix' => 'fhir'], function () {
-// Route::group(['prefix' => 'fhir', 'middleware' => 'fhir'], function () {
+// Route::group(['prefix' => 'fhir'], function () {
+Route::group(['prefix' => 'fhir', 'middleware' => 'fhir'], function () {
     Route::resource('AdverseReaction', 'AdverseReactionController');
     Route::resource('Alert', 'AlertController');
     Route::resource('AllergyIntolerance', 'AllergyIntoleranceController'); //in use - allergies
