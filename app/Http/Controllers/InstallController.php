@@ -746,18 +746,20 @@ public function install_fix(Request $request)
                         $filename = base_path() . '/' . $row1['filename'];
                         if ($row1['status'] == 'added' || $row1['status'] == 'modified') {
                             $github_url = str_replace(' ', '%20', $row1['raw_url']);
-                            $file = file_get_contents($github_url);
-                            $parts = explode('/', $row1['filename']);
-                            array_pop($parts);
-                            $dir = implode('/', $parts);
-                            if (!is_dir(base_path() . '/' . $dir)) {
-                                if ($parts[0] == 'public') {
-                                    mkdir(base_path() . '/' . $dir, 0777, true);
-                                } else {
-                                    mkdir(base_path() . '/' . $dir, 0755, true);
+                            if ($github_url !== '') {
+                                $file = file_get_contents($github_url);
+                                $parts = explode('/', $row1['filename']);
+                                array_pop($parts);
+                                $dir = implode('/', $parts);
+                                if (!is_dir(base_path() . '/' . $dir)) {
+                                    if ($parts[0] == 'public') {
+                                        mkdir(base_path() . '/' . $dir, 0777, true);
+                                    } else {
+                                        mkdir(base_path() . '/' . $dir, 0755, true);
+                                    }
                                 }
+                                file_put_contents($filename, $file);
                             }
-                            file_put_contents($filename, $file);
                         }
                         if ($row1['status'] == 'removed') {
                             if (file_exists($filename)) {

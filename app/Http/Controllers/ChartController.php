@@ -7202,7 +7202,7 @@ class ChartController extends Controller {
                 'sms' => 'required_without_all:email'
             ]);
             // $resource_set_ids = implode(',', $request->input('resources'));
-            $data_message['temp_url'] = URL::to('/');
+            $data_message['temp_url'] = URL::to('login', ['provider']);
             $data_message['patient'] = Session::get('displayname');
             if ($request->input('email') !== '') {
                 $email = $request->input('email');
