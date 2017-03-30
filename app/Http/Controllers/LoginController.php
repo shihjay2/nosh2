@@ -251,7 +251,10 @@ class LoginController extends Controller {
                             $data['pnosh_provider'] = 'y';
                         } else {
                             $data['pnosh_provider'] = 'n';
+                            $data['login_form'] = 'n';
                         }
+                    } else {
+                        $data['login_form'] = 'y';
                     }
                     $data['demo'] = 'n';
                     if (route('dashboard') == 'http://demo.noshchartingsystem.com:444/nosh') {
