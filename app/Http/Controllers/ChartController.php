@@ -1038,6 +1038,14 @@ class ChartController extends Controller {
                 $race_arr = $this->array_race();
                 $data['race_code'] = $race_arr[$data['race']];
             }
+            if (isset($data['reminder_method'])) {
+                if ($data['reminder_method'] == 'Email') {
+                    $data['reminder_to'] = $data['email'];
+                }
+                if ($data['reminder_method'] == 'Cellular Phone') {
+                    $data['reminder_to'] = $data['phone_cell'];
+                }
+            }
         }
         // Vital sign-specific data handling
         if ($table == 'vitals') {
