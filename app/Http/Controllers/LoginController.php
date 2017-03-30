@@ -986,6 +986,13 @@ class LoginController extends Controller {
         }
     }
 
+    public function remote_logout(Request $request)
+	{
+		Auth::logout();
+		Session::flush();
+		return redirect($request->input('redirect_uri'));
+	}
+
     public function reset_demo(Request $request)
     {
         if (route('dashboard') == 'https://shihjay.xyz/nosh') {

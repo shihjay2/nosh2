@@ -25,6 +25,7 @@ Route::any('password_email', array('as' => 'password_email', 'uses' => 'LoginCon
 Route::any('password_reset_response/{id}', array('as' => 'password_reset_response', 'uses' => 'LoginController@password_reset_response'));
 Route::post('practice_logo_login', ['as' => 'practice_logo_login', 'uses' => 'LoginController@practice_logo_login']);
 Route::any('register_user', ['as' => 'register_user', 'uses' => 'LoginController@register_user']);
+Route::get('remote_logout', ['as' => 'remote_logout', 'uses' => 'LoginController@remote_logout']);
 Route::get('reset_demo', ['as' => 'reset_demo', 'uses' => 'LoginController@reset_demo']);
 Route::get('start/{practicehandle?}', ['as' => 'start', 'uses' => 'LoginController@start']);
 Route::any('uma_auth', ['as' => 'uma_auth', 'uses' => 'LoginController@uma_auth']); // Login with HIE of One AS
