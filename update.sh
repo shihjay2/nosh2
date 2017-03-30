@@ -143,6 +143,7 @@ chmod -R 777 $NEWNOSH/public
 chmod 777 $NEWNOSH/noshfax
 chmod 777 $NEWNOSH/noshreminder
 chmod 777 $NEWNOSH/noshbackup
+cp $OLDNOSH/.google $NEWNOSH/.google
 log_only "Updated NOSH ChartingSystem core files."
 a2enmod ssl
 if [ -e "$WEB_CONF"/nosh.conf ]; then
