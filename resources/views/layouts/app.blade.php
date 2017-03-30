@@ -795,7 +795,7 @@
                 if (response.response == 'li') {
                     $.each(response.message, function (i, val) {
                         if (val.value !== null) {
-                            html += '<li class="list-group-item container-fluid"><a href="#" class="btn fa-btn template-default"><i class="fa fa-star fa-lg"></i></a><span class="template-group" data-nosh-template-group="' + val.value + '" data-nosh-template-category="' + val.category + '">' + val.value + '</span><span class="pull-right"><a href="#" class="btn fa-btn template-group-edit"><i class="fa fa-pencil fa-lg"></i></a></a><a href="#" class="btn fa-btn template-remove-group"><i class="fa fa-trash fa-lg"></i></a></span></li>';
+                            html += '<li class="list-group-item container-fluid"><a href="#" class="btn fa-btn template-default"><i class="fa fa-star fa-lg"></i></a><span class="template-group" data-nosh-template-group="' + val.value + '" data-nosh-template-category="' + val.category + '">' + val.value + '</span><span class="pull-right"><a href="#" class="btn fa-btn template-group-edit"><i class="fa fa-pencil fa-lg"></i></a></a><a href="#" class="btn fa-btn template-remove-group"  data-nosh-template-group="' + val.value + '"><i class="fa fa-trash fa-lg"></i></a></span></li>';
                         }
                     });
                     $target.html(html);
@@ -1897,7 +1897,7 @@
 
         $(document).on('click', '.template-remove-group', function(event){
             if(confirm('Are you sure you want to delete this group?')) {
-                var group = $('#template_group').val();
+                var group = $(this).attr('data-nosh-template-group');
                 var category = $('#template_target').val();
                 $.ajax({
                     type: 'POST',
@@ -1999,8 +1999,16 @@
                         var add_text = '';
                         $(this).find('.nosh-template-input').each(function() {
                             if ($(this).is(':checkbox') || $(this).is(':radio')) {
-                                if ($(this).is(':checked')) {
-                                    add_text = ': ' + $(this).val();
+                                if ($(this).is(':radio')) {
+                                    if ($(this).is(':checked')) {
+                                        add_text = ': ' + $(this).val();
+                                    }
+                                } else {
+                                    if (add_text === '') {
+                                        add_text = ': ' + $(this).val();
+                                    } else {
+                                        add_text += ', ' + $(this).val();
+                                    }
                                 }
                             } else if ($(this).is('select')) {
                                 add_text = ': ' + $(this).val();

@@ -30,6 +30,12 @@ class PostAuth
                 }
             }
         }
+        $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
+        // Migrate old NOSH standard template to current
+        if ($practice->encounter_template == 'standardmedical' || $practice->encounter_template == 'standardmedical1') {
+            $update['encounter_template'] = 'medical';
+            DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->update($update);
+        }
         $messages = DB::table('messaging')->where('mailbox', '=', Session::get('user_id'))->where('read', '=', null)->count();
         Session::put('messages_count', $messages);
         Session::put('notification_run', 'true');
