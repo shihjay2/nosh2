@@ -229,7 +229,7 @@ class OpenIDConnectClient
 			if ($this->verifyJWTclaims($claims)) {
 
 				// Clean up the session a little
-				unset($_SESSION['openid_connect_nonce1']);
+				unset($_SESSION['openid_connect_nonce']);
 
 				// Save the id token
 				$this->idToken = $token_json->id_token;
@@ -398,7 +398,7 @@ class OpenIDConnectClient
 		// Generate and store a nonce in the session
 		// The nonce is an arbitrary value
 		$nonce = $this->generateRandString();
-		$_SESSION['openid_connect_nonce1'] = $nonce;
+		$_SESSION['openid_connect_nonce'] = $nonce;
 
 		// State essentially acts as a session key for OIDC
 		$state = $this->generateRandString();
@@ -565,7 +565,7 @@ class OpenIDConnectClient
 	private function verifyJWTclaims($claims) {
 		return (($claims->iss == $this->getProviderURL())
 			&& (($claims->aud == $this->clientID) || (in_array($this->clientID, $claims->aud)))
-			&& ($claims->nonce == $_SESSION['openid_connect_nonce1']));
+			&& ($claims->nonce == $_SESSION['openid_connect_nonce']));
 	}
 
 	/**
@@ -940,7 +940,7 @@ class OpenIDConnectClient
 		// Generate and store a nonce in the session
 		// The nonce is an arbitrary value
 		$nonce = $this->generateRandString();
-		$_SESSION['openid_connect_nonce1'] = $nonce;
+		$_SESSION['openid_connect_nonce'] = $nonce;
 
 		// State essentially acts as a session key for OIDC
 		$state = $this->generateRandString();
