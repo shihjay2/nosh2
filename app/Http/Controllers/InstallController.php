@@ -80,7 +80,7 @@ class InstallController extends Controller {
             }
         } else {
             $data['panel_header'] = 'Upload Google JSON File for GMail Integration';
-            $data['document_upload'] = route('practice_logo_upload');
+            $data['document_upload'] = route('google_start');
             $type_arr = ['json'];
             $data['document_type'] = json_encode($type_arr);
             $text = "<p>You're' here because you have not installed a Google OAuth2 Client ID file.  You'll need to set this up first before configuring NOSH Charting System.'</p>";

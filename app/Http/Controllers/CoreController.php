@@ -5568,6 +5568,22 @@ class CoreController extends Controller
             // Remove depreciated encounter types for new encounters
             unset($encounter_type_arr['standardmedical']);
             unset($encounter_type_arr['standardmedical1']);
+            $weight_unit = null;
+            $height_unit = null;
+            $temp_unit = null;
+            $hc_unit = null;
+            if ($result->weight_unit !== null) {
+                $weight_unit = $unit_arr[$result->weight_unit];
+            }
+            if ($result->height_unit !== null) {
+                $height_unit = $unit_arr[$result->height_unit];
+            }
+            if ($result->temp_unit !== null) {
+                $temp_unit = $unit_arr[$result->temp_unit];
+            }
+            if ($result->hc_unit !== null) {
+                $hc_unit = $unit_arr[$result->hc_unit];
+            }
             $settings_arr = [
                 'Primary Contact' => $result->primary_contact,
                 'Practice NPI' => $result->npi,
@@ -5575,10 +5591,10 @@ class CoreController extends Controller
                 'Practice Tax ID Number' => $result->tax_id,
                 'Default Practice Location' => $result->default_pos_id,
                 'Documents Directory' => $result->documents_dir,
-                'Weight Unit' => $unit_arr[$result->weight_unit],
-                'Height Unit' => $unit_arr[$result->height_unit],
-                'Temperature Unit' => $unit_arr[$result->temp_unit],
-                'Head Circumference Unit' => $unit_arr[$result->hc_unit],
+                'Weight Unit' => $weight_unit,
+                'Height Unit' => $height_unit,
+                'Temperature Unit' => $temp_unit,
+                'Head Circumference Unit' => $hc_unit,
                 'Default Encounter Template' => $encounter_type_arr[$result->encounter_template],
                 'Additional Message in Appointment Reminders' => $result->additional_message
             ];

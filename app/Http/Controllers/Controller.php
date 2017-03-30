@@ -6312,6 +6312,7 @@ class Controller extends BaseController
                 'name' => 'tue_o',
                 'label' => 'Tuesday open at',
                 'type' => 'text',
+                'time' => true,
                 'default_value' => $schedule['tue_o']
             ];
             $items[] = [
