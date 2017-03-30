@@ -97,7 +97,7 @@ class LoginController extends Controller {
         $access_token = $oidc->getAccessToken();
         $user = DB::table('users')->where('uid', '=', $oidc->requestUserInfo('sub'))->first();
         if ($user) {
-            Auth::login($user);
+            Auth::attempt(['id' => $user->id]);
             $practice = DB::table('practiceinfo')->where('practice_id', '=', $user->practice_id)->first();
             Session::put('user_id', $user->id);
             Session::put('group_id', $user->group_id);
@@ -401,7 +401,7 @@ class LoginController extends Controller {
             $user = DB::table('users')->where('uid', '=', $oidc->requestUserInfo('sub'))->first();
         }
         if ($user) {
-            Auth::login($user);
+            Auth::attempt(['id' => $user->id]);
             $practice1 = DB::table('practiceinfo')->where('practice_id', '=', $user->practice_id)->first();
             Session::put('user_id', $user->id);
             Session::put('group_id', $user->group_id);
@@ -539,7 +539,7 @@ class LoginController extends Controller {
                 DB::table('providers')->insert($data1);
                 $this->audit('Add');
                 $user1 = DB::table('users')->where('id', '=', $id)->first();
-                Auth::login($user1);
+                Auth::attempt(['id' => $user1->id]);
                 $practice2 = DB::table('practiceinfo')->where('practice_id', '=', $user1->practice_id)->first();
                 Session::put('user_id', $user1->id);
                 Session::put('group_id', $user1->group_id);
@@ -635,7 +635,7 @@ class LoginController extends Controller {
             $user = DB::table('users')->where('uid', '=', $oidc->requestUserInfo('sub'))->first();
         }
         if ($user) {
-            Auth::login($user);
+            Auth::attempt(['id' => $user->id]);
             $user_data = [
                 'oauth_token' => $access_token,
                 'oauth_token_secret' => time() + 7200  //2 hour time limit
@@ -790,7 +790,7 @@ class LoginController extends Controller {
             $this->audit('Add');
             //$this->syncuser(Session::get('oidc_auth_access_token'));
             $user1 = DB::table('users')->where('id', '=', $id)->first();
-            Auth::login($user1);
+            Auth::attempt(['id' => $user1->id]);
             $practice1 = DB::table('practiceinfo')->where('practice_id', '=', $user1->practice_id)->first();
             Session::put('user_id', $user1->id);
             Session::put('group_id', $user1->group_id);
@@ -1055,7 +1055,7 @@ class LoginController extends Controller {
             $user = DB::table('users')->where('uid', '=', $oidc->requestUserInfo('sub'))->first();
         }
         if ($user) {
-            Auth::login($user);
+            Auth::attempt(['id' => $user->id]);
             $practice1 = DB::table('practiceinfo')->where('practice_id', '=', $user->practice_id)->first();
             Session::put('user_id', $user->id);
             Session::put('group_id', $user->group_id);
@@ -1136,7 +1136,7 @@ class LoginController extends Controller {
             DB::table('providers')->insert($data1);
             $this->audit('Add');
             $user1 = DB::table('users')->where('id', '=', $id)->first();
-            Auth::login($user1);
+            Auth::attempt(['id' => $user1->id]);
             $practice2 = DB::table('practiceinfo')->where('practice_id', '=', $user1->practice_id)->first();
             Session::put('user_id', $user1->id);
             Session::put('group_id', $user1->group_id);

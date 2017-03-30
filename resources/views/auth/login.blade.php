@@ -35,7 +35,7 @@
                                     <a class="btn btn-primary btn-block" href="{{ url('/uma_auth') }}">
                                         <i class="fa fa-btn fa-openid"></i> I'm the Patient
                                     </a>
-                                    <br><br><a href="#" id="show_login_form">Standard Login for Administrator</a>
+                                    <br><br><a href="#" id="show_login_form">Standard Login for Administrator</a><br><br>
                                 </div>
                             </div>
                         @else
