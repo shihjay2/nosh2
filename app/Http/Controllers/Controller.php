@@ -13717,8 +13717,8 @@ class Controller extends BaseController
                 } else {
                     $med_dosage_unit = '';
                 }
-                $med_code = $route_arr[$med_row->rxl_route][0];
-                $med_code_description = $route_arr[$med_row->rxl_route][1];
+                $med_code = $route_arr[$row->rxl_route][0];
+                $med_code_description = $route_arr[$row->rxl_route][1];
                 $med_period = '';
                 if (in_array($row->rxl_frequency, $med_freq_array_1)) {
                     $med_period = "24";
