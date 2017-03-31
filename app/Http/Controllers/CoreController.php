@@ -774,6 +774,9 @@ class CoreController extends Controller
         if ($table == 'addressbook' && $subtype == 'Referral') {
             return redirect(Session::get('addressbook_last_page'));
         }
+        if ($table == 'practiceinfo') {
+            return redirect()->route('setup');
+        }
         return redirect(Session::get('last_page'));
     }
 
@@ -5531,6 +5534,15 @@ class CoreController extends Controller
         $result = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
         $return = '';
         if ($result) {
+            if ($result->weight_unit == null) {
+                return redirect()->route('core_form', ['practiceinfo', 'practice_id', Session::get('practice_id'), 'settings']);
+            }
+            if ($result->billing_street_address1 == null) {
+                return redirect()->route('core_form', ['practiceinfo', 'practice_id', Session::get('practice_id'), 'billing']);
+            }
+            if ($result->birthday_extension == null) {
+                return redirect()->route('core_form', ['practiceinfo', 'practice_id', Session::get('practice_id'), 'extensions']);
+            }
             $state = $this->array_states();
             $unit_arr = [
                 'in' => 'Inches',
@@ -5541,6 +5553,7 @@ class CoreController extends Controller
                 'C' => 'Celcius',
                 'n' => 'No',
                 'y' => 'Yes',
+                '' => 'No',
                 'phaxio' => 'Phaxio'
             ];
             $header_arr = [
@@ -5568,26 +5581,6 @@ class CoreController extends Controller
             // Remove depreciated encounter types for new encounters
             unset($encounter_type_arr['standardmedical']);
             unset($encounter_type_arr['standardmedical1']);
-            $weight_unit = null;
-            $height_unit = null;
-            $temp_unit = null;
-            $hc_unit = null;
-            $encounter_template = null;
-            if ($result->weight_unit !== null) {
-                $weight_unit = $unit_arr[$result->weight_unit];
-            }
-            if ($result->height_unit !== null) {
-                $height_unit = $unit_arr[$result->height_unit];
-            }
-            if ($result->temp_unit !== null) {
-                $temp_unit = $unit_arr[$result->temp_unit];
-            }
-            if ($result->hc_unit !== null) {
-                $hc_unit = $unit_arr[$result->hc_unit];
-            }
-            if ($result->encounter_template !== null) {
-                $encounter_template = $encounter_type_arr[$result->encounter_template];
-            }
             $settings_arr = [
                 'Primary Contact' => $result->primary_contact,
                 'Practice NPI' => $result->npi,
@@ -5595,11 +5588,11 @@ class CoreController extends Controller
                 'Practice Tax ID Number' => $result->tax_id,
                 'Default Practice Location' => $result->default_pos_id,
                 'Documents Directory' => $result->documents_dir,
-                'Weight Unit' => $weight_unit,
-                'Height Unit' => $height_unit,
-                'Temperature Unit' => $temp_unit,
-                'Head Circumference Unit' => $hc_unit,
-                'Default Encounter Template' => $encounter_template,
+                'Weight Unit' => $unit_arr[$result->weight_unit],
+                'Height Unit' => $unit_arr[$result->height_unit],
+                'Temperature Unit' => $unit_arr[$result->temp_unit],
+                'Head Circumference Unit' => $unit_arr[$result->hc_unit],
+                'Default Encounter Template' => $encounter_type_arr[$result->encounter_template],
                 'Additional Message in Appointment Reminders' => $result->additional_message
             ];
             $billing_arr = [
