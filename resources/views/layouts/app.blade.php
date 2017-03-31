@@ -383,6 +383,13 @@
         </div>
     </div>
     @endif
+    @if (isset($nosh_version))
+        <footer class="footer">
+            <div class="container">
+                <p class="text-muted pull-right">Version git-{{ $nosh_version }}</p>
+            </div>
+        </footer>
+    @endif
     <!-- Modals -->
     <div class="modal" id="loadingModal" role="dialog">
         <div class="modal-dialog">

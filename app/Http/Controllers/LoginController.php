@@ -284,6 +284,12 @@ class LoginController extends Controller {
                     }
                     $data['message_action'] = Session::get('message_action');
                     Session::forget('message_action');
+                    if (file_exists(base_path() . '/.version')) {
+                        $data['nosh_version'] = file_get_contents(base_path() . '/.version');
+                    } else {
+                        $version = $this->github_all();
+                        $data['nosh_version'] = $version[0]['sha'];
+                    }
                     return view('auth.login', $data);
                 } else {
                     // Not installed yet, go to install page
