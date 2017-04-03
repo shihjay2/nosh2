@@ -136,6 +136,7 @@ class CoreController extends Controller
         $dropdown_array = [
             'items_button_text' => $type_arr[$type][0]
         ];
+        $items = [];
         foreach ($type_arr as $key => $value) {
             if ($key !== $type) {
                 $items[] = [
