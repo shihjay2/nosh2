@@ -383,10 +383,10 @@
         </div>
     </div>
     @endif
-    @if (isset($nosh_version))
+    @if (isset($version))
         <footer class="footer">
             <div class="container">
-                <p class="text-muted pull-right">Version git-{{ $nosh_version }}</p>
+                <p class="text-muted pull-right">Version git-{{ $noshversion }}</p>
             </div>
         </footer>
     @endif

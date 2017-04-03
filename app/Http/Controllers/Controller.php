@@ -1393,88 +1393,88 @@ class Controller extends BaseController
     protected function assets_css($type='')
     {
         $return = [
-            asset('assets/css/font-awesome.min.css'),
+            '/assets/css/font-awesome.min.css',
             'https://fonts.googleapis.com/css?family=Lato:100,300,400,700',
             'https://fonts.googleapis.com/css?family=Pacifico',
-            asset('assets/css/bootstrap.min.css'),
-            asset('assets/css/toastr.min.css'),
-            asset('assets/css/nosh-timeline.css'),
-            asset('assets/css/bootstrap-tagsinput.css'),
-            asset('assets/css/bootstrap-select.min.css'),
-            asset('assets/css/bootstrap-datetimepicker.css')
+            '/assets/css/bootstrap.min.css',
+            '/assets/css/toastr.min.css',
+            '/assets/css/nosh-timeline.css',
+            '/assets/css/bootstrap-select.min.css',
+            '/assets/css/bootstrap-tagsinput.css',
+            '/assets/css/bootstrap-datetimepicker.css'
         ];
         if ($type == 'chart') {
         }
         if ($type == 'schedule') {
-            $return[] = asset('assets/css/fullcalendar.min.css');
+            $return[] = '/assets/css/fullcalendar.min.css';
         }
         if ($type == 'document_upload') {
-            $return[] = asset('assets/css/fileinput.min.css');
+            $return[] = '/assets/css/fileinput.min.css';
         }
         if ($type == 'login') {
-            $return[] = asset('assets/css/jquery.realperson.css');
+            $return[] = '/assets/css/jquery.realperson.css';
         }
         if ($type == 'signature') {
-            $return[] = asset('assets/css/jquery.signaturepad.css');
+            $return[] = '/assets/css/jquery.signaturepad.css';
         }
-        $return[] = asset('assets/css/main.css');
+        $return[] = '/assets/css/main.css';
         return $return;
     }
 
     protected function assets_js($type='')
     {
         $return = [
-            asset('assets/js/jquery-3.1.1.min.js'),
-            asset('assets/js/bootstrap.min.js'),
-            asset('assets/js/moment.min.js'),
-            asset('assets/js/jquery.maskedinput.min.js'),
-            asset('assets/js/toastr.min.js'),
-            asset('assets/js/bootstrap3-typeahead.min.js'),
-            asset('assets/js/jquery.cookie.js'),
-            asset('assets/js/bootstrap-list-filter.min.js'),
-            asset('assets/js/jquery-idleTimeout.js'),
-            asset('assets/js/bootstrap-tagsinput.js'),
-            asset('assets/js/jquery.selectboxes.js'),
-            asset('assets/js/bootstrap-select.min.js'),
-            asset('assets/js/bootstrap-datetimepicker.min.js'),
-            asset('assets/js/jquery.fileDownload.js'),
-            asset('assets/js/jstz-1.0.4.min.js')
+            '/assets/js/jquery-3.1.1.min.js',
+            '/assets/js/bootstrap.min.js',
+            '/assets/js/moment.min.js',
+            '/assets/js/jquery.maskedinput.min.js',
+            '/assets/js/toastr.min.js',
+            '/assets/js/bootstrap3-typeahead.min.js',
+            '/assets/js/jquery.cookie.js',
+            '/assets/js/bootstrap-list-filter.min.js',
+            '/assets/js/jquery-idleTimeout.js',
+            '/assets/js/bootstrap-tagsinput.js',
+            '/assets/js/jquery.selectboxes.js',
+            '/assets/js/bootstrap-select.min.js',
+            '/assets/js/bootstrap-datetimepicker.min.js',
+            '/assets/js/jquery.fileDownload.js',
+            '/assets/js/jstz-1.0.4.min.js'
         ];
         if ($type == 'chart') {
-            $return[] = asset('assets/js/bluebutton.js');
-            $return[] = asset('assets/js/pediatric-immunizations.min.js');
+            $return[] = '/assets/js/bluebutton.js';
+            $return[] = '/assets/js/pediatric-immunizations.min.js';
         }
         if ($type == 'schedule') {
-            $return[] = asset('assets/js/fullcalendar.min.js');
+            $return[] = '/assets/js/fullcalendar.min.js';
         }
         if ($type == 'document_upload') {
-            $return[] = asset('assets/js/canvas-to-blob.min.js');
-            $return[] = asset('assets/js/sortable.min.js');
-            $return[] = asset('assets/js/purify.min.js');
-            $return[] = asset('assets/js/fileinput.min.js');
+            $return[] = '/assets/js/canvas-to-blob.min.js';
+            $return[] = '/assets/js/sortable.min.js';
+            $return[] = '/assets/js/purify.min.js';
+            $return[] = '/assets/js/fileinput.min.js';
         }
         if ($type == 'documents') {
-            $return[] = asset('assets/js/pdfobject.min.js');
+            $return[] = '/assets/js/pdfobject.min.js';
         }
         if ($type == 'image') {
-            $return[] = asset('assets/js/jcanvas.min.js');
+            $return[] = '/assets/js/jcanvas.min.js';
         }
         if ($type == 'login') {
-            $return[] = asset('assets/js/jquery.realperson.js');
+            $return[] = '/assets/js/jquery.realperson.js';
         }
         if ($type == 'sigma') {
-            $return[] = asset('assets/js/sigma.min.js');
-            // $return[] = asset('assets/js/plugins/sigma.layout.forceAtlas2.min.js');
-            // $return[] = asset('assets/js/plugins/sigma.layout.noverlap.min.js');
-            $return[] = asset('assets/js/plugins/sigma.parsers.json.min.js');
-            $return[] = asset('assets/js/plugins/sigma.plugins.dragNodes.min.js');
-            // $return[] = asset('assets/js/plugins/sigma.renderers.customEdgeShapes.min.js');
-            // $return[] = asset('assets/js/plugins/sigma.renderers.edgeDots.min.js');
-            // $return[] = asset('assets/js/plugins/sigma.renderers.edgeLabels.min.js');
-            // $return[] = asset('assets/js/plugins/sigma.renderers.parallelEdges.min.js');
+            $return[] = '/assets/js/sigma.min.js';
+            // $return[] = '/assets/js/plugins/sigma.layout.forceAtlas2.min.js';
+            // $return[] = '/assets/js/plugins/sigma.layout.noverlap.min.js';
+            $return[] = '/assets/js/plugins/sigma.parsers.json.min.js';
+            $return[] = '/assets/js/plugins/sigma.plugins.dragNodes.min.js';
+            // $return[] = '/assets/js/plugins/sigma.renderers.customEdgeShapes.min.js';
+            // $return[] = '/assets/js/plugins/sigma.renderers.edgeDots.min.js';
+            // $return[] = '/assets/js/plugins/sigma.renderers.edgeLabels.min.js';
+            // $return[] = '/assets/js/plugins/sigma.renderers.parallelEdges.min.js';
         }
         if ($type == 'signature') {
-            $return[] = asset('assets/js/jquery.signaturepad.min.js');
+            $return[] = '/assets/js/jquery.signaturepad.min.js';
         }
         return $return;
     }
