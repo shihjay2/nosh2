@@ -1093,6 +1093,7 @@ class ChartController extends Controller {
         }
         if ($action == 'save') {
             if ($id == '0') {
+                unset($data[$index]);
                 $data['pid'] = $pid;
                 $row_id1 = DB::table($table)->insertGetId($data);
                 $this->audit('Add');
@@ -1498,7 +1499,7 @@ class ChartController extends Controller {
             // Create FHIR JSON prescription
     		$json_row = DB::table('rx_list')->where('rxl_id', '=', $row_id1)->first();
     		$prescription_json = $this->resource_detail($json_row, 'MedicationOrder');
-            
+
         }
         if ($action == 'complete') {
             if ($table == 'alerts') {

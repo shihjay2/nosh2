@@ -846,6 +846,12 @@
                 });
             }
         });
+        if ($('#cpt_charge').val() !== '') {
+            noshdata.billing_charge = $('#cpt_charge').val();
+        }
+        if ($('#unit').val() !== '') {
+            noshdata.billing_unit = $('#unit').val();
+        }
         $('#cpt_charge').blur(function(){
             if ($(this).val() !== noshdata.billing_charge) {
                 if ($('#cpt').val() !== '' && noshdata.toastr_collide !== '1') {

@@ -377,7 +377,7 @@ class Controller extends BaseController
             $a = 'A';
             for ($i=1; $i<=12; $i++) {
                 $col = 'assessment_' . $i;
-                if ($data->{$col} !== '') {
+                if ($data->{$col} !== '' && $data->{$col} !== null) {
                     $return[$a] = $a . ' - ' . $data->{$col};
                     $a++;
                 }
@@ -718,6 +718,7 @@ class Controller extends BaseController
     protected function array_pe()
     {
         $return = [
+            "pe" => "",
             "pe_gen1" => "General",
             "pe_eye1" => "Eye - Conjunctiva and Lids",
             "pe_eye2" => "Eye - Pupil and Iris",
@@ -780,8 +781,7 @@ class Controller extends BaseController
             'pe_constitutional1' => 'Psychiatric - Constitutional',
             'pe_mental1' => 'Psychiatric - Mental Status Examination',
             "pe_skin1" => "Skin - Inspection",
-            "pe_skin2" => "Skin - Palpation",
-
+            "pe_skin2" => "Skin - Palpation"
         ];
         return $return;
     }

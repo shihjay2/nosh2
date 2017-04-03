@@ -654,6 +654,7 @@ class CoreController extends Controller
         }
         if ($action == 'save') {
             if ($id == '0') {
+                unset($data[$index]);
                 $row_id1 = DB::table($table)->insertGetId($data);
                 $this->audit('Add');
                 $arr['message'] = $message . 'added!';
