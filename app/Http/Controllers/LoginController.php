@@ -175,7 +175,7 @@ class LoginController extends Controller {
         $google->setScopes(array('https://mail.google.com/'));
         if (isset($_REQUEST["code"])) {
             $credentials = $google->authenticate($_GET['code']);
-            $data['refresh_token'] = $credentials['google_refresh_token'];
+            $data['google_refresh_token'] = $credentials['refresh_token'];
             DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->update($data);
             return redirect()->route('dashboard');
         } else {
