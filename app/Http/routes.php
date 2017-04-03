@@ -15,6 +15,7 @@
 Route::any('accept_invitation/{id}', array('as' => 'accept_invitation', 'uses' => 'LoginController@accept_invitation'));
 Route::get('fhir/oidc', ['as' => 'oidc_api', 'uses' => 'LoginController@oidc_api']);
 Route::any('google_auth', ['as' => 'google_auth', 'uses' => 'LoginController@google_auth']);
+Route::any('googleoauth', ['as' => 'googleoauth', 'uses' => 'LoginController@googleoauth']);
 Route::any('login/{type?}', ['as' => 'login', 'uses' => 'LoginController@login']);
 Route::any('logout', ['as' => 'logout', 'uses' => 'LoginController@logout']);
 Route::any('oidc', ['as' => 'oidc', 'uses' => 'LoginController@oidc']); // Login with mdNOSH
@@ -81,7 +82,6 @@ Route::post('financial_query', ['as' => 'financial_query', 'uses' => 'CoreContro
 Route::get('financial_resubmit/{eid}', ['as' => 'financial_resubmit', 'uses' => 'CoreController@financial_resubmit']);
 Route::any('financial_upload_era', ['as' => 'financial_upload_era', 'uses' => 'CoreController@financial_upload_era']);
 Route::get('generate_hcfa/{flatten}/{eid}', ['as' => 'generate_hcfa', 'uses' => 'CoreController@generate_hcfa']);
-Route::any('googleoauth', ['as' => 'googleoauth', 'uses' => 'CoreController@googleoauth']);
 Route::get('messaging/{type}', ['as' => 'messaging', 'uses' => 'CoreController@messaging']);
 Route::any('messaging_editdoc/{id}/{type}', ['as' => 'messaging_editdoc', 'uses' => 'CoreController@messaging_editdoc']);
 Route::get('messaging_editdoc_cancel/{id}/{type}', ['as' => 'messaging_editdoc_cancel', 'uses' => 'CoreController@messaging_editdoc_cancel']);
