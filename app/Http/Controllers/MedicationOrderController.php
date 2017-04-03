@@ -124,7 +124,18 @@ class MedicationOrderController extends Controller {
 	 */
 	public function show($id)
 	{
-		//
+		$resource = 'MedicationOrder';
+		$row = DB::table('rx_list')->where('rxl_id', '=', $id)->first();
+		if ($row) {
+			$statusCode = 200;
+			$response = $this->resource_detail($row, $resource);
+		} else {
+			$response = [
+				'error' => $resource . " doesn't exist."
+			];
+			$statusCode = 404;
+		}
+		return Response::json($response, $statusCode);
 	}
 
 

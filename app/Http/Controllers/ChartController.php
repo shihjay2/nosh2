@@ -1495,6 +1495,10 @@ class ChartController extends Controller {
                     $next_action = route($next_action, [$table, $row_id1, Session::get('pid')]);
                 }
             }
+            // Create FHIR JSON prescription
+    		$json_row = DB::table('rx_list')->where('rxl_id', '=', $row_id1)->first();
+    		$prescription_json = $this->resource_detail($json_row, 'MedicationOrder');
+            
         }
         if ($action == 'complete') {
             if ($table == 'alerts') {
