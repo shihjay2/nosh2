@@ -53,7 +53,7 @@ Route::any('core_action/{table}/{action}/{id}/{index}/{subtype?}', ['as' => 'cor
 Route::get('core_form/{table}/{index}/{id}/{subtype?}', ['as' => 'core_form', 'uses' => 'CoreController@core_form']);
 Route::any('configure_form_edit/{type}/{item}', ['as' => 'configure_form_edit', 'uses' => 'CoreController@configure_form_edit']);
 Route::any('configure_form_details/{type}', ['as' => 'configure_form_details', 'uses' => 'CoreController@configure_form_details']);
-Route::get('configure_form_list', ['as' => 'configure_form_list', 'uses' => 'CoreController@configure_form_list']);
+Route::any('configure_form_list', ['as' => 'configure_form_list', 'uses' => 'CoreController@configure_form_list']);
 Route::any('configure_form_remove/{type}/{item}', ['as' => 'configure_form_remove', 'uses' => 'CoreController@configure_form_remove']);
 Route::any('configure_form_scoring/{type}/{item}', ['as' => 'configure_form_scoring', 'uses' => 'CoreController@configure_form_scoring']);
 Route::get('configure_form_scoring_delete/{type}/{item}', ['as' => 'configure_form_scoring_delete', 'uses' => 'CoreController@configure_form_scoring_delete']);
