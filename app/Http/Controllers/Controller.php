@@ -14575,7 +14575,8 @@ class Controller extends BaseController
                     $data_message['email'] = $practice->email;
                     $data_message['additional_message'] = $practice->additional_message;
                     if ($patient->reminder_method == 'Cellular Phone') {
-                        $this->send_mail(['text' => 'emails.remindertext'], $data_message, 'Appointment Reminder', $patient->reminder_to, Session::get('practice_id'));
+                        $message = view('emails.remindertext', $data_message);
+                        $this->textbelt($patient->reminder_to, $message);
                     } else {
                         $this->send_mail('emails.reminder', $data_message, 'Appointment Reminder', $patient->reminder_to, Session::get('practice_id'));
                     }

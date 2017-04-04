@@ -517,6 +517,20 @@
         });
 
         // Encounter Details
+        if ($('#encounter_provider').val() !== '') {
+            var a = $('#encounter_provider').val();
+            $('#encounter_type').removeOption(/./);
+            $('#encounter_type').addOption({'':'Choose appointment to associate encounter!'}, false);
+            $.ajax({
+                type: 'POST',
+                url: noshdata.get_appointments,
+                data: 'id=' + a,
+                dataType: 'json',
+                success: function(data){
+                    $('#encounter_type').addOption(data,false);
+                }
+            });
+        }
         $('#encounter_provider').change(function() {
             var a = $(this).val();
             if (a !== '') {
