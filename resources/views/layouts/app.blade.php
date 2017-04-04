@@ -517,7 +517,7 @@
             <!-- Modal content-->
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Patent Summary</h5>
+                    <h5 class="modal-title">Patient Summary</h5>
                 </div>
                 <div class="modal-body" id="chart_overview" style="height:80vh;overflow-y:auto;">
                     <div class="row">
@@ -568,6 +568,7 @@
             'drag_event': '<?php echo url("drag_event"); ?>',
             'edit_image': '<?php echo url("encounter_edit_image"); ?>',
             'education': '<?php echo url("education"); ?>',
+            'event_encounter': '<?php echo url("event_encounter"); ?>',
             'get_appointments': '<?php echo url("get_appointments"); ?>',
             'home_url': '<?php echo url("/") . '/'; ?>',
             'image_dimensions': '<?php echo url("image_dimensions"); ?>',

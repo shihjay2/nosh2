@@ -226,6 +226,7 @@ Route::get('schedule/{provider_id?}', ['as' => 'schedule', 'uses' => 'CoreContro
 Route::post('delete_event', ['as' => 'delete_event', 'uses' => 'AjaxScheduleController@delete_event']);
 Route::post('drag_event', ['as' => 'drag_event', 'uses' => 'AjaxScheduleController@drag_event']);
 Route::post('edit_event', ['as' => 'edit_event', 'uses' => 'AjaxScheduleController@edit_event']);
+Route::get('event_encounter/{appt_id}', ['as' => 'event_encounter', 'uses' => 'CoreController@event_encounter']);
 Route::get('provider_schedule', ['as' => 'provider_schedule', 'uses' => 'AjaxScheduleController@provider_schedule']);
 
 // Search routes

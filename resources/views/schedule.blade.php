@@ -168,9 +168,12 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <div class="col-md-8 col-md-offset-2">
+                            <div class="col-md-11 col-md-offset-1">
                                 <button type="submit" class="btn btn-success" style="margin:10px">
                                     <i class="fa fa-btn fa-save"></i> Save
+                                </button>
+                                <button type="button" class="btn btn-success" style="margin:10px" id="event_encounter">
+                                    <i class="fa fa-btn fa-forward"></i> Encounter
                                 </button>
                                 <button type="button" class="btn btn-danger" style="margin:10px" id="event_cancel">
                                     <i class="fa fa-btn fa-ban"></i> Cancel
@@ -251,6 +254,7 @@
                                 $('#start_time').val(date.format('hh:mmA'));
                                 if (noshdata.pid !== '') {
                                     $('#pid').val(noshdata.pid);
+                                    $('#title').val(noshdata.pt_name);
                                     $('#patient_name').text(noshdata.pt_name);
                                 }
                                 $('.nosh-pt-appt').show();
@@ -280,6 +284,7 @@
                     if (calEvent.visit_type){
                         $('.nosh-event').hide();
                         $('.nosh-appt').show();
+                        $('#event_encounter').show();
                         $('#eventModal_title').text('Edit Appointment');
                         $('#patient_name').text(calEvent.title);
                         $('#end').val('');
@@ -287,6 +292,7 @@
                     } else {
                         $('.nosh-appt').hide();
                         $('.nosh-event').show();
+                        $('#event_encounter').hide();
                         $('#eventModal_title').text('Edit Event');
                         $('#reason').focus();
                     }
@@ -392,9 +398,11 @@
             $('#scheduleModal').modal('hide');
             $('.nosh-event').hide();
             $('.nosh-appt').show();
+            $('#event_encounter').hide();
             $('.nosh-appt-old').hide();
             if (noshdata.pid !== '') {
                 $('#pid').val(noshdata.pid);
+                $('#title').val(noshdata.pt_name);
                 $('#patient_name').text(noshdata.pt_name);
             }
             $('#eventModal_title').text('New Appointment');
@@ -406,6 +414,7 @@
             $('#scheduleModal').modal('hide');
             $('.nosh-appt').hide();
             $('.nosh-event').show();
+            $('#event_encounter').hide();
             $('#eventModal_title').text('New Event');
             $('#eventModal').modal('show');
             $('#reason').focus();
@@ -418,6 +427,10 @@
                 $('#until_div').hide();
                 $("#until").val('');
             }
+        });
+        $('#event_encounter').click(function() {
+            var appt_id = $("#event_id").val();
+            window.location = noshdata.event_encounter + '/' + appt_id;
         });
         $('#event_cancel').click(function() {
             $('#event_form').clearForm();

@@ -1930,7 +1930,9 @@ class ChartController extends Controller {
             $data['template_content'] = 'test';
         }
         if (Session::has('billing_last_page')) {
-            $form_array['origin'] = Session::get('billing_last_page');
+            if ($table == 'billing_core') {
+                $form_array['origin'] = Session::get('billing_last_page');
+            }
         }
         if ($table == 't_messages') {
             $data['content'] = $this->actions_build($table, $index, $id);
@@ -3779,7 +3781,7 @@ class ChartController extends Controller {
             $items = [];
             $items[] = [
                 'type' => 'item',
-                'label' => 'Add CPT',
+                'label' => 'Add Procedure Code',
                 'icon' => 'fa-plus',
                 'url' => route('chart_form', ['billing_core', $row_index, '0'])
             ];
@@ -3819,21 +3821,23 @@ class ChartController extends Controller {
         $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
         $encounter = DB::table('encounters')->where('eid', '=', $eid)->first();
         if ($request->isMethod('post')) {
-            $encounter_type = [];
-            $encounter_type[0] = "";
-            $encounter_type[1] = "";
+            $appt_id = "";
+            $encounter_type = "";
             if ($request->has('encounter_type')) {
                 if ($request->input('encounter_type') != '') {
-                    $encounter_type = explode(",", $request->input('encounter_type'));
+                    $encounter_type_arr = explode(",", $request->input('encounter_type'));
+                    $encounter_type_arr1 = array_slice($encounter_type_arr, 0, -1);
+                    $encounter_type = implode(",", $encounter_type_arr1);
+                    $appt_id = end($encounter_type_arr);
                 }
             }
             $user_id = $request->input('encounter_provider');
-            $user_query = DB::table('users')->where('id', '=',$user_id)->first();
+            $user_query = DB::table('users')->where('id', '=', $user_id)->first();
             $data_add = [
                 'pid' => Session::get('pid'),
-                'appt_id' => $encounter_type[1],
+                'appt_id' => $appt_id,
                 'encounter_age' => Session::get('age'),
-                'encounter_type' => $encounter_type[0],
+                'encounter_type' => $encounter_type,
                 'encounter_signed' => 'No',
                 'addendum' => 'n',
                 'user_id' => $user_id,
@@ -3852,8 +3856,8 @@ class ChartController extends Controller {
                 $this->audit('Add');
                 // $this->api_data('add', 'encounters', 'eid', $eid);
                 $data2['status'] = 'Attended';
-                if ($encounter_type[1] != '') {
-                    DB::table('schedule')->where('appt_id', '=', $encounter_type[1])->update($data2);
+                if ($appt_id != '') {
+                    DB::table('schedule')->where('appt_id', '=', $appt_id)->update($data2);
                     $this->audit('Update');
                 }
                 $data3['addendum_eid'] = $eid;
@@ -3880,7 +3884,7 @@ class ChartController extends Controller {
                 $data['panel_header'] = 'New Encounter';
                 $encounter = [
                     'encounter_provider' => null,
-                    'encounter_template' => null,
+                    'encounter_template' => $practice->encounter_template,
                     'encounter_DOS' => date('Y-m-d h:i A'),
                     'encounter_location' => $practice->default_pos_id,
                     'encounter_type' => null,

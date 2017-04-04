@@ -2646,6 +2646,53 @@ class CoreController extends Controller
         return response()->download($file_path, $file_name, $headers);
     }
 
+    public function event_encounter(Request $request, $appt_id)
+    {
+        $query = DB::table('encounters')->where('appt_id', '=', $appt_id)->first();
+        $query1 = DB::table('schedule')->where('appt_id', '=', $appt_id)->first();
+        if ($query) {
+            $edit = $this->access_level('2');
+            if ($edit == true && $query->encounter_signed == 'No') {
+                return redirect()->route('superquery_patient', ['encounter', $query1->pid, $query->eid]);
+            } else {
+                return redirect()->route('superquery_patient', ['encounter_view', $query1->pid, $query->eid]);
+            }
+        } else {
+            $user_query = DB::table('users')->where('id', '=', $query1->provider_id)->first();
+            $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
+            $data = [
+                'pid' => $query1->pid,
+                'appt_id' => $appt_id,
+                'encounter_age' => Session::get('age'),
+                'encounter_type' => $query1->visit_type,
+                'encounter_signed' => 'No',
+                'addendum' => 'n',
+                'user_id' => $query1->user_id,
+                'practice_id' => Session::get('practice_id'),
+                'encounter_location' => $practice->default_pos_id,
+                'encounter_template' => $practice->encounter_template,
+                'encounter_cc' => $query1->reason,
+                'encounter_role' => 'Primary Care Provider',
+                'encounter_provider' => $user_query->displayname,
+                'encounter_DOS' => date('Y-m-d H:i:s', $query1->start),
+                'encounter_condition_work' => 'No',
+                'encounter_condition_auto' => 'No'
+            ];
+            $eid = DB::table('encounters')->insertGetId($data);
+            $this->audit('Add');
+            // $this->api_data('add', 'encounters', 'eid', $eid);
+            $data2['status'] = 'Attended';
+            DB::table('schedule')->where('appt_id', '=', $appt_id)->update($data2);
+            $this->audit('Update');
+            $data3['addendum_eid'] = $eid;
+            DB::table('encounters')->where('eid', '=', $eid)->update($data3);
+            $this->audit('Update');
+            // $this->api_data('update', 'encounters', 'eid', $eid);
+            Session::put('message_action', 'Encounter created.');
+            return redirect()->route('superquery_patient', ['encounter', $query1->pid, $eid]);
+        }
+    }
+
     public function fax_action(Request $request, $action, $id, $pid, $subtype='')
     {
         ini_set('memory_limit', '196M');
