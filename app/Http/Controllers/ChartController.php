@@ -881,7 +881,8 @@ class ChartController extends Controller {
             't_messages' => 'Message ',
             'hippa' => 'Records Release ',
             'hippa_request' => 'Records Request ',
-            'billing_core' => 'Billing '
+            'billing_core' => 'Billing ',
+            'demographics' => 'Demographics '
         ];
         $multiple_select_arr = [
             'icd_pointer'
