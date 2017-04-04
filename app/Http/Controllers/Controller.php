@@ -3431,8 +3431,8 @@ class Controller extends BaseController
                     $return .= '</div></div>';
                     if ($edit == true) {
                         $return .= '<div class="col-md-1">';
-                        $return .= '<a href="' . route('configure_form_edit', [Session::get('form_type'), $i]) . '" type="button" class="btn fa-btn" data-toggle="tooltip" title="Edit Item"><i class="fa fa-pencil fa-lg"></i></a>';
-                        $return .= '<a href="' . route('configure_form_remove', [Session::get('form_type'), $i]) . '" type="button" class="btn fa-btn nosh-delete" data-toggle="tooltip" title="Delete Item"><i class="fa fa-trash fa-lg"></i></a>';
+                        $return .= '<a href="' . route('configure_form_edit', [$type, $i]) . '" type="button" class="btn fa-btn" data-toggle="tooltip" title="Edit Item"><i class="fa fa-pencil fa-lg"></i></a>';
+                        $return .= '<a href="' . route('configure_form_remove', [$type, $i]) . '" type="button" class="btn fa-btn nosh-delete" data-toggle="tooltip" title="Delete Item"><i class="fa fa-trash fa-lg"></i></a>';
                         $return .= '</div>';
                     }
                     $return .= '</div>';
