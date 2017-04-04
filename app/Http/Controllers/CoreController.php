@@ -1392,7 +1392,7 @@ class CoreController extends Controller
                         $form_item['section_items'] = $options;
                     }
                 }
-                $items[] = $form_item;
+                $items[$row_k] = $form_item;
             }
         }
         $form_array = [

@@ -3362,7 +3362,7 @@ class Controller extends BaseController
             $return .= $form_array['intro'];
         }
         $i = 0;
-        foreach($form_array['items'] as $item) {
+        foreach($form_array['items'] as $item_k => $item) {
             $item_attr = [];
             $item_attr['class'] = 'form-control';
             if (isset($item['required']) && $item['required'] == true) {
@@ -3431,8 +3431,8 @@ class Controller extends BaseController
                     $return .= '</div></div>';
                     if ($edit == true) {
                         $return .= '<div class="col-md-1">';
-                        $return .= '<a href="' . route('configure_form_edit', [$type, $i]) . '" type="button" class="btn fa-btn" data-toggle="tooltip" title="Edit Item"><i class="fa fa-pencil fa-lg"></i></a>';
-                        $return .= '<a href="' . route('configure_form_remove', [$type, $i]) . '" type="button" class="btn fa-btn nosh-delete" data-toggle="tooltip" title="Delete Item"><i class="fa fa-trash fa-lg"></i></a>';
+                        $return .= '<a href="' . route('configure_form_edit', [$type, $item_k]) . '" type="button" class="btn fa-btn" data-toggle="tooltip" title="Edit Item"><i class="fa fa-pencil fa-lg"></i></a>';
+                        $return .= '<a href="' . route('configure_form_remove', [$type, $item_k]) . '" type="button" class="btn fa-btn nosh-delete" data-toggle="tooltip" title="Delete Item"><i class="fa fa-trash fa-lg"></i></a>';
                         $return .= '</div>';
                     }
                     $return .= '</div>';
@@ -3463,8 +3463,8 @@ class Controller extends BaseController
                 $return .= '</div>';
                 if ($edit == true) {
                     $return .= '<div class="col-md-1">';
-                    $return .= '<a href="' . route('configure_form_edit', [$type, $i]) . '" type="button" class="btn fa-btn" data-toggle="tooltip" title="Edit Item"><i class="fa fa-pencil fa-lg"></i></a>';
-                    $return .= '<a href="' . route('configure_form_remove', [$type, $i]) . '" type="button" class="btn fa-btn nosh-delete" data-toggle="tooltip" title="Delete Item"><i class="fa fa-trash fa-lg"></i></a>';
+                    $return .= '<a href="' . route('configure_form_edit', [$type, $item_k]) . '" type="button" class="btn fa-btn" data-toggle="tooltip" title="Edit Item"><i class="fa fa-pencil fa-lg"></i></a>';
+                    $return .= '<a href="' . route('configure_form_remove', [$type, $item_k]) . '" type="button" class="btn fa-btn nosh-delete" data-toggle="tooltip" title="Delete Item"><i class="fa fa-trash fa-lg"></i></a>';
                     $return .= '</div>';
                 }
                 $return .= '</div>';
