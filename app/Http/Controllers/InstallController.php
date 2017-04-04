@@ -577,27 +577,27 @@ public function install_fix(Request $request)
                     if (!$uma) {
                         $resource_set_array[] = [
                             'name' => 'Patient',
-                            'icon' => 'http://noshchartingsystem.com/i-patient.png',
-                            'scopes' => array(
+                            'icon' => 'https://cloud.noshchartingsystem.com/i-patient.png',
+                            'scopes' => [
                                 URL::to('/') . '/fhir/Patient',
                                 URL::to('/') . '/fhir/Medication',
                                 URL::to('/') . '/fhir/Practitioner',
                                 'view',
                                 'edit'
-                            )
+                            ]
                         ];
                         $resource_set_array[] = [
                             'name' => 'My Conditions',
-                            'icon' => 'http://noshchartingsystem.com/i-condition.png',
-                            'scopes' => array(
+                            'icon' => 'https://cloud.noshchartingsystem.com/i-condition.png',
+                            'scopes' => [
                                 URL::to('/') . '/fhir/Condition',
                                 'view',
                                 'edit'
-                            )
+                            ]
                         ];
                         $resource_set_array[] = [
                             'name' => 'Medication List',
-                            'icon' => 'http://noshchartingsystem.com/i-pharmacy.png',
+                            'icon' => 'https://cloud.noshchartingsystem.com/i-pharmacy.png',
                             'scopes' => [
                                 URL::to('/') . '/fhir/MedicationStatement',
                                 'view',
@@ -606,7 +606,7 @@ public function install_fix(Request $request)
                         ];
                         $resource_set_array[] = [
                             'name' => 'Allergy List',
-                            'icon' => 'http://noshchartingsystem.com/i-allergy.png',
+                            'icon' => 'https://cloud.noshchartingsystem.com/i-allergy.png',
                             'scopes' => [
                                 URL::to('/') . '/fhir/AllergyIntolerance',
                                 'view',
@@ -615,7 +615,7 @@ public function install_fix(Request $request)
                         ];
                         $resource_set_array[] = [
                             'name' => 'Immunization List',
-                            'icon' => 'http://noshchartingsystem.com/i-immunizations.png',
+                            'icon' => 'https://cloud.noshchartingsystem.com/i-immunizations.png',
                             'scopes' => [
                                 URL::to('/') . '/fhir/Immunization',
                                 'view',
@@ -624,7 +624,7 @@ public function install_fix(Request $request)
                         ];
                         $resource_set_array[] = [
                             'name' => 'My Encounters',
-                            'icon' => 'https://noshchartingsystem.com/i-medical-records.png',
+                            'icon' => 'https://cloud.noshchartingsystem.com/i-medical-records.png',
                             'scopes' => [
                                 URL::to('/') . '/fhir/Encounter',
                                 'view',
@@ -633,7 +633,7 @@ public function install_fix(Request $request)
                         ];
                         $resource_set_array[] = [
                             'name' => 'Family History',
-                            'icon' => 'http://noshchartingsystem.com/i-family-practice.png',
+                            'icon' => 'https://cloud.noshchartingsystem.com/i-family-practice.png',
                             'scopes' => [
                                 URL::to('/') . '/fhir/FamilyHistory',
                                 'view',
@@ -642,7 +642,7 @@ public function install_fix(Request $request)
                         ];
                         $resource_set_array[] = [
                             'name' => 'My Documents',
-                            'icon' => 'http://noshchartingsystem.com/i-file.png',
+                            'icon' => 'https://cloud.noshchartingsystem.com/i-file.png',
                             'scopes' => [
                                 URL::to('/') . '/fhir/Binary',
                                 'view',
@@ -651,7 +651,7 @@ public function install_fix(Request $request)
                         ];
                         $resource_set_array[] = [
                             'name' => 'Observations',
-                            'icon' => 'http://noshchartingsystem.com/i-cardiology.png',
+                            'icon' => 'https://cloud.noshchartingsystem.com/i-cardiology.png',
                             'scopes' => [
                                 URL::to('/') . '/fhir/Observation',
                                 'view',
