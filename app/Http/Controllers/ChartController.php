@@ -2306,6 +2306,7 @@ class ChartController extends Controller {
                 'Title' => $result->title,
                 'Date of Birth' => date('F jS, Y', strtotime($result->DOB)),
                 'Gender' => $gender[$result->sex],
+                'Patient ID' => $result->patient_id,
                 'SSN' => $result->ss,
                 'Race' => $result->race,
                 'Marital Status' => $result->marital_status,

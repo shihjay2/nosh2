@@ -1229,7 +1229,7 @@ class CoreController extends Controller
         $formatter1 = Formatter::make($array, Formatter::ARR);
         $data1['forms'] = $formatter1->toYaml();
         DB::table('users')->where('id', '=', Session::get('user_id'))->update($data1);
-        Session::put('message_action', $message);
+        Session::put('message_action', 'Form item removed');
         return redirect()->route('configure_form_show', [$type]);
     }
 

@@ -4106,6 +4106,7 @@ class Controller extends BaseController
                 'title' => $result->title,
                 'DOB' => date('Y-m-d', $this->human_to_unix($result->DOB)),
                 'sex' => $result->sex,
+                'patient_id' => $result->patient_id,
                 'ss' => $result->ss,
                 'race' => $result->race,
                 'race_code' => $result->race_code,
@@ -4166,6 +4167,12 @@ class Controller extends BaseController
                 'required' => true,
                 'select_items' => $this->array_gender(),
                 'default_value' => $identity_arr['sex']
+            ];
+            $items[] = [
+                'name' => 'patient_id',
+                'label' => 'Patient ID',
+                'type' => 'text',
+                'default_value' => $identity_arr['patient_id']
             ];
             $items[] = [
                 'name' => 'ss',
