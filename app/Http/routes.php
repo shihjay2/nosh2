@@ -52,6 +52,7 @@ Route::get('billing_list/{type}/{pid}', ['as' => 'billing_list', 'uses' => 'Core
 Route::any('core_action/{table}/{action}/{id}/{index}/{subtype?}', ['as' => 'core_action', 'uses' => 'CoreController@core_action']);
 Route::get('core_form/{table}/{index}/{id}/{subtype?}', ['as' => 'core_form', 'uses' => 'CoreController@core_form']);
 Route::any('configure_form_edit/{type}/{item}', ['as' => 'configure_form_edit', 'uses' => 'CoreController@configure_form_edit']);
+Route::any('configure_form_delete/{type}', ['as' => 'configure_form_delete', 'uses' => 'CoreController@configure_form_delete']);
 Route::any('configure_form_details/{type}', ['as' => 'configure_form_details', 'uses' => 'CoreController@configure_form_details']);
 Route::any('configure_form_list', ['as' => 'configure_form_list', 'uses' => 'CoreController@configure_form_list']);
 Route::any('configure_form_remove/{type}/{item}', ['as' => 'configure_form_remove', 'uses' => 'CoreController@configure_form_remove']);

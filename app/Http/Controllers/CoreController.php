@@ -973,89 +973,17 @@ class CoreController extends Controller
         }
     }
 
-    public function configure_form_edit(Request $request, $type, $item)
+    public function configure_form_delete(Request $request, $type)
     {
-        $id = Session::get('user_id');
-        $user = DB::table('users')->where('id', '=', $id)->first();
+        $user = DB::table('users')->where('id', '=', Session::get('user_id'))->first();
         $formatter = Formatter::make($user->forms, Formatter::YAML);
         $array = $formatter->toArray();
-        if ($request->isMethod('post')) {
-            $data['input'] = $request->input('form_type');
-            $data['text'] = $request->input('form_label');
-            $search_arr = [' ', ':', '?', ',', ';'];
-            $replace_arr = ['_', '', '', '', ''];
-            $data['name'] = str_replace($search_arr, $replace_arr, strtolower($request->input('form_label')));
-            if ($request->has('form_options')) {
-                $data['options'] = $request->input('form_options');
-            }
-            if ($item == 'new') {
-                $array[$type][] = $data;
-                $message = 'Form item added';
-            } else {
-                $array[$type][$item] = $data;
-                $message = 'Form item updated';
-            }
-            $formatter1 = Formatter::make($array, Formatter::ARR);
-            $data1['forms'] = $formatter1->toYaml();
-            DB::table('users')->where('id', '=', $id)->update($data1);
-            Session::put('message_action', $message);
-            return redirect()->route('configure_form_show', [$type]);
-        } else {
-            $form_options = null;
-            if ($item == 'new') {
-                $data['panel_header'] = 'Add Form Item';
-                $form_label = null;
-                $form_type = null;
-            } else {
-                $data['panel_header'] = 'Edit Form Item';
-                $form_label = $array[$type][$item]['text'];
-                $form_type = $array[$type][$item]['input'];
-                if (isset($array[$type][$item]['options'])) {
-                    $form_options = $array[$type][$item]['options'];
-                }
-            }
-            $type_arr = [
-                'text' => 'Text Input',
-                'select' => 'Dropdown List',
-                'checkbox' => 'Checkbox',
-                'radio' => 'Radio Button'
-            ];
-            $items[] = [
-                'name' => 'form_label',
-                'label' => 'Form Label',
-                'type' => 'text',
-                'default_value' => $form_label
-            ];
-            $items[] = [
-                'name' => 'form_type',
-                'label' => 'Input Type',
-                'type' => 'select',
-                'select_items' => $type_arr,
-                'default_value' => $form_type
-            ];
-            $items[] = [
-                'name' => 'form_options',
-                'label' => 'Options',
-                'type' => 'text',
-                'default_value' => $form_options
-            ];
-            $form_array = [
-                'form_id' => 'patient_form_item',
-                'action' => route('configure_form_edit', [$type, $item]),
-                'items' => $items,
-                'save_button_label' => 'Save'
-            ];
-            $data['content'] = '<div class="alert alert-success"><h5>Scoring Tips</h5><ul>';
-            $data['content'] .= '<li>Scoring of each response only applies to the checkbox and radio button input types</li>';
-            $data['content'] .= '<li>The first listed option has a scoring value of 0, the second listed option has a scoring value of 1, etc.</li>';
-            $data['content'] .= '</ul></div>';
-            $data['content'] .= $this->form_build($form_array);
-            $data['message_action'] = Session::get('message_action');
-            Session::forget('message_action');
-            $data['assets_js'] = $this->assets_js();
-            $data['assets_css'] = $this->assets_css();
-            return view('core', $data);
-        }
+        unset($array[$type]);
+        $formatter1 = Formatter::make($array, Formatter::ARR);
+        $data1['forms'] = $formatter1->toYaml();
+        DB::table('users')->where('id', '=', Session::get('user_id'))->update($data1);
+        Session::put('message_action', 'Form deleted');
+        return redirect()->route('configure_form_list');
     }
 
     public function configure_form_details(Request $request, $type)
@@ -1175,6 +1103,91 @@ class CoreController extends Controller
         }
     }
 
+    public function configure_form_edit(Request $request, $type, $item)
+    {
+        $id = Session::get('user_id');
+        $user = DB::table('users')->where('id', '=', $id)->first();
+        $formatter = Formatter::make($user->forms, Formatter::YAML);
+        $array = $formatter->toArray();
+        if ($request->isMethod('post')) {
+            $data['input'] = $request->input('form_type');
+            $data['text'] = $request->input('form_label');
+            $search_arr = [' ', ':', '?', ',', ';'];
+            $replace_arr = ['_', '', '', '', ''];
+            $data['name'] = str_replace($search_arr, $replace_arr, strtolower($request->input('form_label')));
+            if ($request->has('form_options')) {
+                $data['options'] = $request->input('form_options');
+            }
+            if ($item == 'new') {
+                $array[$type][] = $data;
+                $message = 'Form item added';
+            } else {
+                $array[$type][$item] = $data;
+                $message = 'Form item updated';
+            }
+            $formatter1 = Formatter::make($array, Formatter::ARR);
+            $data1['forms'] = $formatter1->toYaml();
+            DB::table('users')->where('id', '=', $id)->update($data1);
+            Session::put('message_action', $message);
+            return redirect()->route('configure_form_show', [$type]);
+        } else {
+            $form_options = null;
+            if ($item == 'new') {
+                $data['panel_header'] = 'Add Form Item';
+                $form_label = null;
+                $form_type = null;
+            } else {
+                $data['panel_header'] = 'Edit Form Item';
+                $form_label = $array[$type][$item]['text'];
+                $form_type = $array[$type][$item]['input'];
+                if (isset($array[$type][$item]['options'])) {
+                    $form_options = $array[$type][$item]['options'];
+                }
+            }
+            $type_arr = [
+                'text' => 'Text Input',
+                'select' => 'Dropdown List',
+                'checkbox' => 'Checkbox',
+                'radio' => 'Radio Button'
+            ];
+            $items[] = [
+                'name' => 'form_label',
+                'label' => 'Form Label',
+                'type' => 'text',
+                'default_value' => $form_label
+            ];
+            $items[] = [
+                'name' => 'form_type',
+                'label' => 'Input Type',
+                'type' => 'select',
+                'select_items' => $type_arr,
+                'default_value' => $form_type
+            ];
+            $items[] = [
+                'name' => 'form_options',
+                'label' => 'Options',
+                'type' => 'text',
+                'default_value' => $form_options
+            ];
+            $form_array = [
+                'form_id' => 'patient_form_item',
+                'action' => route('configure_form_edit', [$type, $item]),
+                'items' => $items,
+                'save_button_label' => 'Save'
+            ];
+            $data['content'] = '<div class="alert alert-success"><h5>Scoring Tips</h5><ul>';
+            $data['content'] .= '<li>Scoring of each response only applies to the checkbox and radio button input types</li>';
+            $data['content'] .= '<li>The first listed option has a scoring value of 0, the second listed option has a scoring value of 1, etc.</li>';
+            $data['content'] .= '</ul></div>';
+            $data['content'] .= $this->form_build($form_array);
+            $data['message_action'] = Session::get('message_action');
+            Session::forget('message_action');
+            $data['assets_js'] = $this->assets_js();
+            $data['assets_css'] = $this->assets_css();
+            return view('core', $data);
+        }
+    }
+
     public function configure_form_list(Request $request)
     {
         $list_array = [];
@@ -1194,6 +1207,7 @@ class CoreController extends Controller
             $arr = [];
             $arr['label'] = $row_k;
             $arr['edit'] = route('configure_form_show', [$row_k]);
+            $arr['delete'] = route('configure_form_delete', [$row_k]);
             $list_array[] = $arr;
         }
         if (count($list_array) > 0) {
