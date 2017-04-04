@@ -1001,11 +1001,11 @@ class CoreController extends Controller
             Session::put('message_action', $message);
             return redirect()->route('configure_form_show', [$type]);
         } else {
+            $form_options = null;
             if ($item == 'new') {
                 $data['panel_header'] = 'Add Form Item';
                 $form_label = null;
                 $form_type = null;
-                $form_options = null;
             } else {
                 $data['panel_header'] = 'Edit Form Item';
                 $form_label = $array[$type][$item]['text'];
