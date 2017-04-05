@@ -872,7 +872,7 @@ class ChartController extends Controller {
             'allergies' => 'Allergy ',
             'rx_list' => 'Medication ',
             'sup_list' => 'Supplement ',
-            'immunization' => 'Immunization ',
+            'immunizations' => 'Immunization ',
             'alerts' => 'Alert ',
             'documents' => 'Document ',
             'tests' => 'Result ',

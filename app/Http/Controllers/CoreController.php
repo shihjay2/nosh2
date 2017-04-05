@@ -1944,7 +1944,7 @@ class CoreController extends Controller
                 }
                 $sql = "CREATE DATABASE " . $database;
                 if (mysqli_query($connect,$sql)) {
-                    $command = "mysqldump --no-data -u " . $config['mysql_username'] . " -p". $config['mysql_password'] . " " . $config['mysql_database'] . " | mysql -u " . $config['mysql_username'] . " -p". $config['mysql_password'] . " " . $database;
+                    $command = "mysqldump --no-data -u " . env('DB_USERNAME') . " -p". env('DB_PASSWORD') . " " . env('DB_DATABASE') . " | mysql -u " . env('DB_USERNAME') . " -p". env('DB_PASSWORD') . " " . $database;
                     system($command);
                     Schema::connection('mysql2')->drop('audit');
                     Schema::connection('mysql2')->drop('ci_sessions');
