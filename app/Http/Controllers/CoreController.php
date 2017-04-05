@@ -1578,15 +1578,19 @@ class CoreController extends Controller
             }
             if (Session::has('download_ccda_entire')) {
                 $data['download_progress'] = Session::get('download_ccda_entire');
+                Session::forget('download_ccda_entire');
             }
             if (Session::has('download_charts_entire')) {
                 $data['download_progress'] = Session::get('download_charts_entire');
+                Session::forget('download_charts_entire');
             }
             if (Session::has('database_export')) {
                 $data['download_progress'] = Session::get('database_export');
+                Session::forget('database_export');
             }
             if (Session::has('download_csv_demographics')) {
                 $data['download_progress'] = Session::get('download_csv_demographics');
+                Session::forget('download_csv_demographics');
             }
             if (!isset($data['users_needed']) && !isset($data['schedule_needed'])) {
                 $data['admin_ok'] = 'y';
