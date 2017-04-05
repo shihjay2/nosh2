@@ -1978,7 +1978,7 @@ class CoreController extends Controller
                     Schema::connection('mysql2')->drop('snomed_procedure_imaging');
                     Schema::connection('mysql2')->drop('snomed_procedure_path');
                     Schema::connection('mysql2')->drop('supplements_list');
-                    File::put($track,'10');
+                    File::put(public_path() . '/temp/' . $track_id, '10');
                     $practiceinfo = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
                     $practiceinfo_data = (array) $practiceinfo;
                     $practiceinfo_data['practice_id'] = '1';
