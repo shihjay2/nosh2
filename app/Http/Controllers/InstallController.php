@@ -780,7 +780,6 @@ public function install_fix(Request $request)
 
     public function test1(Request $request)
     {
-        $date = new Date(1490153232);
-        return $date->addYear()->format('Y-m-d');
+        
     }
 }

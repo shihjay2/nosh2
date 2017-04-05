@@ -42,13 +42,12 @@ class ReminderController extends Controller {
 					$data_message['email'] = $row2->email;
 					$data_message['additional_message'] = $row2->additional_message;
 					if ($row->reminder_method == 'Cellular Phone') {
-						$this->send_mail(array('text' => 'emails.remindertext'), $data_message, 'Appointment Reminder', $to, $row0->practice_id);
+						$message = view('emails.remindertext', $data_message)->render();
+                        $this->textbelt($to, $message);
 					} else {
 						$this->send_mail('emails.reminder', $data_message, 'Appointment Reminder', $to, $row0->practice_id);
 					}
-					$data = array(
-						'status' => 'Reminder Sent'
-					);
+					$data['status'] = 'Reminder Sent';
 					DB::table('schedule')->where('appt_id', '=', $row->appt_id)->update($data);
 					$this->audit('Add');
 					$i++;

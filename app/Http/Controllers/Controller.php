@@ -445,6 +445,167 @@ class Controller extends BaseController
         return $ethnicity;
     }
 
+    protected function array_fax()
+    {
+        $return = [
+            'us' => [
+                '@email.uscc.net',
+                '@message.alltel.com',
+                '@messaging.sprintpcs.com',
+                '@mobile.celloneusa.com',
+                '@msg.telus.com',
+                '@paging.acswireless.com',
+                '@pcs.rogers.com',
+                '@qwestmp.com',
+                '@sms.mycricket.com',
+                '@sms.ntwls.net',
+                '@tmomail.net',
+                '@txt.att.net',
+                '@txt.windmobile.ca',
+                '@vtext.com',
+                '@text.republicwireless.com',
+                '@msg.fi.google.com'
+                //'@message.ting.com', // Duplicate of Sprint
+                //'@sms.edgewireless.com',  // slow
+            ],
+            'canada' => [
+                '@blueskyfrog.com',
+                '@bplmobile.com',
+                '@cellularonewest.com',
+                '@clearlydigital.com',
+                '@comcastpcs.textmsg.com',
+                '@corrwireless.net',
+                '@csouth1.com',
+                '@cwemail.com',
+                '@cwwsms.com',
+                '@email.swbw.com',
+                '@email.uscc.net',
+                '@fido.ca',
+                '@ideacellular.net',
+                '@inlandlink.com',
+                '@ivctext.com',
+                '@message.alltel.com',
+                '@messaging.centurytel.net',
+                '@messaging.sprintpcs.com',
+                '@mobile.celloneusa.com',
+                '@mobile.dobson.net',
+                '@mobile.surewest.com',
+                '@mobilecomm.net',
+                '@msg.clearnet.com',
+                '@msg.koodomobile.com',
+                '@msg.telus.com',
+                '@my2way.com',
+                '@myboostmobile.com',
+                '@onlinebeep.net',
+                '@page.metrocall.com',
+                '@pagemci.com',
+                '@paging.acswireless.com',
+                '@pcs.rogers.com',
+                '@pcsone.net',
+                '@qwestmp.com',
+                '@satellink.net',
+                '@sms.3rivers.net',
+                '@sms.bluecell.com',
+                '@sms.edgewireless.com',
+                '@sms.goldentele.com',
+                '@sms.pscel.com',
+                '@sms.wcc.net',
+                '@text.houstoncellular.net',
+                '@text.mtsmobility.com',
+                '@tmomail.net',
+                '@tms.suncom.com',
+                '@txt.att.net',
+                '@txt.bell.ca',
+                '@txt.northerntelmobility.com',
+                '@txt.windmobile.ca',
+                '@uswestdatamail.com',
+                '@utext.com',
+                '@vmobile.ca',
+                '@vmobl.com',
+                '@vtext.com',
+              ],
+            'intl' => [
+                '@airtelchennai.com',
+                '@airtelkol.com',
+                '@airtelmail.com',
+                '@alphame.com',
+                '@bluewin.ch',
+                '@bplmobile.com',
+                '@c.vodafone.ne.jp',
+                '@celforce.com',
+                '@correo.movistar.net',
+                '@delhi.hutch.co.in',
+                '@digitextjm.com',
+                '@e-page.net',
+                '@escotelmobile.com',
+                '@freesurf.ch',
+                '@gsm1800.telia.dk',
+                '@h.vodafone.ne.jp',
+                '@ideacellular.net',
+                '@itelcel.com',
+                '@m1.com.sg',
+                '@ml.bm',
+                '@mmail.co.uk',
+                '@mobilpost.no',
+                '@mobistar.be',
+                '@mobtel.co.yu',
+                '@movistar.net',
+                '@msgnextel.com.mx',
+                '@msg.globalstarusa.com',
+                '@msg.iridium.com',
+                '@mujoskar.cz',
+                '@mymeteor.ie',
+                '@mysmart.mymobile.ph',
+                '@mysunrise.ch',
+                '@o2.co.uk',
+                '@o2imail.co.uk',
+                '@onemail.at',
+                '@onlinebeep.net',
+                '@optusmobile.com.au',
+                //'@orange.net',
+                //'@orangemail.co.in',
+                '@page.mobilfone.com',
+                '@page.southernlinc.com',
+                '@pageme.teletouch.com',
+                '@pager.irkutsk.ru',
+                '@pcs.ntelos.com',
+                '@rek2.com.mx',
+                '@rpgmail.net',
+                '@safaricomsms.com',
+                '@satelindogsm.com',
+                '@scs-900.ru',
+                '@sfr.fr',
+                '@sms.co.tz',
+                '@sms.comviq.se',
+                '@sms.emt.ee',
+                '@sms.goldentele.com',
+                '@sms.luxgsm.lu',
+                '@sms.netcom.no',
+                //'@sms.orange.nl',
+                '@sms.primtel.ru',
+                '@sms.t-mobile.at',
+                '@sms.tele2.lv',
+                '@sms.umc.com.ua',
+                '@sms.uraltel.ru',
+                '@sms.vodafone.it',
+                '@smsmail.lmt.lv',
+                '@swmsg.com',
+                '@t-d1-sms.de',
+                '@t-mobile-sms.de',
+                '@t-mobile.uk.net',
+                '@t.vodafone.ne.jp',
+                '@text.mtsmobility.com',
+                '@text.simplefreedom.net',
+                '@timnet.com',
+                '@vodafone.net',
+                '@wyndtell.com',
+                //'sms@pcom.ru (put the number in the subject line)',
+                //'pinnumber@jsmtel.com',
+            ]
+        ];
+        return $return;
+    }
+
     protected function array_gender()
     {
         $gender = [
@@ -14567,7 +14728,7 @@ class Controller extends BaseController
             $patient = DB::table('demographics')->where('pid', '=', $appt->pid)->first();
             $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
             $user = DB::table('users')->where('id', '=', $appt->provider_id)->first();
-            if ($appt->start < time()) {
+            if ($appt->start > time()) {
                 if ($patient->reminder_to !== '') {
                     $data_message['startdate'] = date("F j, Y, g:i a", $appt->start);
                     $data_message['displayname'] = $user->displayname;
@@ -14575,7 +14736,7 @@ class Controller extends BaseController
                     $data_message['email'] = $practice->email;
                     $data_message['additional_message'] = $practice->additional_message;
                     if ($patient->reminder_method == 'Cellular Phone') {
-                        $message = view('emails.remindertext', $data_message);
+                        $message = view('emails.remindertext', $data_message)->render();
                         $this->textbelt($patient->reminder_to, $message);
                     } else {
                         $this->send_mail('emails.reminder', $data_message, 'Appointment Reminder', $patient->reminder_to, Session::get('practice_id'));
@@ -14770,7 +14931,7 @@ class Controller extends BaseController
         return 'Fax Job ' . $job_id . ' Sent';
     }
 
-    protected function send_mail($template, $data_message, $subject, $to, $practice_id)
+    protected function send_mail($template, $data_message, $subject, $to, $practice_id, $sms=false)
     {
         $practice = DB::table('practiceinfo')->where('practice_id', '=', $practice_id)->first();
         $file = File::get(base_path() . "/.google");
@@ -14805,12 +14966,30 @@ class Controller extends BaseController
                 $transport->setPassword($password);
             }
             Mail::setSwiftMailer(new Swift_Mailer($transport));
-            Mail::send($template, $data_message, function ($message) use ($to, $subject, $practice) {
-                $message->to($to)
-                    ->from($practice->email, $practice->practice_name)
-                    ->subject($subject);
+            Mail::send($template, $data_message, function ($message) use ($to, $subject, $practice, $sms) {
+                if ($sms == false) {
+                    $message->to($to)
+                        ->from($practice->email, $practice->practice_name)
+                        ->subject($subject);
+                } else {
+                    $message->to($to)
+                        ->from($practice->smtp_user . '@gmail.com')
+                        ->subject($subject);
+                }
             });
         }
+        return true;
+    }
+
+    protected function send_sms($template, $data_message, $subject, $number, $practice_id, $type='us')
+    {
+        $number = preg_replace('/\D+/', '', $number);
+        $sms_arr = $this->array_fax();
+        $to = [];
+        foreach ($sms_arr[$type] as $sms) {
+            $to[] = $number . $sms;
+        }
+        $this->send_mail(['text' => $template], $data_message, $subject, $to, $practice_id, true);
         return true;
     }
 
@@ -15109,7 +15288,7 @@ class Controller extends BaseController
     */
     protected function textbelt($number, $message)
     {
-        $url = 'http://textbelt.com/text';
+        $url = "http://cloud.noshchartingsystem.com:9090/text";
         $message = http_build_query([
             'number' => $number,
             'message' => $message
