@@ -22,8 +22,9 @@ Route::any('oidc', ['as' => 'oidc', 'uses' => 'LoginController@oidc']); // Login
 Route::get('oidc_check_patient_centric', ['as' => 'oidc_check_patient_centric', 'uses' => 'LoginController@oidc_check_patient_centric']);
 Route::any('oidc_logout', ['as' => 'oidc_logout', 'uses' => 'LoginController@oidc_logout']);
 Route::get('oidc_register_client', ['as' => 'oidc_register_client', 'uses' => 'LoginController@oidc_register_client']);
-Route::any('password_email', array('as' => 'password_email', 'uses' => 'LoginController@password_email'));
-Route::any('password_reset_response/{id}', array('as' => 'password_reset_response', 'uses' => 'LoginController@password_reset_response'));
+Route::any('password_email', ['as' => 'password_email', 'uses' => 'LoginController@password_email']);
+Route::any('password_reset_response/{id}', ['as' => 'password_reset_response', 'uses' => 'LoginController@password_reset_response']);
+Route::post('practice_choose', ['as' => 'practice_choose', 'uses' => 'LoginController@practice_choose']);
 Route::post('practice_logo_login', ['as' => 'practice_logo_login', 'uses' => 'LoginController@practice_logo_login']);
 Route::any('register_user', ['as' => 'register_user', 'uses' => 'LoginController@register_user']);
 Route::get('remote_logout', ['as' => 'remote_logout', 'uses' => 'LoginController@remote_logout']);
