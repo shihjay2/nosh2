@@ -30,6 +30,7 @@ use Swift_Mailer;
 use Swift_SmtpTransport;
 use Session;
 use SoapBox\Formatter\Formatter;
+use URL;
 
 use Exception;
 
@@ -2328,6 +2329,28 @@ class Controller extends BaseController
         } else {
             return $description;
         }
+    }
+
+    protected function clinithink($text, $type)
+    {
+        $url = 'https://cloud.noshchartingsystem.com/noshapi/clinithink';
+        $query['type'] = $type;
+        if ($type == 'text') {
+            $query['text'] = $text;
+        }
+        if ($type == 'crossmap') {
+            $query['code'] = $text;
+        }
+        $message = http_build_query($query);
+        $ch = curl_init();
+        // $url = $url . "?" . $message;
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $message);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $data = curl_exec($ch);
+        curl_close($ch);
+        return $data;
     }
 
     protected function closest_match($input, $compare_arr)
@@ -9549,6 +9572,20 @@ class Controller extends BaseController
         return $result;
     }
 
+    protected function github_release()
+    {
+        $client = new \Github\Client(
+            new \Github\HttpClient\CachedHttpClient(array('cache_dir' => '/tmp/github-api-cache'))
+        );
+        $client = new \Github\HttpClient\CachedHttpClient();
+        $client->setCache(
+            new \Github\HttpClient\Cache\FilesystemCache('/tmp/github-api-cache')
+        );
+        $client = new \Github\Client($client);
+        $result = $client->api('repo')->releases()->latest('shihjay2', 'nosh2');
+        return $result;
+    }
+
     protected function github_single($sha)
     {
         $client = new \Github\Client(
@@ -9559,7 +9596,7 @@ class Controller extends BaseController
             new \Github\HttpClient\Cache\FilesystemCache('/tmp/github-api-cache')
         );
         $client = new \Github\Client($client);
-        $result = $commit = $client->api('repo')->commits()->show('shihjay2', 'nosh2', $sha);
+        $result = $client->api('repo')->commits()->show('shihjay2', 'nosh2', $sha);
         return $result;
     }
 
