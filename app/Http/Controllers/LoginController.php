@@ -895,6 +895,7 @@ class LoginController extends Controller {
                         ];
                         $view_data1['content'] .= $this->form_build($form_array1);
                     }
+                    $view_data1['panel_header'] = 'Choose a Practice';
                     return view('welcome', $view_data1);
                 } else {
                     return redirect()->intended('/');
