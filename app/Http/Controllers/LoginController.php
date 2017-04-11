@@ -717,7 +717,7 @@ class LoginController extends Controller {
         } else {
             $data['assets_js'] = $this->assets_js();
             $data['assets_css'] = $this->assets_css();
-            return view('password');
+            return view('password', $data);
         }
     }
 
@@ -1166,11 +1166,11 @@ class LoginController extends Controller {
             ];
             $id = DB::table('users')->insertGetId($data);
             $this->audit('Add');
-            $data1 = array(
+            $data1 = [
                 'id' => $id,
                 'npi' => $npi,
                 'practice_id' => $practice_id
-            );
+            ];
             DB::table('providers')->insert($data1);
             $this->audit('Add');
             $user1 = DB::table('users')->where('id', '=', $id)->first();
@@ -1321,6 +1321,15 @@ class LoginController extends Controller {
             // return Redirect::intended('/');
         }
     }
+
+    public function uma_invitation_request()
+	{
+		$practice = DB::table('practiceinfo')->where('practice_id', '=', '1')->first();
+		$data['email'] = $practice->email . '?Subject=Invitation%20Request';
+        $data['assets_js'] = $this->assets_js();
+        $data['assets_css'] = $this->assets_css();
+        return view('uma_invitation_request', $data);
+	}
 
     public function uma_logout(Request $request)
     {
