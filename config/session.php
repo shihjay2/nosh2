@@ -109,7 +109,7 @@ return [
     |
     */
 
-    'cookie' => 'laravel_session_uma',
+    'cookie' => 'laravel_session_nosh',
 
     /*
     |--------------------------------------------------------------------------
