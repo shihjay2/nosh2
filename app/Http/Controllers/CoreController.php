@@ -7319,16 +7319,13 @@ class CoreController extends Controller
         $dropdown_array['items'] = $items;
         $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
         // Look for pNOSH link through registered client to mdNOSH Gateway
-        $query = DB::table('oauth_clients')->where('client_uri', '=', $client->as_uri . "/nosh")->first();
-        if ($query) {
-            $data['content'] = '<div class="list-group">';
-            $data['content'] .= '<a href="' . $patient->hieofone_as_url . '/nosh/uma_auth" target="_blank" class="list-group-item"><span style="margin:10px;">Patient Centered Health Record (pNOSH) for ' . $client->hieofone_as_name . '</span><span class="label label-success">Patient Centered Health Record</span></a>';
-            $data['content'] .= '<a href="' . route('uma_resource_view', ['Condition']) . '" class="list-group-item"><i class="fa fa-bars fa-fw"></i><span style="margin:10px;">Conditions</span></a>';
-            $data['content'] .= '<a href="' . route('uma_resource_view', ['MedicationStatement']) . '" class="list-group-item"><i class="fa fa-eyedropper fa-fw"></i><span style="margin:10px;">Medication List</span></a>';
-            $data['content'] .= '<a href="' . route('uma_resource_view', ['AllergyIntolerance']) . '" class="list-group-item"><i class="fa fa-exclamation-triangle fa-fw"></i><span style="margin:10px;">Allergy List</span></a>';
-            $data['content'] .= '<a href="' . route('uma_resource_view', ['Immunization']) . '" class="list-group-item"><i class="fa fa-magic fa-fw"></i><span style="margin:10px;">Immunizations</span></a>';
-            $data['content'] .= '</div>';
-        }
+        $data['content'] = '<div class="list-group">';
+        $data['content'] .= '<a href="' . $patient->hieofone_as_url . '/nosh/uma_auth" target="_blank" class="list-group-item"><span style="margin:10px;">Patient Centered Health Record (pNOSH) for ' . $client->hieofone_as_name . '</span><span class="label label-success">Patient Centered Health Record</span></a>';
+        $data['content'] .= '<a href="' . route('uma_resource_view', ['Condition']) . '" class="list-group-item"><i class="fa fa-bars fa-fw"></i><span style="margin:10px;">Conditions</span></a>';
+        $data['content'] .= '<a href="' . route('uma_resource_view', ['MedicationStatement']) . '" class="list-group-item"><i class="fa fa-eyedropper fa-fw"></i><span style="margin:10px;">Medication List</span></a>';
+        $data['content'] .= '<a href="' . route('uma_resource_view', ['AllergyIntolerance']) . '" class="list-group-item"><i class="fa fa-exclamation-triangle fa-fw"></i><span style="margin:10px;">Allergy List</span></a>';
+        $data['content'] .= '<a href="' . route('uma_resource_view', ['Immunization']) . '" class="list-group-item"><i class="fa fa-magic fa-fw"></i><span style="margin:10px;">Immunizations</span></a>';
+        $data['content'] .= '</div>';
         Session::put('uma_pid', $id);
         $data['assets_js'] = $this->assets_js();
         $data['assets_css'] = $this->assets_css();

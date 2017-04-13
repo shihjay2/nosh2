@@ -7028,8 +7028,7 @@ class Controller extends BaseController
             'name' => 'nosh_action',
             'label' => 'Action after Saving',
             'type' => 'select',
-            'select_items' => $nosh_action_arr,
-            'required' => true
+            'select_items' => $nosh_action_arr
         ];
         $items[] = [
             'name' => 'sup_date_inactive',

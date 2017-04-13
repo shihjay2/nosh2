@@ -6111,6 +6111,18 @@ class ChartController extends Controller {
         return view('chart', $data);
     }
 
+    public function prescription_view(Request $request, $id='')
+    {
+        $data['assets_js'] = $this->assets_js();
+        $data['assets_css'] = $this->assets_css();
+        $url = 'https://www.google.com';
+        $data['content'] = '<div style="text-align: center;">';
+        $data['content'] .= QrCode::size(300)->generate($url);
+        $data['content'] .= '</div>';
+        $data['goodrx'] = 'https://www.goodrx.com/levothyroxine?grx_ref=api&strength=50mcg&form=tablet&label=levothyroxine';
+        return view('prescription', $data);
+    }
+
     public function print_action($action, $id, $pid, $subtype='')
     {
         if ($action == 'rx_list') {
