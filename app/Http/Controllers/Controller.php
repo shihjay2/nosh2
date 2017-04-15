@@ -6699,6 +6699,7 @@ class Controller extends BaseController
                 $rx['rxl_days'] = null;
                 $rx['daw'] = '';
                 $rx['dea'] = '';
+                $rx['rxl_date_prescribed'] = date('Y-m-d');
                 $rx['address_id'] = null;
                 $patient = DB::table('demographics')->where('pid', '=', Session::get('pid'))->first();
                 if ($patient->pharmacy_address_id !== '' || $patient->pharmacy_address_id !== null) {
@@ -6742,10 +6743,14 @@ class Controller extends BaseController
             } else {
                 $rx['rxl_date_inactive'] = date('Y-m-d', $this->human_to_unix($result->rxl_date_inactive));
             }
-            if ($result->rxl_date_prescribed == '0000-00-00 00:00:00') {
-                $rx['rxl_date_prescribed'] = '';
+            if ($subtype !== '') {
+                $rx['rxl_date_prescribed'] = date('Y-m-d');
             } else {
-                $rx['rxl_date_prescribed'] = date('Y-m-d', $this->human_to_unix($result->rxl_date_prescribed));
+                if ($result->rxl_date_prescribed == '0000-00-00 00:00:00') {
+                    $rx['rxl_date_prescribed'] = '';
+                } else {
+                    $rx['rxl_date_prescribed'] = date('Y-m-d', $this->human_to_unix($result->rxl_date_prescribed));
+                }
             }
             if ($result->rxl_date_old == '0000-00-00 00:00:00') {
                 $rx['rxl_date_old'] = '';
@@ -13893,8 +13898,8 @@ class Controller extends BaseController
                 } else {
                     $med_dosage_unit = '';
                 }
-                $med_code = $route_arr[$med_row->rxl_route][0];
-                $med_code_description = $route_arr[$med_row->rxl_route][1];
+                $med_code = $route_arr[$row->rxl_route][0];
+                $med_code_description = $route_arr[$row->rxl_route][1];
                 $med_period = '';
                 if (in_array($row->rxl_frequency, $med_freq_array_1)) {
                     $med_period = "24";
@@ -13982,8 +13987,8 @@ class Controller extends BaseController
                 ]
             ];
             $sub_code = 'G';
-            $sub_code = 'generic composition';
-            if ($result->rxl_daw !== '' && $result->rxl_daw !== null) {
+            $sub_desc = 'generic composition';
+            if ($row->rxl_daw !== '' && $row->rxl_daw !== null) {
                 $sub_code = 'BC';
                 $sub_desc = 'brand composition';
             }
