@@ -6650,6 +6650,7 @@ class Controller extends BaseController
     {
         $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
         $nosh_action_arr = [
+            'electronic_sign' => 'Electronically Sign',
             'print_action' => 'Print',
             'print_queue' => 'Add to Print Queue'
         ];
@@ -9645,7 +9646,7 @@ class Controller extends BaseController
                 if ($row->reminder_method == 'Cellular Phone') {
                     $data_message['item'] = 'New Medication: ' . $rx . '; ' . $link;
                     $message = view('emails.blank', $data_message)->render();
-                    $this->textbelt($row->phone_cell, $message);
+                    $this->textbelt($to, $message);
                 } else {
                     $data_message['item'] = 'You have a new medication prescribed to you: ' . $rx . '; For more details, click here: ' . $link;
                     $this->send_mail('emails.blank', $data_message, 'New Medication', $to, Session::get('practice_id'));
@@ -12952,6 +12953,24 @@ class Controller extends BaseController
         $html .= '<li><b>19-64 years of age:</b> ' . round($num2/$total*100) . "% of patients</li>";
         $html .= '<li><b>65+ years of age:</b> ' . round($num3/$total*100) . "% of patients</li></ul>";
         return $html;
+    }
+
+    protected function prescription_notification($id)
+    {
+        $row = DB::table('demographics')->where('pid', '=', Session::get('pid'))->first();
+        $row2 = DB::table('practiceinfo')->where('practice_id', '=',Session::get('practice_id'))->first();
+        $to = $row->reminder_to;
+        if ($to != '') {
+            $link = route('prescription_view', [$id]);
+            if ($row->reminder_method == 'Cellular Phone') {
+                $data_message['item'] = 'New Medication: ' . $link;
+                $message = view('emails.blank', $data_message)->render();
+                $this->textbelt($to, $message);
+            } else {
+                $data_message['item'] = 'You have a new medication prescribed to you.  For more details, click here: ' . $link;
+                $this->send_mail('emails.blank', $data_message, 'New Medication', $to, Session::get('practice_id'));
+            }
+        }
     }
 
     /**

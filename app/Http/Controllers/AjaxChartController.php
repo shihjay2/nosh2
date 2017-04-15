@@ -32,6 +32,21 @@ class AjaxChartController extends Controller
          $this->middleware('patient');
     }
 
+    public function electronic_sign_process(Request $request, $table, $index, $id)
+    {
+        $message_arr = [
+            'rx_list' => 'Prescription digitally signed',
+            'orders' => 'Order digitally signed'
+        ];
+        $data['transaction'] = $request->input('txHash');
+        DB::table($table)->where($index, '=', $id)->update($data);
+        $this->audit('Update');
+        Session::put('message_action', $message_arr[$table]);
+        $return['message'] = 'OK';
+        $return['url'] = Session::get('last_page');
+        return $return;
+    }
+
     public function get_appointments(Request $request)
     {
         $start_time = time() - 604800;

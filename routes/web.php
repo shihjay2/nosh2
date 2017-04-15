@@ -11,7 +11,7 @@
 |
 */
 
-// Authentication routes 
+// Authentication routes
 Route::any('accept_invitation/{id}', ['as' => 'accept_invitation', 'uses' => 'LoginController@accept_invitation']);
 Route::get('fhir/oidc', ['as' => 'oidc_api', 'uses' => 'LoginController@oidc_api']);
 Route::any('google_auth', ['as' => 'google_auth', 'uses' => 'LoginController@google_auth']);
@@ -163,6 +163,8 @@ Route::any('document_upload', ['as' => 'document_upload', 'uses' => 'ChartContro
 Route::get('document_view/{id}', ['as' => 'document_view', 'uses' => 'ChartController@document_view']);
 Route::get('documents_list/{type}', ['as' => 'documents_list', 'uses' => 'ChartController@documents_list']);
 Route::get('download_ccda/{action}/{hippa_id}', ['as' => 'download_ccda', 'uses' => 'ChartController@download_ccda']);
+Route::get('electronic_sign/{action}/{id}/{pid}/{subtype?}', ['as' => 'electronic_sign', 'uses' => 'ChartController@electronic_sign']);
+Route::get('electronic_sign_process/{table}/{index}/{id}', ['as' => 'electronic_sign_process', 'uses' => 'AjaxChartController@electronic_sign_process']);
 Route::any('encounter/{eid}/{section?}', ['as' => 'encounter', 'uses' => 'ChartController@encounter']);
 Route::any('encounter_addendum/{eid}', ['as' => 'encounter_addendum', 'uses' => 'ChartController@encounter_addendum']);
 Route::any('encounter_add_photo/{eid}', ['as' => 'encounter_add_photo', 'uses' => 'ChartController@encounter_add_photo']);

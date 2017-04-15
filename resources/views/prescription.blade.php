@@ -66,7 +66,7 @@
     });
 </script>
 <script>
-    var _grxdn = "Melatonin";
+    var _grxdn = '{!! $rx !!}';
     (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
     g.src="//s3.amazonaws.com/assets.goodrx.com/static/widgets/compare.min.js";
     s.parentNode.insertBefore(g,s);}(document,"script"));

@@ -1442,11 +1442,12 @@ class ChartController extends Controller {
                 $data['pid'] = $pid;
                 $row_id1 = DB::table($table)->insertGetId($data);
                 $this->audit('Add');
-                foreach ($good_rx_tables as $good_rx_table) {
-                    if ($good_rx_table == $table) {
-                        $this->goodrx_notification($request->input('rxl_medication'), $request->input('rxl_dosage') . $request->input('rxl_dosage_unit'));
-                    }
-                }
+                $this->prescription_notification($row_id1);
+                // foreach ($good_rx_tables as $good_rx_table) {
+                //     if ($good_rx_table == $table) {
+                //         $this->goodrx_notification($request->input('rxl_medication'), $request->input('rxl_dosage') . $request->input('rxl_dosage_unit'));
+                //     }
+                // }
                 if (Session::has('eid')) {
                     if ($request->input('rxl_sig') == '') {
                         $instructions = $request->input('rxl_instructions');
@@ -1481,11 +1482,12 @@ class ChartController extends Controller {
                 $data['rxl_date_active'] = $old_rx->rxl_date_active;
                 DB::table($table)->where($index, '=', $id)->update($data);
                 $this->audit('Update');
-                foreach ($good_rx_tables as $good_rx_table) {
-                    if ($good_rx_table == $table) {
-                        $this->goodrx_notification($request->input('rxl_medication'), $request->input('rxl_dosage') . $request->input('rxl_dosage_unit'));
-                    }
-                }
+                $this->prescription_notification($id);
+                // foreach ($good_rx_tables as $good_rx_table) {
+                //     if ($good_rx_table == $table) {
+                //         $this->goodrx_notification($request->input('rxl_medication'), $request->input('rxl_dosage') . $request->input('rxl_dosage_unit'));
+                //     }
+                // }
                 // foreach ($api_tables as $api_table) {
                 //     if ($api_table == $table) {
                 //         $this->api_data('update', $table, $index, $id);
@@ -2683,6 +2685,28 @@ class ChartController extends Controller {
             Session::put('download_ccda', $request->fullUrl());
             return redirect()->route('records_list', ['release']);
         }
+    }
+
+    public function electronic_sign($action, $id, $pid, $subtype='')
+    {
+
+        if ($action == 'rx_list') {
+            $data['medications_active'] = true;
+            $data['panel_header'] = 'Sign Prescription';
+            $index = 'rxl_id';
+        }
+        if ($action == 'orders') {
+            $data['orders_active'] = true;
+            $data['panel_header'] = 'Sign Order';
+            $index = 'orders_id';
+        }
+        $raw = DB::table($action)->where($index, '=', $id)->first();
+        $data['hash'] = hash('sha256', $raw->json);
+        $data['ajax'] = route('electronic_sign_process', [$action, $index, $id]);
+        $data['content'] = 'Your identity requires confirmation to sign off on your order';
+        $data['assets_js'] = $this->assets_js('chart');
+        $data['assets_css'] = $this->assets_css('chart');
+        return view('uport', $data);
     }
 
     public function encounter(Request $request, $eid, $section='s')
@@ -6106,7 +6130,6 @@ class ChartController extends Controller {
         }
         $dropdown_array1['items'] = $items1;
         $data['panel_dropdown'] .= '<span class="fa-btn"></span>' . $this->dropdown_build($dropdown_array1);
-
         Session::put('last_page', $request->fullUrl());
         $data['assets_js'] = $this->assets_js('chart');
         $data['assets_css'] = $this->assets_css('chart');
@@ -6115,13 +6138,15 @@ class ChartController extends Controller {
 
     public function prescription_view(Request $request, $id='')
     {
+        $query = DB::table('rx_list')->where('rxl_id', '=', $id)->first();
         $data['assets_js'] = $this->assets_js();
         $data['assets_css'] = $this->assets_css();
-        $url = 'https://www.google.com';
         $data['content'] = '<div style="text-align: center;">';
-        $data['content'] .= QrCode::size(300)->generate($url);
+        $data['content'] .= QrCode::size(300)->generate($query->json);
         $data['content'] .= '</div>';
-        $data['goodrx'] = 'https://www.goodrx.com/levothyroxine?grx_ref=api&strength=50mcg&form=tablet&label=levothyroxine';
+        $med = explode(' ', $query->rxl_medication);
+        $data['rx'] = $med[0];
+        // $data['goodrx'] = 'https://www.goodrx.com/levothyroxine?grx_ref=api&strength=50mcg&form=tablet&label=levothyroxine';
         return view('prescription', $data);
     }
 

@@ -4,3 +4,4 @@ Homestead.json
 .env
 .version
 .google
+.jshintrc

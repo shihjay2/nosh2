@@ -640,7 +640,7 @@ class CoreController extends Controller
                 $calendar = DB::table('calendar')->where('calendar_id', '=', $id)->first();
                 $calendar_data['active'] = 'n';
                 if ($action == 'save') {
-                    DB::table('calendar')->where('calendar_id', '=', $id)->update($calendar_date);
+                    DB::table('calendar')->where('calendar_id', '=', $id)->update($calendar_data);
                     $id = '0';
                     unset($data['calendar_id']);
                 }

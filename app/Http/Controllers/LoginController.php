@@ -34,8 +34,8 @@ class LoginController extends Controller {
     {
         $query = DB::table('users')->where('password', '=', $id)->first();
         if ($query) {
-            $expires = strtotime($query->created_at) + 86400;
-            if ($expires > time() || $query->created_at == null) {
+            // $expires = strtotime($query->created_at) + 86400;
+            // if ($expires > time() || $query->created_at == null) {
                 if ($request->isMethod('post')) {
                     $this->validate($request, [
                         'username' => 'unique:users,username',
@@ -66,10 +66,10 @@ class LoginController extends Controller {
                     $data['assets_css'] = $this->assets_css();
                     return view('accept_invite', $data);
                 }
-            } else {
-                $error = 'Your invitation code expired.';
-                return $error;
-            }
+            // } else {
+            //     $error = 'Your invitation code expired.';
+            //     return $error;
+            // }
         } else {
             $error = 'Your invitation code is invalid';
             return $error;
