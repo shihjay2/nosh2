@@ -744,7 +744,7 @@ public function install_fix(Request $request)
                 if (isset($result1['files'])) {
                     foreach ($result1['files'] as $row1) {
                         $filename = base_path() . '/' . $row1['filename'];
-                        if ($row1['status'] == 'added' || $row1['status'] == 'modified') {
+                        if ($row1['status'] == 'added' || $row1['status'] == 'modified' || $row1['status'] == 'renamed') {
                             $github_url = str_replace(' ', '%20', $row1['raw_url']);
                             if ($github_url !== '') {
                                 $file = file_get_contents($github_url);
