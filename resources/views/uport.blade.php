@@ -38,44 +38,37 @@
 <script src="{{ asset('assets/js/web3.js') }}"></script>
 <script src="{{ asset('assets/js/uport-connect.js') }}"></script>
 <script type="text/javascript">
-    $(function () {
-        var activeTab = $('[href="' + location.hash + '"]');
-        if (activeTab) {
-            activeTab.tab('show');
-        }
-    });
     const Connect = window.uportconnect.Connect;
 	const appName = 'nosh';
 	const connect = new Connect(appName);
 	const web3 = connect.getWeb3();
-    var eth_address = {'toWhom':'0xb65e3a3027fa941eec63411471d90e6c24b11ed1'}; // uPort ethereum address
-	let globalState = {
+	const globalState = {
 		uportId: "0x962517e3d2cbc1d0410876d975316edc3385dfe6",
 		txHash: "",
-		sendToAddr: "0x687422eea2cb73b5d3e242ba5456b782919afc85", //back to Ropsten faucet
-		sendToVal: "5"
+		sendToAddr: "0x7d86a87178d28f805716828837D1677Fb7aF6Ff7", //back to B9 testnet faucet
+		sendToVal: "1"
 	};
+    const value = parseFloat(globalState.sendToVal) * 1.0e18;
+    const gasPrice = 100000000000;
+    const gas = 500000;
+    const hash = '{!! $hash !!}';
+    var ether_go = false;
 	const uportConnect = function () {
-		web3.eth.getCoinbase((error, address) => {
+        web3.eth.getCoinbase((error, address) => {
 			if (error) { throw error; }
 			console.log(address);
 			globalState.uportId = address;
-            sendEther();
 		});
 	};
 	const sendEther = () => {
-		const value = parseFloat(globalState.sendToVal) * 1.0e18;
-		const gasPrice = 100000000000;
-		const gas = 500000;
-        const hash = '{!! $hash !!}';
-		web3.eth.sendTransaction(
+        web3.eth.sendTransaction(
 			{
 				from: globalState.uportId,
 				to: globalState.sendToAddr,
 				value: value,
 				gasPrice: gasPrice,
 				gas: gas,
-                // data: hash
+                data: hash
 			},
 			(error, txHash) => {
 				if (error) { throw error; }
@@ -107,19 +100,8 @@
                 toastr.error(noshdata.message_action);
             }
         }
-        $.ajax({
-            type: "POST",
-            url: 'https://ropsten.faucet.b9lab.com/tap',
-            data: JSON.stringify(eth_address),
-            dataType: 'jsonp',
-            success: function(data){
-                // uportConnect();
-                sendEther();
-            },
-            error: function(xhr, ajaxOptions, thrownError) {
-                toastr.error(xhr.status + ": Try again");
-            }
-        });
+        sendEther();
+        // setInterval(send_ether, 1000);
     });
 </script>
 @endsection

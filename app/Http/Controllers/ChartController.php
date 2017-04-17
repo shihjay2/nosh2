@@ -2689,7 +2689,19 @@ class ChartController extends Controller {
 
     public function electronic_sign($action, $id, $pid, $subtype='')
     {
-
+        //Fill faucet
+        $data = [
+            'toWhom' => '0xb65e3a3027fa941eec63411471d90e6c24b11ed1'
+        ];
+        $url = 'https://ropsten.faucet.b9lab.com/tap';
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Content-Type: application/json'
+        ]);
+        $result = curl_exec($ch);
         if ($action == 'rx_list') {
             $data['medications_active'] = true;
             $data['panel_header'] = 'Sign Prescription';
@@ -7260,7 +7272,7 @@ class ChartController extends Controller {
                 'sms' => 'required_without_all:email'
             ]);
             // $resource_set_ids = implode(',', $request->input('resources'));
-            $data_message['temp_url'] = URL::to('login', ['provider']);
+            $data_message['temp_url'] = URL::to('uma_auth');
             $data_message['patient'] = Session::get('displayname');
             if ($request->input('email') !== '') {
                 $email = $request->input('email');
