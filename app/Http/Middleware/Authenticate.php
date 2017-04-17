@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use DB;
 use Closure;
 use Illuminate\Support\Facades\Auth;
 
@@ -21,7 +22,12 @@ class Authenticate
             if ($request->ajax() || $request->wantsJson()) {
                 return response('Unauthorized.', 401);
             } else {
-                return redirect()->guest('login');
+                $practice = DB::table('practiceinfo')->where('practice_id', '=', '1')->first();
+                if ($practice->patient_centric == 'y' || $practice->patient_centric == 'yp') {
+                    return redirect()->route('uma_auth');
+                } else {
+                    return redirect()->guest('login');
+                }
             }
         }
         return $next($request);
