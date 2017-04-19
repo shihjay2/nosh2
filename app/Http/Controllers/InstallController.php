@@ -27,6 +27,8 @@ use URL;
 use DateTime;
 use DateTimeZone;
 use SoapBox\Formatter\Formatter;
+use Symfony\Component\Process\Process;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 
 class InstallController extends Controller {
 
@@ -777,8 +779,10 @@ public function install_fix(Request $request)
             Artisan::call('migrate', array('--force' => true));
             File::put(base_path() . '/.version', $result[0]['sha']);
             if ($composer == true) {
-                $exec = 'cd ' . base_path() . ' && composer install';
-                shell_exec($exec);
+                putenv('COMPOSER_HOME=/usr/local/bin/composer');
+                $install = new Process("/usr/local/bin/composer install");
+                $install->setWorkingDirectory(base_path());
+                $install->run();
             }
             return "System Updated with version " . $result[0]['sha'] . " from " . $current_version;
         } else {
