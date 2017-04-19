@@ -512,6 +512,82 @@ public function install_fix(Request $request)
         }
     }
 
+    public function prescription_pharmacy_view(Request $request, $id, $ret='')
+    {
+        $data['hash'] = '';
+        $data['ajax'] = route('dashboard');
+        $data['ajax1'] = route('dashboard');
+        $data['uport_need'] = '';
+        $data['uport_id'] = '';
+        $data['panel_header'] = 'Prescription Validation';
+        $data['url'] = route('prescription_pharmacy_view', [$id]);
+        $query = DB::table('rx_list')->where('rxl_id', '=', $id)->first();
+        $data['content'] = '';
+        $outcome = '';
+        if ($query) {
+            if ($query->transaction !== '' && $query->transaction !== null) {
+                $data['tx_hash'] = $query->transaction;
+                $data['rx_json'] = $query->json;
+                $hash = hash('sha256', $query->json);
+                $outcome = '';
+                $items[] = [
+                    'name' => 'rx_json',
+                    'label' => 'Prescription in FHIR JSON',
+                    'type' => 'textarea',
+                    'readonly' => true,
+                    'default_value' => $query->json
+                ];
+                $items[] = [
+                    'name' => 'hash',
+                    'label' => 'Prescription Hash',
+                    'type' => 'text',
+                    'readonly' => true,
+                    'default_value' => $hash
+                ];
+                $items[] = [
+                    'name' => 'tx_hash',
+                    'label' => 'Transaction Hash',
+                    'type' => 'text',
+                    'readonly' => true,
+                    'default_value' => $query->transaction
+                ];
+                if ($ret !== '') {
+                    $bytes = 4 * 64;
+                    $rx_hash = substr(substr($ret, 10), $bytes);
+                    $items[] = [
+                        'name' => 'rx_hash',
+                        'label' => 'Prescription Hash from Transaction',
+                        'type' => 'text',
+                        'readonly' => true,
+                        'default_value' => $rx_hash
+                    ];
+                    $outcome = '<div class="alert alert-danger"><strong>Presciption Invalid</strong> - It may have been tampered with.</div>';
+                    if ($rx_hash == $hash) {
+                        $outcome = '<div class="alert alert-success"><strong>Prescription is Signed and Valid</strong></div>';
+                    }
+                }
+                $form_array = [
+                    'form_id' => 'prescription_form',
+                    'action' => route('prescription_pharmacy_view', [$id]),
+                    'items' => $items,
+                    'save_button_label' => 'Validate'
+                ];
+                if ($request->isMethod('post')) {
+                    $data['uport_need'] = 'validate';
+                }
+                $data['content'] .= $this->form_build($form_array);
+            } else {
+                $outcome = '<div class="alert alert-danger"><strong>Presciption Invalid</strong> - Prescription has not been signed electronically.</div>';
+            }
+        } else {
+            $outcome = '<div class="alert alert-danger"><strong>Presciption Invalid</strong> - No prescription exists.</div>';
+        }
+        $data['content'] .= $outcome;
+        $data['assets_js'] = $this->assets_js();
+        $data['assets_css'] = $this->assets_css();
+        return view('uport', $data);
+    }
+
     public function set_version(Request $request)
     {
         $result = $this->github_all();
@@ -792,16 +868,5 @@ public function install_fix(Request $request)
 
     public function test1(Request $request)
     {
-        $query = DB::table('rx_list')->where('rxl_id', '=', '75')->first();
-        $ret = '0xd7f31eb90000000000000000000000007d86a87178d28f805716828837d1677fb7af6ff70000000000000000000000000000000000000000000000000de0b6b3a764000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000020caaaa241c18b2e86971ba58073b8f048873c19380f7a0b80f6b79c34511046f8';
-
-        $bytes = 4 * 64;
-        $sha = substr(substr($ret, 10), $bytes);
-        $hash = hash('sha256', $query->json);
-        if ($sha == $hash) {
-            return 'OK';
-        } else {
-            return 'No Match';
-        }
     }
 }
