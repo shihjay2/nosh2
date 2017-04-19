@@ -776,7 +776,7 @@ public function install_fix(Request $request)
             define('STDIN',fopen("php://stdin","r"));
             Artisan::call('migrate', array('--force' => true));
             File::put(base_path() . '/.version', $result[0]['sha']);
-            if ($compser == true) {
+            if ($composer == true) {
                 $exec = 'cd ' . base_path() . ' && composer install';
                 shell_exec($exec);
             }
