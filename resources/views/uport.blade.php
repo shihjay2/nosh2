@@ -43,8 +43,10 @@
 	const connect = new Connect(appName);
 	const web3 = connect.getWeb3();
 	const globalState = {
-		uportId: "0x962517e3d2cbc1d0410876d975316edc3385dfe6",
+		uportId: "{!! $uport_id !!}",
 		txHash: "",
+        // sendToAddr: "0xb65e3a3027fa941eec63411471d90e6c24b11ed1",
+        // sendToAddr: "0xec5a826681ef8c55aa48e4e37237c66000fc3a6a",
 		sendToAddr: "0x7d86a87178d28f805716828837D1677Fb7aF6Ff7", //back to B9 testnet faucet
 		sendToVal: "1"
 	};
@@ -52,13 +54,46 @@
     const gasPrice = 100000000000;
     const gas = 500000;
     const hash = '{!! $hash !!}';
-    var ether_go = false;
+    const uport_need = '{!! $uport_need !!}';
 	const uportConnect = function () {
-        web3.eth.getCoinbase((error, address) => {
-			if (error) { throw error; }
-			console.log(address);
-			globalState.uportId = address;
-		});
+        connect.requestCredentials().then((credentials) => {
+			console.log(credentials);
+			$.ajax({
+				type: "POST",
+				url: '{!! $ajax1 !!}',
+				data: 'name=' + credentials.name + '&uport=' + credentials.address,
+				dataType: 'json',
+				success: function(data){
+					if (data.message !== 'OK') {
+						toastr.error(data.message);
+						// console.log(data);
+					} else {
+                        globalState.uportId = credentials.address;
+						sendEther();
+					}
+				}
+			});
+			// render();
+		}, console.err);
+        // web3.eth.getCoinbase((error, address) => {
+		// 	if (error) { throw error; }
+		// 	console.log(address);
+		// 	globalState.uportId = address;
+        //     $.ajax({
+        //         type: "POST",
+        //         url: '{!! $ajax1 !!}',
+        //         data: 'txHash=' + txHash,
+        //         dataType: 'json',
+        //         success: function(data){
+        //             if (data.message !== 'OK') {
+        //                 toastr.error(data.message);
+        //                 // console.log(data);
+        //             } else {
+        //                 window.location = data.url;
+        //             }
+        //         }
+        //     });
+		// });
 	};
 	const sendEther = () => {
         web3.eth.sendTransaction(
@@ -100,8 +135,11 @@
                 toastr.error(noshdata.message_action);
             }
         }
-        sendEther();
-        // setInterval(send_ether, 1000);
+        if (uport_need == 'y') {
+            uportConnect();
+        } else {
+            sendEther();
+        }
     });
 </script>
 @endsection

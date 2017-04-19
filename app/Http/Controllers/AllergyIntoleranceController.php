@@ -90,7 +90,7 @@ class AllergyIntoleranceController extends Controller {
 				$statusCode = 404;
 			}
 		}
-		return Response::json($response, $statusCode);
+		return response()->json($response, $statusCode)->header('Content-Type', 'application/fhir+json');
 	}
 
 

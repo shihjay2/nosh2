@@ -20,7 +20,7 @@ class MedicationOrderController extends Controller {
 	{
 		$data = $request->all();
 		if ($data) {
-			$resource = 'MedicationOrder';
+			$resource = 'MedicationRequest';
 			$table = 'rx_list';
 			$table_primary_key = 'rxl_id';
 			$table_key = [
@@ -54,7 +54,7 @@ class MedicationOrderController extends Controller {
 			if ($practice->patient_centric == 'y') {
 				// Patient Centric only
 				$data1['patient'] = '1';
-				$resource = 'MedicationStatement';
+				$resource = 'MedicationRequest';
 				$table = 'rx_list';
 				$table_primary_key = 'rxl_id';
 				$table_key = [
@@ -90,7 +90,7 @@ class MedicationOrderController extends Controller {
 				$statusCode = 404;
 			}
 		}
-		return Response::json($response, $statusCode);
+		return response()->json($response, $statusCode)->header('Content-Type', 'application/fhir+json');
 	}
 
 
@@ -124,7 +124,7 @@ class MedicationOrderController extends Controller {
 	 */
 	public function show($id)
 	{
-		$resource = 'MedicationOrder';
+		$resource = 'MedicationRequest';
 		$row = DB::table('rx_list')->where('rxl_id', '=', $id)->first();
 		if ($row) {
 			$statusCode = 200;
@@ -135,7 +135,8 @@ class MedicationOrderController extends Controller {
 			];
 			$statusCode = 404;
 		}
-		return Response::json($response, $statusCode);
+		return response()->json($response, $statusCode)->header('Content-Type', 'application/fhir+json');
+		// return Response::json($response, $statusCode);
 	}
 
 

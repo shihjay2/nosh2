@@ -1084,6 +1084,7 @@ class LoginController extends Controller {
         $lastname = $oidc->requestUserInfo('family_name');
         $email = $oidc->requestUserInfo('email');
         $npi = $oidc->requestUserInfo('npi');
+        $uport_id = $oidc->requestUserInfo('uport_id');
         $access_token = $oidc->getAccessToken();
         if ($npi != '') {
             $provider = DB::table('providers')->where('npi', '=', $npi)->first();
@@ -1109,6 +1110,7 @@ class LoginController extends Controller {
             Session::put('mtm_extension', $practice1->mtm_extension);
             Session::put('patient_centric', $practice1->patient_centric);
             Session::put('uma_auth_access_token', $access_token);
+            Session::put('uport_id', $uport_id);
             $url_hieofoneas = str_replace('/nosh', '/resources/' . $practice1->uma_client_id, URL::to('/'));
             Session::put('url_hieofoneas', $url_hieofoneas);
             setcookie("login_attempts", 0, time()+900, '/');
@@ -1190,6 +1192,7 @@ class LoginController extends Controller {
             Session::put('mtm_extension', $practice2->mtm_extension);
             Session::put('patient_centric', $practice2->patient_centric);
             Session::put('uma_auth_access_token', $access_token);
+            Session::put('uport_id', $uport_id);
             setcookie("login_attempts", 0, time()+900, '/');
             return redirect()->intended('/');
             // $practice_npi = $oidc->requestUserInfo('practice_npi');

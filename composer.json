@@ -31,7 +31,8 @@
         "devfactory/minify": "1.0.*",
         "maatwebsite/excel": "~2.1.0",
         "rcamposp/tcpdi-merger": "0.3.*",
-        "elibyy/tcpdf-laravel": "5.3.*"
+        "elibyy/tcpdf-laravel": "5.3.*",
+        "naviocean/laravel-nameparser": "dev-master"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

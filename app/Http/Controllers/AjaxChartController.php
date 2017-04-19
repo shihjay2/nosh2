@@ -8,6 +8,7 @@ use DB;
 use Form;
 use Illuminate\Http\Request;
 use Illuminate\Support\MessageBag;
+use NaviOcean\Laravel\NameParser;
 use QrCode;
 use Schema;
 use Session;
@@ -30,6 +31,34 @@ class AjaxChartController extends Controller
          $this->middleware('auth');
          $this->middleware('csrf');
          $this->middleware('patient');
+    }
+
+    public function electronic_sign_login(Request $request)
+    {
+        $user = DB::table('users')->where('id', '=', Session::get('user_id'))->first();
+        $name = $request->input('name');
+        $parser = new NameParser();
+        $name_arr = $parser->parse_name($name);
+        if ($user->firstname == $name_arr['fname'] && $user->lastname == $name_arr['lname']) {
+            $return['message'] = 'OK';
+            Session::put('uport_id', $request->input('uport'));
+            $ether_data = [
+                // 'toWhom' => '0xb65e3a3027fa941eec63411471d90e6c24b11ed1',
+                'toWhom' => $request->input('uport')
+            ];
+            $url = 'https://ropsten.faucet.b9lab.com/tap';
+            $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($ether_data));
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                'Content-Type: application/json'
+            ]);
+            $result = curl_exec($ch);
+        } else {
+            $return['message'] = 'Error - Identity does not match';
+        }
+        return $return;
     }
 
     public function electronic_sign_process(Request $request, $table, $index, $id)

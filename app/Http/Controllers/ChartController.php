@@ -1501,7 +1501,7 @@ class ChartController extends Controller {
             }
             // Create FHIR JSON prescription
     		$json_row = DB::table('rx_list')->where('rxl_id', '=', $row_id1)->first();
-    		$prescription_json = $this->resource_detail($json_row, 'MedicationOrder');
+    		$prescription_json = $this->resource_detail($json_row, 'MedicationRequest');
             $json_data['json'] = json_encode($prescription_json);
             DB::table('rx_list')->where('rxl_id', '=', $json_row->rxl_id)->update($json_data);
             $this->audit('Update');
@@ -2689,19 +2689,6 @@ class ChartController extends Controller {
 
     public function electronic_sign($action, $id, $pid, $subtype='')
     {
-        //Fill faucet
-        $data = [
-            'toWhom' => '0xb65e3a3027fa941eec63411471d90e6c24b11ed1'
-        ];
-        $url = 'https://ropsten.faucet.b9lab.com/tap';
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'Content-Type: application/json'
-        ]);
-        $result = curl_exec($ch);
         if ($action == 'rx_list') {
             $data['medications_active'] = true;
             $data['panel_header'] = 'Sign Prescription';
@@ -2715,6 +2702,28 @@ class ChartController extends Controller {
         $raw = DB::table($action)->where($index, '=', $id)->first();
         $data['hash'] = hash('sha256', $raw->json);
         $data['ajax'] = route('electronic_sign_process', [$action, $index, $id]);
+        $data['ajax1'] = route('electronic_sign_login');
+        $data['uport_need'] = 'y';
+        $data['uport_id'] = '';
+        if (Session::has('uport_id')) {
+            if (Session::get('uport_id') !== '') {
+                $data['uport_need'] = 'n';
+                $data['uport_id'] = Session::get('uport_id');
+                $ether_data = [
+                    // 'toWhom' => '0xb65e3a3027fa941eec63411471d90e6c24b11ed1',
+                    'toWhom' => Session::get('uport_id')
+                ];
+                $url = 'https://ropsten.faucet.b9lab.com/tap';
+                $ch = curl_init($url);
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($ether_data));
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                    'Content-Type: application/json'
+                ]);
+                $result = curl_exec($ch);
+            }
+        }
         $data['content'] = 'Your identity requires confirmation to sign off on your order';
         $data['assets_js'] = $this->assets_js('chart');
         $data['assets_css'] = $this->assets_css('chart');

@@ -5661,7 +5661,8 @@ class CoreController extends Controller
                 'Birthday Message' => $result->birthday_message,
                 'Appointment Reminder Enabled' => $unit_arr[$result->appointment_extension],
                 'Appointment Interval' => $appt_arr[$result->appointment_interval],
-                'Reminder Message' => $result->appointment_message
+                'Reminder Message' => $result->appointment_message,
+                'SMS URL' => $result->sms_url
             ];
             $return = $this->header_build($header_arr, 'Practice Information');
             foreach ($info_arr as $key1 => $value1) {

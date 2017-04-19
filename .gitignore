@@ -5,3 +5,7 @@ Homestead.json
 .version
 .google
 .jshintrc
+/public/assets/js/uport-connect-new.js
+/public/assets/js/uport-connect-old.js
+/public/assets/js/web3-new.js
+/public/assets/js/web3-old.js

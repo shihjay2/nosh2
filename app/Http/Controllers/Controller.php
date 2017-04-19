@@ -6223,7 +6223,8 @@ class Controller extends BaseController
                 'birthday_message' => $result->birthday_message,
                 'appointment_extension' => $result->appointment_extension,
                 'appointment_interval' => $result->appointment_interval,
-                'appointment_message' => $result->appointment_message
+                'appointment_message' => $result->appointment_message,
+                'sms_url' => $result->sms_url
             ];
             $items[] = [
                 'name' => 'fax_type',
@@ -6276,6 +6277,12 @@ class Controller extends BaseController
                 'label' => 'Continuing Care Reminder Message',
                 'type' => 'textarea',
                 'default_value' => $extensions_arr['appointment_message']
+            ];
+            $items[] = [
+                'name' => 'sms_url',
+                'label' => 'SMS URL',
+                'type' => 'text',
+                'default_value' => $extensions_arr['sms_url']
             ];
         }
         if ($subtype == 'schedule') {
@@ -9630,7 +9637,7 @@ class Controller extends BaseController
     protected function goodrx_notification($rx, $dose)
     {
         $row = DB::table('demographics')->where('pid', '=', Session::get('pid'))->first();
-        $row2 = DB::table('practiceinfo')->where('practice_id', '=',Session::get('practice_id'))->first();
+        $row2 = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
         $to = $row->reminder_to;
         $rx1 = explode(',', $rx);
         $rx_array = explode(' ', $rx1[0]);
@@ -9646,7 +9653,7 @@ class Controller extends BaseController
                 if ($row->reminder_method == 'Cellular Phone') {
                     $data_message['item'] = 'New Medication: ' . $rx . '; ' . $link;
                     $message = view('emails.blank', $data_message)->render();
-                    $this->textbelt($to, $message);
+                    $this->textbelt($to, $message, $row2->practice_id);
                 } else {
                     $data_message['item'] = 'You have a new medication prescribed to you: ' . $rx . '; For more details, click here: ' . $link;
                     $this->send_mail('emails.blank', $data_message, 'New Medication', $to, Session::get('practice_id'));
@@ -12965,7 +12972,7 @@ class Controller extends BaseController
             if ($row->reminder_method == 'Cellular Phone') {
                 $data_message['item'] = 'New Medication: ' . $link;
                 $message = view('emails.blank', $data_message)->render();
-                $this->textbelt($to, $message);
+                $this->textbelt($to, $message, $row2->practice_id);
             } else {
                 $data_message['item'] = 'You have a new medication prescribed to you.  For more details, click here: ' . $link;
                 $this->send_mail('emails.blank', $data_message, 'New Medication', $to, Session::get('practice_id'));
@@ -13860,8 +13867,8 @@ class Controller extends BaseController
             $response['dosage'][] = $dosage_array;
         }
 
-        // MedicationOrder
-        if ($resource_type == 'MedicationOrder') {
+        // MedicationRequest
+        if ($resource_type == 'MedicationRequest') {
             $response['id'] = $row->rxl_id;
             $patient = DB::table('demographics')->where('pid', '=', $row->pid)->first();
             $response['patient'] = [
@@ -14199,7 +14206,7 @@ class Controller extends BaseController
                 }
             }
         }
-        if ($resource == 'MedicationOrder') {
+        if ($resource == 'MedicationRequest') {
             if ($key1 == 'status') {
                 if ($value1 == 'active') {
                     $query->where('rxl_date_inactive', '=', '0000-00-00 00:00:00')->where('rxl_date_old', '=', '0000-00-00 00:00:00')->where('prescription', '=', 'pending');
@@ -14639,7 +14646,7 @@ class Controller extends BaseController
                     $data_message['additional_message'] = $practice->additional_message;
                     if ($patient->reminder_method == 'Cellular Phone') {
                         $message = view('emails.remindertext', $data_message)->render();
-                        $this->textbelt($patient->reminder_to, $message);
+                        $this->textbelt($patient->reminder_to, $message, Session::get('practice_id'));
                     } else {
                         $this->send_mail('emails.reminder', $data_message, 'Appointment Reminder', $patient->reminder_to, Session::get('practice_id'));
                     }
@@ -15170,9 +15177,13 @@ class Controller extends BaseController
     *
     * @return Response
     */
-    protected function textbelt($number, $message)
+    protected function textbelt($number, $message, $practice_id)
     {
         $url = "http://cloud.noshchartingsystem.com:9090/text";
+        $practice = DB::table('practiceinfo')->where('practice_id', '=', $practice_id)->first();
+        if ($practice->sms_url !== '' && $practice->sms_url !== null) {
+            $url = $practice->sms_url;
+        }
         $message = http_build_query([
             'number' => $number,
             'message' => $message

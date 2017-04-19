@@ -164,6 +164,7 @@ Route::get('document_view/{id}', ['as' => 'document_view', 'uses' => 'ChartContr
 Route::get('documents_list/{type}', ['as' => 'documents_list', 'uses' => 'ChartController@documents_list']);
 Route::get('download_ccda/{action}/{hippa_id}', ['as' => 'download_ccda', 'uses' => 'ChartController@download_ccda']);
 Route::get('electronic_sign/{action}/{id}/{pid}/{subtype?}', ['as' => 'electronic_sign', 'uses' => 'ChartController@electronic_sign']);
+Route::post('electronic_sign_login', ['as' => 'electronic_sign_login', 'uses' => 'AjaxChartController@electronic_sign_login']);
 Route::post('electronic_sign_process/{table}/{index}/{id}', ['as' => 'electronic_sign_process', 'uses' => 'AjaxChartController@electronic_sign_process']);
 Route::any('encounter/{eid}/{section?}', ['as' => 'encounter', 'uses' => 'ChartController@encounter']);
 Route::any('encounter_addendum/{eid}', ['as' => 'encounter_addendum', 'uses' => 'ChartController@encounter_addendum']);
@@ -310,7 +311,7 @@ Route::group(['prefix' => 'fhir', 'middleware' => 'fhir'], function () {
     Route::resource('Medication', 'MedicationController'); //in use - rxnorm
     Route::resource('MedicationAdministration', 'MedicationAdministrationController');
     Route::resource('MedicationDispense', 'MedicationDispenseController');
-    Route::resource('MedicationOrder', 'MedicationOrderController');
+    Route::resource('MedicationRequest', 'MedicationOrderController');
     Route::resource('MedicationStatement', 'MedicationStatementController'); //in use - medication list
     Route::resource('MessageHeader', 'MessageHeaderController');
     Route::resource('Observation', 'ObservationController'); //in use - vitals and test results
