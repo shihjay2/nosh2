@@ -730,6 +730,7 @@ public function install_fix(Request $request)
     {
         $current_version = File::get(base_path() . '/.version');
         $result = $this->github_all();
+        $composer = false;
         if ($current_version != $result[0]['sha']) {
             $arr = [];
             foreach ($result as $row) {
@@ -759,6 +760,9 @@ public function install_fix(Request $request)
                                     }
                                 }
                                 file_put_contents($filename, $file);
+                                if ($filename == 'composer.json') {
+                                    $composer = true;
+                                }
                             }
                         }
                         if ($row1['status'] == 'removed') {
@@ -771,7 +775,11 @@ public function install_fix(Request $request)
             }
             define('STDIN',fopen("php://stdin","r"));
             Artisan::call('migrate', array('--force' => true));
-            File::put(base_path() . '/version', $result[0]['sha']);
+            File::put(base_path() . '/.version', $result[0]['sha']);
+            if ($compser == true) {
+                $exec = 'cd ' . base_path() . ' && composer install';
+                shell_exec($exec);
+            }
             return "System Updated with version " . $result[0]['sha'] . " from " . $current_version;
         } else {
             return "No update needed";
@@ -780,6 +788,16 @@ public function install_fix(Request $request)
 
     public function test1(Request $request)
     {
-        
+        $query = DB::table('rx_list')->where('rxl_id', '=', '75')->first();
+        $ret = '0xd7f31eb90000000000000000000000007d86a87178d28f805716828837d1677fb7af6ff70000000000000000000000000000000000000000000000000de0b6b3a764000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000020caaaa241c18b2e86971ba58073b8f048873c19380f7a0b80f6b79c34511046f8';
+
+        $bytes = 4 * 64;
+        $sha = substr(substr($ret, 10), $bytes);
+        $hash = hash('sha256', $query->json);
+        if ($sha == $hash) {
+            return 'OK';
+        } else {
+            return 'No Match';
+        }
     }
 }
