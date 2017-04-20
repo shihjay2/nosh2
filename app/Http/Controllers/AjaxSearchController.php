@@ -670,7 +670,7 @@ class AjaxSearchController extends Controller {
         if ($rxcui == '') {
             $rx_query = DB::table('rx_list')->where('rxl_medication', '=', $rxl_medication)->whereNotNull('rxl_ndcid')->first();
             if ($rx_query) {
-                $url = 'http://rxnav.nlm.nih.gov/REST/rxcui.json?idtype=NDC&id=' . $med->rxl_ndcid;
+                $url = 'http://rxnav.nlm.nih.gov/REST/rxcui.json?idtype=NDC&id=' . $rx_query->rxl_ndcid;
                 $ch = curl_init();
                 curl_setopt($ch,CURLOPT_URL, $url);
                 curl_setopt($ch,CURLOPT_FAILONERROR,1);

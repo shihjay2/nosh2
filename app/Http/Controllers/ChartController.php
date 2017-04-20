@@ -3936,7 +3936,7 @@ class ChartController extends Controller {
                     'encounter_DOS' => date('Y-m-d h:i A'),
                     'encounter_location' => $practice->default_pos_id,
                     'encounter_type' => null,
-                    'encounter_role' => null,
+                    'encounter_role' => 'Primary Care Provider',
                     'bill_complex' => null,
                     'referring_provider' => null,
                     'referring_provider_npi' => null,

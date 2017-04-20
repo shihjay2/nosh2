@@ -556,7 +556,7 @@
         });
 
         // Medications
-        $('#rxl_medication').change(function() {
+        $('#rxl_medication').blur(function() {
             var medication = $('#rxl_medication').val();
             var rxcui = '';
             $.ajax({
@@ -566,8 +566,8 @@
                 dataType: 'json',
                 success: function(data){
                     $('#warningModal_body').html(data.info);
-                    var text_data = '<div class="col-md-2 col-md-offset-5"><button id="warning" class="btn btn-default">Click Here to Learn More</button></div>';
-                    toastr.error(text_data, 'Medication Interaction Information Available', {'timeOut':'20000','tapToDismiss':false,'preventDuplicates':true});
+                    var text_data = '<div class="col-md-2 col-md-offset-5"><button id="warning" class="btn btn-default btn-block">Click Here to Learn More</button></div>';
+                    toastr.error(text_data, 'Medication Interaction Information Available', {'timeOut':'20000','tapToDismiss':false,'preventDuplicates':true,"preventOpenDuplicates":true});
                     $('#warning').on('click', function(){
                         $('#warningModal').modal('show');
                     });

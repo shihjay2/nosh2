@@ -1602,7 +1602,7 @@
                     success: function(data){
                         $('#warningModal_body').html(data.info);
                         text_data = '<div class="col-md-2 col-md-offset-5"><button id="warning" class="btn btn-default btn-block">Click Here to Learn More</button></div>';
-                        toastr.error(text_data, 'Medication Interaction Information Available', {"timeOut":"20000","preventDuplicates":true});
+                        toastr.error(text_data, 'Medication Interaction Information Available', {"timeOut":"20000","preventDuplicates":true,"preventOpenDuplicates":true});
                         $('#warning').on('click', function(){
                             // toastr.clear();
                             $('#warningModal').modal('show');
