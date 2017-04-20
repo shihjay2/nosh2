@@ -100,6 +100,7 @@ Route::any('password_reset/{id}', ['as' => 'password_reset', 'uses' => 'CoreCont
 Route::get('pnosh_provider_redirect', ['as' => 'pnosh_provider_redirect', 'uses' => 'CoreController@pnosh_provider_redirect']);
 Route::any('practice_cancel', ['as' => 'practice_cancel', 'uses' => 'CoreController@practice_cancel']);
 Route::any('practice_logo_upload', ['as' => 'practice_logo_upload', 'uses' => 'CoreController@practice_logo_upload']);
+Route::get('prescription_view/{id?}', ['as' => 'prescription_view', 'uses' => 'CoreController@prescription_view']);
 Route::get('print_batch/{type}/{flatten}', ['as' => 'print_batch', 'uses' => 'CoreController@print_batch']);
 Route::get('print_chart_admin/{id}', ['as' => 'print_chart_admin', 'uses' => 'CoreController@print_chart_admin']);
 Route::get('print_chart_request/{id}/{type}/{download?}', ['as' => 'print_chart_request', 'uses' => 'CoreController@print_chart_request']);
@@ -203,7 +204,6 @@ Route::get('immunizations_print', ['as' => 'immunizations_print', 'uses' => 'Cha
 Route::any('inventory/{action}/{id}/{pid}/{subtype?}', ['as' => 'inventory', 'uses' => 'ChartController@inventory']);
 Route::get('patient', ['as' => 'patient', 'uses' => 'ChartController@patient']);
 Route::get('payors_list/{type}', ['as' => 'payors_list', 'uses' => 'ChartController@payors_list']);
-Route::get('prescription_view/{id?}', ['as' => 'prescription_view', 'uses' => 'ChartController@prescription_view']);
 Route::get('print_action/{action}/{id}/{pid}/{subtype?}', ['as' => 'print_action', 'uses' => 'ChartController@print_action']);
 Route::get('print_chart_action/{hippa_id}/{type}', ['as' => 'print_chart_action', 'uses' => 'ChartController@print_chart_action']);
 Route::get('orders_list/{type}', ['as' => 'orders_list', 'uses' => 'ChartController@orders_list']);

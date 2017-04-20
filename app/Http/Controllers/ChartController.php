@@ -6157,22 +6157,6 @@ class ChartController extends Controller {
         return view('chart', $data);
     }
 
-    public function prescription_view(Request $request, $id='')
-    {
-        $query = DB::table('rx_list')->where('rxl_id', '=', $id)->first();
-        $data['assets_js'] = $this->assets_js();
-        $data['assets_css'] = $this->assets_css();
-        $data['content'] = '<div style="text-align: center;">';
-        $url = route('prescription_pharmacy_view', [$id]);
-        $data['content'] .= QrCode::size(300)->generate($url);
-        $data['content'] .= '</div>';
-        $data['content'] .= '<div style="text-align: center;"><a href="' . $url . '" target="_blank">Pharmacy Click Here</a></div>';
-        $med = explode(' ', $query->rxl_medication);
-        $data['rx'] = $med[0];
-        // $data['goodrx'] = 'https://www.goodrx.com/levothyroxine?grx_ref=api&strength=50mcg&form=tablet&label=levothyroxine';
-        return view('prescription', $data);
-    }
-
     public function print_action($action, $id, $pid, $subtype='')
     {
         if ($action == 'rx_list') {

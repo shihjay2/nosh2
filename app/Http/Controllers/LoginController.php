@@ -235,16 +235,16 @@ class LoginController extends Controller {
                         Session::forget('eid');
                     }
                     if ($practice->patient_centric == 'n') {
-                        return redirect()->intended('/');
+                        return redirect()->intended('dashboard');
                     } else {
                         if ($user->group_id != '100' && $user->group_id != '1') {
                             $pid = DB::table('demographics')->first();
                             $this->setpatient($pid->pid);
-                            return redirect()->intended('/');
+                            return redirect()->intended('dashboard');
                         } else {
                             $url_hieofoneas = str_replace('/nosh', '/resources/' . $practice->uma_client_id, URL::to('/'));
                             Session::put('url_hieofoneas', $url_hieofoneas);
-                            return redirect()->intended('/');
+                            return redirect()->intended('dashboard');
                         }
                     }
                 } else {
@@ -327,7 +327,7 @@ class LoginController extends Controller {
             }
         } else {
             // Already logged in
-            return redirect('/');
+            return redirect()->intended('dashboard');
         }
     }
 
@@ -1114,7 +1114,7 @@ class LoginController extends Controller {
             $url_hieofoneas = str_replace('/nosh', '/resources/' . $practice1->uma_client_id, URL::to('/'));
             Session::put('url_hieofoneas', $url_hieofoneas);
             setcookie("login_attempts", 0, time()+900, '/');
-            return redirect()->intended('/');
+            return redirect()->intended('dashboard');
         } else {
             $practice_npi = $npi;
             $practice_id = false;
@@ -1194,7 +1194,7 @@ class LoginController extends Controller {
             Session::put('uma_auth_access_token', $access_token);
             Session::put('uport_id', $uport_id);
             setcookie("login_attempts", 0, time()+900, '/');
-            return redirect()->intended('/');
+            return redirect()->intended('dashboard');
             // $practice_npi = $oidc->requestUserInfo('practice_npi');
             // $practice_id = false;
             // if ($practice_npi != '') {
