@@ -1122,6 +1122,9 @@
                     });
                     $('#' + id).removeClass('loading');
                     $('#' + id).prop('disabled', false);
+                    if (id == 'search_rx') {
+                        $('#' + id).focus();
+                    }
                 });
             });
             // Tags
@@ -1282,7 +1285,11 @@
             });
             // focus
             if ($('.nosh-form').length) {
-                $('.nosh-form :input:visible:enabled:first').focus();
+                if ($('.nosh-form').prev().hasClass('panel-container')) {
+                    $('.nosh-form').prev().find('form').find('input').focus();
+                } else {
+                    $('.nosh-form :input:visible:enabled:first').focus();
+                }
             }
         });
 
