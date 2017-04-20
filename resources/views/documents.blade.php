@@ -45,7 +45,7 @@
         toastr.error('Uh-oh, the PDF embed did not work.');
     }
     $(document).ready(function() {
-        $('[data-toggle=offcanvas]').click(function() {
+        $('[data-toggle=offcanvas]').css('cursor', 'pointer').click(function() {
             $('.row-offcanvas').toggleClass('active');
         });
         if (noshdata.message_action !== '') {

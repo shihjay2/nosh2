@@ -711,29 +711,29 @@
                 fromCenter: false
             });
         }
-        $('.sketchpad_text_size_num').click(function(){
+        $('.sketchpad_text_size_num').css('cursor', 'pointer').click(function(){
             $('#sketchpad_text_size').attr('nosh-data-value', $(this).attr('nosh-data-value')).text($(this).text());
         });
-        $('.sketchpad_text_font_name').click(function(){
+        $('.sketchpad_text_font_name').css('cursor', 'pointer').click(function(){
             $('#sketchpad_text_font').attr('nosh-data-value', $(this).attr('nosh-data-value')).text($(this).text());
         });
-        $('.sketchpad_pen_width_num').click(function(){
+        $('.sketchpad_pen_width_num').css('cursor', 'pointer').click(function(){
             $('#sketchpad_pen_width').attr('nosh-data-value', $(this).attr('nosh-data-value')).html($(this).html());
         });
-        $('.sketchpad_color_item').click(function(){
+        $('.sketchpad_color_item').css('cursor', 'pointer').click(function(){
             $('#sketchpad_color').attr('nosh-data-value', $(this).attr('nosh-data-value'));
             $('#sketchpad_color_icon').css({
                 color: $(this).attr('nosh-data-value')
             });
             sketchpad.color = $(this).attr('nosh-data-value');
         });
-        $('[data-toggle=offcanvas]').click(function() {
+        $('[data-toggle=offcanvas]').css('cursor', 'pointer').click(function() {
             $('.row-offcanvas').toggleClass('active');
         });
         $('[data-toggle="popover"]').popover({
             placement: 'auto'
         });
-        $('#sketchpad_textarea').click(function(){
+        $('#sketchpad_textarea').css('cursor', 'pointer').click(function(){
             setTimeout(function(){$('#sketchpad_textarea').popover('hide');},3000);
         });
         if (noshdata.message_action !== '') {

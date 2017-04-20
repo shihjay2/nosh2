@@ -111,7 +111,7 @@ class LoginController extends Controller {
             Session::put('patient_centric', $practice->patient_centric);
             Session::put('oidc_auth_access_token', $access_token);
             setcookie("login_attempts", 0, time()+900, '/');
-            return redirect()->intended('dashboard');
+            return redirect()->intended('/');
         } else {
             // If patient-centric, confirm if user request is registered to pNOSH first
             if ($practice->patient_centric == 'y') {
@@ -155,7 +155,7 @@ class LoginController extends Controller {
                 return redirect()->route('practice_choose');
             } else {
                 // No registered mdNOSH user for this NOSH instance - punt back to login page.
-                return redirect()->intended('dashboard');
+                return redirect()->intended('/');
             }
         }
     }
@@ -235,16 +235,16 @@ class LoginController extends Controller {
                         Session::forget('eid');
                     }
                     if ($practice->patient_centric == 'n') {
-                        return redirect()->intended('dashboard');
+                        return redirect()->intended('/');
                     } else {
                         if ($user->group_id != '100' && $user->group_id != '1') {
                             $pid = DB::table('demographics')->first();
                             $this->setpatient($pid->pid);
-                            return redirect()->intended('dashboard');
+                            return redirect()->intended('/');
                         } else {
                             $url_hieofoneas = str_replace('/nosh', '/resources/' . $practice->uma_client_id, URL::to('/'));
                             Session::put('url_hieofoneas', $url_hieofoneas);
-                            return redirect()->intended('dashboard');
+                            return redirect()->intended('/');
                         }
                     }
                 } else {
@@ -327,7 +327,7 @@ class LoginController extends Controller {
             }
         } else {
             // Already logged in
-            return redirect()->intended('dashboard');
+            return redirect()->intended('/');
         }
     }
 

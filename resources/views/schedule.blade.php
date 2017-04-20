@@ -216,7 +216,7 @@
         });
     });
     $(document).ready(function() {
-        $('[data-toggle=offcanvas]').click(function() {
+        $('[data-toggle=offcanvas]').css('cursor', 'pointer').click(function() {
             $('.row-offcanvas').toggleClass('active');
         });
         $('#calendar').fullCalendar({
@@ -394,7 +394,7 @@
             $('#calendar').fullCalendar('gotoDate', moment($.cookie('nosh-schedule')));
             $('#datetimepicker').data("DateTimePicker").date(moment($.cookie('nosh-schedule')));
         }
-        $('#appointment_button').click(function() {
+        $('#appointment_button').css('cursor', 'pointer').click(function() {
             $('#scheduleModal').modal('hide');
             $('.nosh-event').hide();
             $('.nosh-appt').show();
@@ -410,7 +410,7 @@
             $('#eventModal').modal('show');
             $('#visit_type').focus();
         });
-        $('#event_button').click(function() {
+        $('#event_button').css('cursor', 'pointer').click(function() {
             $('#scheduleModal').modal('hide');
             $('.nosh-appt').hide();
             $('.nosh-event').show();
@@ -428,17 +428,17 @@
                 $("#until").val('');
             }
         });
-        $('#event_encounter').click(function() {
+        $('#event_encounter').css('cursor', 'pointer').click(function() {
             var appt_id = $("#event_id").val();
             window.location = noshdata.event_encounter + '/' + appt_id;
         });
-        $('#event_cancel').click(function() {
+        $('#event_cancel').css('cursor', 'pointer').click(function() {
             $('#event_form').clearForm();
             $('#patient_name').html('');
             $('#event_delete').show();
             $('#eventModal').modal('hide');
         });
-        $('#event_delete').click(function() {
+        $('#event_delete').css('cursor', 'pointer').click(function() {
             if(confirm('Are you sure you want to delete this appointment?')){
                 var appt_id = $("#event_id").val();
                 $.ajax({

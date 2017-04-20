@@ -233,6 +233,10 @@ div.list-category li.list-group-item:first-child {
     border-top: 0;
 }
 
+.nosh-search-to, .nosh-search-clear, .nosh-search-favorite, textarea, .nosh-template-input, #search_patient_recent, #template-all-items, .template-group, .template-item, #template-add, .template-group-edit, .template-edit, .template-default, .template-normal-change, .template-remove-group, .template-remove-item, #template_modal_save, #template_modal_cancel, #template_back, #template_modal_copy, .add_cpt, #update_cpt, #add_new_cpt, .nosh-ccda-list {
+    cursor: pointer;
+}
+
 /*
  * off Canvas sidebar
  * --------------------------------------------------

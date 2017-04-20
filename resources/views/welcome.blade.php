@@ -353,7 +353,7 @@
                 toastr.error(noshdata.message_action);
             }
         }
-        $('[data-toggle=offcanvas]').click(function() {
+        $('[data-toggle=offcanvas]').css('cursor', 'pointer').click(function() {
             $('.row-offcanvas').toggleClass('active');
         });
         if (noshdata.home_url == window.location.href) {

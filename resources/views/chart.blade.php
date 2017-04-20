@@ -504,7 +504,7 @@
             $('#search_patient').focus();
         }
         $('.searchlist').btsListFilter('#searchinput', {initial: false});
-        $('[data-toggle=offcanvas]').click(function() {
+        $('[data-toggle=offcanvas]').css('cursor', 'pointer').click(function() {
             $('.row-offcanvas').toggleClass('active');
         });
         $('.nav-tabs a').on('shown.bs.tab', function(event){
@@ -568,7 +568,7 @@
                     $('#warningModal_body').html(data.info);
                     var text_data = '<div class="col-md-2 col-md-offset-5"><button id="warning" class="btn btn-default btn-block">Click Here to Learn More</button></div>';
                     toastr.error(text_data, 'Medication Interaction Information Available', {'timeOut':'20000','tapToDismiss':false,'preventDuplicates':true,"preventOpenDuplicates":true});
-                    $('#warning').on('click', function(){
+                    $('#warning').css('cursor', 'pointer').on('click', function(){
                         $('#warningModal').modal('show');
                     });
                 }
@@ -644,7 +644,7 @@
 
         // Demographics
         $('#creditcard_expiration').mask('99/9999');
-        $('#test_reminder').click(function(){
+        $('#test_reminder').css('cursor', 'pointer').click(function(){
             $.ajax({
                 type: 'POST',
                 url: noshdata.test_reminder,
@@ -657,7 +657,7 @@
                 }
             });
         });
-        $('#guardian_import').click(function(){
+        $('#guardian_import').css('cursor', 'pointer').click(function(){
             $.ajax({
                 type: 'POST',
                 url: noshdata.copy_address,
@@ -698,13 +698,13 @@
         });
 
         // Images
-        $('.nosh-image').click(function(){
+        $('.nosh-image').css('cursor', 'pointer').click(function(){
             var id = $(this).attr('nosh-data-src');
             window.location = noshdata.edit_image + '/' + id;
         });
 
         // Vital Signs
-        $('.nosh-graph').click(function(){
+        $('.nosh-graph').css('cursor', 'pointer').click(function(){
             var type = $(this).attr('data-nosh-vitals-type');
             window.location = noshdata.vitals_graph + '/' + type;
         });
@@ -906,7 +906,7 @@
         });
 
         // Chart queue
-        $('.chart_queue_item').click(function(){
+        $('.chart_queue_item').css('cursor', 'pointer').click(function(){
             var id = '';
             var target = $(this);
             if ($(this).hasClass('list-group-item-success')) {
@@ -1073,7 +1073,7 @@
                 dosage_calc();
             }
         });
-        $('#dosage_ok').click(function(){
+        $('#dosage_ok').css('cursor', 'pointer').click(function(){
             if ($('#calc_liquid_dose').val() !== '') {
                 $('#rxl_sig').val($('#calc_liquid_dose').val() + ' ' + $('#calc_liquid_dose_unit option:selected').text());
             } else {

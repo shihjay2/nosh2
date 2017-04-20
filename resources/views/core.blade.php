@@ -398,7 +398,7 @@
             $('#search_patient').focus();
         }
         $('.searchlist').btsListFilter('#searchinput', {initial: false});
-        $('[data-toggle=offcanvas]').click(function() {
+        $('[data-toggle=offcanvas]').css('cursor', 'pointer').click(function() {
             $('.row-offcanvas').toggleClass('active');
         });
         $('.nav-tabs a').on('shown.bs.tab', function(event){
@@ -434,7 +434,7 @@
         });
         // Super query
         function superquery() {
-            $('.search_desc_class').click(function(){
+            $('.search_desc_class').css('cursor', 'pointer').click(function(){
                 var a = $(this).val();
                 var a1 = $(this).attr('id').split("_");
                 var b = $('#search_field_' + a1[2]).val();
@@ -521,12 +521,12 @@
                     $('#search_desc_' + a1[2]).val(" AND ");
                 }
             });
-            $('.search_remove').on('click', function(event){
+            $('.search_remove').css('cursor', 'pointer').on('click', function(event){
                 $(this).parent().remove();
             });
         }
         superquery();
-        $('#search_add').click(function() {
+        $('#search_add').css('cursor', 'pointer').click(function() {
             var a = $('#super_query_div > :last-child').attr("id");
             var a1 = a.split("_");
             var count = parseInt(a1[2]) + 1;

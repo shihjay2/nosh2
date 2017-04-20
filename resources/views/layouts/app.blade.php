@@ -954,7 +954,7 @@
                     $image.first().show();
                     var i = 1;
                     $('#image_status').html('Image ' + i + ' of ' + image_total);
-                    $('#next_image').click(function () {
+                    $('#next_image').css('cursor', 'pointer').click(function () {
                         var $next = $image.filter(':visible').hide().next('img');
                         i++;
                         if($next.length === 0) {
@@ -964,7 +964,7 @@
                         $next.show();
                         $('#image_status').html('Image ' + i + ' of ' + image_total);
                     });
-                    $('#prev_image').click(function () {
+                    $('#prev_image').css('cursor', 'pointer').click(function () {
                         var $prev = $image.filter(':visible').hide().prev('img');
                         i--;
                         if($prev.length === 0) {
@@ -1007,7 +1007,7 @@
         $(document).ready(function() {
             var tz = jstz.determine();
             $.cookie('nosh_tz', tz.name(), { path: '/' });
-            $('.nosh-result-list').click(function() {
+            $('.nosh-result-list').css('cursor', 'pointer').click(function() {
                 var href = $(this).find('.pull-right').find('a').first().attr('href');
                 $('#modaltext').text('Loading...');
                 $('#loadingModal').modal('show');
@@ -1020,13 +1020,13 @@
             $('body').tooltip({
                 selector: '[data-toggle=tooltip]'
             });
-            $('.nosh-dash').click(function() {
+            $('.nosh-dash').css('cursor', 'pointer').click(function() {
                 var href = $(this).find('a').first().attr('href');
                 $('#modaltext').text('Loading...');
                 $('#loadingModal').modal('show');
                 window.location = href;
             });
-            $('.nosh-delete').click(function() {
+            $('.nosh-delete').css('cursor', 'pointer').click(function() {
                 var r = confirm('Are you sure you want to delete this item?');
                 if (r === true) {
                     return true;
@@ -1035,13 +1035,13 @@
                     return false;
                 }
             });
-            $('.nosh-click').click(function(){
+            $('.nosh-click').css('cursor', 'pointer').click(function(){
                 var url = $(this).attr('data-nosh-click');
                 $('#modaltext').text('Loading...');
                 $('#loadingModal').modal('show');
                 window.location = url;
             });
-            $('.nosh-click-view').click(function(){
+            $('.nosh-click-view').css('cursor', 'pointer').click(function(){
                 var url = $(this).attr('data-nosh-click');
                 $('#modaltext').text('Loading...');
                 $('#loadingModal').modal('show');
@@ -1056,7 +1056,7 @@
                     $('#loadingModal').modal('hide');
                 });
             });
-            $('a').click(function() {
+            $('a').css('cursor', 'pointer').click(function() {
                 if ($(this).attr('href') !== undefined) {
                     if ($(this).attr('href').search('#') == -1 && $(this).hasClass('nosh-no-load') === false) {
                         $('#modaltext').text('Loading...');
@@ -1067,7 +1067,7 @@
                     }
                 }
             });
-            $('.nosh-button-submit').click(function() {
+            $('.nosh-button-submit').css('cursor', 'pointer').click(function() {
                 $('#modaltext').text('Loading...');
                 $('#loadingModal').modal('show');
             });
@@ -1177,7 +1177,7 @@
                 $('textarea').wrap('<div class="textarea_wrap" style="position:relative;width:100%"></div>');
                 $('.textarea_wrap').append('<a href="#template_list" class="btn hidden template_click_show" style="position:absolute;right:15px;top:10px;width:35px;"><i class="fa fa-heart fa-lg" style="width:30px;color:red;"></i></a>');
             }
-            $('.template_click_show').on('click', function() {
+            $('.template_click_show').css('cursor', 'pointer').on('click', function() {
                 var id = $(this).prev().attr('id');
                 $('#template_back').attr('href', '#' + id);
             });
@@ -1276,7 +1276,7 @@
                     }
                 });
             }
-            $('#overviewModal_trigger').click(function() {
+            $('#overviewModal_trigger').css('cursor', 'pointer').click(function() {
                 if ($('#overviewModal').length) {
                     return true;
                 } else {
@@ -1610,7 +1610,7 @@
                         $('#warningModal_body').html(data.info);
                         text_data = '<div class="col-md-2 col-md-offset-5"><button id="warning" class="btn btn-default btn-block">Click Here to Learn More</button></div>';
                         toastr.error(text_data, 'Medication Interaction Information Available', {"timeOut":"20000","preventDuplicates":true,"preventOpenDuplicates":true});
-                        $('#warning').on('click', function(){
+                        $('#warning').css('cursor', 'pointer').on('click', function(){
                             // toastr.clear();
                             $('#warningModal').modal('show');
                         });
