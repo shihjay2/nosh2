@@ -5070,11 +5070,11 @@ class CoreController extends Controller
         $data['content'] .= '</div>';
         $data['content'] .= '<div style="text-align: center;"><a href="' . $url . '" target="_blank">Pharmacy Click Here</a></div>';
         $med = explode(' ', $query->rxl_medication);
-        $data['rx'] = $med[0];
+        $data['rx'] = $this->goodrx_drug_search($med[0]);
         // $data['goodrx'] = 'https://www.goodrx.com/levothyroxine?grx_ref=api&strength=50mcg&form=tablet&label=levothyroxine';
         return view('prescription', $data);
     }
-    
+
     public function print_batch($type, $flatten)
     {
         $query = DB::table('encounters')

@@ -9634,6 +9634,16 @@ class Controller extends BaseController
         return $result_array;
     }
 
+    protected function goodrx_drug_search($rx)
+    {
+        $result = $this->goodrx($rx, 'drug-search');
+        $drug = $rx;
+        if ($result['success'] == true) {
+            $drug = current($result['data']['candidates']);
+        }
+        return $drug;
+    }
+
     protected function goodrx_notification($rx, $dose)
     {
         $row = DB::table('demographics')->where('pid', '=', Session::get('pid'))->first();
