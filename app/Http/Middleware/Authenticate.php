@@ -24,7 +24,7 @@ class Authenticate
             } else {
                 $practice = DB::table('practiceinfo')->where('practice_id', '=', '1')->first();
                 if ($practice->patient_centric == 'y' || $practice->patient_centric == 'yp') {
-                    return redirect()->route('uma_auth');
+                    return redirect()->guest('uma_auth');
                 } else {
                     return redirect()->guest('login');
                 }
