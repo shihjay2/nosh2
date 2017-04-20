@@ -2705,6 +2705,7 @@ class ChartController extends Controller {
         $data['ajax1'] = route('electronic_sign_login');
         $data['uport_need'] = 'y';
         $data['uport_id'] = '';
+        $data['url'] = '';
         if (Session::has('uport_id')) {
             if (Session::get('uport_id') !== '') {
                 $data['uport_need'] = 'n';
