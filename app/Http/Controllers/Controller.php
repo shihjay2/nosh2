@@ -9636,6 +9636,7 @@ class Controller extends BaseController
 
     protected function goodrx_drug_search($rx)
     {
+        $rx = rtrim($rx, ',');
         $result = $this->goodrx($rx, 'drug-search');
         $drug = $rx;
         if ($result['success'] == true) {
