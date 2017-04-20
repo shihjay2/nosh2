@@ -61,7 +61,7 @@
                             <div class="form-group">
                                 <div class="col-md-6 col-md-offset-3">
                                     <a class="btn btn-primary btn-block" href="{{ url('/uma_auth') }}">
-                                        <i class="fa fa-btn fa-openid"></i> I'm the Patient
+                                        <i class="fa fa-btn fa-openid"></i> Login
                                     </a>
                                     <br><br><a href="#" id="show_login_form">Standard Login for Administrator</a><br><br>
                                 </div>
