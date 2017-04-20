@@ -9648,6 +9648,23 @@ class Controller extends BaseController
         return $drug;
     }
 
+    protected function goodrx_information($rx, $dose)
+    {
+        $rx1 = explode(',', $rx);
+        $rx_array = explode(' ', $rx1[0]);
+        $dose_array = explode('/', $dose);
+        $link = '';
+        $result = $this->goodrx($rx_array[0], 'drug-info');
+        if ($result['success'] == true) {
+            if (isset($result['data']['drugs']['tablet'][$dose_array[0]])) {
+                $link = $result['data']['drugs']['tablet'][$dose_array[0]];
+            } else {
+                $link = reset($result['data']['drugs']['tablet']);
+            }
+        }
+        return $link;
+    }
+
     protected function goodrx_notification($rx, $dose)
     {
         $row = DB::table('demographics')->where('pid', '=', Session::get('pid'))->first();

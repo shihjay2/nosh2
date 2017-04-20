@@ -5071,7 +5071,7 @@ class CoreController extends Controller
         $data['content'] .= '<div style="text-align: center;"><a href="' . $url . '" target="_blank">Pharmacy Click Here</a></div>';
         $med = explode(' ', $query->rxl_medication);
         $data['rx'] = $this->goodrx_drug_search($med[0]);
-        // $data['goodrx'] = 'https://www.goodrx.com/levothyroxine?grx_ref=api&strength=50mcg&form=tablet&label=levothyroxine';
+        $data['link'] = $this->goodrx_information($query->rxl_medication, $query->rxl_dosage . $query->rxl_dosage_unit);
         return view('prescription', $data);
     }
 

@@ -37,6 +37,15 @@
                                 <div id="goodrx_low-price_widget"></div>
                             </div>
                         </div>
+                        @if ($link !== '')
+                            <div class="row" style="margin-top: 10px;">
+                                <div class="col-md-6 col-md-offset-3">
+                                    <a href="{!! $link !!}" class="btn btn-info btn-block nosh-no-load" target="_blank">
+                                        <i class="fa fa-btn fa-forward"></i> More Drug Information from GoodRX
+                                    </a>
+                                </div>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
