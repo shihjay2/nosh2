@@ -3867,7 +3867,6 @@ class ChartController extends Controller {
     public function encounter_details(Request $request, $eid)
     {
         $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
-        $encounter = DB::table('encounters')->where('eid', '=', $eid)->first();
         if ($request->isMethod('post')) {
             $appt_id = "";
             $encounter_type = "";
@@ -3914,6 +3913,7 @@ class ChartController extends Controller {
                 // $this->api_data('update', 'encounters', 'eid', $eid);
                 Session::put('message_action', 'Encounter created.');
                 if (Session::has('encounter_redirect')) {
+                    Session::put('eid', $eid);
                     $redirect_url = Session::get('encounter_redirect');
                     Session::forget('encounter_redirect');
                     return redirect($redirect_url);
