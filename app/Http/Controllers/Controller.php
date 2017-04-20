@@ -9616,6 +9616,9 @@ class Controller extends BaseController
     {
         $url = 'https://api.goodrx.com/' . $command;
         $query_string = 'name=' . $rx . '&api_key=' . $api_key;
+        if ($command == 'drug-search') {
+            $query_string = 'query=' . $rx . '&api_key=' . $api_key;
+        }
         $hash = hash_hmac('sha256', $query_string, $secret_key, true);
         $encoded = base64_encode($hash);
         $search = array('+','/');
