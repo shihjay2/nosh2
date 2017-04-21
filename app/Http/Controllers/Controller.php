@@ -11673,22 +11673,25 @@ class Controller extends BaseController
         $json = curl_exec($ch);
         curl_close($ch);
         $arr = json_decode($json, true);
-        if (isset($arr['results'][0]['basic']['name'])) {
-            $return['type'] = 'Practice';
-            $return['practice_name'] = $arr['results'][0]['basic']['name'];
-        } else {
-            $return['type'] = 'Individual';
-            $return['firstname'] = $arr['results'][0]['basic']['first_name'];
-            $return['lastname'] = $arr['results'][0]['basic']['last_name'];
-            $return['middle'] = $arr['results'][0]['basic']['middle_name'];
-            $return['title'] = $arr['results'][0]['basic']['credential'];
-            $return['taxonomy'] = $arr['results'][0]['taxonomies'][0]['code'];
+        $return = [];
+        if (isset($arr['results'][0])) {
+            if (isset($arr['results'][0]['basic']['name'])) {
+                $return['type'] = 'Practice';
+                $return['practice_name'] = $arr['results'][0]['basic']['name'];
+            } else {
+                $return['type'] = 'Individual';
+                $return['firstname'] = $arr['results'][0]['basic']['first_name'];
+                $return['lastname'] = $arr['results'][0]['basic']['last_name'];
+                $return['middle'] = $arr['results'][0]['basic']['middle_name'];
+                $return['title'] = $arr['results'][0]['basic']['credential'];
+                $return['taxonomy'] = $arr['results'][0]['taxonomies'][0]['code'];
+            }
+            $return['address'] = $arr['results'][0]['addresses'][0]['address_1'];
+            $return['city'] = $arr['results'][0]['addresses'][0]['city'];
+            $return['state'] = $arr['results'][0]['addresses'][0]['state'];
+            $return['zip'] = $arr['results'][0]['addresses'][0]['postal_code'];
+            $return['phone'] = $arr['results'][0]['addresses'][0]['telephone_number'];
         }
-        $return['address'] = $arr['results'][0]['addresses'][0]['address_1'];
-        $return['city'] = $arr['results'][0]['addresses'][0]['city'];
-        $return['state'] = $arr['results'][0]['addresses'][0]['state'];
-        $return['zip'] = $arr['results'][0]['addresses'][0]['postal_code'];
-        $return['phone'] = $arr['results'][0]['addresses'][0]['telephone_number'];
         return $return;
     }
 
