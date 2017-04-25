@@ -57,7 +57,7 @@ class AjaxCoreController extends Controller
     public function check_cpt(Request $request)
     {
         $return = 'y';
-        $query = DB::table('cpt_relate')->where('cpt', '=', $request->input('cpt'))->where('practice_id', '=', Session::get('practice_id'))->first();
+        $query = DB::table('cpt_relate')->where('cpt', '=', $request->input('cpt'))->where('practice_id', '=', Session::get('practice_id'))->where('favorite', '=', '1')->first();
         if ($query) {
             $return = 'n';
         }
