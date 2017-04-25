@@ -138,7 +138,7 @@ class AjaxChartController extends Controller
             if ($row->reminder_method == 'Cellular Phone') {
                 $data_message['item'] = 'This is a test';
                 $message = view('emails.blank', $data_message)->render();
-                $this->textbelt($row->phone_cell, $message);
+                $this->textbelt($row->phone_cell, $message, Session::get('practice_id'));
                 $result = 'SMS sent successfully.';
             } else {
                 $data_message['item'] = 'This is a test';
