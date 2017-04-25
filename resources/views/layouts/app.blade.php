@@ -2019,10 +2019,12 @@
                                         add_text = ': ' + $(this).val();
                                     }
                                 } else {
-                                    if (add_text === '') {
-                                        add_text = ': ' + $(this).val();
-                                    } else {
-                                        add_text += ', ' + $(this).val();
+                                    if ($(this).is(':checked')) {
+                                        if (add_text === '') {
+                                            add_text = ': ' + $(this).val();
+                                        } else {
+                                            add_text += ', ' + $(this).val();
+                                        }
                                     }
                                 }
                             } else if ($(this).is('select')) {
