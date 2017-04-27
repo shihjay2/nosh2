@@ -1159,9 +1159,9 @@ class ChartController extends Controller {
                     }
                     if ($request->input('sup_sig') != "") {
                         if ($request->input('sup_instructions') != "") {
-                            $encounter_text .= ', ' . $request->input('sup_sig') . ' ' . $request->input('sup_route') . ' ' . $request->input('sup_frequency') . ', ' . $request->input('sup_instructions') . ' for ' . $request->input('sup_reason');
+                            $encounter_text .= ', ' . $request->input('sup_sig') . ', ' . $request->input('sup_route') . ', ' . $request->input('sup_frequency') . ', ' . $request->input('sup_instructions') . ' for ' . $request->input('sup_reason');
                         } else {
-                            $encounter_text .= ', ' . $request->input('sup_sig') . ' ' . $request->input('sup_route') . ' ' . $request->input('sup_frequency') . ' for ' . $request->input('sup_reason');
+                            $encounter_text .= ', ' . $request->input('sup_sig') . ', ' . $request->input('sup_route') . ', ' . $request->input('sup_frequency') . ' for ' . $request->input('sup_reason');
                         }
                     } else {
                         $encounter_text .= ', ' . $request->input('sup_instructions') . ' for ' . $request->input('sup_reason');
@@ -7056,7 +7056,7 @@ class ChartController extends Controller {
                 if ($row->sup_sig == '') {
                     $arr['label'] = $row->sup_supplement . ' ' . $row->sup_dosage . ' ' . $row->sup_dosage_unit . ', ' . $row->sup_instructions . ' for ' . $row->sup_reason;
                 } else {
-                    $arr['label'] =$row->sup_supplement . ' ' . $row->sup_dosage . ' ' . $row->sup_dosage_unit . ', ' . $row->sup_sig . ' ' . $row->sup_route . ' ' . $row->sup_frequency . ' for ' . $row->sup_reason;
+                    $arr['label'] =$row->sup_supplement . ' ' . $row->sup_dosage . ' ' . $row->sup_dosage_unit . ', ' . $row->sup_sig . ', ' . $row->sup_route . ', ' . $row->sup_frequency . ' for ' . $row->sup_reason;
                 }
                 if ($edit == true) {
                     $arr['edit'] = route('chart_form', ['sup_list', $row_index, $row->$row_index]);

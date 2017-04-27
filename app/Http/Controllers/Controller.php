@@ -6970,7 +6970,7 @@ class Controller extends BaseController
                 'sup_dosage' => null,
                 'sup_dosage_unit' => null,
                 'sup_sig' => null,
-                'sup_route' => null,
+                'sup_route' => 'Oral route',
                 'sup_frequency' => null,
                 'sup_instructions' => null,
                 'sup_reason' => null,
@@ -6981,12 +6981,24 @@ class Controller extends BaseController
                 'supplement_id' => null
             ];
         } else {
+            $old_route = [
+                'by mouth' => 'Oral route',
+                'per rectum' => 'Per rectum',
+                'transdermal' => 'Transdermal route',
+                'subcutaneously' => 'Subcutaneous route',
+                'intramuscularly' => 'Intramuscular route',
+                'intravenously' => 'Intravenous peripheral route'
+            ];
+            $sup_route = $result->sup_route;
+            if (isset($old_route[$result->sup_route]) || array_key_exists($result->sup_route, $old_route)) {
+                $sup_route = $old_route[$result->sup_route];
+            }
             $sup = [
                 'sup_supplement' => $result->sup_supplement,
                 'sup_dosage' => $result->sup_dosage,
                 'sup_dosage_unit' => $result->sup_dosage_unit,
                 'sup_sig' => $result->sup_sig,
-                'sup_route' => $result->sup_route,
+                'sup_route' => $sup_route,
                 'sup_frequency' => $result->sup_frequency,
                 'sup_instructions' => $result->sup_instructions,
                 'sup_reason' => $result->sup_reason,
@@ -8882,7 +8894,7 @@ class Controller extends BaseController
                     $med_code_description = '';
                     $med_period = '';
                 } else {
-                    $instructions = $sup_row->sup_sig . ' ' . $sup_row->sup_route . ' ' . $sup_row->sup_frequency;
+                    $instructions = $sup_row->sup_sig . ', ' . $sup_row->sup_route . ', ' . $sup_row->sup_frequency;
                     $med_dosage_parts = explode(" ", $sup_row->sup_sig);
                     $med_dosage = $med_dosage_parts[0];
                     $med_dosage_unit = '';
@@ -12869,7 +12881,7 @@ class Controller extends BaseController
                 foreach ($query as $query_row) {
                     $sup_orders_summary_text .= $query_row->sup_supplement . ' ' . $query_row->sup_dosage . ' ' . $query_row->sup_dosage_unit;
                     if ($query_row->sup_sig != "") {
-                        $sup_orders_summary_text .= ", " . $query_row->sup_sig . ' ' . $query_row->sup_route . ' ' . $query_row->sup_frequency;
+                        $sup_orders_summary_text .= ", " . $query_row->sup_sig . ', ' . $query_row->sup_route . ', ' . $query_row->sup_frequency;
                     }
                     if ($query_row->sup_instructions != "") {
                         $sup_orders_summary_text .= ", " . $query_row->sup_instructions;
