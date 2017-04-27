@@ -17,7 +17,7 @@
         <!-- <div class="col-md-10 col-md-offset-1"> -->
             <div class="panel panel-default">
                 <div class="panel-heading clearfix">
-                    <h3 class="panel-title pull-left" style="padding-top: 7.5px;">Prescription QR Code</h3>
+                    <h3 class="panel-title pull-left" style="padding-top: 7.5px;">Prescription</h3>
                 </div>
                 <div class="panel-body">
                     {!! $content !!}

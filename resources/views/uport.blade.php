@@ -15,6 +15,16 @@
     <div class="row">
         <div>
         <!-- <div class="col-md-10 col-md-offset-1"> -->
+            @if (isset($document_url))
+                <div class="panel panel-default">
+                    <div class="panel-heading clearfix">
+                        <h3 class="panel-title pull-left" style="padding-top: 7.5px;">Prescription</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div id="pdf"></div>
+                    </div>
+                </div>
+            @endif
             <div class="panel panel-default">
                 <div class="panel-heading clearfix">
                     <h3 class="panel-title pull-left" style="padding-top: 7.5px;">{!! $panel_header !!}</h3>
@@ -114,6 +124,21 @@
         console.log(transaction.input);
         window.location = '{!! $url !!}' + '/' + transaction.input;
     };
+
+    // Documents view
+    var options = {
+        pdfOpenParams: {
+            navpanes: 0,
+            toolbar: 0,
+            statusbar: 0,
+            view: "FitV",
+            pagemode: "thumbs",
+            page: 1
+        },
+        forcePDFJS: true,
+        PDFJS_URL: "{{ asset('assets/js/web/viewer.html') }}"
+    };
+
     $(document).ready(function() {
         // Core
         if (noshdata.message_action !== '') {
@@ -131,6 +156,12 @@
         }
         if (uport_need == 'validate') {
             validatetx();
+        }
+        if (noshdata.document_url !== '') {
+            var myPDF = PDFObject.embed(noshdata.document_url, "#pdf", options);
+            if (! myPDF) {
+                toastr.error('Uh-oh, the PDF embed did not work.');
+            }
         }
     });
 </script>

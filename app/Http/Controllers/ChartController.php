@@ -1438,25 +1438,20 @@ class ChartController extends Controller {
             $data['rxl_provider'] = $user->displayname;
             $data['rxl_due_date'] = date('Y-m-d H:i:s', strtotime($request->input('rxl_date_prescribed')) + ($request->input('rxl_days') * 86400));
             $data['prescription'] = 'pending';
+            $to = '';
+            if (isset($data['notification'])) {
+                $to = $data['notification'];
+                unset($data['notification']);
+            }
             if ($id == '0') {
                 $data['pid'] = $pid;
                 $row_id1 = DB::table($table)->insertGetId($data);
                 $this->audit('Add');
-                $this->prescription_notification($row_id1);
                 // foreach ($good_rx_tables as $good_rx_table) {
                 //     if ($good_rx_table == $table) {
                 //         $this->goodrx_notification($request->input('rxl_medication'), $request->input('rxl_dosage') . $request->input('rxl_dosage_unit'));
                 //     }
                 // }
-                if (Session::has('eid')) {
-                    if ($request->input('rxl_sig') == '') {
-                        $instructions = $request->input('rxl_instructions');
-                    } else {
-                        $instructions = $request->input('rxl_sig') . ' ' . $request->input('rxl_route') . ' ' . $request->input('rxl_frequency');
-                    }
-                    $encounter_text = $request->input('rxl_medication') . ' ' . $request->input('rxl_dosage') . ' ' . $request->input('rxl_dosage_unit') . ', ' . $instructions . ' for ' . $request->input('rxl_reason') . ', Quantity: ' . $request->input('rxl_quantity') . ', Refills: ' . $request->input('rxl_refill');
-                    $this->plan_build('rx', 'prescribe', $encounter_text);
-                }
                 // foreach ($api_tables as $api_table) {
                 //     if ($api_table == $table) {
                 //         $this->api_data('add', $table, $row_index, $row_id1);
@@ -1480,9 +1475,8 @@ class ChartController extends Controller {
                 // $this->api_data('update', 'rx_list', 'rxl_id', $id);
                 $old_rx = DB::table($table)->where($index, '=', $id)->first();
                 $data['rxl_date_active'] = $old_rx->rxl_date_active;
-                DB::table($table)->where($index, '=', $id)->update($data);
-                $this->audit('Update');
-                $this->prescription_notification($id);
+                $row_id1 = DB::table($table)->insertGetId($data);
+                $this->audit('Add');
                 // foreach ($good_rx_tables as $good_rx_table) {
                 //     if ($good_rx_table == $table) {
                 //         $this->goodrx_notification($request->input('rxl_medication'), $request->input('rxl_dosage') . $request->input('rxl_dosage_unit'));
@@ -1493,11 +1487,20 @@ class ChartController extends Controller {
                 //         $this->api_data('update', $table, $index, $id);
                 //     }
                 // }
-                $row_id1 = $id;
                 $arr['message'] = $message . 'refilled!';
                 if ($next_action !== '') {
                     $next_action = route($next_action, [$table, $row_id1, Session::get('pid')]);
                 }
+            }
+            $this->prescription_notification($row_id1, $to);
+            if (Session::has('eid')) {
+                if ($request->input('rxl_sig') == '') {
+                    $instructions = $request->input('rxl_instructions');
+                } else {
+                    $instructions = $request->input('rxl_sig') . ' ' . $request->input('rxl_route') . ' ' . $request->input('rxl_frequency');
+                }
+                $encounter_text = $request->input('rxl_medication') . ' ' . $request->input('rxl_dosage') . ' ' . $request->input('rxl_dosage_unit') . ', ' . $instructions . ' for ' . $request->input('rxl_reason') . ', Quantity: ' . $request->input('rxl_quantity') . ', Refills: ' . $request->input('rxl_refill');
+                $this->plan_build('rx', 'prescribe', $encounter_text);
             }
             // Create FHIR JSON prescription
     		$json_row = DB::table('rx_list')->where('rxl_id', '=', $row_id1)->first();
@@ -5885,9 +5888,23 @@ class ChartController extends Controller {
             foreach ($result as $row) {
                 $arr = [];
                 if ($row->rxl_sig == '') {
-                    $arr['label'] = $row->rxl_medication . ' ' . $row->rxl_dosage . ' ' . $row->rxl_dosage_unit . ', ' . $row->rxl_instructions . ' for ' . $row->rxl_reason;
+                    $arr['label'] = '<strong>' . $row->rxl_medication . '</strong> ' . $row->rxl_dosage . ' ' . $row->rxl_dosage_unit . ', ' . $row->rxl_instructions . ' for ' . $row->rxl_reason;
                 } else {
-                    $arr['label'] = $row->rxl_medication . ' ' . $row->rxl_dosage . ' ' . $row->rxl_dosage_unit . ', ' . $row->rxl_sig . ' ' . $row->rxl_route . ' ' . $row->rxl_frequency . ' for ' . $row->rxl_reason;
+                    $arr['label'] = '<strong>' . $row->rxl_medication . '</strong> ' . $row->rxl_dosage . ' ' . $row->rxl_dosage_unit . ', ' . $row->rxl_sig . ' ' . $row->rxl_route . ' ' . $row->rxl_frequency . ' for ' . $row->rxl_reason;
+                }
+                $previous = DB::table('rx_list')
+        			->where('pid', '=', Session::get('pid'))
+        			->where('rxl_medication', '=', $row->rxl_medication)
+        			->select('rxl_date_prescribed', 'prescription')
+                    ->orderBy('rxl_date_prescribed', 'desc')
+        			->first();
+                if ($previous) {
+                    if ($previous->rxl_date_prescribed !== null && $previous->rxl_date_prescribed !== '0000-00-00 00:00:00') {
+                        $previous_date = new Date($this->human_to_unix($previous->rxl_date_prescribed));
+                        $ago = $previous_date->diffInDays();
+                        $arr['label'] .= '<br><strong>Last Prescribed:</strong> ' . date('Y-m-d', $this->human_to_unix($previous->rxl_date_prescribed)) . ', ' . $ago . ' days ago';
+                        $arr['label'] .= '<br><strong>Prescription Status:</strong> ' . ucfirst($previous->prescription);
+                    }
                 }
                 if ($edit == true) {
                     $arr['edit'] = route('chart_form', ['rx_list', $row_index, $row->$row_index]);

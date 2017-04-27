@@ -522,6 +522,15 @@ public function install_fix(Request $request)
         $data['panel_header'] = 'Prescription Validation';
         $data['url'] = route('prescription_pharmacy_view', [$id]);
         $query = DB::table('rx_list')->where('rxl_id', '=', $id)->first();
+        ini_set('memory_limit','196M');
+        $html = $this->page_medication($id, $query->pid);
+        $name = time() . "_rx.pdf";
+        $file_path = public_path() . "/temp/" . $name;
+        $this->generate_pdf($html, $file_path, 'footerpdf', '', '2');
+        while(!file_exists($file_path)) {
+            sleep(2);
+        }
+        $data['document_url'] = asset('temp/' . $name);
         $data['content'] = '';
         $outcome = '';
         if ($query) {
@@ -570,7 +579,8 @@ public function install_fix(Request $request)
                     'form_id' => 'prescription_form',
                     'action' => route('prescription_pharmacy_view', [$id]),
                     'items' => $items,
-                    'save_button_label' => 'Validate'
+                    'save_button_label' => 'Validate',
+                    'remove_cancel' => true
                 ];
                 if ($request->isMethod('post')) {
                     $data['uport_need'] = 'validate';
@@ -583,8 +593,8 @@ public function install_fix(Request $request)
             $outcome = '<div class="alert alert-danger"><strong>Presciption Invalid</strong> - No prescription exists.</div>';
         }
         $data['content'] .= $outcome;
-        $data['assets_js'] = $this->assets_js();
-        $data['assets_css'] = $this->assets_css();
+        $data['assets_js'] = $this->assets_js('documents');
+        $data['assets_css'] = $this->assets_css('documents');
         return view('uport', $data);
     }
 

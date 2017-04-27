@@ -3512,10 +3512,12 @@ class Controller extends BaseController
                 $return .= '<button type="submit" class="btn btn-success nosh-button-submit" style="margin:10px" name="submit" value="' . $add_save_button_k . '"><i class="fa fa-btn fa-save"></i> ' . $add_save_button_v . '</button>';
             }
         }
-        if (isset($form_array['origin'])) {
-            $return .= '<a href="' . $form_array['origin'] . '" class="btn btn-danger" style="margin:10px"><i class="fa fa-btn fa-ban"></i> Cancel</a>';
-        } else {
-            $return .= '<a href="' . Session::get('last_page') . '" class="btn btn-danger" style="margin:10px"><i class="fa fa-btn fa-ban"></i> Cancel</a>';
+        if (isset($form_array['remove_cancel']) == false) {
+            if (isset($form_array['origin'])) {
+                $return .= '<a href="' . $form_array['origin'] . '" class="btn btn-danger" style="margin:10px"><i class="fa fa-btn fa-ban"></i> Cancel</a>';
+            } else {
+                $return .= '<a href="' . Session::get('last_page') . '" class="btn btn-danger" style="margin:10px"><i class="fa fa-btn fa-ban"></i> Cancel</a>';
+            }
         }
         $return .= '</div></div>';
         $return .= '</form>';
@@ -6919,6 +6921,15 @@ class Controller extends BaseController
                 'select_items' => $this->array_orders_provider('Pharmacy'),
                 'default_value' => $rx['address_id']
             ];
+            // if ($practice->patient_centric == 'yp') {
+                $patient = DB::table('demographics')->where('pid', '=', Session::get('pid'))->first();
+                $items[] = [
+                    'name' => 'notification',
+                    'label' => 'Notification To (SMS or Email)',
+                    'type' => 'text',
+                    'default_value' => $patient->reminder_to
+                ];
+            // }
             $items[] = [
                 'name' => 'nosh_action',
                 'label' => 'Action after Saving',
@@ -12996,14 +13007,23 @@ class Controller extends BaseController
         return $html;
     }
 
-    protected function prescription_notification($id)
+    protected function prescription_notification($id, $to='')
     {
         $row = DB::table('demographics')->where('pid', '=', Session::get('pid'))->first();
         $row2 = DB::table('practiceinfo')->where('practice_id', '=',Session::get('practice_id'))->first();
-        $to = $row->reminder_to;
-        if ($to != '') {
+        if ($to == '') {
+            $to = $row->reminder_to;
+            $reminder_method = $row->reminder_method;
+        } else {
+            if (!filter_var($to, FILTER_VALIDATE_EMAIL) === false) {
+                $reminder_method = 'Email';
+            } else {
+                $reminder_method = 'Cellular Phone';
+            }
+        }
+        if ($to !== '' && $to !== null) {
             $link = route('prescription_view', [$id]);
-            if ($row->reminder_method == 'Cellular Phone') {
+            if ($reminder_method == 'Cellular Phone') {
                 $data_message['item'] = 'New Medication: ' . $link;
                 $message = view('emails.blank', $data_message)->render();
                 $this->textbelt($to, $message, $row2->practice_id);
@@ -15300,7 +15320,12 @@ class Controller extends BaseController
                     $instructions = $row2->rxl_sig . ' ' . $row2->rxl_route . ' ' . $row2->rxl_frequency;
                 }
                 $description2 = $row2->rxl_medication . ' ' . $row2->rxl_dosage . ' ' . $row2->rxl_dosage_unit . ', ' . $instructions . ' for ' . $row2->rxl_reason;
-                $div2 = $this->timeline_item($row2->rxl_id, 'rxl_id', 'New Medication', $this->human_to_unix($row2->rxl_date_active), 'New Medication', $description2);
+                if ($row2->rxl_date_prescribed == null || $row2->rxl_date_prescribed == '0000-00-00 00:00:00') {
+                    $div2 = $this->timeline_item($row2->rxl_id, 'rxl_id', 'New Medication', $this->human_to_unix($row2->rxl_date_active), 'New Medication', $description2);
+                } else {
+                    $description2 .= '<br>Status: ' . ucfirst($row2->prescription);
+                    $div2 = $this->timeline_item($row2->rxl_id, 'rxl_id', 'Prescribed Medication', $this->human_to_unix($row2->rxl_date_active), 'Prescribed Medication', $description2);
+                }
                 $json[] = [
                     'div' => $div2,
                     'startDate' => $this->human_to_unix($row2->rxl_date_active)
@@ -15399,7 +15424,7 @@ class Controller extends BaseController
         if ($category == 'Telephone Message') {
             $div .= '<div class="cd-timeline-img cd-encounter"><i class="fa fa-phone fa-fw fa-lg"></i>';
         }
-        if ($category == 'New Medication') {
+        if ($category == 'New Medication' || $category == 'Prescribed Medication') {
             $div .= '<div class="cd-timeline-img cd-medication"><i class="fa fa-eyedropper fa-fw fa-lg"></i>';
         }
         if ($category == 'New Problem' || $category == 'New Medical Event' || $category == 'New Surgical Event') {
