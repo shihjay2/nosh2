@@ -1,0 +1,445 @@
+---
+- 
+  code: 6064005
+  desc: Topical route
+- 
+  code: 10547007
+  desc: Otic route
+- 
+  code: 12130007
+  desc: Intra-articular route
+- 
+  code: 16857009
+  desc: Per vagina
+- 
+  code: 26643006
+  desc: Oral route
+- 
+  code: 34206005
+  desc: Subcutaneous route
+- 
+  code: 37161004
+  desc: Per rectum
+- 
+  code: 37737002
+  desc: Intraluminal route
+- 
+  code: 37839007
+  desc: Sublingual route
+- 
+  code: 38239002
+  desc: Intraperitoneal route
+- 
+  code: 45890007
+  desc: Transdermal route
+- 
+  code: 46713006
+  desc: Nasal route
+- 
+  code: 47625008
+  desc: Intravenous route
+- 
+  code: 54471007
+  desc: Buccal route
+- 
+  code: 54485002
+  desc: Ophthalmic route
+- 
+  code: 58100008
+  desc: Intra-arterial route
+- 
+  code: 60213007
+  desc: Intramedullary route
+- 
+  code: 62226000
+  desc: Intrauterine route
+- 
+  code: 72607000
+  desc: Intrathecal route
+- 
+  code: 78421000
+  desc: Intramuscular route
+- 
+  code: 90028008
+  desc: Urethral route
+- 
+  code: 127490009
+  desc: Gastrostomy route
+- 
+  code: 127491008
+  desc: Jejunostomy route
+- 
+  code: 127492001
+  desc: Nasogastric route
+- 
+  code: 372449004
+  desc: Dental use
+- 
+  code: 372450004
+  desc: Endocervical use
+- 
+  code: 372451000
+  desc: Endosinusial use
+- 
+  code: 372452007
+  desc: Endotracheopulmonary use
+- 
+  code: 372453002
+  desc: Extra-amniotic use
+- 
+  code: 372454008
+  desc: Gastroenteral use
+- 
+  code: 372457001
+  desc: Gingival use
+- 
+  code: 372458006
+  desc: Intraamniotic use
+- 
+  code: 372459003
+  desc: Intrabursal use
+- 
+  code: 372460008
+  desc: Intracardiac use
+- 
+  code: 372461007
+  desc: Intracavernous use
+- 
+  code: 372463005
+  desc: Intracoronary use
+- 
+  code: 372464004
+  desc: Intradermal use
+- 
+  code: 372465003
+  desc: Intradiscal use
+- 
+  code: 372466002
+  desc: Intralesional use
+- 
+  code: 372467006
+  desc: Intralymphatic use
+- 
+  code: 372468001
+  desc: Intraocular use
+- 
+  code: 372469009
+  desc: Intrapleural use
+- 
+  code: 372470005
+  desc: Intrasternal use
+- 
+  code: 372471009
+  desc: Intravesical use
+- 
+  code: 372473007
+  desc: Oromucosal use
+- 
+  code: 372474001
+  desc: Periarticular use
+- 
+  code: 372475000
+  desc: Perineural use
+- 
+  code: 372476004
+  desc: Subconjunctival use
+- 
+  code: 404815008
+  desc: Transmucosal route
+- 
+  code: 404818005
+  desc: Intratracheal route
+- 
+  code: 404819002
+  desc: Intrabiliary route
+- 
+  code: 404820008
+  desc: Epidural route
+- 
+  code: 416174007
+  desc: Suborbital route
+- 
+  code: 417070009
+  desc: Caudal route
+- 
+  code: 417255000
+  desc: Intraosseous route
+- 
+  code: 417950001
+  desc: Intrathoracic route
+- 
+  code: 417985001
+  desc: Enteral route
+- 
+  code: 417989007
+  desc: Intraductal route
+- 
+  code: 418091004
+  desc: Intratympanic route
+- 
+  code: 418114005
+  desc: Intravenous central route
+- 
+  code: 418133000
+  desc: Intramyometrial route
+- 
+  code: 418136008
+  desc: Gastro-intestinal stoma route
+- 
+  code: 418162004
+  desc: Colostomy route
+- 
+  code: 418204005
+  desc: Periurethral route
+- 
+  code: 418287000
+  desc: Intracoronal route
+- 
+  code: 418321004
+  desc: Retrobulbar route
+- 
+  code: 418331006
+  desc: Intracartilaginous route
+- 
+  code: 418401004
+  desc: Intravitreal route
+- 
+  code: 418418000
+  desc: Intraspinal route
+- 
+  code: 418441008
+  desc: Orogastric route
+- 
+  code: 418511008
+  desc: Transurethral route
+- 
+  code: 418586008
+  desc: Intratendinous route
+- 
+  code: 418608002
+  desc: Intracorneal route
+- 
+  code: 418664002
+  desc: Oropharyngeal route
+- 
+  code: 418722009
+  desc: Peribulbar route
+- 
+  code: 418730005
+  desc: Nasojejunal route
+- 
+  code: 418743005
+  desc: Fistula route
+- 
+  code: 418813001
+  desc: Surgical drain route
+- 
+  code: 418821007
+  desc: Intracameral route
+- 
+  code: 418851001
+  desc: Paracervical route
+- 
+  code: 418877009
+  desc: Intrasynovial route
+- 
+  code: 418887008
+  desc: Intraduodenal route
+- 
+  code: 418892005
+  desc: Intracisternal route
+- 
+  code: 418947002
+  desc: Intratesticular route
+- 
+  code: 418987007
+  desc: Intracranial route
+- 
+  code: 419021003
+  desc: Tumor cavity route
+- 
+  code: 419165009
+  desc: Paravertebral route
+- 
+  code: 419231003
+  desc: Intrasinal route
+- 
+  code: 419243002
+  desc: Transcervical route
+- 
+  code: 419320008
+  desc: Subtendinous route
+- 
+  code: 419396008
+  desc: Intraabdominal route
+- 
+  code: 419601003
+  desc: Subgingival route
+- 
+  code: 419631009
+  desc: Intraovarian route
+- 
+  code: 419684008
+  desc: Ureteral route
+- 
+  code: 419762003
+  desc: Peritendinous route
+- 
+  code: 419778001
+  desc: Intrabronchial route
+- 
+  code: 419810008
+  desc: Intraprostatic route
+- 
+  code: 419874009
+  desc: Submucosal route
+- 
+  code: 419894000
+  desc: Surgical cavity route
+- 
+  code: 419954003
+  desc: Ileostomy route
+- 
+  code: 419993007
+  desc: Intravenous peripheral route
+- 
+  code: 420047004
+  desc: Periosteal route
+- 
+  code: 420163009
+  desc: Esophagostomy route
+- 
+  code: 420168000
+  desc: Urostomy route
+- 
+  code: 420185003
+  desc: Laryngeal route
+- 
+  code: 420201002
+  desc: Intrapulmonary route
+- 
+  code: 420204005
+  desc: Mucous fistula route
+- 
+  code: 420218003
+  desc: Nasoduodenal route
+- 
+  code: 420254004
+  desc: Body cavity route
+- 
+  code: 420287000
+  desc: 'Intraventricular route - cardiac'
+- 
+  code: 420719007
+  desc: Intracerebroventricular route
+- 
+  code: 428191002
+  desc: Percutaneous route
+- 
+  code: 429817007
+  desc: Interstitial route
+- 
+  code: 445752009
+  desc: Intraesophageal route
+- 
+  code: 445754005
+  desc: Intragingival route
+- 
+  code: 445755006
+  desc: Intravascular route
+- 
+  code: 445756007
+  desc: Intradural route
+- 
+  code: 445767008
+  desc: Intrameningeal route
+- 
+  code: 445768003
+  desc: Intragastric route
+- 
+  code: 445769006
+  desc: Intracorpus cavernosum route
+- 
+  code: 445771006
+  desc: Intrapericardial route
+- 
+  code: 445913005
+  desc: Intralingual route
+- 
+  code: 445941009
+  desc: Intrahepatic route
+- 
+  code: 446105004
+  desc: Conjunctival route
+- 
+  code: 446407004
+  desc: Intraepicardial route
+- 
+  code: 446435000
+  desc: Transendocardial route
+- 
+  code: 446442000
+  desc: Transplacental route
+- 
+  code: 446540005
+  desc: Intracerebral route
+- 
+  code: 447026006
+  desc: Intraileal route
+- 
+  code: 447052000
+  desc: Periodontal route
+- 
+  code: 447080003
+  desc: Peridural route
+- 
+  code: 447081004
+  desc: Lower respiratory tract route
+- 
+  code: 447121004
+  desc: Intramammary route
+- 
+  code: 447122006
+  desc: Intratumor route
+- 
+  code: 447227007
+  desc: Transtympanic route
+- 
+  code: 447229005
+  desc: Transtracheal route
+- 
+  code: 447694001
+  desc: Respiratory tract route
+- 
+  code: 447964005
+  desc: Digestive tract route
+- 
+  code: 448077001
+  desc: Intraepidermal route
+- 
+  code: 448491004
+  desc: Intrajejunal route
+- 
+  code: 448492006
+  desc: Intracolonic route
+- 
+  code: 448598008
+  desc: Cutaneous route
+- 
+  code: 697971008
+  desc: Arteriovenous fistula route
+- 
+  code: 711360002
+  desc: Intraneural route
+- 
+  code: 711378007
+  desc: Intramural route
+- 
+  code: 714743009
+  desc: Extracorporeal route
+- 
+  code: 718329006
+  desc: Infiltration route
+- 
+  code: 1611000175109
+  desc: Sublesional route

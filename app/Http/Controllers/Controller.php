@@ -967,15 +967,14 @@ class Controller extends BaseController
 
     protected function array_route()
     {
-        $route = [
-            '' => '',
-            'by mouth' => 'PO',
-            'per rectum' => 'PR',
-            'transdermal' => 'TD',
-            'subcutaneously' => 'SC',
-            'intramuscularly' => 'IM',
-            'intravenously' => 'IV'
-        ];
+        $yaml = File::get(resource_path() . '/routes.yaml');
+        $formatter = Formatter::make($yaml, Formatter::YAML);
+        $arr = $formatter->toArray();
+        $route[''] = '';
+        foreach ($arr as $row) {
+            $route[$row['desc']] = $row['desc'];
+        }
+        asort($route);
         return $route;
     }
 
@@ -990,6 +989,12 @@ class Controller extends BaseController
             'intramuscularly' => ['C1556154', 'Intravascular Route of Administration'],
             'intravenously' => ['C2960476', 'Intramuscular Route of Administration']
         ];
+        $yaml = File::get(resource_path() . '/routes.yaml');
+        $formatter = Formatter::make($yaml, Formatter::YAML);
+        $arr = $formatter->toArray();
+        foreach ($arr as $row) {
+            $route[$row['desc']] = [$row['code'], $row['desc']];
+        }
         return $route;
     }
 
@@ -1158,7 +1163,7 @@ class Controller extends BaseController
                     if ($meds_row->rxl_sig == '') {
                         $med .= "\n" . $meds_row->rxl_medication . ' ' . $meds_row->rxl_dosage . ' ' . $meds_row->rxl_dosage_unit . ', ' . $meds_row->rxl_instructions . ' for ' . $meds_row->rxl_reason;
                     } else {
-                        $med .= "\n" . $meds_row->rxl_medication . ' ' . $meds_row->rxl_dosage . ' ' . $meds_row->rxl_dosage_unit . ', ' . $meds_row->rxl_sig . ' ' . $meds_row->rxl_route . ' ' . $meds_row->rxl_frequency . ' for ' . $meds_row->rxl_reason;
+                        $med .= "\n" . $meds_row->rxl_medication . ' ' . $meds_row->rxl_dosage . ' ' . $meds_row->rxl_dosage_unit . ', ' . $meds_row->rxl_sig . ', ' . $meds_row->rxl_route . ', ' . $meds_row->rxl_frequency . ' for ' . $meds_row->rxl_reason;
                     }
                 }
             } else {
@@ -6691,7 +6696,7 @@ class Controller extends BaseController
                 'rxl_dosage' => null,
                 'rxl_dosage_unit' => null,
                 'rxl_sig' => null,
-                'rxl_route' => 'by mouth',
+                'rxl_route' => 'Oral route',
                 'rxl_frequency' => null,
                 'rxl_instructions' => null,
                 'rxl_reason' => null,
@@ -6734,12 +6739,24 @@ class Controller extends BaseController
                     $user_id = Session::get('user_id');
                 }
             }
+            $old_route = [
+                'by mouth' => 'Oral route',
+                'per rectum' => 'Per rectum',
+                'transdermal' => 'Transdermal route',
+                'subcutaneously' => 'Subcutaneous route',
+                'intramuscularly' => 'Intramuscular route',
+                'intravenously' => 'Intravenous peripheral route'
+            ];
+            $rxl_route = $result->rxl_route;
+            if (isset($old_route[$result->rxl_route]) || array_key_exists($result->rxl_route, $old_route)) {
+                $rxl_route = $old_route[$result->rxl_route];
+            }
             $rx = [
                 'rxl_medication' => $result->rxl_medication,
                 'rxl_dosage' => $result->rxl_dosage,
                 'rxl_dosage_unit' => $result->rxl_dosage_unit,
                 'rxl_sig' => $result->rxl_sig,
-                'rxl_route' => $result->rxl_route,
+                'rxl_route' => $rxl_route,
                 'rxl_frequency' => $result->rxl_frequency,
                 'rxl_instructions' => $result->rxl_instructions,
                 'rxl_reason' => $result->rxl_reason,
@@ -8756,7 +8773,7 @@ class Controller extends BaseController
                     $med_code_description = '';
                     $med_period = '';
                 } else {
-                    $instructions = $med_row->rxl_sig . ' ' . $med_row->rxl_route . ' ' . $med_row->rxl_frequency;
+                    $instructions = $med_row->rxl_sig . ', ' . $med_row->rxl_route . ', ' . $med_row->rxl_frequency;
                     $med_dosage_parts = explode(" ", $med_row->rxl_sig);
                     $med_dosage = $med_dosage_parts[0];
                     if (count($med_dosage_parts) > 1) {
@@ -11757,7 +11774,7 @@ class Controller extends BaseController
                 if ($row1->rxl_sig == '') {
                     $body .= '<li>' . $row1->rxl_medication . ' ' . $row1->rxl_dosage . ' ' . $row1->rxl_dosage_unit . ', ' . $row1->rxl_instructions . ' for ' . $row1->rxl_reason . '</li>';
                 } else {
-                    $body .= '<li>' . $row1->rxl_medication . ' ' . $row1->rxl_dosage . ' ' . $row1->rxl_dosage_unit . ', ' . $row1->rxl_sig . ' ' . $row1->rxl_route . ' ' . $row1->rxl_frequency . ' for ' . $row1->rxl_reason . '</li>';
+                    $body .= '<li>' . $row1->rxl_medication . ' ' . $row1->rxl_dosage . ' ' . $row1->rxl_dosage_unit . ', ' . $row1->rxl_sig . ', ' . $row1->rxl_route . ', ' . $row1->rxl_frequency . ' for ' . $row1->rxl_reason . '</li>';
                 }
             }
             $body .= '</ul>';
@@ -13842,8 +13859,8 @@ class Controller extends BaseController
                     ]
                 ];
             } else {
-                $response['text']['div'] = '<div>' . $row->rxl_medication . ' ' . $row->rxl_dosage . ' ' . $row->rxl_dosage_unit . ', ' . $row->rxl_sig . ' ' . $row->rxl_route . ' ' . $row->rxl_frequency . ' for ' . $row->rxl_reason . '</div>';
-                $dosage_text = $row->rxl_sig . ' ' . $row->rxl_route . ' ' . $row->rxl_frequency . ' for ' . $row->rxl_reason;
+                $response['text']['div'] = '<div>' . $row->rxl_medication . ' ' . $row->rxl_dosage . ' ' . $row->rxl_dosage_unit . ', ' . $row->rxl_sig . ', ' . $row->rxl_route . ', ' . $row->rxl_frequency . ' for ' . $row->rxl_reason . '</div>';
+                $dosage_text = $row->rxl_sig . ', ' . $row->rxl_route . ', ' . $row->rxl_frequency . ' for ' . $row->rxl_reason;
                 $med_dosage_parts = explode(" ", $row->rxl_sig);
                 $med_dosage = $med_dosage_parts[0];
                 if (count($med_dosage_parts) > 1) {
@@ -13902,7 +13919,7 @@ class Controller extends BaseController
                     $dosage_array['route'] = [
                         'coding' => [
                             '0' => [
-                                'system' => 'http://ncimeta.nci.nih.gov',
+                                'system' => 'http://snomed.info/sct',
                                 'code' => $med_code,
                                 'display' => $med_code_description
                             ]
@@ -13969,8 +13986,8 @@ class Controller extends BaseController
                     ]
                 ];
             } else {
-                $response['text']['div'] = '<div>' . $row->rxl_medication . ' ' . $row->rxl_dosage . ' ' . $row->rxl_dosage_unit . ', ' . $row->rxl_sig . ' ' . $row->rxl_route . ' ' . $row->rxl_frequency . ' for ' . $row->rxl_reason . '</div>';
-                $dosage_text = $row->rxl_sig . ' ' . $row->rxl_route . ' ' . $row->rxl_frequency . ' for ' . $row->rxl_reason;
+                $response['text']['div'] = '<div>' . $row->rxl_medication . ' ' . $row->rxl_dosage . ' ' . $row->rxl_dosage_unit . ', ' . $row->rxl_sig . ', ' . $row->rxl_route . ', ' . $row->rxl_frequency . ' for ' . $row->rxl_reason . '</div>';
+                $dosage_text = $row->rxl_sig . ', ' . $row->rxl_route . ', ' . $row->rxl_frequency . ' for ' . $row->rxl_reason;
                 $med_dosage_parts = explode(" ", $row->rxl_sig);
                 $med_dosage = $med_dosage_parts[0];
                 if (count($med_dosage_parts) > 1) {
@@ -15317,7 +15334,7 @@ class Controller extends BaseController
                 if ($row2->rxl_sig == '') {
                     $instructions = $row2->rxl_instructions;
                 } else {
-                    $instructions = $row2->rxl_sig . ' ' . $row2->rxl_route . ' ' . $row2->rxl_frequency;
+                    $instructions = $row2->rxl_sig . ', ' . $row2->rxl_route . ', ' . $row2->rxl_frequency;
                 }
                 $description2 = $row2->rxl_medication . ' ' . $row2->rxl_dosage . ' ' . $row2->rxl_dosage_unit . ', ' . $instructions . ' for ' . $row2->rxl_reason;
                 if ($row2->rxl_date_prescribed == null || $row2->rxl_date_prescribed == '0000-00-00 00:00:00') {
@@ -15371,7 +15388,7 @@ class Controller extends BaseController
                 if ($row5->rxl_sig == '') {
                     $instructions5 = $row5->rxl_instructions;
                 } else {
-                    $instructions5 = $row5->rxl_sig . ' ' . $row5->rxl_route . ' ' . $row5->rxl_frequency;
+                    $instructions5 = $row5->rxl_sig . ', ' . $row5->rxl_route . ', ' . $row5->rxl_frequency;
                 }
                 $description5 = $row5->rxl_medication . ' ' . $row5->rxl_dosage . ' ' . $row5->rxl_dosage_unit . ', ' . $instructions5 . ' for ' . $row5->rxl_reason;
                 $div5 = $this->timeline_item($row5->rxl_id, 'rxl_id', 'Medication Stopped', $this->human_to_unix($row5->rxl_date_inactive), 'Medication Stopped', $description5);

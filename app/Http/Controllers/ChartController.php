@@ -1497,7 +1497,7 @@ class ChartController extends Controller {
                 if ($request->input('rxl_sig') == '') {
                     $instructions = $request->input('rxl_instructions');
                 } else {
-                    $instructions = $request->input('rxl_sig') . ' ' . $request->input('rxl_route') . ' ' . $request->input('rxl_frequency');
+                    $instructions = $request->input('rxl_sig') . ', ' . $request->input('rxl_route') . ', ' . $request->input('rxl_frequency');
                 }
                 $encounter_text = $request->input('rxl_medication') . ' ' . $request->input('rxl_dosage') . ' ' . $request->input('rxl_dosage_unit') . ', ' . $instructions . ' for ' . $request->input('rxl_reason') . ', Quantity: ' . $request->input('rxl_quantity') . ', Refills: ' . $request->input('rxl_refill');
                 $this->plan_build('rx', 'prescribe', $encounter_text);
@@ -1540,7 +1540,7 @@ class ChartController extends Controller {
             if ($row->rxl_sig == '') {
                 $instructions = $row->rxl_instructions;
             } else {
-                $instructions = $row->rxl_sig . ' ' . $row->rxl_route . ' ' . $row->rxl_frequency;
+                $instructions = $row->rxl_sig . ', ' . $row->rxl_route . ', ' . $row->rxl_frequency;
             }
             if (Session::has('eid')) {
                 $encounter_text =  $row->rxl_medication . ' ' . $row->rxl_dosage . ' ' . $row->rxl_dosage_unit . ', ' . $instructions . ' for ' . $row->rxl_reason;
@@ -5890,7 +5890,7 @@ class ChartController extends Controller {
                 if ($row->rxl_sig == '') {
                     $arr['label'] = '<strong>' . $row->rxl_medication . '</strong> ' . $row->rxl_dosage . ' ' . $row->rxl_dosage_unit . ', ' . $row->rxl_instructions . ' for ' . $row->rxl_reason;
                 } else {
-                    $arr['label'] = '<strong>' . $row->rxl_medication . '</strong> ' . $row->rxl_dosage . ' ' . $row->rxl_dosage_unit . ', ' . $row->rxl_sig . ' ' . $row->rxl_route . ' ' . $row->rxl_frequency . ' for ' . $row->rxl_reason;
+                    $arr['label'] = '<strong>' . $row->rxl_medication . '</strong> ' . $row->rxl_dosage . ' ' . $row->rxl_dosage_unit . ', ' . $row->rxl_sig . ', ' . $row->rxl_route . ', ' . $row->rxl_frequency . ' for ' . $row->rxl_reason;
                 }
                 $previous = DB::table('rx_list')
         			->where('pid', '=', Session::get('pid'))
@@ -7563,7 +7563,7 @@ class ChartController extends Controller {
                     if ($row->rxl_sig == '') {
                         $arr['label'] = $row->rxl_medication . ' ' . $row->rxl_dosage . ' ' . $row->rxl_dosage_unit . ', ' . $row->rxl_instructions . ' for ' . $row->rxl_reason;
                     } else {
-                        $arr['label'] = $row->rxl_medication . ' ' . $row->rxl_dosage . ' ' . $row->rxl_dosage_unit . ', ' . $row->rxl_sig . ' ' . $row->rxl_route . ' ' . $row->rxl_frequency . ' for ' . $row->rxl_reason;
+                        $arr['label'] = $row->rxl_medication . ' ' . $row->rxl_dosage . ' ' . $row->rxl_dosage_unit . ', ' . $row->rxl_sig . ', ' . $row->rxl_route . ', ' . $row->rxl_frequency . ' for ' . $row->rxl_reason;
                     }
                     $list_array[] = $arr;
                 }
