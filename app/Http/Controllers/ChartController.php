@@ -1470,9 +1470,6 @@ class ChartController extends Controller {
                     }
                 }
                 $arr['message'] = $message . 'prescribed!';
-                if ($next_action !== '') {
-                    $next_action = route($next_action, [$table, $row_id1, Session::get('pid')]);
-                }
             } else {
                 $data5['rxl_date_old'] = date('Y-m-d H:i:s', time());
                 DB::table($table)->where($index, '=', $id)->update($data5);
@@ -1495,11 +1492,18 @@ class ChartController extends Controller {
                 //     }
                 // }
                 $arr['message'] = $message . 'refilled!';
-                if ($next_action !== '') {
-                    $next_action = route($next_action, [$table, $row_id1, Session::get('pid')]);
-                }
             }
-            $this->prescription_notification($row_id1, $to);
+            if ($next_action !== 'electronic_sign') {
+                $this->prescription_notification($row_id1, $to);
+            } else {
+                Session::put('prescription_notification_to', $to);
+                // Create FHIR JSON prescription
+        		$json_row = DB::table('rx_list')->where('rxl_id', '=', $row_id1)->first();
+        		$prescription_json = $this->resource_detail($json_row, 'MedicationRequest');
+                $json_data['json'] = json_encode($prescription_json);
+                DB::table('rx_list')->where('rxl_id', '=', $json_row->rxl_id)->update($json_data);
+                $this->audit('Update');
+            }
             if (Session::has('eid')) {
                 if ($request->input('rxl_sig') == '') {
                     $instructions = $request->input('rxl_instructions');
@@ -1509,12 +1513,9 @@ class ChartController extends Controller {
                 $encounter_text = $request->input('rxl_medication') . ' ' . $request->input('rxl_dosage') . ' ' . $request->input('rxl_dosage_unit') . ', ' . $instructions . ' for ' . $request->input('rxl_reason') . ', Quantity: ' . $request->input('rxl_quantity') . ', Refills: ' . $request->input('rxl_refill');
                 $this->plan_build('rx', 'prescribe', $encounter_text);
             }
-            // Create FHIR JSON prescription
-    		$json_row = DB::table('rx_list')->where('rxl_id', '=', $row_id1)->first();
-    		$prescription_json = $this->resource_detail($json_row, 'MedicationRequest');
-            $json_data['json'] = json_encode($prescription_json);
-            DB::table('rx_list')->where('rxl_id', '=', $json_row->rxl_id)->update($json_data);
-            $this->audit('Update');
+            if ($next_action !== '') {
+                $next_action = route($next_action, [$table, $row_id1, Session::get('pid')]);
+            }
         }
         if ($action == 'complete') {
             if ($table == 'alerts') {

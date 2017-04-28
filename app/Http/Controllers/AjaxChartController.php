@@ -70,6 +70,9 @@ class AjaxChartController extends Controller
         $data['transaction'] = $request->input('txHash');
         DB::table($table)->where($index, '=', $id)->update($data);
         $this->audit('Update');
+        $to = Session::get('prescription_notification_to');
+        Session::forget('prescription_notification_to');
+        $this->prescription_notification($id, $to);
         Session::put('message_action', $message_arr[$table]);
         $return['message'] = 'OK';
         $return['url'] = Session::get('last_page');

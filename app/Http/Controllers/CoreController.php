@@ -5072,6 +5072,20 @@ class CoreController extends Controller
         $med = explode(' ', $query->rxl_medication);
         $data['rx'] = $this->goodrx_drug_search($med[0]);
         $data['link'] = $this->goodrx_information($query->rxl_medication, $query->rxl_dosage . $query->rxl_dosage_unit);
+        ini_set('memory_limit','196M');
+        $html = $this->page_medication($id, $query->pid);
+        $name = time() . "_rx.pdf";
+        $file_path = public_path() . "/temp/" . $name;
+        $this->generate_pdf($html, $file_path, 'footerpdf', '', '2');
+        while(!file_exists($file_path)) {
+            sleep(2);
+        }
+        $imagick = new Imagick();
+        $imagick->setResolution(100, 100);
+        $imagick->readImage($file_path);
+        $imagick->writeImages(public_path() . '/temp/' . $name . '_pages.png', false);
+        $data['rx_jpg'] = asset('temp/' . $name . '_pages.png');
+        $data['document_url'] = asset('temp/' . $name);
         return view('prescription', $data);
     }
 
