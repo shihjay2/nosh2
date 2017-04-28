@@ -22,6 +22,7 @@
                     </div>
                     <div class="panel-body">
                         <div id="pdf"></div>
+                        <a href="{{ $document_url }}" target="_blank" class="nosh-no-load">Can't see the PDF?</a>
                     </div>
                 </div>
             @endif
