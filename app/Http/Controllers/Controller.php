@@ -9696,11 +9696,26 @@ class Controller extends BaseController
         $dose_array = explode('/', $dose);
         $link = '';
         $result = $this->goodrx($rx_array[0], 'drug-info');
+        $type_arr = [
+            'chewable tablet' => 'chewable',
+            'tablet' => 'tablet',
+            'capsule' => 'capsule',
+            'bottle of oral suspension' => 'suspension'
+        ];
         if ($result['success'] == true) {
-            if (isset($result['data']['drugs']['tablet'][$dose_array[0]])) {
-                $link = $result['data']['drugs']['tablet'][$dose_array[0]];
-            } else {
-                $link = reset($result['data']['drugs']['tablet']);
+            $key = false;
+            foreach ($rx_array as $item) {
+                $key = array_search(strtolower($item), $type_arr);
+                if ($key !== false) {
+                    break;
+                }
+            }
+            if ($key !== false) {
+                if (isset($result['data']['drugs'][$key][$dose_array[0]])) {
+                    $link = $result['data']['drugs'][$key][$dose_array[0]];
+                } else {
+                    $link = reset($result['data']['drugs'][$key]);
+                }
             }
         }
         return $link;
