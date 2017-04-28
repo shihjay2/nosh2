@@ -13987,7 +13987,7 @@ class Controller extends BaseController
                 $response['text']['div'] = '<div>' . $row->rxl_medication . ' ' . $row->rxl_dosage . ' ' . $row->rxl_dosage_unit . ', ' . $row->rxl_instructions . ' for ' . $row->rxl_reason . '</div>';
                 $dosage_text = $row->rxl_instructions . ' for ' . $row->rxl_reason;
                 $asNeededBoolean = false;
-                if (in_array($med_row->rxl_instructions, $med_prn_array)) {
+                if (in_array($row->rxl_instructions, $med_prn_array)) {
                     $asNeededBoolean = true;
                 }
                 $dosage_array = [
@@ -15143,16 +15143,22 @@ class Controller extends BaseController
         curl_close($ch2);
         $data2_arr = json_decode($data2, true);
         $return = [];
-        foreach ($data2_arr['result']['results'] as $row) {
-            if ($row['ui'] !== 'NONE') {
-                $return[] = [
-                    'code' => $row['ui'],
-                    'description' => $row['name']
-                ];
+        if (isset($data2_arr['result']['results'])) {
+            foreach ($data2_arr['result']['results'] as $row) {
+                if ($row['ui'] !== 'NONE') {
+                    $return[] = [
+                        'code' => $row['ui'],
+                        'description' => $row['name']
+                    ];
+                }
             }
         }
         if ($single == true) {
-            return $return[0];
+            if (count($return) > 0) {
+                return $return[0];
+            } else {
+                return $return;
+            }
         } else {
             return $return;
         }

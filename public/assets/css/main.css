@@ -237,6 +237,8 @@ div.list-category li.list-group-item:first-child {
     cursor: pointer;
 }
 
+:required:not(#search_patient):not(#search_rx) { border: 1px solid red; }
+
 /*
  * off Canvas sidebar
  * --------------------------------------------------

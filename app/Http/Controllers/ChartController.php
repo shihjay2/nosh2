@@ -1436,7 +1436,12 @@ class ChartController extends Controller {
             unset($data['dea']);
             unset($data['daw']);
             $data['rxl_provider'] = $user->displayname;
-            $data['rxl_due_date'] = date('Y-m-d H:i:s', strtotime($request->input('rxl_date_prescribed')) + ($request->input('rxl_days') * 86400));
+            if ($request->input('rxl_days') !== '') {
+                $data['rxl_due_date'] = date('Y-m-d H:i:s', strtotime($request->input('rxl_date_prescribed')) + ($request->input('rxl_days') * 86400));
+            }
+            if ($data['rxl_refill'] == '') {
+                $data['rxl_refill'] == '0';
+            }
             $data['prescription'] = 'pending';
             $to = '';
             if (isset($data['notification'])) {
@@ -1475,6 +1480,8 @@ class ChartController extends Controller {
                 // $this->api_data('update', 'rx_list', 'rxl_id', $id);
                 $old_rx = DB::table($table)->where($index, '=', $id)->first();
                 $data['rxl_date_active'] = $old_rx->rxl_date_active;
+                unset($data['rxl_id']);
+                $data['pid'] = $pid;
                 $row_id1 = DB::table($table)->insertGetId($data);
                 $this->audit('Add');
                 // foreach ($good_rx_tables as $good_rx_table) {
@@ -4018,7 +4025,6 @@ class ChartController extends Controller {
                     'name' => 'encounter_cc',
                     'label' => 'Chief Complaint',
                     'type' => 'text',
-                    'required' => true,
                     'typeahead' => route('typeahead', ['table' => 'encounters', 'column' => 'encounter_cc']),
                     'default_value' => null
                 ];
