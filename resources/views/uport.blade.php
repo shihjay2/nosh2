@@ -21,8 +21,14 @@
                         <h3 class="panel-title pull-left" style="padding-top: 7.5px;">Prescription</h3>
                     </div>
                     <div class="panel-body">
-                        <div id="pdf"></div>
-                        <a href="{{ $document_url }}" target="_blank" class="nosh-no-load">Can't see the PDF?</a>
+                        <div class="container">
+                            <div class="row">
+                                <img src="{{ $rx_jpg }}" class="img-responsive">
+                            </div>
+                            <div class="row">
+                                <a href="{{ $document_url }}" target="_blank" class="nosh-no-load btn btn-primary">Save as PDF</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             @endif
@@ -126,20 +132,6 @@
         window.location = '{!! $url !!}' + '/' + transaction.input;
     };
 
-    // Documents view
-    var options = {
-        pdfOpenParams: {
-            navpanes: 0,
-            toolbar: 0,
-            statusbar: 0,
-            view: "FitV",
-            pagemode: "thumbs",
-            page: 1
-        },
-        forcePDFJS: true,
-        PDFJS_URL: "{{ asset('assets/js/web/viewer.html') }}"
-    };
-
     $(document).ready(function() {
         // Core
         if (noshdata.message_action !== '') {
@@ -157,12 +149,6 @@
         }
         if (uport_need == 'validate') {
             validatetx();
-        }
-        if (noshdata.document_url !== '') {
-            var myPDF = PDFObject.embed(noshdata.document_url, "#pdf", options);
-            if (! myPDF) {
-                toastr.error('Uh-oh, the PDF embed did not work.');
-            }
         }
     });
 </script>

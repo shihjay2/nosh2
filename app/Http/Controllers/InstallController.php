@@ -18,6 +18,7 @@ use HTML;
 use Htmldom;
 use Illuminate\Http\Request;
 use Illuminate\Support\MessageBag;
+use Imagick;
 use Laravel\LegacyEncrypter\McryptEncrypter;
 use QrCode;
 use Response;
@@ -530,6 +531,11 @@ public function install_fix(Request $request)
         while(!file_exists($file_path)) {
             sleep(2);
         }
+        $imagick = new Imagick();
+        $imagick->setResolution(100, 100);
+        $imagick->readImage($file_path);
+        $imagick->writeImages(public_path() . '/temp/' . $name . '_pages.png', false);
+        $data['rx_jpg'] = asset('temp/' . $name . '_pages.png');
         $data['document_url'] = asset('temp/' . $name);
         $data['content'] = '';
         $outcome = '';
@@ -593,8 +599,8 @@ public function install_fix(Request $request)
             $outcome = '<div class="alert alert-danger"><strong>Presciption Invalid</strong> - No prescription exists.</div>';
         }
         $data['content'] .= $outcome;
-        $data['assets_js'] = $this->assets_js('documents');
-        $data['assets_css'] = $this->assets_css('documents');
+        $data['assets_js'] = $this->assets_js();
+        $data['assets_css'] = $this->assets_css();
         return view('uport', $data);
     }
 
