@@ -1400,8 +1400,6 @@ class Controller extends BaseController
     {
         $return = [
             '/assets/css/font-awesome.min.css',
-            'https://fonts.googleapis.com/css?family=Lato:100,300,400,700',
-            'https://fonts.googleapis.com/css?family=Pacifico',
             '/assets/css/bootstrap.min.css',
             '/assets/css/toastr.min.css',
             '/assets/css/nosh-timeline.css',

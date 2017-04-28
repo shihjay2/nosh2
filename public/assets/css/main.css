@@ -1,3 +1,27 @@
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Lato Regular'), local('Lato-Regular'), url(../fonts/lato400.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215;
+}
+
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Lato Bold'), local('Lato-Bold'), url(../fonts/lato700.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215;
+}
+
+@font-face {
+  font-family: 'Pacifico';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Pacifico Regular'), local('Pacifico-Regular'), url(../fonts/pacifico400.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215;
+}
+
 body,html,.row-offcanvas {
     height:100%;
 }
@@ -48,7 +72,7 @@ body {
 
 .loading {
     background-color: #ffffff;
-    background-image: url("http://loadinggif.com/images/image-selection/3.gif");
+    background-image: url(../images/3.gif);
     background-size: 20px 20px;
     background-position:center;
     background-repeat: no-repeat;
