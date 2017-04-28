@@ -12163,7 +12163,8 @@ class Controller extends BaseController
         $data['refill_words'] = $this->convert_number($refill);
         $data['quantity_words'] = strtoupper($data['quantity_words']);
         $data['refill_words'] = strtoupper($data['refill_words']);
-        $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
+        $provider = DB::table('providers')->where('id', '=', $data['rx']->id)->first();
+        $practice = DB::table('practiceinfo')->where('practice_id', '=', $provider->practice_id)->first();
         $data['practiceName'] = $practice->practice_name;
         $data['website'] = $practice->website;
         $data['practiceInfo'] = $practice->street_address1;
@@ -12174,7 +12175,7 @@ class Controller extends BaseController
         $data['practiceInfo'] .= $practice->city . ', ' . $practice->state . ' ' . $practice->zip . '<br />';
         $data['practiceInfo'] .= 'Phone: ' . $practice->phone . ', Fax: ' . $practice->fax . '<br />';
         $data['patientInfo'] = DB::table('demographics')->where('pid', '=', $pid)->first();
-        $data['practiceLogo'] = $this->practice_logo(Session::get('practice_id'));
+        $data['practiceLogo'] = $this->practice_logo($provider->practice_id);
         $rxicon = HTML::image(asset('assets/images/rxicon.png'), 'Practice Logo', array('border' => '0', 'height' => '30', 'width' => '30'));
         $data['rxicon'] = str_replace('https', 'http', $rxicon);
         $data['dob'] = date('m/d/Y', $this->human_to_unix($data['patientInfo']->DOB));
