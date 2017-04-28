@@ -549,7 +549,7 @@ public function install_fix(Request $request)
                     'name' => 'rx_json',
                     'label' => 'Prescription in FHIR JSON',
                     'type' => 'textarea',
-                    'readonly' => true,
+                    // 'readonly' => true,
                     'default_value' => $query->json
                 ];
                 $items[] = [
@@ -566,7 +566,16 @@ public function install_fix(Request $request)
                     'readonly' => true,
                     'default_value' => $query->transaction
                 ];
+                if ($request->isMethod('post')) {
+                    $data['uport_need'] = 'validate';
+                    Session::put('rx_json', $request->input('rx_json'));
+                    Session::put('hash', hash('sha256', $request->input('rx_json')));
+                }
                 if ($ret !== '') {
+                    $items[0]['default_value'] = Session::get('rx_json');
+                    $items[1]['default_value'] = Session::get('hash');
+                    Session::forget('rx_json');
+                    Session::forget('hash');
                     $bytes = 4 * 64;
                     $rx_hash = substr(substr($ret, 10), $bytes);
                     $items[] = [
@@ -577,7 +586,7 @@ public function install_fix(Request $request)
                         'default_value' => $rx_hash
                     ];
                     $outcome = '<div class="alert alert-danger"><strong>Presciption Invalid</strong> - It may have been tampered with.</div>';
-                    if ($rx_hash == $hash) {
+                    if ($rx_hash == $items[1]['default_value']) {
                         $outcome = '<div class="alert alert-success"><strong>Prescription is Signed and Valid</strong></div>';
                     }
                 }
@@ -588,9 +597,7 @@ public function install_fix(Request $request)
                     'save_button_label' => 'Validate',
                     'remove_cancel' => true
                 ];
-                if ($request->isMethod('post')) {
-                    $data['uport_need'] = 'validate';
-                }
+
                 $data['content'] .= $this->form_build($form_array);
             } else {
                 $outcome = '<div class="alert alert-danger"><strong>Presciption Invalid</strong> - Prescription has not been signed electronically.</div>';
