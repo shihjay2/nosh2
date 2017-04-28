@@ -6904,6 +6904,7 @@ class Controller extends BaseController
                 'name' => 'rxl_quantity',
                 'label' => 'Quantity',
                 'type' => 'text',
+                'required' => true,
                 'default_value' => $rx['rxl_quantity']
             ];
             $items[] = [
