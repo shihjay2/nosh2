@@ -198,7 +198,7 @@ class OpenIDConnectClient
 		}
 
 		// If we have an authorization code then proceed to request a token
-		if (isset($_REQUEST["code"])) {
+		if (isset($_REQUEST["code"]) && isset($_SESSION['openid_connect_state'])) {
 			$code = $_REQUEST["code"];
 			$token_json = $this->requestTokens($code, $uma);
 

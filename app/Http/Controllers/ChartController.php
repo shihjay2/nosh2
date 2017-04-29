@@ -2736,10 +2736,33 @@ class ChartController extends Controller {
                 $result = curl_exec($ch);
             }
         }
-        $data['content'] = 'Your identity requires confirmation to sign off on your order';
+        $data['content'] = '<p>Your identity requires confirmation to sign off on your order</p>';
+        $provider = DB::table('providers')->where('id', '=', $raw->id)->first();
+        if ($provider) {
+            if ($provider->npi == '1234567890') {
+                // Google demo, skip uPort
+                $user = DB::table('users')->where('id', '=', $provider->id)->first();
+                $data['uport_need'] = 'google';
+                $data['content'] .= '<p>You are currently experiencing the Google authentication demonstration.</p><p>Here is a video demonstration of using your smartphone with the uPort app to electronically sign a prescription:</p>';
+                $data['content'] .= '<a href="' . route('electronic_sign_demo', [$action, $index, $id]) . '" class="btn btn-primary btn-block">Click here to continue demo as if legally signed as ' . $user->email . '</a>';
+            }
+        }
         $data['assets_js'] = $this->assets_js('chart');
         $data['assets_css'] = $this->assets_css('chart');
         return view('uport', $data);
+    }
+
+    public function electronic_sign_demo(Request $request, $table, $index, $id)
+    {
+        $message_arr = [
+            'rx_list' => 'Prescription digitally signed',
+            'orders' => 'Order digitally signed'
+        ];
+        $to = Session::get('prescription_notification_to');
+        Session::forget('prescription_notification_to');
+        $this->prescription_notification($id, $to);
+        Session::put('message_action', $message_arr[$table]);
+        return redirect(Session::get('last_page'));
     }
 
     public function encounter(Request $request, $eid, $section='s')
