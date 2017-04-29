@@ -891,5 +891,7 @@ public function install_fix(Request $request)
 
     public function test1(Request $request)
     {
+        $result = $this->goodrx('digoxin', 'drug-info');
+        return $result;
     }
 }

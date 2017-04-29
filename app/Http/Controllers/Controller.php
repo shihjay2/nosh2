@@ -9724,8 +9724,6 @@ class Controller extends BaseController
             if ($key !== false) {
                 if (isset($result['data']['drugs'][$key][$dose_array[0]])) {
                     $link = $result['data']['drugs'][$key][$dose_array[0]];
-                } else {
-                    $link = reset($result['data']['drugs'][$key]);
                 }
             }
         }
