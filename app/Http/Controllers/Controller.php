@@ -6937,15 +6937,28 @@ class Controller extends BaseController
                 'select_items' => $this->array_orders_provider('Pharmacy'),
                 'default_value' => $rx['address_id']
             ];
-            // if ($practice->patient_centric == 'yp') {
-                $patient = DB::table('demographics')->where('pid', '=', Session::get('pid'))->first();
+            $patient = DB::table('demographics')->where('pid', '=', Session::get('pid'))->first();
+            if (route('dashboard') == 'https://shihjay.xyz/nosh') {
+                $notification = null;
+                if (Session::get('user_id') == '3') {
+                    $notification = $patient->reminder_to;
+                }
+                $items[] = [
+                    'name' => 'notification',
+                    'label' => 'Notification To (SMS or Email)',
+                    'type' => 'text',
+                    'required' => true,
+                    'placeholder' => 'Prescription notice will be sent to this number and will not be saved or used for any other purpose.',
+                    'default_value' => $notification
+                ];
+            } else {
                 $items[] = [
                     'name' => 'notification',
                     'label' => 'Notification To (SMS or Email)',
                     'type' => 'text',
                     'default_value' => $patient->reminder_to
                 ];
-            // }
+            }
             $items[] = [
                 'name' => 'nosh_action',
                 'label' => 'Action after Saving',
