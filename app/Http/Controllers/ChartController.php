@@ -2771,7 +2771,8 @@ class ChartController extends Controller {
         Session::forget('prescription_notification_to');
         $this->prescription_notification($id, $to);
         Session::put('message_action', $message_arr[$table]);
-        return redirect(Session::get('last_page'));
+        Session::put('demo_comment', 'yes');
+        return redirect()->route('medications_list', ['active']);
     }
 
     public function encounter(Request $request, $eid, $section='s')
@@ -6021,6 +6022,10 @@ class ChartController extends Controller {
                 }
                 $data['message_action'] .= 'Medications marked as reviewed for encounter.';
             }
+        }
+        if (Session::has('demo_comment')) {
+            $data['demo_comment'] = 'true';
+            Session::forget('demo_comment');
         }
         Session::put('last_page', $request->fullUrl());
         $data['assets_js'] = $this->assets_js('chart');

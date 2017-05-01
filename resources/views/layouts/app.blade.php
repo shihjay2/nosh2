@@ -604,6 +604,7 @@
             'group_id': '<?php echo Session::get("group_id"); ?>',
             'notification_run': '<?php echo Session::get("notification_run"); ?>',
             'ccda': '<?php if (isset($ccda)) { echo $ccda; }?>',
+            'demo_comment': '<?php if (isset($demo_comment)) { echo $demo_comment; }?>',
             'document_url': '<?php if (isset($document_url)) { echo $document_url; }?>',
             'document_type': '<?php if (isset($document_type)) { echo $document_type; }?>',
             'download_now': '<?php if (isset($download_now)) { echo $download_now; }?>',

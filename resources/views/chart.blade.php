@@ -1110,7 +1110,12 @@
             $('#rxl_frequency').val($('#calc_frequency option:selected').text());
         });
 
-
+        // Demo
+        if (noshdata.demo_comment !== '') {
+            var response = '<p>Thank you for testing our demo.  <a href="mailto:agropper@gmaill.com?Subject=HIEofONe%20Demo" target="_blank">Please send us your comments</a>';
+            $('#warningModal_body').html(response);
+            $('#warningModal').modal('show');
+        }
     });
 
     function fixDP(r, dps) {
