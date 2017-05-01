@@ -1955,6 +1955,15 @@ class ChartController extends Controller {
         } else {
             $data['content'] = $this->form_build($form_array);
         }
+        if ($table == 'rx_list') {
+            if (Session::get('patient_centric') == 'y' || Session::get('patient_centric') == 'yp') {
+                if ($id !== '0') {
+                    $med = explode(' ', $result->rxl_medication);
+                    $data['goodrx'] = $this->goodrx_drug_search($med[0]);
+                    $data['link'] = $this->goodrx_information($result->rxl_medication, $result->rxl_dosage . $result->rxl_dosage_unit);
+                }
+            }
+        }
         $data = array_merge($data, $this->sidebar_build('chart'));
         $data['message_action'] = Session::get('message_action');
         Session::forget('message_action');
@@ -2743,7 +2752,7 @@ class ChartController extends Controller {
                 // Google demo, skip uPort
                 $user = DB::table('users')->where('id', '=', $provider->id)->first();
                 $data['uport_need'] = 'google';
-                $data['content'] .= '<p>You are currently experiencing the Google authentication demonstration.</p><p>Here is a video demonstration of using your smartphone with the uPort app to electronically sign a prescription:</p>';
+                $data['content'] .= '<p>The Google ID / OpenID Connect login standard cannot be used as a secure signature.</p><p>Here is a video demonstration of using your smartphone with the uPort app to electronically sign a prescription:</p><div style="text-align: center;"><iframe width="560" height="315" src="https://www.youtube.com/embed/OH6hsu4A4gE" frameborder="0" allowfullscreen></iframe></div>';
                 $data['content'] .= '<a href="' . route('electronic_sign_demo', [$action, $index, $id]) . '" class="btn btn-primary btn-block">Click here to continue demo as if legally signed as ' . $user->email . '</a>';
             }
         }

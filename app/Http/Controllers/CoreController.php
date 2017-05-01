@@ -5064,29 +5064,35 @@ class CoreController extends Controller
         $query = DB::table('rx_list')->where('rxl_id', '=', $id)->first();
         $data['assets_js'] = $this->assets_js();
         $data['assets_css'] = $this->assets_css();
-        $data['content'] = '<div style="text-align: center;">';
-        $url = route('prescription_pharmacy_view', [$id]);
-        $data['content'] .= QrCode::size(300)->generate($url);
-        $data['content'] .= '</div>';
-        $data['content'] .= '<div style="text-align: center;"><a href="' . $url . '" target="_blank">Pharmacy Click Here</a></div>';
-        $med = explode(' ', $query->rxl_medication);
-        $data['rx'] = $this->goodrx_drug_search($med[0]);
-        $data['link'] = $this->goodrx_information($query->rxl_medication, $query->rxl_dosage . $query->rxl_dosage_unit);
-        ini_set('memory_limit','196M');
-        $html = $this->page_medication($id, $query->pid);
-        $name = time() . "_rx.pdf";
-        $file_path = public_path() . "/temp/" . $name;
-        $this->generate_pdf($html, $file_path, 'footerpdf', '', '2');
-        while(!file_exists($file_path)) {
-            sleep(2);
+        if ($query) {
+            $data['content'] = '<div style="text-align: center;">';
+            $url = route('prescription_pharmacy_view', [$id]);
+            $data['content'] .= QrCode::size(300)->generate($url);
+            $data['content'] .= '</div>';
+            $data['content'] .= '<div style="text-align: center;"><a href="' . $url . '" target="_blank">Pharmacy Click Here</a></div>';
+            $med = explode(' ', $query->rxl_medication);
+            $data['rx'] = $this->goodrx_drug_search($med[0]);
+            $data['link'] = $this->goodrx_information($query->rxl_medication, $query->rxl_dosage . $query->rxl_dosage_unit);
+            ini_set('memory_limit','196M');
+            $html = $this->page_medication($id, $query->pid);
+            $name = time() . "_rx.pdf";
+            $file_path = public_path() . "/temp/" . $name;
+            $this->generate_pdf($html, $file_path, 'footerpdf', '', '2');
+            while(!file_exists($file_path)) {
+                sleep(2);
+            }
+            $imagick = new Imagick();
+            $imagick->setResolution(100, 100);
+            $imagick->readImage($file_path);
+            $imagick->writeImages(public_path() . '/temp/' . $name . '_pages.png', false);
+            $data['rx_jpg'] = asset('temp/' . $name . '_pages.png');
+            $data['document_url'] = asset('temp/' . $name);
+            return view('prescription', $data);
+        } else {
+            $data['content'] = 'This prescription has been dispensed.';
+            $data['panel_header'] = 'Prescription Status';
+            return view('core', $data);
         }
-        $imagick = new Imagick();
-        $imagick->setResolution(100, 100);
-        $imagick->readImage($file_path);
-        $imagick->writeImages(public_path() . '/temp/' . $name . '_pages.png', false);
-        $data['rx_jpg'] = asset('temp/' . $name . '_pages.png');
-        $data['document_url'] = asset('temp/' . $name);
-        return view('prescription', $data);
     }
 
     public function print_batch($type, $flatten)

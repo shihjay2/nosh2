@@ -310,6 +310,34 @@
                     {!! $content !!}
                 </div>
             </div>
+            @if (isset($goodrx))
+                <div class="panel panel-default">
+                    <div class="panel-heading clearfix">
+                        <h3 class="panel-title pull-left" style="padding-top: 7.5px;">GoodRX Information</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div id="goodrx_compare-price_widget"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div id="goodrx_low-price_widget"></div>
+                                </div>
+                            </div>
+                            @if ($link !== '')
+                                <div class="row" style="margin-top: 10px;">
+                                    <div class="col-md-6 col-md-offset-3">
+                                        <a href="{!! $link !!}" class="btn btn-info btn-block nosh-no-load" target="_blank">
+                                            <i class="fa fa-btn fa-forward"></i> More Drug Information from GoodRX
+                                        </a>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            @endif
         </div>
         @if (isset($template_content))
             <div class="col-md-4">
@@ -1153,4 +1181,15 @@
         if (isNaN($('#calc_liquid_dose').val())) $('#calc_liquid_dose').val('');
     }
 </script>
+@if (isset($goodrx))
+    <script>
+        var _grxdn = '{!! $goodrx !!}';
+        (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+        g.src="//s3.amazonaws.com/assets.goodrx.com/static/widgets/compare.min.js";
+        s.parentNode.insertBefore(g,s);}(document,"script"));
+        (function(e,v){var h=e.createElement(v),u=e.getElementsByTagName(v)[0];
+        h.src="//s3.amazonaws.com/assets.goodrx.com/static/widgets/low.min.js";
+        u.parentNode.insertBefore(h,u);}(document,"script"));
+    </script>
+@endif
 @endsection
