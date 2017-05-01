@@ -1087,11 +1087,15 @@ class LoginController extends Controller {
         $uport_id = $oidc->requestUserInfo('uport_id');
         $access_token = $oidc->getAccessToken();
         if ($npi != '') {
-            $provider = DB::table('providers')->where('npi', '=', $npi)->first();
-            if ($provider) {
-                $user = DB::table('users')->where('id', '=', $provider->id)->first();
+            if ($npi !== '1234567890') {
+                $provider = DB::table('providers')->where('npi', '=', $npi)->first();
+                if ($provider) {
+                    $user = DB::table('users')->where('id', '=', $provider->id)->first();
+                } else {
+                    $user = false;
+                }
             } else {
-                $user = false;
+                $user = DB::table('users')->where('email', '=', $email)->first();
             }
         } else {
             $user = DB::table('users')->where('uid', '=', $oidc->requestUserInfo('sub'))->first();
@@ -1180,7 +1184,6 @@ class LoginController extends Controller {
             ];
             $practice_id = DB::table('practiceinfo')->insertGetId($practice_data);
             $this->audit('Add');
-
             $data = [
                 'username' => $oidc->requestUserInfo('sub'),
                 'firstname' => $firstname,
