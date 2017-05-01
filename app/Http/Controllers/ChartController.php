@@ -1961,6 +1961,16 @@ class ChartController extends Controller {
                     $med = explode(' ', $result->rxl_medication);
                     $data['goodrx'] = $this->goodrx_drug_search($med[0]);
                     $data['link'] = $this->goodrx_information($result->rxl_medication, $result->rxl_dosage . $result->rxl_dosage_unit);
+                    $dropdown_array = [];
+                    $items = [];
+                    $items[] = [
+                        'type' => 'item',
+                        'label' => 'GoodRX',
+                        'icon' => 'fa-chevron-down',
+                        'url' => '#goodrx_container'
+                    ];
+                    $dropdown_array['items'] = $items;
+                    $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
                 }
             }
         }
@@ -2752,7 +2762,7 @@ class ChartController extends Controller {
                 // Google demo, skip uPort
                 $user = DB::table('users')->where('id', '=', $provider->id)->first();
                 $data['uport_need'] = 'google';
-                $data['content'] .= '<p>The Google ID / OpenID Connect login standard cannot be used as a secure signature.</p><p>Here is a video demonstration of using your smartphone with the uPort app to electronically sign a prescription:</p><div style="text-align: center;"><iframe width="560" height="315" src="https://www.youtube.com/embed/OH6hsu4A4gE" frameborder="0" allowfullscreen></iframe></div>';
+                $data['content'] .= '<p>The Google ID / OpenID Connect login standard cannot be used as a secure signature.</p><p><a href="https://youtu.be/OH6hsu4A4gE" target="_blank">Here is a video demonstration of using your smartphone with the uPort app to electronically sign a prescription:</a></p><div style="text-align: center;"><iframe width="560" height="315" src="https://www.youtube.com/embed/OH6hsu4A4gE" frameborder="0" allowfullscreen></iframe></div>';
                 $data['content'] .= '<a href="' . route('electronic_sign_demo', [$action, $index, $id]) . '" class="btn btn-primary btn-block">Click here to continue demo as if legally signed as ' . $user->email . '</a>';
             }
         }

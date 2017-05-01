@@ -1068,10 +1068,7 @@
                     }
                 }
             });
-            $('.nosh-button-submit').css('cursor', 'pointer').click(function() {
-                $('#modaltext').text('Loading...');
-                $('#loadingModal').modal('show');
-            });
+            $('.nosh-button-submit').css('cursor', 'pointer');
             // CSS
             $('.nosh_textarea_short').css('height', '80px');
             $('.carousel-caption').css('background', 'rgba(0,0,0,0.5)');
@@ -1291,6 +1288,27 @@
                 } else {
                     $('.nosh-form :input:visible:enabled:first').focus();
                 }
+            }
+        });
+
+        $(document).on('submit', '.nosh-form', function(event) {
+            var formId = $(this).attr('id');
+            var bValid = true;
+            $('#' + formId).find('[required]').each(function() {
+                var type = $(this).attr('type');
+                if (type !== 'hidden') {
+                    var input_id = $(this).attr('id');
+                    var id1 = $('#' + input_id);
+                    var text = $("label[for='" + input_id + "']").html();
+                    bValid = bValid && checkEmpty(id1, text);
+                }
+            });
+            if (bValid) {
+                $('#modaltext').text('Loading...');
+                $('#loadingModal').modal('show');
+                return;
+            } else {
+                event.preventDefault();
             }
         });
 

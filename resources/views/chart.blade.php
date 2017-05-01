@@ -315,7 +315,7 @@
                     <div class="panel-heading clearfix">
                         <h3 class="panel-title pull-left" style="padding-top: 7.5px;">GoodRX Information</h3>
                     </div>
-                    <div class="panel-body">
+                    <div class="panel-body" id="goodrx_container">
                         <div class="container">
                             <div class="row">
                                 <div class="col-md-4">
