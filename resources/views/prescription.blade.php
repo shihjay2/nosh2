@@ -18,6 +18,11 @@
             <div class="panel panel-default">
                 <div class="panel-heading clearfix">
                     <h3 class="panel-title pull-left" style="padding-top: 7.5px;">Present to Pharmacy</h3>
+                    @if (isset($panel_dropdown))
+                        <div class="pull-right">
+                            {!! $panel_dropdown !!}
+                        </div>
+                    @endif
                 </div>
                 <div class="panel-body">
                     {!! $content !!}
@@ -26,6 +31,11 @@
             <div class="panel panel-default">
                 <div class="panel-heading clearfix">
                     <h3 class="panel-title pull-left" style="padding-top: 7.5px;">Prescription</h3>
+                    @if (isset($panel_dropdown))
+                        <div class="pull-right">
+                            {!! $panel_dropdown !!}
+                        </div>
+                    @endif
                 </div>
                 <div class="panel-body">
                     <div class="container">
@@ -42,7 +52,7 @@
                 <div class="panel-heading clearfix">
                     <h3 class="panel-title pull-left" style="padding-top: 7.5px;">GoodRX Information</h3>
                 </div>
-                <div class="panel-body">
+                <div class="panel-body" id="goodrx_container">
                     <div class="container">
                         <div class="row">
                             <div class="col-md-6">

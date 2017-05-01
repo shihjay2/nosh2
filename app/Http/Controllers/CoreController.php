@@ -5087,6 +5087,16 @@ class CoreController extends Controller
             $imagick->writeImages(public_path() . '/temp/' . $name . '_pages.png', false);
             $data['rx_jpg'] = asset('temp/' . $name . '_pages.png');
             $data['document_url'] = asset('temp/' . $name);
+            $dropdown_array = [];
+            $items = [];
+            $items[] = [
+                'type' => 'item',
+                'label' => 'GoodRX',
+                'icon' => 'fa-chevron-down',
+                'url' => '#goodrx_container'
+            ];
+            $dropdown_array['items'] = $items;
+            $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
             return view('prescription', $data);
         } else {
             $data['content'] = 'This prescription has been dispensed.';
