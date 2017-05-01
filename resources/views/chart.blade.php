@@ -318,10 +318,10 @@
                     <div class="panel-body">
                         <div class="container">
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div id="goodrx_compare-price_widget"></div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div id="goodrx_low-price_widget"></div>
                                 </div>
                             </div>
