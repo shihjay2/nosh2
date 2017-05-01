@@ -1113,7 +1113,7 @@
         // Demo
         if (noshdata.demo_comment !== '') {
             var response = '<p>Thank you for testing our demo.  <a href="mailto:agropper@gmaill.com?Subject=HIEofONe%20Demo" target="_blank">Please send us your comments</a>';
-            $('#warningModal_body').html(response);
+            $('#warningModal_body').css('height','30vh').html(response);
             $('#warningModal').modal('show');
         }
     });

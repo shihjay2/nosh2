@@ -561,7 +561,7 @@ public function install_fix(Request $request)
                 ];
                 $items[] = [
                     'name' => 'tx_hash',
-                    'label' => 'Transaction Hash',
+                    'label' => 'Blockchain Timestamp Receipt',
                     'type' => 'text',
                     'readonly' => true,
                     'default_value' => $query->transaction
@@ -580,7 +580,7 @@ public function install_fix(Request $request)
                     $rx_hash = substr(substr($ret, 10), $bytes);
                     $items[] = [
                         'name' => 'rx_hash',
-                        'label' => 'Prescription Hash from Transaction',
+                        'label' => 'Prescription Hash from Blockhain',
                         'type' => 'text',
                         'readonly' => true,
                         'default_value' => $rx_hash
