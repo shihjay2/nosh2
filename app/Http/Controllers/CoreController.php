@@ -5423,7 +5423,9 @@ class CoreController extends Controller
             $data = array_merge($data, $this->sidebar_build('chart'));
         }
         $data['content'] = '';
-        $data['template_content'] = 'test';
+        if (Session::get('group_id') !== '100') {
+            $data['legend'] = 'yes';
+        }
         $data['back'] = '<div class="btn-group"><button type="button" class="btn btn-primary">Action</button><button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span><span class="sr-only">Toggle Dropdown</span></button>';
         $data['back'] .= '<ul class="dropdown-menu"><li><a href="#">Action</a></li><li><a href="#">Another action</a></li><li><a href="#">Something else here</a></li><li role="separator" class="divider"></li><li><a href="#">Separated link</a></li></ul></div>';
         $data['assets_js'] = $this->assets_js('schedule');

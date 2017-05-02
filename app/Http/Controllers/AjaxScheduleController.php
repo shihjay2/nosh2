@@ -277,6 +277,15 @@ class AjaxScheduleController extends Controller {
                     } else {
                         $event['editable'] = true;
                     }
+                    if ($row->status == 'Attended') {
+                        $event['borderColor'] = 'green';
+                    }
+                    if ($row->status == 'DNKA') {
+                        $event['borderColor'] = 'black';
+                    }
+                    if ($row->status == 'LMC') {
+                        $event['borderColor'] = 'red';
+                    }
                 }
                 $events[] = $event;
             }

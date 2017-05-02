@@ -164,6 +164,7 @@ body {
 	background-color: #3366cc; /* background color */
 	border-color: #3366cc;     /* border color */
 	color: #fff;           /* text color */
+    border-width: 4px !important;
 }
 
 .colorred,
@@ -172,6 +173,7 @@ body {
 	background-color: #DC143C; /* background color */
 	border-color: #DC143C;     /* border color */
 	color: #fff;           /* text color */
+    border-width: 4px !important;
 }
 
 .colororange,
@@ -180,6 +182,7 @@ body {
 	background-color: #FF6633; /* background color */
 	border-color: #FF6633;     /* border color */
 	color: #fff;           /* text color */
+    border-width: 4px !important;
 }
 
 .coloryellow,
@@ -188,6 +191,7 @@ body {
 	background-color: #CCFF33; /* background color */
 	border-color:#CCFF33;     /* border color */
 	color: #000;           /* text color */
+    border-width: 4px !important;
 }
 
 .colorgreen,
@@ -196,6 +200,7 @@ body {
 	background-color: #336633; /* background color */
 	border-color: #336633;     /* border color */
 	color: #fff;           /* text color */
+    border-width: 4px !important;
 }
 
 .colorpurple,
@@ -204,6 +209,7 @@ body {
 	background-color: #9966CC; /* background color */
 	border-color: #9966CC;     /* border color */
 	color: #fff;           /* text color */
+    border-width: 4px !important;
 }
 
 .colorbrown,
@@ -212,6 +218,7 @@ body {
 	background-color: #996633; /* background color */
 	border-color:#996633;     /* border color */
 	color: #fff;           /* text color */
+    border-width: 4px !important;
 }
 
 .colorblack,
