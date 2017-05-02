@@ -5065,7 +5065,7 @@ class CoreController extends Controller
         $data['assets_js'] = $this->assets_js();
         $data['assets_css'] = $this->assets_css();
         if ($query) {
-            if ($query->id !== null && $query->id == '') {
+            if ($query->id !== null && $query->id !== '') {
                 $data['content'] = '<div style="text-align: center;">';
                 $url = route('prescription_pharmacy_view', [$id]);
                 $data['content'] .= QrCode::size(300)->generate($url);
