@@ -527,79 +527,82 @@ public function install_fix(Request $request)
         $outcome = '';
         if ($query) {
             if ($query->id !== null && $query->id !== '') {
-                ini_set('memory_limit','196M');
-                $html = $this->page_medication($id, $query->pid);
-                $name = time() . "_rx.pdf";
-                $file_path = public_path() . "/temp/" . $name;
-                $this->generate_pdf($html, $file_path, 'footerpdf', '', '2');
-                while(!file_exists($file_path)) {
-                    sleep(2);
-                }
-                $imagick = new Imagick();
-                $imagick->setResolution(100, 100);
-                $imagick->readImage($file_path);
-                $imagick->writeImages(public_path() . '/temp/' . $name . '_pages.png', false);
-                $data['rx_jpg'] = asset('temp/' . $name . '_pages.png');
-                $data['document_url'] = asset('temp/' . $name);
-                if ($query->transaction !== '' && $query->transaction !== null) {
-                    $data['tx_hash'] = $query->transaction;
-                    $data['rx_json'] = $query->json;
-                    $hash = hash('sha256', $query->json);
-                    $outcome = '';
-                    $items[] = [
-                        'name' => 'rx_json',
-                        'label' => 'Prescription in FHIR JSON',
-                        'type' => 'textarea',
-                        // 'readonly' => true,
-                        'default_value' => $query->json
-                    ];
-                    $items[] = [
-                        'name' => 'hash',
-                        'label' => 'Prescription Hash',
-                        'type' => 'text',
-                        'readonly' => true,
-                        'default_value' => $hash
-                    ];
-                    $items[] = [
-                        'name' => 'tx_hash',
-                        'label' => 'Blockchain Timestamp Receipt',
-                        'type' => 'text',
-                        'readonly' => true,
-                        'default_value' => $query->transaction
-                    ];
-                    if ($request->isMethod('post')) {
-                        $data['uport_need'] = 'validate';
-                        Session::put('rx_json', $request->input('rx_json'));
-                        Session::put('hash', hash('sha256', $request->input('rx_json')));
+                if ($query->rxl_date_old == '0000-00-00 00:00:00') {
+                    ini_set('memory_limit','196M');
+                    $html = $this->page_medication($id, $query->pid);
+                    $name = time() . "_rx.pdf";
+                    $file_path = public_path() . "/temp/" . $name;
+                    $this->generate_pdf($html, $file_path, 'footerpdf', '', '2');
+                    while(!file_exists($file_path)) {
+                        sleep(2);
                     }
-                    if ($ret !== '') {
-                        $items[0]['default_value'] = Session::get('rx_json');
-                        $items[1]['default_value'] = Session::get('hash');
-                        Session::forget('rx_json');
-                        Session::forget('hash');
-                        $bytes = 4 * 64;
-                        $rx_hash = substr(substr($ret, 10), $bytes);
+                    $imagick = new Imagick();
+                    $imagick->setResolution(100, 100);
+                    $imagick->readImage($file_path);
+                    $imagick->writeImages(public_path() . '/temp/' . $name . '_pages.png', false);
+                    $data['rx_jpg'] = asset('temp/' . $name . '_pages.png');
+                    $data['document_url'] = asset('temp/' . $name);
+                    if ($query->transaction !== '' && $query->transaction !== null) {
+                        $data['tx_hash'] = $query->transaction;
+                        $data['rx_json'] = $query->json;
+                        $hash = hash('sha256', $query->json);
+                        $outcome = '';
                         $items[] = [
-                            'name' => 'rx_hash',
-                            'label' => 'Prescription Hash from Blockhain',
+                            'name' => 'rx_json',
+                            'label' => 'Prescription in FHIR JSON',
+                            'type' => 'textarea',
+                            // 'readonly' => true,
+                            'default_value' => $query->json
+                        ];
+                        $items[] = [
+                            'name' => 'hash',
+                            'label' => 'Prescription Hash',
                             'type' => 'text',
                             'readonly' => true,
-                            'default_value' => $rx_hash
+                            'default_value' => $hash
                         ];
-                        $outcome = '<div class="alert alert-danger"><strong>Presciption Invalid</strong> - It may have been tampered with.</div>';
-                        if ($rx_hash == $items[1]['default_value']) {
-                            $outcome = '<div class="alert alert-success"><strong>Prescription is Signed and Valid</strong></div>';
+                        $items[] = [
+                            'name' => 'tx_hash',
+                            'label' => 'Blockchain Timestamp Receipt',
+                            'type' => 'text',
+                            'readonly' => true,
+                            'default_value' => $query->transaction
+                        ];
+                        if ($request->isMethod('post')) {
+                            $data['uport_need'] = 'validate';
+                            Session::put('rx_json', $request->input('rx_json'));
+                            Session::put('hash', hash('sha256', $request->input('rx_json')));
                         }
+                        if ($ret !== '') {
+                            $items[0]['default_value'] = Session::get('rx_json');
+                            $items[1]['default_value'] = Session::get('hash');
+                            Session::forget('rx_json');
+                            Session::forget('hash');
+                            $bytes = 4 * 64;
+                            $rx_hash = substr(substr($ret, 10), $bytes);
+                            $items[] = [
+                                'name' => 'rx_hash',
+                                'label' => 'Prescription Hash from Blockhain',
+                                'type' => 'text',
+                                'readonly' => true,
+                                'default_value' => $rx_hash
+                            ];
+                            $outcome = '<div class="alert alert-danger"><strong>Presciption Invalid</strong> - It may have been tampered with.</div>';
+                            if ($rx_hash == $items[1]['default_value']) {
+                                $outcome = '<div class="alert alert-success"><strong>Prescription is Signed and Valid</strong></div>';
+                            }
+                        }
+                        $form_array = [
+                            'form_id' => 'prescription_form',
+                            'action' => route('prescription_pharmacy_view', [$id]),
+                            'items' => $items,
+                            'save_button_label' => 'Validate',
+                            'remove_cancel' => true
+                        ];
+                        $data['content'] .= $this->form_build($form_array);
+                    } else {
+                        $outcome = '<div class="alert alert-danger"><strong>Presciption Filled</strong> - Prescription has been inactivated.</div>';
                     }
-                    $form_array = [
-                        'form_id' => 'prescription_form',
-                        'action' => route('prescription_pharmacy_view', [$id]),
-                        'items' => $items,
-                        'save_button_label' => 'Validate',
-                        'remove_cancel' => true
-                    ];
-
-                    $data['content'] .= $this->form_build($form_array);
                 } else {
                     $outcome = '<div class="alert alert-danger"><strong>Presciption Invalid</strong> - Prescription has not been signed electronically by uPort.</div>';
                 }
