@@ -13992,6 +13992,10 @@ class Controller extends BaseController
                     'reference' => 'Practitioner/' . $provider->id,
                     'display' => $row->rxl_provider
                 ];
+                $provider_info = DB::table('providers')->where('id', '=', $provider->id)->first();
+                $response['requester']['onBehalfOf'] = [
+                    'reference' => 'Organization/' . $provider_info->practice_id
+                ];
             }
             $response['dateWritten'] = date('Y-m-d', $this->human_to_unix($row->rxl_date_active));
             $medication_reference = $this->resource_medication_reference($row->rxl_ndcid);
