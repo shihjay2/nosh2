@@ -13981,13 +13981,14 @@ class Controller extends BaseController
             $response['id'] = $row->rxl_id;
             $patient = DB::table('demographics')->where('pid', '=', $row->pid)->first();
             $response['intent'] = 'order';
+            $response['priority'] = 'routine';
             $response['subject'] = [
                 'reference' => 'Patient/' . $row->pid,
                 'display' => $patient->firstname . ' ' . $patient->lastname
             ];
             $provider = DB::table('users')->where('displayname', '=', $row->rxl_provider)->first();
             if ($provider) {
-                $response['requester'] = [
+                $response['requester']['agent'] = [
                     'reference' => 'Practitioner/' . $provider->id,
                     'display' => $row->rxl_provider
                 ];
@@ -14074,7 +14075,7 @@ class Controller extends BaseController
                         'repeat' => [
                             'frequency' => $med_period,
                             'period' => '1',
-                            'periodUnits' => 'd'
+                            'periodUnit' => 'd'
                         ]
                     ];
                 }
@@ -14122,23 +14123,11 @@ class Controller extends BaseController
                     'code' => 'd'
                 ]
             ];
-            $sub_code = 'G';
-            $sub_desc = 'generic composition';
+            $sub_bool = true;
             if ($row->rxl_daw !== '' && $row->rxl_daw !== null) {
-                $sub_code = 'BC';
-                $sub_desc = 'brand composition';
+                $sub_bool = false;
             }
-            $response['substitution'] = [
-                'type' => [
-                    'coding' => [
-                        '0' => [
-                            'system' => 'http://hl7.org/fhir',
-                            'code' => $sub_code,
-                            'description' => $sub_desc
-                        ]
-                    ]
-                ]
-            ];
+            $response['substitution']['allowed'] = $sub_bool;
         }
 
         // AllergyIntolerance

@@ -601,10 +601,10 @@ public function install_fix(Request $request)
                         ];
                         $data['content'] .= $this->form_build($form_array);
                     } else {
-                        $outcome = '<div class="alert alert-danger"><strong>Presciption Filled</strong> - Prescription has been inactivated.</div>';
+                        $outcome = '<div class="alert alert-danger"><strong>Presciption Invalid</strong> - Prescription has not been signed electronically by uPort.</div>';
                     }
                 } else {
-                    $outcome = '<div class="alert alert-danger"><strong>Presciption Invalid</strong> - Prescription has not been signed electronically by uPort.</div>';
+                    $outcome = '<div class="alert alert-danger"><strong>Presciption Filled</strong> - Prescription has been inactivated.</div>';
                 }
             } else {
                 $outcome = '<div class="alert alert-danger"><strong>Presciption Invalid</strong> - This medication was never prescribed.</div>';
