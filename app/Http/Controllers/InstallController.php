@@ -523,6 +523,7 @@ public function install_fix(Request $request)
         $data['panel_header'] = 'Prescription Validation';
         $data['url'] = route('prescription_pharmacy_view', [$id]);
         $query = DB::table('rx_list')->where('rxl_id', '=', $id)->first();
+        $outcome = '';
         if ($query) {
             if ($query->id !== null && $query->id == '') {
                 ini_set('memory_limit','196M');
@@ -540,7 +541,6 @@ public function install_fix(Request $request)
                 $data['rx_jpg'] = asset('temp/' . $name . '_pages.png');
                 $data['document_url'] = asset('temp/' . $name);
                 $data['content'] = '';
-                $outcome = '';
                 if ($query->transaction !== '' && $query->transaction !== null) {
                     $data['tx_hash'] = $query->transaction;
                     $data['rx_json'] = $query->json;
