@@ -1081,10 +1081,10 @@ class ChartController extends Controller {
         }
         // Mediations specific data handling
         if ($table == 'rx_list') {
-            $this->validate($request, [
-                'rxl_days' => 'numeric',
-                'rxl_refill' => 'numeric'
-            ]);
+            // $this->validate($request, [
+            //     'rxl_days' => 'numeric',
+            //     'rxl_refill' => 'numeric'
+            // ]);
         }
         // Orders specific data handling
         if ($table == 'orders') {
@@ -1439,8 +1439,12 @@ class ChartController extends Controller {
             if ($request->input('rxl_days') !== '') {
                 $data['rxl_due_date'] = date('Y-m-d H:i:s', strtotime($request->input('rxl_date_prescribed')) + ($request->input('rxl_days') * 86400));
             }
-            if ($data['rxl_refill'] == '' || $data['rxl_refill'] == null) {
+            if (!isset($data['rxl_refill'])) {
                 $data['rxl_refill'] == '0';
+            } else {
+                if ($data['rxl_refill'] == '' || $data['rxl_refill'] == null) {
+                    $data['rxl_refill'] == '0';
+                }
             }
             $data['prescription'] = 'pending';
             $to = '';
