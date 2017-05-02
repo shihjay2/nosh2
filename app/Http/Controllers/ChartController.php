@@ -1439,7 +1439,7 @@ class ChartController extends Controller {
             if ($request->input('rxl_days') !== '') {
                 $data['rxl_due_date'] = date('Y-m-d H:i:s', strtotime($request->input('rxl_date_prescribed')) + ($request->input('rxl_days') * 86400));
             }
-            if ($data['rxl_refill'] == '') {
+            if ($data['rxl_refill'] == '' || $data['rxl_refill'] == null) {
                 $data['rxl_refill'] == '0';
             }
             $data['prescription'] = 'pending';

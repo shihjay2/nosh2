@@ -13980,13 +13980,14 @@ class Controller extends BaseController
         if ($resource_type == 'MedicationRequest') {
             $response['id'] = $row->rxl_id;
             $patient = DB::table('demographics')->where('pid', '=', $row->pid)->first();
-            $response['patient'] = [
+            $response['intent'] = 'order';
+            $response['subject'] = [
                 'reference' => 'Patient/' . $row->pid,
                 'display' => $patient->firstname . ' ' . $patient->lastname
             ];
             $provider = DB::table('users')->where('displayname', '=', $row->rxl_provider)->first();
             if ($provider) {
-                $response['prescriber'] = [
+                $response['requester'] = [
                     'reference' => 'Practitioner/' . $provider->id,
                     'display' => $row->rxl_provider
                 ];
