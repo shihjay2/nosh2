@@ -24,7 +24,7 @@
                              </div>
                          </div>
                     </form>
-                    @if (isset($legend))
+                    @if (isset($colorlegend))
                         <div style="margin:5px;"><i style="color:green;" class="fa fa-square-o fa-lg"></i> Attended</div>
                         <div style="margin:5px;"><i style="color:black;" class="fa fa-square-o fa-lg"></i> DNKA</div>
                         <div style="margin:5px;"><i style="color:red;" class="fa fa-square-o fa-lg"></i> LMC</div>

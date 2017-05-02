@@ -243,7 +243,7 @@ class AjaxScheduleController extends Controller {
                 }
                 $row_start = date('c', $row->start);
                 $row_end = date('c', $row->end);
-                $event = array(
+                $event = [
                     'id' => $row->appt_id,
                     'start' => $row_start,
                     'end' => $row_end,
@@ -252,7 +252,7 @@ class AjaxScheduleController extends Controller {
                     'provider_id' => $row->provider_id,
                     'pid'=> $pid,
                     'timestamp' => $timestamp
-                );
+                ];
                 if (Session::get('group_id') == '100' || Session::get('group_id') == 'schedule') {
                     if (Session::get('pid') != $pid) {
                         $event['title'] = 'Appointment taken';
