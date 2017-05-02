@@ -526,7 +526,7 @@ public function install_fix(Request $request)
         $data['content'] = '';
         $outcome = '';
         if ($query) {
-            if ($query->id !== null && $query->id == '') {
+            if ($query->id !== null && $query->id !== '') {
                 ini_set('memory_limit','196M');
                 $html = $this->page_medication($id, $query->pid);
                 $name = time() . "_rx.pdf";
