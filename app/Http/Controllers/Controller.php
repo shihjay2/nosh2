@@ -1396,6 +1396,53 @@ class Controller extends BaseController
         return $return;
     }
 
+    protected function ascvd_calc()
+    {
+        $url = 'http://aha.indicoebm.com/api/RiskCalculatorManager/GetBaselineRiskResult';
+        $race_arr = [
+            'AA' => 'African American',
+            'WH' => 'NonHispanic White',
+        ];
+        $aspirin = false;
+        $smoker = false;
+        $gender = 'M';
+        $hdl = '100';
+        $diabetes = false;
+        $ldl = '180';
+        $tc = '290';
+        $race = 'AA';
+        $sbp = '180';
+        $htn = false;
+        $chol = false;
+        $age = '50';
+        $data = [
+            'AspirinTherapy' => $aspirin, // boolean
+            'CurrentSmoker' => $smoker, // boolean
+            'Gender' => $gender, // M
+            'HDLCholestrol' => $hdl, // numeric,
+            'HistoryofDiabetes' => $diabetes, // boolean
+            'LDLCholestrol' => $ldl, // numeric
+            'Race' => $race,
+            'SystolicBloodPressure' => $sbp, //numeric
+            'TotalCholestrol' => $tc, //numeric
+            'TreatmentforHypertension' => $htn, // boolean
+            'TreatmentwithStatin' => $chol, //boolean
+            'age' => $age
+        ];
+        $data_string = json_encode($data);
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'Content-Type: application/json',
+            'Content-Length: ' . strlen($data_string))
+        );
+        $result = curl_exec($ch);
+        $result_arr = json_decode($result, true);
+        return $result_arr;
+    }
+
     protected function assets_css($type='')
     {
         $return = [
