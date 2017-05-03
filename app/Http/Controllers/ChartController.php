@@ -1794,22 +1794,10 @@ class ChartController extends Controller {
                 $data['panel_header'] = 'Edit Lifestyle';
             }
             if ($subtype == 'habits') {
-                $data['panel_header'] = 'Edit Contacts';
-                $dropdown_array = [
-                    'default_button_text' => 'Test Reminder',
-                    'default_button_text_url' => '#',
-                    'default_button_id' => 'test_reminder'
-                ];
-                $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
+                $data['panel_header'] = 'Edit Habits';
             }
             if ($subtype == 'mental_health') {
                 $data['panel_header'] = 'Edit Mental Health';
-                $dropdown_array = [
-                    'default_button_text' => 'Copy from Patient',
-                    'default_button_text_url' => '#',
-                    'default_button_id' => 'guardian_import'
-                ];
-                $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
             }
         }
         // Billing core
@@ -6962,15 +6950,6 @@ class ChartController extends Controller {
         $recent_oh_physical_activity = $recent_query->whereNotNull('oh_physical_activity')->first();
         $social_hx_arr = ['oh_sh', 'oh_etoh', 'oh_tobacco', 'oh_drugs', 'oh_employment', 'oh_psychosocial', 'oh_developmental', 'oh_medtrials', 'oh_diet', 'oh_physical_activity'];
         $return = '';
-        $dropdown_array = [
-            'default_button_text' => 'Register to Portal',
-            'default_button_text_url' => route('register_patient')
-        ];
-        $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
-        $active_arr = [
-            '0' => 'Inactive',
-            '1' => 'Active'
-        ];
         // Set up persistent values
         $persistent_check = DB::table('other_history')->where('pid', '=', Session::get('pid'))->where('eid', '=', '0')->first();
         if (!$persistent_check) {
