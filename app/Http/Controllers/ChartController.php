@@ -1291,6 +1291,20 @@ class ChartController extends Controller {
                     }
                 }
             }
+            // Demographics post-save handling
+            if ($table == 'demographics') {
+                if (isset($data['firstname'])) {
+                    $this->setpatient(Session::get('pid'));
+                    $appts = DB::table('schedule')->where('pid', '=', Session::get('pid'))->get();
+                    if ($appts->count()) {
+                        foreach ($appts as $appt_row) {
+                            $appt['title'] = $data['lastname'] . ', ' . $data['firstname'] . ' (DOB: ' . date('m/d/Y', strtotime($data['DOB'])) . ') (ID: ' . Session::get('pid') . ')';
+                            DB::table('schedule')->where('appt_id', '=', $appt_row->appt_id)->update($appt);
+                            $this->audit('Update');
+                        }
+                    }
+                }
+            }
         }
         if ($action == 'inactivate') {
             if ($table == 'issues') {
