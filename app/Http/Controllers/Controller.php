@@ -15408,7 +15408,7 @@ class Controller extends BaseController
                     $description .= '<span class="nosh_bold">Assessment:</span>';
                     for ($l = 1; $l <= 12; $l++) {
                         $col0 = 'assessment_' . $l;
-                        if ($assessmentInfo->{$col0} !== '') {
+                        if ($assessmentInfo->{$col0} !== '' && $assessmentInfo->{$col0} !== null) {
                             $description .= '<br><strong>' . $assessmentInfo->{$col0} . '</strong><br />';
                         }
                     }

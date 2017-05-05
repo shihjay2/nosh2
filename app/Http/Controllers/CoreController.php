@@ -5070,7 +5070,7 @@ class CoreController extends Controller
                 $url = route('prescription_pharmacy_view', [$id]);
                 $data['content'] .= QrCode::size(300)->generate($url);
                 $data['content'] .= '</div>';
-                $data['content'] .= '<div style="text-align: center;"><a href="' . $url . '" target="_blank">Pharmacy Click Here</a></div>';
+                $data['content'] .= '<div style="text-align: center;"><a href="' . $url . '" target="_blank" class="nosh-no-load">Pharmacy Click Here</a></div>';
                 $med = explode(' ', $query->rxl_medication);
                 $data['rx'] = $this->goodrx_drug_search($med[0]);
                 $data['link'] = $this->goodrx_information($query->rxl_medication, $query->rxl_dosage . $query->rxl_dosage_unit);
