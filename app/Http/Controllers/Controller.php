@@ -3099,7 +3099,7 @@ class Controller extends BaseController
                 }
             }
             foreach ($assessment_arr as $assessment_k => $assessment_v) {
-                if ($assessmentInfo->{$assessment_k} !== '') {
+                if ($assessmentInfo->{$assessment_k} !== '' && $assessmentInfo->{$assessment_k} !== null) {
                     if ($encounterInfo->encounter_template == 'standardmtm') {
                         $data['assessment'] .= '<strong>' . $assessment_v['standardmtm'] . ': </strong>';
                     } else {
@@ -15413,7 +15413,7 @@ class Controller extends BaseController
                         }
                     }
                     foreach ($assessment_arr as $assessment_k => $assessment_v) {
-                        if ($assessmentInfo->{$assessment_k} !== '') {
+                        if ($assessmentInfo->{$assessment_k} !== '' && $assessmentInfo->{$assessment_k} !== null) {
                             if ($row0->encounter_template == 'standardmtm') {
                                 $description .= '<br /><strong>' . $assessment_v['standardmtm'] . ': </strong>';
                             } else {
