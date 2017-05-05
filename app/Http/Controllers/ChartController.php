@@ -710,12 +710,17 @@ class ChartController extends Controller {
             $gender = 'Female';
         }
         $age = (time() - $this->human_to_unix($row->DOB))/31556926;
+        $age_date = Date::parse($row->DOB);
+        $age1 = $age_date->diffinYears();
         $return = '';
         $type_arr = [
             'prevention' => ['Prevention', 'fa-calendar'],
             'immunizations' => ['Immunizations', 'fa-magic'],
             'hedis' => ['HEDIS Audit', 'fa-clock-o']
         ];
+        if ($age1 >= 40 && $age1 <= 79) {
+            $type_arr['ascvd'] = ['ASCVD Risk', 'fa-heartbeat'];
+        }
         $dropdown_array = [
             'items_button_text' => $type_arr[$type][0]
         ];
@@ -801,6 +806,9 @@ class ChartController extends Controller {
         }
         if ($type == 'hedis') {
             $return .= $this->hedis_audit('all', 'chart', Session::get('pid'));
+        }
+        if ($type == 'ascvd') {
+            $return .= '<h4>ASCVD Risk Calculation</h4>';
         }
         $data['panel_header'] = 'Care Opportunites';
         $data['content'] = $return;
@@ -3399,11 +3407,11 @@ class ChartController extends Controller {
         $data1['addendum'] = 'y';
         DB::table('encounters')->where('eid', '=', $eid)->update($data1);
         $this->audit('Update');
-        if ($encounter->encounter_template == 'standardmedical' || $encounter->encounter_template == 'standardmedical1') {
+        if ($encounter->encounter_template == 'standardmedical' || $encounter->encounter_template == 'standardmedical1' || $encounter->encounter_template == 'medical') {
             $table_array1 = ["hpi", "ros", "vitals", "pe", "labs", "procedure", "rx", "assessment", "plan"];
             $table_array2 = ["other_history", "orders", "billing", "billing_core", "image"];
         }
-        if ($encounter->encounter_template == 'clinicalsupport') {
+        if ($encounter->encounter_template == 'clinicalsupport' || $encounter->encounter_template == 'phone' || $encounter->encounter_template == 'virtual') {
             $table_array1 = ["hpi", "labs", "procedure", "rx", "assessment", "plan"];
             $table_array2 = ["other_history", "orders", "billing", "billing_core", "image"];
         }

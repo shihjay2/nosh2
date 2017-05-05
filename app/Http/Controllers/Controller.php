@@ -100,19 +100,23 @@ class Controller extends BaseController
         $query = DB::table($table)->where($index, '=', $id)->first();
         if ($query) {
             if ($query->{$column} !== '' && $query->{$column} !== null) {
-                $formatter = Formatter::make($query->{$column}, Formatter::YAML);
-                $arr = $formatter->toArray();
-                $list_array = [];
-                foreach ($arr as $k=>$v) {
-                    if ($column == 'proc_description') {
-                        $arr['label'] = '<b>' . $v['timestamp'] . ':</b> ' . $v['type'];
-                    } else {
-                        $arr['label'] = '<b>' . $v['timestamp'] . ':</b> ' . $v['action'];
+                if ($this->yaml_check($query->{$column})) {
+                    $formatter = Formatter::make($query->{$column}, Formatter::YAML);
+                    $arr = $formatter->toArray();
+                    $list_array = [];
+                    foreach ($arr as $k=>$v) {
+                        if ($column == 'proc_description') {
+                            $arr['label'] = '<b>' . $v['timestamp'] . ':</b> ' . $v['type'];
+                        } else {
+                            $arr['label'] = '<b>' . $v['timestamp'] . ':</b> ' . $v['action'];
+                        }
+                        $arr['edit'] = route('action_edit', [$table, $index, $id, $k, $column]);
+                        $list_array[] = $arr;
                     }
-                    $arr['edit'] = route('action_edit', [$table, $index, $id, $k, $column]);
-                    $list_array[] = $arr;
+                    $return .= $this->result_build($list_array, 'actions_list');
+                } else {
+                    $return .= $query->{$column};
                 }
-                $return .= $this->result_build($list_array, 'actions_list');
             }
         }
         return $return;
@@ -1399,28 +1403,56 @@ class Controller extends BaseController
     protected function ascvd_calc()
     {
         $url = 'http://aha.indicoebm.com/api/RiskCalculatorManager/GetBaselineRiskResult';
-        $race_arr = [
-            'AA' => 'African American',
-            'WH' => 'NonHispanic White',
-        ];
-        $aspirin = false;
+        $row = DB::table('demographics')->where('pid', '=', Session::get('pid'))->first();
+        $gender_arr = $this->array_gender2();
+        $gender = $gender_arr[$row->sex];
+        $age_date = Date::parse($row->DOB);
+        $age = $age_date->diffinYears();
+        $race = 'WH';
+        $proceed = true;
+        if ($row->race == 'Black or African American') {
+            $race = 'AA';
+        }
         $smoker = false;
-        $gender = 'M';
-        $hdl = '100';
+        if ($row->tobacco == 'yes') {
+            $smoker = true;
+        }
         $diabetes = false;
+        $diabetes_q = $this->hedis_issue_query(Session::get('pid'), ['E08', 'E09', 'E10', 'E11', 'E13']);
+        if ($diabetes_q) {
+            $diabetes = true;
+        }
+        $aspirin = false;
+        $aspirin_q = DB::table('rx_list')->where('pid', '=', Session::get('pid'))->where('rxl_date_inactive', '=', '0000-00-00 00:00:00')->where('rxl_date_old', '=', '0000-00-00 00:00:00')->where('rxl_medication', 'LIKE', "%aspirin%")->first();
+        if ($aspirin_q) {
+            $aspirin = true;
+        }
+        $sbp = '90';
+        $vitals = DB::table('vitals')->where('pid', '=', Session::get('pid'))->orderBy('vitals_date', 'desc')->first();
+        if ($vitals) {
+            if ($vitals->bp_systolic > 200) {
+                $sbp = '200';
+            } elseif ($vitals->bp_systolic < 90) {
+                $spb = '90';
+            } else {
+                $spb = $vitals->bp_systolic;
+            }
+        }
+        $rx = $aspirin_q = DB::table('rx_list')->where('pid', '=', Session::get('pid'))->where('rxl_date_inactive', '=', '0000-00-00 00:00:00')->where('rxl_date_old', '=', '0000-00-00 00:00:00')->get();
+        if ($rx->count()) {
+
+        }
+        $hdl = '100';
         $ldl = '180';
         $tc = '290';
-        $race = 'AA';
-        $sbp = '180';
         $htn = false;
         $chol = false;
-        $age = '50';
         $data = [
-            'AspirinTherapy' => $aspirin, // boolean
-            'CurrentSmoker' => $smoker, // boolean
-            'Gender' => $gender, // M
+            'AspirinTherapy' => $aspirin,
+            'CurrentSmoker' => $smoker,
+            'Gender' => $gender,
             'HDLCholestrol' => $hdl, // numeric,
-            'HistoryofDiabetes' => $diabetes, // boolean
+            'HistoryofDiabetes' => $diabetes,
             'LDLCholestrol' => $ldl, // numeric
             'Race' => $race,
             'SystolicBloodPressure' => $sbp, //numeric
@@ -3059,7 +3091,7 @@ class Controller extends BaseController
             $data['assessment'] = '<br><h4>Assessment:</h4><p class="view">';
             for ($l = 1; $l <= 12; $l++) {
                 $col0 = 'assessment_' . $l;
-                if ($assessmentInfo->{$col0} !== '') {
+                if ($assessmentInfo->{$col0} !== '' && $assessmentInfo->{$col0} !== null) {
                     if ($l > 1) {
                         $data['assessment'] .= '<br />';
                     }
@@ -11188,7 +11220,6 @@ class Controller extends BaseController
             ->where('pid','=', $pid)
             ->where('issue_date_inactive', '=', '0000-00-00 00:00:00')
             ->where(function($query_array) {
-                $issues_item_array = array('496','J44.9');
                 $count = 0;
                 foreach ($issues_item_array as $issues_item) {
                     if ($count == 0) {
@@ -15444,7 +15475,7 @@ class Controller extends BaseController
                 if ($row3->type == 'Medical History') {
                     $title = 'New Medical Event';
                 }
-                if ($row3->type == 'Problem List') {
+                if ($row3->type == 'Surgical History') {
                     $title = 'New Surgical Event';
                 }
                 $div3 = $this->timeline_item($row3->issue_id, 'issue_id', $title, $this->human_to_unix($row3->issue_date_active), $title, $row3->issue);
