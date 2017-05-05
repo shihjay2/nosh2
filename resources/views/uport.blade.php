@@ -54,8 +54,10 @@
 @section('view.scripts')
 <script src="{{ asset('assets/js/web3.js') }}"></script>
 <script src="{{ asset('assets/js/uport-connect.js') }}"></script>
+<script src="{{ asset('assets/js/mnid.js') }}"></script>
 <script type="text/javascript">
     const Connect = window.uportconnect.Connect;
+    const mnid = window.mnid;
 	const appName = 'nosh';
     const connect = new Connect(appName, {'clientId': '0xe56550b7b094b37e722082ccfe13b0c5b4e441df'});
 	const web3 = connect.getWeb3();
@@ -92,6 +94,10 @@
 		}, console.err);
 	};
 	const sendEther = () => {
+        if (mnid.isMNID(globalState.uportId)) {
+            var address = mnid.decode(globalState.uportId);
+            globalState.uportId = address.address;
+        }
         web3.eth.sendTransaction(
 			{
 				from: globalState.uportId,
