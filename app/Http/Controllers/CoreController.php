@@ -5078,7 +5078,7 @@ class CoreController extends Controller
                 $html = $this->page_medication($id, $query->pid);
                 $name = time() . "_rx.pdf";
                 $file_path = public_path() . "/temp/" . $name;
-                $this->generate_pdf($html, $file_path, 'footerpdf', '', '2');
+                $this->generate_pdf($html, $file_path, 'footerpdf', '', '2', '', 'void');
                 while(!file_exists($file_path)) {
                     sleep(2);
                 }

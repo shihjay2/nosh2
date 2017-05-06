@@ -9285,7 +9285,7 @@ class Controller extends BaseController
         return $ccda;
     }
 
-    protected function generate_pdf($html, $filepath, $footer='footerpdf', $header='', $type='1', $headerparam='')
+    protected function generate_pdf($html, $filepath, $footer='footerpdf', $header='', $type='1', $headerparam='', $watermark='')
     {
         // if ($header != '') {
         //     if ($headerparam == '') {
@@ -9357,6 +9357,13 @@ class Controller extends BaseController
         PDF::AddPage();
         PDF::SetAutoPageBreak(TRUE, '40');
         PDF::writeHTML($html, true, false, false, false, '');
+        if ($watermark !== '') {
+            if ($watermark == 'void') {
+                $watermark_file = 'voidstamp.png';
+            }
+            PDF::SetAlpha(0.5);
+            PDF::Image(resource_path() . '/' . $watermark_file, '0', '0', '', '', 'PNG', false, 'C', false, 300, 'C', false, false, 0 ,false, false, false);
+        }
         PDF::Output($filepath, 'F');
         PDF::reset();
         return true;
