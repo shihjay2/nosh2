@@ -77,6 +77,9 @@
         if (uport_need == 'validate') {
             validatetx();
         }
+        if ($('#rx_hash').length) {
+            location.href = '#rx_hash';
+        }
     });
 </script>
 @endsection

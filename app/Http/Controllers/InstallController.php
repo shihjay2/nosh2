@@ -582,7 +582,7 @@ public function install_fix(Request $request)
                             $rx_hash = substr(substr($ret, 10), $bytes);
                             $items[] = [
                                 'name' => 'rx_hash',
-                                'label' => 'Prescription Hash from Blockhain',
+                                'label' => 'Prescription Hash from Blockchain',
                                 'type' => 'text',
                                 'readonly' => true,
                                 'default_value' => $rx_hash
