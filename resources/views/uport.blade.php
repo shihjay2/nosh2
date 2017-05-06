@@ -128,16 +128,6 @@
 			}
 		);
 	};
-    const validatetx = () => {
-        var Web3 = require('web3');
-        var web3a = new Web3(new Web3.providers.HttpProvider('https://ropsten.infura.io/'));
-        var version = web3.version.api;
-        var tx = $('#tx_hash').val();
-        var transaction = web3a.eth.getTransaction(tx);
-        console.log(transaction.input);
-        window.location = '{!! $url !!}' + '/' + transaction.input;
-    };
-
     $(document).ready(function() {
         // Core
         if (noshdata.message_action !== '') {
@@ -152,9 +142,6 @@
         }
         if (uport_need == 'n') {
             sendEther();
-        }
-        if (uport_need == 'validate') {
-            validatetx();
         }
     });
 </script>

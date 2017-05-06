@@ -615,7 +615,7 @@ public function install_fix(Request $request)
         $data['content'] .= $outcome;
         $data['assets_js'] = $this->assets_js();
         $data['assets_css'] = $this->assets_css();
-        return view('uport', $data);
+        return view('uport1', $data);
     }
 
     public function set_version(Request $request)
