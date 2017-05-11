@@ -926,6 +926,18 @@ class Controller extends BaseController
         return $race;
     }
 
+    protected function array_reminder_interval()
+    {
+        $method = [
+            'Default' => 'Default (48 hours prior)',
+            '24' => '24 hours prior',
+            '12' => '12 hours prior',
+            '6' => '6 hours prior',
+            '3' => '3 hours prior'
+        ];
+        return $method;
+    }
+
     protected function array_reminder_method()
     {
         $method = [
@@ -3938,6 +3950,7 @@ class Controller extends BaseController
                 'allergies_date_active' => date('Y-m-d'),
                 'allergies_date_inactive' => '',
                 'allergies_provider' => Session::get('displayname'),
+                'notes' => null
             ];
             if (Session::has('ccda')) {
                 $ccda = Session::get('ccda');
@@ -3955,6 +3968,7 @@ class Controller extends BaseController
                 'meds_ndcid' => $result->meds_ndcid,
                 'allergies_date_active' => date('Y-m-d', $this->human_to_unix($result->allergies_date_active)),
                 'allergies_provider' => $result->allergies_provider,
+                'notes' => $result->notes
             ];
             if ($result->allergies_date_inactive == '0000-00-00 00:00:00') {
                 $allergy['allergies_date_inactive'] = '';
@@ -4000,6 +4014,12 @@ class Controller extends BaseController
             'type' => 'date',
             'required' => true,
             'default_value' => $allergy['allergies_date_active']
+        ];
+        $items[] = [
+            'name' => 'notes',
+            'label' => 'Notes',
+            'type' => 'textarea',
+            'default_value' => $allergy['notes']
         ];
         $items[] = [
             'name' => 'allergies_date_inactive',
@@ -4376,6 +4396,7 @@ class Controller extends BaseController
                 'phone_cell' => $result->phone_cell,
                 'emergency_contact' => $result->emergency_contact,
                 'reminder_method' => $result->reminder_method,
+                'reminder_interval' => $result->reminder_interval
             ];
             $items[] = [
                 'name' => 'address',
@@ -4442,6 +4463,13 @@ class Controller extends BaseController
                 'type' => 'select',
                 'select_items' => $this->array_reminder_method(),
                 'default_value' => $contact_arr['reminder_method']
+            ];
+            $items[] = [
+                'name' => 'reminder_interval',
+                'label' => 'Appointment Reminder Interval',
+                'type' => 'select',
+                'select_items' => $this->array_reminder_interval(),
+                'default_value' => $contact_arr['reminder_interval']
             ];
         }
         if ($subtype == 'guardians') {
@@ -5512,7 +5540,8 @@ class Controller extends BaseController
                 'type' => $issue_type_arr[$subtype],
                 'issue_date_active' => date('Y-m-d'),
                 'issue_date_inactive' => '',
-                'issue_provider' => Session::get('displayname')
+                'issue_provider' => Session::get('displayname'),
+                'notes' => null
             ];
             if (Session::has('ccda')) {
                 $ccda = Session::get('ccda');
@@ -5525,7 +5554,8 @@ class Controller extends BaseController
                 'issue' => $result->issue,
                 'type' => $result->type,
                 'issue_date_active' => date('Y-m-d', $this->human_to_unix($result->issue_date_active)),
-                'issue_provider' => $result->issue_provider
+                'issue_provider' => $result->issue_provider,
+                'notes' => $result->notes
             ];
             if ($result->issue_date_inactive == '0000-00-00 00:00:00') {
                 $issue['issue_date_inactive'] = '';
@@ -5554,6 +5584,12 @@ class Controller extends BaseController
             'type' => 'date',
             'required' => true,
             'default_value' => $issue['issue_date_active']
+        ];
+        $items[] = [
+            'name' => 'notes',
+            'label' => 'Notes',
+            'type' => 'textarea',
+            'default_value' => $issue['notes']
         ];
         $items[] = [
             'name' => 'issue_date_inactive',
@@ -6147,7 +6183,8 @@ class Controller extends BaseController
                 'temp_unit' => $result->temp_unit,
                 'hc_unit' => $result->hc_unit,
                 'encounter_template' => $result->encounter_template,
-                'additional_message' => $result->additional_message
+                'additional_message' => $result->additional_message,
+                'reminder_interval' => $result->reminder_interval
             ];
             $items[] = [
                 'name' => 'primary_contact',
@@ -6243,6 +6280,13 @@ class Controller extends BaseController
                 'label' => 'Additional Message for Appointment Reminders',
                 'type' => 'textarea',
                 'default_value' => $settings_arr['additional_message']
+            ];
+            $items[] = [
+                'name' => 'reminder_interval',
+                'label' => 'Appointment Reminder Interval',
+                'type' => 'select',
+                'select_items' => $this->array_reminder_interval(),
+                'default_value' => $settings_arr['reminder_interval']
             ];
         }
         if ($subtype == 'billing') {
@@ -7308,7 +7352,8 @@ class Controller extends BaseController
                 'test_flags' => null,
                 'test_datetime' => date('Y-m-d'),
                 'test_from' => null,
-                'test_provider_id' => null
+                'test_provider_id' => null,
+                'test_code' => null,
             ];
         } else {
             $tests = [
@@ -7320,7 +7365,8 @@ class Controller extends BaseController
                 'test_flags' => $result->test_flags,
                 'test_datetime' => date('Y-m-d', $this->human_to_unix($result->test_datetime)),
                 'test_from' => $result->test_from,
-                'test_provider_id' => $result->test_provider_id
+                'test_provider_id' => $result->test_provider_id,
+                'test_code' => $result->test_code
             ];
         }
         $items[] = [
@@ -7380,6 +7426,13 @@ class Controller extends BaseController
             'type' => 'text',
             'typeahead' => route('typeahead', ['table' => $table, 'column' => 'test_from']),
             'default_value' => $tests['test_from']
+        ];
+        $items[] = [
+            'name' => 'test_code',
+            'label' => 'LOINC Code',
+            'type' => 'text',
+            'typeahead' => route('typeahead', ['table' => $table, 'column' => 'test_code']),
+            'default_value' => $tests['test_code']
         ];
         $items[] = [
             'name' => 'test_provider_id',

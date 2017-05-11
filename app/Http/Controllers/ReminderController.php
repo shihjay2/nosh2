@@ -18,10 +18,10 @@ class ReminderController extends Controller {
 	public function reminder()
 	{
 		$start = time();
-		$end = time() + (2 * 24 * 60 * 60);
+		$end = $start + (2 * 24 * 60 * 60);
 		$query1 = DB::table('schedule')
 			->join('demographics', 'schedule.pid', '=', 'demographics.pid')
-			->select('demographics.reminder_to', 'demographics.reminder_method', 'schedule.appt_id', 'schedule.provider_id', 'schedule.start')
+			->select('demographics.reminder_to', 'demographics.reminder_method', 'demographics.reminder_interval', 'schedule.appt_id', 'schedule.provider_id', 'schedule.start')
 			->where('schedule.status', '=', 'Pending')
 			->whereBetween('schedule.start', [$start, $end])
 			->get();
@@ -30,27 +30,42 @@ class ReminderController extends Controller {
 		if ($query1) {
 			foreach ($query1 as $row) {
 				$to = $row->reminder_to;
-				if ($to != '') {
-					$row0 = DB::table('users')->where('id', '=', $row->provider_id)->first();
-					$row2 = DB::table('practiceinfo')->where('practice_id', '=', $row0->practice_id)->first();
-					if ($row2->timezone != null) {
-						date_default_timezone_set($row2->timezone);
+				$row0 = DB::table('users')->where('id', '=', $row->provider_id)->first();
+				$row2 = DB::table('practiceinfo')->where('practice_id', '=', $row0->practice_id)->first();
+				$proceed = true;
+				if ($row2->reminder_interval !== 'Default' && $row2->reminder_interval !== null) {
+					$practice_end = $start + ((int)$row2->reminder_interval * 60 * 60);
+					if ($row->start > $practice_end) {
+						$proceed = false;
 					}
-					$data_message['startdate'] = date("F j, Y, g:i a", $row->start);
-					$data_message['displayname'] = $row0->displayname;
-					$data_message['phone'] = $row2->phone;
-					$data_message['email'] = $row2->email;
-					$data_message['additional_message'] = $row2->additional_message;
-					if ($row->reminder_method == 'Cellular Phone') {
-						$message = view('emails.remindertext', $data_message)->render();
-                        $this->textbelt($to, $message, $row0->practice_id);
-					} else {
-						$this->send_mail('emails.reminder', $data_message, 'Appointment Reminder', $to, $row0->practice_id);
+				}
+				if ($row->reminder_interval !== 'Default' && $row->reminder_interval !== null) {
+					$patient_end = $start + ((int)$row->reminder_interval * 60 * 60);
+					if ($row->start > $patient_end) {
+						$proceed = false;
 					}
-					$data['status'] = 'Reminder Sent';
-					DB::table('schedule')->where('appt_id', '=', $row->appt_id)->update($data);
-					$this->audit('Add');
-					$i++;
+				}
+				if ($proceed == true) {
+					if ($to != '') {
+						if ($row2->timezone != null) {
+							date_default_timezone_set($row2->timezone);
+						}
+						$data_message['startdate'] = date("F j, Y, g:i a", $row->start);
+						$data_message['displayname'] = $row0->displayname;
+						$data_message['phone'] = $row2->phone;
+						$data_message['email'] = $row2->email;
+						$data_message['additional_message'] = $row2->additional_message;
+						if ($row->reminder_method == 'Cellular Phone') {
+							$message = view('emails.remindertext', $data_message)->render();
+	                        $this->textbelt($to, $message, $row0->practice_id);
+						} else {
+							$this->send_mail('emails.reminder', $data_message, 'Appointment Reminder', $to, $row0->practice_id);
+						}
+						$data['status'] = 'Reminder Sent';
+						DB::table('schedule')->where('appt_id', '=', $row->appt_id)->update($data);
+						$this->audit('Add');
+						$i++;
+					}
 				}
 				$j++;
 			}

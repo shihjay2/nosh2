@@ -211,7 +211,7 @@ Route::get('orders_list/{type}', ['as' => 'orders_list', 'uses' => 'ChartControl
 Route::get('records_list/{type}', ['as' => 'records_list', 'uses' => 'ChartController@records_list']);
 Route::get('register_patient', ['as' => 'register_patient', 'uses' => 'ChartController@register_patient']);
 Route::get('results_chart/{id}', ['as' => 'results_chart', 'uses' => 'ChartController@results_chart']);
-Route::get('results_list', ['as' => 'results_list', 'uses' => 'ChartController@results_list']);
+Route::get('results_list/{type}', ['as' => 'results_list', 'uses' => 'ChartController@results_list']);
 Route::get('results_print/{id}', ['as' => 'results_print', 'uses' => 'ChartController@results_print']);
 Route::any('results_reply', ['as' => 'results_reply', 'uses' => 'ChartController@results_reply']);
 Route::get('results_view/{id}', ['as' => 'results_view', 'uses' => 'ChartController@results_view']);

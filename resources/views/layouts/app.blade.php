@@ -252,7 +252,7 @@
                             </a>
                         </li>
                         <li @if(isset($results_active)) class="active" @endif>
-                            <a href="{{ route('results_list') }}">
+                            <a href="{{ route('results_list', ['type' => 'Laboratory']) }}">
                                 <i class="fa fa-flask fa-fw fa-lg"></i>
                                 <span class="sidebar-item">Results</span>
                             </a>
@@ -1452,6 +1452,9 @@
                                 if (typeof val.url !== 'undefined') {
                                     html += ' data-nosh-url="' + val.url + '"';
                                 }
+                                if (formId == 'search_loinc_form') {
+                                    html += ' data-nosh-loinc="' + val.id + '"';
+                                }
                                 if (typeof val.icd10type !== 'undefined') {
                                     if (val.icd10type == '0') {
                                         html += ' data-toggle="tooltip" title="Click here to expand"';
@@ -1704,6 +1707,9 @@
                     $('#warningModal').modal('show');
                     $('#loadingModal').modal('hide');
                 });
+            }
+            if ($(this).attr('data-nosh-loinc') !== undefined) {
+                $('#test_code').val($(this).attr('data-nosh-loinc'));
             }
             if (proceed === true) {
                 $(this).parent().prev().children().first().val('');

@@ -1797,6 +1797,7 @@ class ChartController extends Controller {
             } else {
                 $data['panel_header'] = 'Edit Test Result';
             }
+            $data['search_loinc'] = 'test_code';
         }
         // Vitals
         if ($table == 'vitals') {
@@ -6562,11 +6563,30 @@ class ChartController extends Controller {
         return view('graph', $data);
     }
 
-    public function results_list(Request $request)
+    public function results_list(Request $request, $type)
     {
         $data['message_action'] = Session::get('message_action');
         Session::forget('message_action');
-        $query = DB::table('tests')->where('pid', '=', Session::get('pid'))->orderBy('test_datetime', 'desc');
+        $query = DB::table('tests')->where('pid', '=', Session::get('pid'))->where('test_type', '=', $type)->orderBy('test_datetime', 'desc');
+        $type_arr = [
+            'Laboratory' => ['Laboratory', 'fa-flask'],
+            'Imaging' => ['Imaging', 'fa-film'],
+        ];
+        $dropdown_array = [
+            'items_button_text' => $type_arr[$type][0]
+        ];
+        foreach ($type_arr as $key => $value) {
+            if ($key !== $type) {
+                $items[] = [
+                    'type' => 'item',
+                    'label' => $value[0],
+                    'icon' => $value[1],
+                    'url' => route('results_list', [$key])
+                ];
+            }
+        }
+        $dropdown_array['items'] = $items;
+        $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
         $result = $query->get();
         $return = '';
         $edit = $this->access_level('2');
@@ -6612,7 +6632,7 @@ class ChartController extends Controller {
                 'url' => route('results_reply')
             ];
             $dropdown_array1['items'] = $items1;
-            $data['panel_dropdown'] = $this->dropdown_build($dropdown_array1);
+            $data['panel_dropdown'] .= '<span class="fa-btn"></span>' . $this->dropdown_build($dropdown_array1);
         }
         Session::put('last_page', $request->fullUrl());
         $data['assets_js'] = $this->assets_js('chart');
