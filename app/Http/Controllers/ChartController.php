@@ -6064,7 +6064,30 @@ class ChartController extends Controller {
     {
         $data['message_action'] = Session::get('message_action');
         Session::forget('message_action');
-        $data['content'] = '<section id="cd-timeline" class="cd-container">';
+        $data['content'] = '';
+        if (Session::get('patient_centric') !== 'y') {
+            $next_appt = DB::table('schedule')->where('pid', '=', Session::get('pid'))->where('start', '>', time())->first();
+            if ($next_appt && isset($next_appt->start)) {
+                $data['content'] .= '<div class="alert alert-success"><span style="margin-right:15px;"><i class="fa fa-hand-o-right fa-lg"></i></span><strong>Next Appointment</strong>: ' . date('F jS, Y, g:i A', $next_appt->start) . '</div>';
+            }
+            $last_visit = DB::table('encounters')->where('pid', '=', Session::get('pid'))
+    			->where('eid', '!=', '')
+    			->where('practice_id', '=', Session::get('practice_id'))
+    			->orderBy('eid', 'desc')
+    			->first();
+    		if ($last_visit) {
+                $data['content'] .= '<div class="alert alert-success"><span style="margin-right:15px;"><i class="fa fa-calendar-check-o fa-lg" aria-hidden="true"></i></span><strong>Last Visit with Your Practice</strong>: ' . date('F jS, Y', strtotime($last_visit->encounter_DOS)) . '</div>';
+    		}
+            $lmc = DB::table('schedule')->where('pid', '=', Session::get('pid'))->where('status', '=', 'LMC')->get();
+            $dnka = DB::table('schedule')->where('pid', '=', Session::get('pid'))->where('status', '=', 'DNKA')->get();
+            if ($lmc->count()) {
+                $data['content'] .= '<div class="alert alert-warning"><span style="margin-right:15px;"><i class="fa fa-clock-o fa-lg"></i></span><strong># Last minute cancellations: ' . $lmc->count() . '</strong></div>';
+            }
+            if ($dnka->count()) {
+                $data['content'] .= '<div class="alert alert-danger"><span style="margin-right:15px;"><i class="fa fa-ban fa-lg"></i></span><strong># Did not keep appointments: ' . $dnka->count() . '</strong></div>';
+            }
+        }
+        $data['content'] .= '<section id="cd-timeline" class="cd-container">';
         $arr = $this->timeline();
         foreach ($arr['json'] as $item) {
             $data['content'] .= $item['div'];
@@ -6072,7 +6095,7 @@ class ChartController extends Controller {
         $data['content'] .= '</section>';
         // $data['template_content'] = 'test';
         $data['title'] = Session::get('ptname');
-        $data['panel_header'] = Session::get('ptname');
+        $data['panel_header'] = Session::get('ptname') . ', ' . Session::get('age') . ', ' . Session::get('gender');
         $edit = $this->access_level('2');
         $edit1 = $this->access_level('1');
         if ($edit == true) {
