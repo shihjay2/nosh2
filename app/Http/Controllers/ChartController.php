@@ -808,7 +808,42 @@ class ChartController extends Controller {
             $return .= $this->hedis_audit('all', 'chart', Session::get('pid'));
         }
         if ($type == 'ascvd') {
+            $ascvd_rec = [
+                'startAspirin' => 'Start or continue aspirin now',
+                'startAspirin_StartBPlowering' => 'Start/continue aspirin + start/add BP-lowering drug now',
+                'startAspirin_StartBPlowering_StopSmoking' => 'Start/continue aspirin + start/add BP-lowering drug + stop smoking for 2 years',
+                'startAspirin_StartStatin' => 'Start/continue aspirin + start/intensify statin now',
+                'startAspirin_StartStatin_StopSmoking' => 'Start/continue aspirin + start/intensify statin + stop smoking for 2 years',
+                'startAspirin_StopSmoking' => 'Start/continue aspirin + stop smoking for 2 years',
+                'startBPlowering' => 'Start (or add) BP-lowering drug now',
+                'startBPlowering_StopSmoking' => 'Start/add BP-lowering drug + stop smoking for 2 years',
+                'startStatin' => 'Start statin (moderate intensity) or intensify statin from moderate to high intensity dose now',
+                'startStatin_StartAspirin_StartBPlowering' => 'Start/continue aspirin + start/intensify statin + start/add BP-lowering drug now',
+                'startStatin_StartBPlowering' => 'Start/continue statin + start/add BP-lowering drug now',
+                'startStatin_StartBPlowering_StopSmoking' => 'Start/intensify statin + start/add BP-lowering drug + stop smoking for 2 years',
+                'startStatin_StopSmoking' => 'Start/intensify statin + stop smoking for 2 years',
+                'stopSmoking' => 'Stop smoking for 2 years',
+                'startAll' => 'Start or continue aspirin now + start/intensify statin + start/add BP-lowering drug + stop smoking for 2 years'
+            ];
             $return .= '<h4>ASCVD Risk Calculation</h4>';
+            $ascvd_arr = $this->ascvd_calc();
+            if ($ascvd_arr['status'] !== 'missing') {
+                $return .= '<div class="alert alert-info"><strong>Baseline 10 year ASCVD Risk: </strong>' . $ascvd_arr['baselineRisk'] .'%</div>';
+                $ascvd_arr1 = [];
+                foreach ($ascvd_arr['therapyChoice'] as $ascvd_item_k => $ascvd_item_v) {
+                    if ($ascvd_item_v !== 'NA') {
+                        $ascvd_arr1[$ascvd_item_v] = $ascvd_item_k;
+                    }
+                }
+                if (count($ascvd_arr1) > 0) {
+                    krsort($ascvd_arr1);
+                    foreach ($ascvd_arr1 as $ascvd_item1_k => $ascvd_item1_v) {
+                        $return .= '<div class="alert alert-danger"><strong>' . $ascvd_rec[$ascvd_item1_v] . ':</strong> - ' . $ascvd_item1_k . '%</div>';
+                    }
+                }
+            } else {
+                $return .= $ascvd_arr['message'];
+            }
         }
         $data['panel_header'] = 'Care Opportunites';
         $data['content'] = $return;
@@ -5417,7 +5452,7 @@ class ChartController extends Controller {
             }
             $form_array = [
                 'form_id' => 'patient_form',
-                'action' => route('form_show', [$id, $type]),
+                'action' => route('form_show', [$id, $type, $origin]),
                 'items' => $items,
                 'save_button_label' => 'Save'
             ];

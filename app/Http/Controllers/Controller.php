@@ -1416,18 +1416,32 @@ class Controller extends BaseController
     {
         $url = 'http://aha.indicoebm.com/api/RiskCalculatorManager/GetBaselineRiskResult';
         $row = DB::table('demographics')->where('pid', '=', Session::get('pid'))->first();
+        $missing_arr = [
+            'Patient race not specified',
+            'Patient tobacco status not specified',
+            'No historical blood pressure readings',
+            'No historical HDL cholesterol values',
+            'No historical LDL cholesterol values',
+            'No historical total cholesterol values'
+        ];
         $gender_arr = $this->array_gender2();
         $gender = $gender_arr[$row->sex];
         $age_date = Date::parse($row->DOB);
         $age = $age_date->diffinYears();
         $race = 'WH';
         $proceed = true;
-        if ($row->race == 'Black or African American') {
-            $race = 'AA';
+        if ($row->race !== '' && $row->race !== null) {
+            unset($missing_arr[0]);
+            if ($row->race == 'Black or African American') {
+                $race = 'AA';
+            }
         }
         $smoker = false;
-        if ($row->tobacco == 'yes') {
-            $smoker = true;
+        if ($row->tobacco !== '' && $row->tobacco !== null) {
+            unset($missing_arr[1]);
+            if ($row->tobacco == 'yes') {
+                $smoker = true;
+            }
         }
         $diabetes = false;
         $diabetes_q = $this->hedis_issue_query(Session::get('pid'), ['E08', 'E09', 'E10', 'E11', 'E13']);
@@ -1442,6 +1456,7 @@ class Controller extends BaseController
         $sbp = '90';
         $vitals = DB::table('vitals')->where('pid', '=', Session::get('pid'))->orderBy('vitals_date', 'desc')->first();
         if ($vitals) {
+            unset($missing_arr[2]);
             if ($vitals->bp_systolic > 200) {
                 $sbp = '200';
             } elseif ($vitals->bp_systolic < 90) {
@@ -1450,40 +1465,101 @@ class Controller extends BaseController
                 $spb = $vitals->bp_systolic;
             }
         }
-        $rx = $aspirin_q = DB::table('rx_list')->where('pid', '=', Session::get('pid'))->where('rxl_date_inactive', '=', '0000-00-00 00:00:00')->where('rxl_date_old', '=', '0000-00-00 00:00:00')->get();
-        if ($rx->count()) {
-
-        }
-        $hdl = '100';
-        $ldl = '180';
-        $tc = '290';
         $htn = false;
         $chol = false;
-        $data = [
-            'AspirinTherapy' => $aspirin,
-            'CurrentSmoker' => $smoker,
-            'Gender' => $gender,
-            'HDLCholestrol' => $hdl, // numeric,
-            'HistoryofDiabetes' => $diabetes,
-            'LDLCholestrol' => $ldl, // numeric
-            'Race' => $race,
-            'SystolicBloodPressure' => $sbp, //numeric
-            'TotalCholestrol' => $tc, //numeric
-            'TreatmentforHypertension' => $htn, // boolean
-            'TreatmentwithStatin' => $chol, //boolean
-            'age' => $age
-        ];
-        $data_string = json_encode($data);
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Content-Type: application/json',
-            'Content-Length: ' . strlen($data_string))
-        );
-        $result = curl_exec($ch);
-        $result_arr = json_decode($result, true);
+        $rx = DB::table('rx_list')->where('pid', '=', Session::get('pid'))->where('rxl_date_inactive', '=', '0000-00-00 00:00:00')->where('rxl_date_old', '=', '0000-00-00 00:00:00')->get();
+        if ($rx->count()) {
+            $htn_url = 'https://rxnav.nlm.nih.gov/REST/rxclass/classMembers.json?classId=N0000001616&relaSource=NDFRT&rela=may_treat';
+            $htn_ch = curl_init();
+            curl_setopt($htn_ch,CURLOPT_URL, $htn_url);
+            curl_setopt($htn_ch,CURLOPT_FAILONERROR,1);
+            curl_setopt($htn_ch,CURLOPT_FOLLOWLOCATION,1);
+            curl_setopt($htn_ch,CURLOPT_RETURNTRANSFER,1);
+            curl_setopt($htn_ch,CURLOPT_TIMEOUT, 15);
+            $htn_json = curl_exec($htn_ch);
+            curl_close($htn_ch);
+            $htn_group = json_decode($htn_json, true);
+            $htn_arr = [];
+            foreach ($htn_group['drugMemberGroup']['drugMember'] as $htn_item) {
+                $htn_arr[] = strtolower($htn_item['minConcept']['name']);
+            }
+            $chol_url = 'https://rxnav.nlm.nih.gov/REST/rxclass/classMembers.json?classId=N0000001592&relaSource=NDFRT&rela=may_treat';
+            $chol_ch = curl_init();
+            curl_setopt($chol_ch,CURLOPT_URL, $chol_url);
+            curl_setopt($chol_ch,CURLOPT_FAILONERROR,1);
+            curl_setopt($chol_ch,CURLOPT_FOLLOWLOCATION,1);
+            curl_setopt($chol_ch,CURLOPT_RETURNTRANSFER,1);
+            curl_setopt($chol_ch,CURLOPT_TIMEOUT, 15);
+            $chol_json = curl_exec($chol_ch);
+            curl_close($chol_ch);
+            $chol_group = json_decode($chol_json, true);
+            $chol_arr = [];
+            foreach ($chol_group['drugMemberGroup']['drugMember'] as $chol_item) {
+                $chol_arr[] = strtolower($chol_item['minConcept']['name']);
+            }
+            foreach ($rx as $rx_item) {
+                $rx_name = explode(' ', $rx_item->rxl_medication);
+                $rx_name_first = strtolower($rx_name[0]);
+                if (in_array($rx_name_first, $htn_arr)) {
+                    $htn = true;
+                }
+                if (in_array($rx_name_first, $chol_arr)) {
+                    $chol = true;
+                }
+            }
+        }
+        $hdl = '45';
+        $ldl = '90';
+        $tc = '190';
+        $hdl_query = DB::table('tests')->where('pid', '=', Session::get('pid'))->where('test_code', '=', '2085-9')->orderBy('test_datetime', 'desc')->first();
+        if ($hdl_query) {
+            unset($missing_arr[3]);
+            $hdl = $hdl_query->test_result;
+        }
+        $ldl_query = DB::table('tests')->where('pid', '=', Session::get('pid'))->where('test_code', '=', '13457-7')->orderBy('test_datetime', 'desc')->first();
+        if ($ldl_query) {
+            unset($missing_arr[4]);
+            $ldl = $ldl_query->test_result;
+        }
+        $tc_query = DB::table('tests')->where('pid', '=', Session::get('pid'))->where('test_code', '=', '2093-3')->orderBy('test_datetime', 'desc')->first();
+        if ($tc_query) {
+            unset($missing_arr[5]);
+            $tc = $tc_query->test_result;
+        }
+        if (count($missing_arr) == 0) {
+            $data = [
+                'AspirinTherapy' => $aspirin,
+                'CurrentSmoker' => $smoker,
+                'Gender' => $gender,
+                'HDLCholestrol' => $hdl, // numeric,
+                'HistoryofDiabetes' => $diabetes,
+                'LDLCholestrol' => $ldl, // numeric
+                'Race' => $race,
+                'SystolicBloodPressure' => $sbp, //numeric
+                'TotalCholestrol' => $tc, //numeric
+                'TreatmentforHypertension' => $htn, // boolean
+                'TreatmentwithStatin' => $chol, //boolean
+                'age' => $age
+            ];
+            $data_string = json_encode($data);
+            $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                'Content-Type: application/json',
+                'Content-Length: ' . strlen($data_string))
+            );
+            $result = curl_exec($ch);
+            $result_arr = json_decode($result, true);
+        } else {
+            $result_arr['status'] = 'missing';
+            $result_arr['message'] = '<div class="alert alert-danger"><strong>Unable to calculate ASCVD risk score due to missing items:</strong><br><ul>';
+            foreach ($missing_arr as $missing_item) {
+                $result_arr['message'] .= '<li>' . $missing_item . '</li>';
+            }
+            $result_arr['message'] .= '</ul></div>';
+        }
         return $result_arr;
     }
 
@@ -11279,7 +11355,7 @@ class Controller extends BaseController
         $query = DB::table('issues')
             ->where('pid','=', $pid)
             ->where('issue_date_inactive', '=', '0000-00-00 00:00:00')
-            ->where(function($query_array) {
+            ->where(function($query_array) use ($issues_item_array) {
                 $count = 0;
                 foreach ($issues_item_array as $issues_item) {
                     if ($count == 0) {
