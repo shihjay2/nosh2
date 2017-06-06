@@ -157,9 +157,9 @@
                             </div>
                         </form>
                         @if ($errors->has('registration_code') || $errors->has('lastname') || $errors->has('firstname') || $errors->has('dob') || $errors->has('email') || $errors->has('username1') || $errors->has('numberReal'))
-                            <form id="register_form" class="form-horizontal" role="form" method="POST" action="{{ url('/register') }}">
+                            <form id="register_form" class="form-horizontal" role="form" method="POST" action="{{ url('register_user') }}">
                         @else
-                            <form id="register_form" class="form-horizontal" role="form" method="POST" action="{{ url('/register') }}" style="display:none;">
+                            <form id="register_form" class="form-horizontal" role="form" method="POST" action="{{ url('register_user') }}" style="display:none;">
                         @endif
                             {{ csrf_field() }}
                             <input type="hidden" name="count" id="new_password_count" value="" />
