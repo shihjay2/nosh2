@@ -14902,7 +14902,32 @@ class Controller extends BaseController
         return $return;
     }
 
-    public function rxnorm_search($item)
+    protected function rpHash($value)
+	{
+		$hash = 5381;
+		$value = strtoupper($value);
+		if (PHP_INT_SIZE == 4) {
+			for($i = 0; $i < strlen($value); $i++) {
+				$hash = (($hash << 5) + $hash) + ord(substr($value, $i));
+			}
+		} else {
+			for($i = 0; $i < strlen($value); $i++) {
+				$hash = ($this->rp_leftShift32($hash, 5) + $hash) + ord(substr($value, $i));
+			}
+		}
+		return $hash;
+	}
+
+	protected function rp_leftShift32($number, $steps)
+	{
+		$binary = decbin($number);
+		$binary = str_pad($binary, 32, "0", STR_PAD_LEFT);
+		$binary = $binary.str_repeat("0", $steps);
+		$binary = substr($binary, strlen($binary) - 32);
+		return ($binary{0} == "0" ? bindec($binary) : -(pow(2, 31) - bindec(substr($binary, 1))));
+	}
+
+    protected function rxnorm_search($item)
     {
         $url = 'http://rxnav.nlm.nih.gov/REST/rxcui.json?name=' . strtolower($item);
         $ch = curl_init();

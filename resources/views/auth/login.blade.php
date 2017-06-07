@@ -29,7 +29,7 @@
 @endsection
 
 @section('content')
-<div class="container">
+<div class="container" style="margin-bottom:100px">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
@@ -364,6 +364,7 @@
         $("#register").click(function(){
             $("#register_form").show();
             $("#login_form").hide();
+			$(".footer").css('bottom', '-60px');
         });
         $('#numberReal').realperson({includeNumbers: true});
         function loadlogo() {

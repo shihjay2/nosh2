@@ -310,10 +310,10 @@ class LoginController extends Controller {
                     $data['message_action'] = Session::get('message_action');
                     Session::forget('message_action');
                     if (file_exists(base_path() . '/.version')) {
-                        $data['nosh_version'] = file_get_contents(base_path() . '/.version');
+                        $data['noshversion'] = file_get_contents(base_path() . '/.version');
                     } else {
                         $version = $this->github_all();
-                        $data['nosh_version'] = $version[0]['sha'];
+                        $data['noshversion'] = $version[0]['sha'];
                     }
                     return view('auth.login', $data);
                 } else {
@@ -929,7 +929,6 @@ class LoginController extends Controller {
                 $this->validate($request, [
                     'numberReal' => 'required',
                     'numberRealHash' => 'required',
-                    'practice_id' => 'required',
                     'lastname' => 'required',
                     'firstname' => 'required',
                     'dob' => 'required',
@@ -946,15 +945,15 @@ class LoginController extends Controller {
                         $result = DB::table('demographics')->where('registration_code', '=', $registration_code)
                             ->where('firstname', '=', $request->input('firstname'))
                             ->where('lastname', '=', $request->input('lastname'))
-                            ->where('DOB', '=', date('Y-m-d', strtotime($request->input('dob'))))
+                            ->where('DOB', '=', date('Y-m-d H:i:s', $this->human_to_unix($request->input('dob'))))
                             ->first();
                         if ($result) {
                             $displayname = $request->input('firstname') . " " . $request->input('lastname');
                             $demographics_relate = DB::table('demographics_relate')->where('pid', '=', $result->pid)->get();
                             $arr['response'] = "1";
                             foreach ($demographics_relate as $demographics_relate_row) {
+                                $row1 = DB::table('practiceinfo')->where('practice_id', '=', $demographics_relate_row->practice_id)->first();
                                 if ($demographics_relate_row->id == '' || $demographics_relate_row->id == '0' || is_null($demographics_relate_row->id)) {
-                                    $row1 = DB::table('practiceinfo')->where('practice_id', '=', $demographics_relate_row->practice_id)->first();
                                     $data1 = [
                                         'username' => $request->input('username1'),
                                         'password' => substr_replace(Hash::make($request->input('password1')),"$2a",0,3),
@@ -989,7 +988,11 @@ class LoginController extends Controller {
                             Session::put('message_action', 'Your account has been activated.  Please log in');
                             return redirect()->route('login');
                         } else {
-                            $attempts = $_COOKIE['login_attempts'] + 1;
+                            if (array_key_exists('login_attempts', $_COOKIE)) {
+                                $attempts = $_COOKIE['login_attempts'] + 1;
+                            } else {
+                                $attempts = 1;
+                            }
                             setcookie("login_attempts", $attempts, time()+900, '/');
                             return redirect()->back()->withErrors(['tryagain' => 'Try again']);
                         }
@@ -1009,7 +1012,11 @@ class LoginController extends Controller {
                         return view('welcome', $view_data1);
                     }
                 } else {
-                    $attempts = $_COOKIE['login_attempts'] + 1;
+                    if (array_key_exists('login_attempts', $_COOKIE)) {
+                        $attempts = $_COOKIE['login_attempts'] + 1;
+                    } else {
+                        $attempts = 1;
+                    }
                     setcookie("login_attempts", $attempts, time()+900, '/');
                     return redirect()->back()->withErrors(['tryagain' => 'Try again']);
                 }
