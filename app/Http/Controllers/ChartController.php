@@ -1732,6 +1732,12 @@ class ChartController extends Controller {
                 $data['panel_header'] = 'Edit Medication';
                 if ($subtype !== '') {
                     $data['panel_header'] = $rx_array[$subtype];
+                } else {
+                    $dropdown_array = [
+                        'default_button_text' => 'Refill Medication',
+                        'default_button_text_url' => route('chart_form', ['rx_list', $index, $id, 'refill'])
+                    ];
+                    $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
                 }
             }
         }

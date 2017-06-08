@@ -15585,7 +15585,12 @@ class Controller extends BaseController
                         }
                     }
                 }
-                $div0 = $this->timeline_item($row0->eid, 'eid', 'Encounter', $this->human_to_unix($row0->encounter_DOS), 'Encounter: ' . $row0->encounter_cc, $description, $row0->encounter_signed);
+                $encounter_status = 'y';
+                if (Session::get('group_id') == '100' && $row0->encounter_signed == 'No') {
+                    $encounter_status = 'n';
+                    $description = 'Unsigned encounter';
+                }
+                $div0 = $this->timeline_item($row0->eid, 'eid', 'Encounter', $this->human_to_unix($row0->encounter_DOS), 'Encounter: ' . $row0->encounter_cc, $description, $encounter_status);
                 $json[] = [
                     'div' => $div0,
                     'startDate' => $this->human_to_unix($row0->encounter_DOS)
@@ -15746,7 +15751,9 @@ class Controller extends BaseController
             'allergies_id' => route('allergies_list', ['active'])
         ];
         $url = $type_arr[$type];
-        $div .= '<a href="' . $url . '" class="btn btn-primary cd-read-more" data-nosh-value="' . $value . '" data-nosh-type="' . $type . '" data-nosh-status="' . $status . '">Read more</a>';
+        if ($status !== 'n') {
+            $div .= '<a href="' . $url . '" class="btn btn-primary cd-read-more" data-nosh-value="' . $value . '" data-nosh-type="' . $type . '" data-nosh-status="' . $status . '">Read more</a>';
+        }
         $div .= '<span class="cd-date">' . date('Y-m-d', $date) . '</span>';
         $div .= '</div></div>';
         return $div;
