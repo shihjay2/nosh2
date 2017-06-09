@@ -5263,7 +5263,7 @@ class ChartController extends Controller {
                         $arr['label'] = $row_k;
                         $arr['view'] = route('form_show', [$form['id'], $row_k]);
                     } else {
-                        $arr['label'] = '<b>' . $form->owner . '</b> - '. $row_k;
+                        $arr['label'] = '<b>' . $form['owner'] . '</b> - '. $row_k;
                         $arr['view'] = route('form_show', [$form['id'], $row_k]);
                     }
                     if (isset($row_v['gender'])) {
