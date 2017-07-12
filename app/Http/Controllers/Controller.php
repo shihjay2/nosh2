@@ -274,6 +274,141 @@ class Controller extends BaseController
         return $i;
     }
 
+    protected function api_data($action, $table, $primary, $id)
+	{
+		$check = DB::table('demographics_relate')->where('pid', '=', Session::get('pid'))->whereNotNull('api_key')->first();
+		if ($check) {
+			$row = DB::table($table)->where($primary, '=', $id)->first();
+            $row_data = json_decode(json_encode($row), true);
+			unset($row_data[$primary]);
+			$remote_id = '0';
+			$proceed = true;
+			if ($action == 'update' || $action == 'delete') {
+				$check1 = DB::table('api_queue')
+					->where('table', '=', $table)
+					->where('local_id', '=', $id)
+					->where('remote_id', '!=', '0')
+					->where('action', '!=', 'delete')
+					->first();
+				if ($check1) {
+					$remote_id = $check1->remote_id;
+				} else {
+					if ($action == 'delete') {
+						$action = 'add';
+					} else {
+						$proceed = false;
+					}
+				}
+			}
+			$json_data = [
+				'api_key' => $check->api_key,
+				'table' => $table,
+				'primary' => $primary,
+				'remote_id' => $remote_id,
+				'action' => $action,
+				'data' => $row_data
+			];
+			$json = serialize(json_encode($json_data));
+			$practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
+			$login_data = [
+				'api_key' => $check->api_key,
+				'npi' => $practice->npi
+			];
+			$login = serialize(json_encode($login_data));
+			$data = [
+				'table' => $table,
+				'primary' => $primary,
+				'local_id' => $id,
+				'remote_id' => $remote_id,
+				'action' => $action,
+				'json' => $json,
+				'login' => $login,
+				'url' => $check->url,
+				'api_key' => $check->api_key
+			];
+			if ($proceed == true) {
+				DB::table('api_queue')->insert($data);
+				$this->audit('Add');
+			}
+		}
+	}
+
+    protected function api_data_send($url, $data, $username, $password)
+    {
+        if (is_array($data)) {
+            $data_string = json_encode($data);
+        } else {
+            $data_string = $data;
+        }
+        $ch = curl_init($url);
+        if ($username != '') {
+            curl_setopt($ch, CURLOPT_USERPWD, $username . ":" . $password);
+        }
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Content-Type: application/json',
+            'Content-Length: ' . strlen($data_string)]
+        );
+        $result = curl_exec($ch);
+        $result_arr = json_decode($result, true);
+        if(curl_errno($ch)){
+            $result_arr['url_error'] = 'Error:' . curl_error($ch);
+        } else {
+            $result_arr['url_error'] = '';
+        }
+        curl_close($ch);
+        return $result_arr;
+    }
+
+    protected function api_process()
+    {
+        $i = 0;
+        $apis = DB::table('api_queue')->where('success', '=', 'n')->get();
+        foreach ($apis as $api) {
+            $json_data = unserialize($api->json);
+            $login_data = unserialize($api->login);
+            $login_url = $api->url . '/api_login';
+            $logout_url = $api->url . '/api_logout';
+            $api_url = $api->url . '/api/v1/' . $api->action;
+            $login = $this->api_data_send($login_url, $login_data, '', '');
+            $data['success'] = 'n';
+            if ($login['url_error'] == '') {
+                if (isset($login['error'])) {
+                    if ($login['error'] == true) {
+                        $data['response'] = 'Error: ' . $login['message'];
+                    } else {
+                        $result = $this->api_data_send($api_url, $json_data, $login['username'], $login['password']);
+                        if ($result['url_error'] == '') {
+                            if (isset($result['error'])) {
+                                if ($result['error'] == true) {
+                                    $data['response'] = 'Error: ' . $result['message'];
+                                } else {
+                                    $data['success'] = 'y';
+                                    $data['remote_id'] = $result['remote_id'];
+                                    $data['response'] = $result['message'];
+                                    $i++;
+                                }
+                            } else {
+                                $data['response'] = 'Error: not a valid connection, check your URL';
+                            }
+                        } else {
+                            $data['response'] = $result['url_error'];
+                        }
+                        $logout = $this->api_data_send($logout_url, $login_data, '', '');
+                    }
+                } else {
+                    $data['response'] = 'Error: not a valid connection, check your URL';
+                }
+            } else {
+                $data['response'] = $login['url_error'];
+            }
+            DB::table('api_queue')->where('id', '=', $api->id)->update($data);
+            $this->audit('Update');
+        }
+    }
+
     protected function appointment_reminder($practice_id)
     {
         $practice = DB::table('practiceinfo')->where('practice_id', '=', $practice_id)->first();
@@ -335,7 +470,7 @@ class Controller extends BaseController
             ->get();
         if ($query) {
             foreach ($query as $row) {
-                $row2 = Schedule::where('pid', '=', $row->pid)->where('start', '>', time())->first();
+                $row2 = DB::table('schedule')->where('pid', '=', $row->pid)->where('start', '>', time())->first();
                 if (isset($row2->start)) {
                     $data['appointment_reminder'] = 'n';
                     DB::table('demographics_relate')->where('demographics_relate_id', '=', $row->demographics_relate_id)->update($data);
@@ -4937,8 +5072,8 @@ class Controller extends BaseController
         $role_arr = [
             '' => '',
             'Primary Care Provider' => 'Primary Care Provider',
-            'Consulting Provider' => 'Consulting Provider',
-            'Referring Provider' => 'Referring Provider'
+            'Consulting Provider' => trans('nosh.consulting_provider'),
+            'Referring Provider' => trans('nosh.referring_provider')
         ];
         $nosh_action_arr = [
             'chart_queue,encounters' => 'Select Records to Print',
@@ -7619,7 +7754,7 @@ class Controller extends BaseController
                 'displayname' => null,
                 'email' => null,
                 'group_id' => $subtype,
-                'active'=> '1',
+                'active' => '1',
                 'practice_id' => Session::get('practice_id')
             ];
             if ($subtype == '2') {
@@ -7646,7 +7781,7 @@ class Controller extends BaseController
                 'displayname' => $result->displayname,
                 'email' => $result->email,
                 'group_id' => $result->group_id,
-                'active'=> $result->active,
+                'active' => $result->active,
                 'practice_id' => $result->practice_id
             ];
             if ($subtype == '2') {
@@ -13719,53 +13854,6 @@ class Controller extends BaseController
         return $pre_proc;
     }
 
-    protected function process_api()
-    {
-        $i = 0;
-        $apis = DB::table('api_queue')->where('success', '=', 'n')->get();
-        foreach ($apis as $api) {
-            $json_data = unserialize($api->json);
-            $login_data = unserialize($api->login);
-            $login_url = $api->url . '/apilogin';
-            $logout_url = $api->url . '/apilogout';
-            $api_url = $api->url . '/api/v1/' . $api->action;
-            $login = $this->send_api_data($login_url, $login_data, '', '');
-            $data['success'] = 'n';
-            if ($login['url_error'] == '') {
-                if (isset($login['error'])) {
-                    if ($login['error'] == true) {
-                        $data['response'] = 'Error: ' . $login['message'];
-                    } else {
-                        $result = $this->send_api_data($api_url, $json_data, $login['username'], $login['password']);
-                        if ($result['url_error'] == '') {
-                            if (isset($result['error'])) {
-                                if ($result['error'] == true) {
-                                    $data['response'] = 'Error: ' . $result['message'];
-                                } else {
-                                    $data['success'] = 'y';
-                                    $data['remote_id'] = $result['remote_id'];
-                                    $data['response'] = $result['message'];
-                                    $i++;
-                                }
-                            } else {
-                                $data['response'] = 'Error: not a valid connection, check your URL';
-                            }
-                        } else {
-                            $data['response'] = $result['url_error'];
-                        }
-                        $logout = $this->send_api_data($logout_url, $login_data, '', '');
-                    }
-                } else {
-                    $data['response'] = 'Error: not a valid connection, check your URL';
-                }
-            } else {
-                $data['response'] = $login['url_error'];
-            }
-            DB::table('api_queue')->where('id', '=', $api->id)->update($data);
-            $this->audit('Update');
-        }
-    }
-
     protected function progress_track($percent)
     {
         $track_data['template'] = $percent;
@@ -13776,46 +13864,51 @@ class Controller extends BaseController
     protected function query_build($values)
     {
         $search_field_arr = [
-            "" => "Select Field",
-            "age" => "Patient's age",
-            "insurance" => "Patient's primary insurance",
-            "issue" => "Patient's active medical issue list",
-            "billing" => "Patient's billing code",
-            "rxl_medication" => "Patient's active medication list",
-            "imm_immunization" => "Patient's immunization list",
-            "sup_supplement" => "Patient's active supplement list",
-            "zip" => "Zip code where patient resides",
-            "city" => "City where patient resides",
-            "month" => "Patient's birth month"
+            "" => trans('nosh.superquery_select'),
+            "age" => trans('nosh.superquery_age'),
+            "insurance" => trans('nosh.superquery_insurance'),
+            "issue" => trans('nosh.superquery_issue'),
+            "billing" => trans('nosh.superquery_billing'),
+            "rxl_medication" => trans('nosh.superquery_rxl_medication'),
+            "imm_immunization" => trans('nosh.superquery_imm_immunization'),
+            "sup_supplement" => trans('nosh.superquery_sup_supplement'),
+            "zip" => trans('nosh.superquery_zip'),
+            "city" => trans('nosh.superquery_city'),
+            "month" => trans('nosh.superquery_month'),
+            "bp_systolic" => trans('nosh.superquery_bp_systolic'),
+            "bp_diastolic" => trans('nosh.superquery_bp_diastolic'),
+            "test_name" => trans('nosh.superquery_test_name'),
+            "test_code" => trans('nosh.superquery_test_code'),
+            "test_result" => trans('nosh.superquery_test_result')
         ];
         $search_join_arr = [
-            'AND' => 'And (&)',
-            'OR' => 'Or (||)'
+            'AND' => trans('nosh.and'),
+            'OR' => trans('nosh.or')
         ];
         $age_op_arr = [
-            '' => 'Select Operator',
-            'less than' => 'is less than',
-            'equal' => 'is equal to',
-            'greater than' => 'is greater than',
-            'contains' => 'contains',
-            'not equal' => 'is not equal to'
+            '' => trans('nosh.select_operator'),
+            'less than' => trans('nosh.less_than'),
+            'equal' => trans('nosh.equal'),
+            'greater than' => trans('nosh.greater_than'),
+            'contains' => trans('nosh.contains'),
+            'not equal' => trans('nosh.not_equal')
         ];
         $multi_op_arr = [
-            '' => 'Select Operator',
-            'equal' => 'is equal to',
-            'contains' => 'contains',
-            'not equal' => 'is not equal to'
+            '' => trans('nosh.select_operator'),
+            'equal' => trans('nosh.equal'),
+            'contains' => trans('nosh.contains'),
+            'not equal' => trans('nosh.not_equal')
         ];
         $billing_op_arr = [
-            '' => 'Select Operator',
-            'equal' => 'is equal to',
-            'not equal' => 'is not equal to'
+            '' => trans('nosh.select_operator'),
+            'equal' => trans('nosh.equal'),
+            'not equal' => trans('nosh.not_equal')
         ];
         $op_arr = [
-            '' => 'Select Operator'
+            '' => trans('nosh.select_operator')
         ];
         if ($values[0]['search_field'] !== null) {
-            if ($values[0]['search_field'] == 'age') {
+            if ($values[0]['search_field'] == 'age' || $values[0]['search_field'] == 'bp_systolic' || $values[0]['search_field'] == 'bp_diastolic' || $values[0]['search_field'] == 'test_result') {
                 $op_arr = $age_op_arr;
             } elseif ($values[0]['search_field'] == 'billing' || $values[0]['search_field'] == 'month') {
                 $op_arr = $billing_op_arr;
@@ -13824,7 +13917,7 @@ class Controller extends BaseController
             }
         }
         $return = '<div id="super_query_div" class="col-md-8 col-md-offset-3" style="margin-bottom:10px;">';
-        $return .= '<h5>Search patients with the following filters:</h5><br><div class="input-group" id="search_div_1"><span id="search_add" class="input-group-addon"><i class="fa fa-plus fa-lg"></i></span><input type="hidden" name="search_join[]" id="search_join_first" value="start"></input>';
+        $return .= '<h5>' . trans('nosh.superquery_header') . '</h5><br><div class="input-group" id="search_div_1"><span id="search_add" class="input-group-addon"><i class="fa fa-plus fa-lg"></i></span><input type="hidden" name="search_join[]" id="search_join_first" value="start"></input>';
         $return .= Form::select('search_field[]', $search_field_arr, $values[0]['search_field'], ['class' => 'form-control search_field_class', 'id' => 'search_field_1']);
         $return .= Form::select('search_op[]', $op_arr, $values[0]['search_op'], ['class' => 'form-control search_op_class', 'id' => 'search_op_1']);
         $return .= Form::text('search_desc[]', $values[0]['search_desc'], ['class' => 'form-control search_desc_class', 'id' => 'search_desc_1']);
@@ -13833,7 +13926,7 @@ class Controller extends BaseController
             for ($i = 1; $i < count($values); $i++) {
                 $j = $i + 1;
                 $op_arr = [
-                    '' => 'Select Operator'
+                    '' => trans('nosh.select_operator')
                 ];
                 if ($values[$i]['search_field'] !== null) {
                     if ($values[$i]['search_field'] == 'age') {
@@ -16317,65 +16410,6 @@ class Controller extends BaseController
         $check = DB::table('demographics_relate')->where('pid', '=', Session::get('pid'))->whereNotNull('api_key')->first();
         if ($check) {
 
-        }
-    }
-
-    public function api_data($action, $table, $primary, $id)
-    {
-        $check = DB::table('demographics_relate')->where('pid', '=', Session::get('pid'))->whereNotNull('api_key')->first();
-        if ($check) {
-            $row = DB::table($table)->where($primary, '=', $id)->first();
-            $row_data = (array) $row;
-            unset($row_data[$primary]);
-            $remote_id = '0';
-            $proceed = true;
-            if ($action == 'update' || $action == 'delete') {
-                $check1 = DB::table('api_queue')
-                    ->where('table', '=', $table)
-                    ->where('local_id', '=', $id)
-                    ->where('remote_id', '!=', '0')
-                    ->where('action', '!=', 'delete')
-                    ->first();
-                if ($check1) {
-                    $remote_id = $check1->remote_id;
-                } else {
-                    if ($action == 'delete') {
-                        $action = 'add';
-                    } else {
-                        $proceed = false;
-                    }
-                }
-            }
-            $json_data = array(
-                'api_key' => $check->api_key,
-                'table' => $table,
-                'primary' => $primary,
-                'remote_id' => $remote_id,
-                'action' => $action,
-                'data' => $row_data
-            );
-            $json = serialize(json_encode($json_data));
-            $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
-            $login_data = array(
-                'api_key' => $check->api_key,
-                'npi' => $practice->npi
-            );
-            $login = serialize(json_encode($login_data));
-            $data = array(
-                'table' => $table,
-                'primary' => $primary,
-                'local_id' => $id,
-                'remote_id' => $remote_id,
-                'action' => $action,
-                'json' => $json,
-                'login' => $login,
-                'url' => $check->url,
-                'api_key' => $check->api_key
-            );
-            if ($proceed == true) {
-                DB::table('api_queue')->insert($data);
-                $this->audit('Add');
-            }
         }
     }
 }

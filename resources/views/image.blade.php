@@ -58,11 +58,11 @@
                             <button type="button" class="btn btn-default" id="sketchpad_undo" ><i class="fa fa-undo fa-fw fa-lg"></i></button>
                             <button type="button" class="btn btn-default" id="sketchpad_redo" ><i class="fa fa-repeat fa-fw fa-lg"></i></button>
                             <button type="button" class="btn btn-default" id="clear_tool"><i class="fa fa-mouse-pointer fa-fw fa-lg"></i></button>
-                            <button type="button" class="btn btn-default sketchpad_buttons" id="sketchpad_brush" title="Pen Tool"><i class="fa fa-pencil fa-fw fa-lg"></i></button>
-                            <button type="button" class="btn btn-default sketchpad_buttons" id="sketchpad_text" title="Text Tool"><i class="fa fa-text-width fa-fw fa-lg"></i></button>
-                            <button type="button" class="btn btn-default sketchpad_buttons" id="sketchpad_rect" title="Rectangle Tool"><i class="fa fa-square-o fa-fw fa-lg"></i></button>
-                            <button type="button" class="btn btn-default sketchpad_buttons" id="sketchpad_ellipse" title="Ellipse Tool"><i class="fa fa-circle-o fa-fw fa-lg"></i></button>
-                            <button type="button" class="btn btn-default sketchpad_buttons" id="sketchpad_signature" title="Signature Tool"><i class="fa fa-thumbs-o-up fa-fw fa-lg"></i></button>
+                            <button type="button" class="btn btn-default sketchpad_buttons" id="sketchpad_brush" title="{{ trans('nosh.pen_tool') }}"><i class="fa fa-pencil fa-fw fa-lg"></i></button>
+                            <button type="button" class="btn btn-default sketchpad_buttons" id="sketchpad_text" title="{{ trans('nosh.text_tool') }}"><i class="fa fa-text-width fa-fw fa-lg"></i></button>
+                            <button type="button" class="btn btn-default sketchpad_buttons" id="sketchpad_rect" title="{{ trans('nosh.rectangle_tool') }}"><i class="fa fa-square-o fa-fw fa-lg"></i></button>
+                            <button type="button" class="btn btn-default sketchpad_buttons" id="sketchpad_ellipse" title="{{ trans('nosh.ellipse_tool') }}"><i class="fa fa-circle-o fa-fw fa-lg"></i></button>
+                            <button type="button" class="btn btn-default sketchpad_buttons" id="sketchpad_signature" title="{{ trans('nosh.signature_tool') }}"><i class="fa fa-thumbs-o-up fa-fw fa-lg"></i></button>
                             <div class="btn-group">
                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span id="sketchpad_pen_width" style="margin-right:10px;" nosh-data-value="4"><i class="fa fa-circle" style="font-size:4px;"></i></span><span class="caret"></span></button>
                                 <ul class="dropdown-menu pull-right" role="menu">
@@ -99,7 +99,7 @@
                                         <li><a href="#" class="sketchpad_font_name" nosh-data-value="Veranda" style="font-family:Veranda;">Veranda</a></li>
                                     </ul>
                                 </div>
-                                <input type="text" class="form-control" id="sketchpad_textarea" spellcheck="false" data-toggle="popover" title="Hint" data-content="After you're done with your text, click on the spot of the image to drop it in place." placeholder="Text to Place in Image"/>
+                                <input type="text" class="form-control" id="sketchpad_textarea" spellcheck="false" data-toggle="popover" title="Hint" data-content="{{ trans('nosh.text_instruct') }}" placeholder="{{ trans('nosh.text_placeholder') }}"/>
                             </div>
                         </div>
                         <div id="sketchpad_div" style="margin-top:20px;">

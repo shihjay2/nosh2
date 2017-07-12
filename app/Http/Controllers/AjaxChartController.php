@@ -136,17 +136,16 @@ class AjaxChartController extends Controller
     {
         $row = DB::table('demographics')->where('pid', '=', Session::get('pid'))->first();
         $to = $row->reminder_to;
-        $result = 'No reminder method set.';
+        $result = trans('nosh.no_reminder');
         if ($to != '') {
+            $data_message['item'] = trans('nosh.test_reminder');
             if ($row->reminder_method == 'Cellular Phone') {
-                $data_message['item'] = 'This is a test';
                 $message = view('emails.blank', $data_message)->render();
                 $this->textbelt($row->phone_cell, $message, Session::get('practice_id'));
-                $result = 'SMS sent successfully.';
+                $result = trans('nosh.sms_success');
             } else {
-                $data_message['item'] = 'This is a test';
                 $this->send_mail('emails.blank', $data_message, 'Test Notification', $to, Session::get('practice_id'));
-                $result = 'Email sent successfully.';
+                $result = trans('nosh.email_success');
             }
         }
         return $result;

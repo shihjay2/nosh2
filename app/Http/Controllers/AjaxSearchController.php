@@ -453,11 +453,15 @@ class AjaxSearchController extends Controller {
                 foreach ($result as $row) {
                     $records = $row['desc'] . ' [' . $row['icd10'] . ']';
                     if ($assessment == true) {
+                        $href = route('encounter_assessment_add', ['icd', $row['icd10']]);
+                        if ($row['type'] == '0') {
+                            $href = '#';
+                        }
                         $data['message'][] = [
                             'id' => $row['icd10'],
                             'label' => $records,
                             'value' => $records,
-                            'href' => route('encounter_assessment_add', ['icd', $row['icd10']]),
+                            'href' => $href,
                             'icd10type' => $row['type'],
                             'category' => 'Universal Codes',
                             'category_id' => 'universal_icd_result'
@@ -507,7 +511,8 @@ class AjaxSearchController extends Controller {
                     $data[] = [
                         'id' => $row['icd10'],
                         'label' => $records,
-                        'value' => $records
+                        'value' => $records,
+                        'href' => route('encounter_assessment_add', ['icd', $row['icd10']])
                     ];
                 }
             }
@@ -1313,7 +1318,7 @@ class AjaxSearchController extends Controller {
         }
         $replace_arr = $this->array_template();
         if (is_array($array[$request->input('id')])) {
-            $data['response'] = 'li';
+            // $data['response'] = 'li';
             foreach ($array[$request->input('id')] as $key => $value) {
                 if ($request->has('template_group')) {
                     if ($request->input('template_group') == $key) {
@@ -1433,6 +1438,9 @@ class AjaxSearchController extends Controller {
                     }
                 }
             }
+        }
+        if (isset($data['message'])) {
+            $data['response'] = 'li';
         }
         return $data;
     }

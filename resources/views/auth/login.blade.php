@@ -33,7 +33,7 @@
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
-                <div class="panel-heading">Login</div>
+                <div class="panel-heading">{{ trans('nosh.login_heading') }}</div>
                 <div class="panel-body">
                     <div style="text-align: center;">
                         <div style="text-align: center;">
@@ -61,22 +61,22 @@
                             <div class="form-group">
                                 <div class="col-md-6 col-md-offset-3">
                                     <a class="btn btn-primary btn-block" href="{{ url('/uma_auth') }}">
-                                        <i class="fa fa-btn fa-openid"></i> Login
+                                        <i class="fa fa-btn fa-openid"></i> {{ trans('nosh.button_pnosh_login') }}
                                     </a>
-                                    <br><br><a href="#" id="show_login_form">Standard Login for Administrator</a><br><br>
+                                    <br><br><a href="#" id="show_login_form">{{ trans('nosh.button_pnosh_admin') }}</a><br><br>
                                 </div>
                             </div>
                         @else
                             <div class="form-group">
                                 <div class="col-md-6 col-md-offset-3">
 									<a class="btn btn-primary btn-block" href="{{ url('/uma_auth') }}">
-                                        <i class="fa fa-btn fa-openid"></i> Login with HIE of One
+                                        <i class="fa fa-btn fa-openid"></i> {{ trans('nosh.button_pnosh_login_with') }} HIE of One
                                     </a>
                                     <a class="btn btn-primary btn-block" href="{{ url('/oidc') }}">
-                                        <i class="fa fa-btn fa-openid"></i> Login with mdNOSH
+                                        <i class="fa fa-btn fa-openid"></i> {{ trans('nosh.button_pnosh_login_with') }} mdNOSH
                                     </a>
                                     <a class="btn btn-primary btn-block" href="{{ url('/google_auth') }}">
-                                        <i class="fa fa-btn fa-google"></i> Login with Google
+                                        <i class="fa fa-btn fa-google"></i> {{ trans('nosh.button_pnosh_login_with') }} Google
                                     </a>
                                 </div>
                             </div>
@@ -91,7 +91,7 @@
                             {{ csrf_field() }}
 
                             <div class="form-group{{ $errors->has('username') ? ' has-error' : '' }}">
-                                <label for="username" class="col-md-4 control-label">Username</label>
+                                <label for="username" class="col-md-4 control-label">{{ trans('nosh.username') }}</label>
 
                                 <div class="col-md-6">
                                     <input id="username" type="text" class="form-control" name="username" value="{{ old('username') }}">
@@ -105,7 +105,7 @@
                             </div>
 
                             <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-                                <label for="password" class="col-md-4 control-label">Password</label>
+                                <label for="password" class="col-md-4 control-label">{{ trans('nosh.password') }}</label>
 
                                 <div class="col-md-6">
                                     <input id="password" type="password" class="form-control" name="password">
@@ -120,7 +120,7 @@
 
                             @if (isset($practice_list))
                                 <div class="form-group{{ $errors->has('practice_id') ? ' has-error' : '' }}">
-                                    <label for="password" class="col-md-4 control-label">Organization/Practice</label>
+                                    <label for="password" class="col-md-4 control-label"> {{ trans('nosh.organization_practice') }}</label>
 
                                     <div class="col-md-6">
                                         <select id="practice_id" class="form-control" name="practice_id" value="{{ old('practice_id') }}">{!! $practice_list !!}</select>
@@ -138,7 +138,7 @@
                                 <div class="col-md-6 col-md-offset-4">
                                     <div class="checkbox">
                                         <label>
-                                            <input type="checkbox" name="remember"> Remember Me
+                                            <input type="checkbox" name="remember"> {{ trans('nosh.remember_me') }}
                                         </label>
                                     </div>
                                 </div>
@@ -147,11 +147,11 @@
                             <div class="form-group">
                                 <div class="col-md-6 col-md-offset-4">
                                     <button type="submit" class="btn btn-primary">
-                                        <i class="fa fa-btn fa-sign-in"></i> Login
+                                        <i class="fa fa-btn fa-sign-in"></i> {{ trans('nosh.login_heading') }}
                                     </button>
-                                    <a class="btn btn-link" href="{{ url('/password_email') }}">Forgot Your Password?</a>
+                                    <a class="btn btn-link" href="{{ url('/password_email') }}">{{ trans('nosh.forgot_password') }}</a>
                                     @if ($patient_centric == 'n' && $demo == 'n')
-                                        <a class="btn btn-link" href="#" id="register">Are you new to the Patient Portal?</a>
+                                        <a class="btn btn-link" href="#" id="register">{{ trans('nosh.new_patient_portal') }}</a>
                                     @endif
                                 </div>
                             </div>
@@ -166,14 +166,14 @@
                             <input type="hidden" name="practice_id" id="register_practice_id" value="" />
 
                             <div class="well">
-                                <p>Enter the following fields to register as a patient portal user.  It is important that your answers are exactly what is provided to your practice such as the spelling of your name and date of birth.</p>
-                                <p>If you don't have a registration code, a registration request will be sent to the practice administrator.</p>
-                                <p>You will then receive a registration code sent to your e-mail address before you proceed further.</p>
-                                <p>Keep in mind that this may take some time depending on the response time of the practice administrator.</p>
+                                <p>{{ trans('nosh.instruct_patient_portal1') }}</p>
+                                <p>{{ trans('nosh.instruct_patient_portal2') }}</p>
+                                <p>{{ trans('nosh.instruct_patient_portal3') }}</p>
+                                <p>{{ trans('nosh.instruct_patient_portal4') }}</p>
                             </div>
 
                             <div class="form-group{{ $errors->has('lastname') ? ' has-error' : '' }}">
-                                <label for="lastname" class="col-md-4 control-label">Last Name</label>
+                                <label for="lastname" class="col-md-4 control-label">{{ trans('nosh.lastname') }}</label>
 
                                 <div class="col-md-6">
                                     <input id="lastname" type="text" class="form-control" name="lastname" value="{{ old('lastname') }}" required>
@@ -187,7 +187,7 @@
                             </div>
 
                             <div class="form-group{{ $errors->has('firstname') ? ' has-error' : '' }}">
-                                <label for="firstname" class="col-md-4 control-label">First Name</label>
+                                <label for="firstname" class="col-md-4 control-label">{{ trans('nosh.firstname') }}</label>
 
                                 <div class="col-md-6">
                                     <input id="firstname" type="text" class="form-control" name="firstname" value="{{ old('firstname') }}" required>
@@ -201,7 +201,7 @@
                             </div>
 
                             <div class="form-group{{ $errors->has('dob') ? ' has-error' : '' }}">
-                                <label for="dob" class="col-md-4 control-label">Date of Birth</label>
+                                <label for="dob" class="col-md-4 control-label">{{ trans('nosh.dob') }}</label>
 
                                 <div class="col-md-6">
                                     <input id="dob" class="form-control" type="date" name="dob" value="{{ old('dob') }}" required>
@@ -215,7 +215,7 @@
                             </div>
 
                             <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                                <label for="email" class="col-md-4 control-label">E-Mail Address</label>
+                                <label for="email" class="col-md-4 control-label">{{ trans('nosh.email') }}</label>
 
                                 <div class="col-md-6">
                                     <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required>
@@ -229,7 +229,7 @@
                             </div>
 
                             <div class="form-group{{ $errors->has('username1') ? ' has-error' : '' }}">
-                                <label for="username1" class="col-md-4 control-label">Desired Username</label>
+                                <label for="username1" class="col-md-4 control-label">{{ trans('nosh.desired_username') }}</label>
 
                                 <div class="col-md-6">
                                     <input id="username1" type="text" class="form-control" name="username1" value="{{ old('username1') }}" required>
@@ -243,7 +243,7 @@
                             </div>
 
                             <div class="form-group{{ $errors->has('password1') ? ' has-error' : '' }}">
-                                <label for="password1" class="col-md-4 control-label">Password</label>
+                                <label for="password1" class="col-md-4 control-label">{{ trans('nosh.password') }}</label>
 
                                 <div class="col-md-6">
                                     <input id="password1" type="password" class="form-control" name="password1">
@@ -257,7 +257,7 @@
                             </div>
 
                             <div class="form-group{{ $errors->has('confirm_password1') ? ' has-error' : '' }}">
-                                <label for="confirm_password1" class="col-md-4 control-label">Confirm Password</label>
+                                <label for="confirm_password1" class="col-md-4 control-label">{{ trans('nosh.confirm_password') }}</label>
 
                                 <div class="col-md-6">
                                     <input id="confirm_password1" type="password" class="form-control" name="confirm_password1">
@@ -271,7 +271,7 @@
                             </div>
 
                             <div class="form-group{{ $errors->has('secret_question') ? ' has-error' : '' }}">
-                                <label for="secret_question" class="col-md-4 control-label">Security Question</label>
+                                <label for="secret_question" class="col-md-4 control-label">{{ trans('nosh.secret_question') }}</label>
 
                                 <div class="col-md-6">
                                     <input id="secret_question" type="text" class="form-control" name="secret_question">
@@ -285,7 +285,7 @@
                             </div>
 
                             <div class="form-group{{ $errors->has('secret_answer') ? ' has-error' : '' }}">
-                                <label for="secret_answer" class="col-md-4 control-label">Security Answer</label>
+                                <label for="secret_answer" class="col-md-4 control-label">{{ trans('nosh.secret_answer') }}</label>
 
                                 <div class="col-md-6">
                                     <input id="secret_answer" type="text" class="form-control" name="secret_answer">
@@ -299,10 +299,10 @@
                             </div>
 
                             <div class="form-group{{ $errors->has('registration_code') ? ' has-error' : '' }}">
-                                <label for="registration_code" class="col-md-4 control-label">Registration Code</label>
+                                <label for="registration_code" class="col-md-4 control-label">{{ trans('nosh.registration_code') }}</label>
 
                                 <div class="col-md-6">
-                                    <input id="registration_code" type="password" class="form-control" name="registration_code" placeholder="Optional">
+                                    <input id="registration_code" type="password" class="form-control" name="registration_code" placeholder="{{ trans('nosh.optional') }}">
 
                                     @if ($errors->has('registration_code'))
                                         <span class="help-block">
@@ -313,10 +313,10 @@
                             </div>
 
                             <div class="form-group{{ $errors->has('numberReal') ? ' has-error' : '' }}">
-                                <label for="numberReal" class="col-md-4 control-label">CAPTCHA Code</label>
+                                <label for="numberReal" class="col-md-4 control-label">{{ trans('nosh.captcha_code') }}</label>
 
                                 <div class="col-md-6">
-                                    <input id="numberReal" type="text" class="form-control" name="numberReal" placeholder="Enter CAPTCHA code here.">
+                                    <input id="numberReal" type="text" class="form-control" name="numberReal" placeholder="{{ trans('nosh.captcha_code1') }}">
 
                                     @if ($errors->has('numberReal'))
                                         <span class="help-block">
@@ -329,7 +329,7 @@
                             <div class="form-group">
                                 <div class="col-md-6 col-md-offset-4">
                                     <button type="submit" class="btn btn-primary">
-                                        <i class="fa fa-btn fa-sign-in"></i> Register
+                                        <i class="fa fa-btn fa-sign-in"></i> {{ trans('nosh.button_register') }}
                                     </button>
                                 </div>
                             </div>

@@ -76,6 +76,121 @@ class LoginController extends Controller {
         }
     }
 
+    public function api_check(Request $request, $practicehandle)
+	{
+		if ($practicehandle == '0') {
+			$query = DB::table('practiceinfo')->where('practice_id', '=', '1')->first();
+		} else {
+			$query = DB::table('practiceinfo')->where('practicehandle', '=', $practicehandle)->first();
+		}
+		$result = 'No';
+		if ($query) {
+			if (Schema::hasColumn('practiceinfo', 'practice_api_key')) {
+				$result = 'Yes';
+			}
+		}
+		return $result;
+	}
+
+    public function api_login(Request $request)
+	{
+		$data = $request->all();
+		$practice = DB::table('practiceinfo')->where('npi', '=', $data['npi'])->where('practice_api_key', '=', $data['api_key'])->first();
+        $statusCode = 200;
+        if ($practice) {
+			$password = Hash::make(time());
+			$data1 = [
+				'username' => $practice->practice_api_key,
+				'password' => $password,
+				'group_id' => '99',
+				'practice_id' => $practice->practice_id
+			];
+			DB::table('users')->insert($data1);
+			$this->audit('Add');
+			$response = [
+				'error' => false,
+				'message' => 'Login successful',
+				'username' => $practice->practice_api_key,
+				'password' => $password
+			];
+		} else {
+			$response = [
+				'error' => true,
+				'message' => 'Login incorrect!'
+			];
+		}
+        return response()->json($response, $statusCode);
+	}
+
+	public function api_logout(Request $request)
+	{
+		$data = $request->all();
+		$practice = DB::table('practiceinfo')->where('npi', '=', $data['npi'])->where('practice_api_key', '=', $data['api_key'])->first();
+        $statusCode = 200;
+        if ($practice) {
+			DB::table('users')->where('group_id', '=', '99')->where('practice_id', '=', $practice->practice_id)->delete();
+			$this->audit('Delete');
+			$response = [
+				'error' => false,
+				'message' => 'Logout successful'
+			];
+		} else {
+			$response = [
+				'error' => true,
+				'message' => 'Login incorrect!'
+			];
+		}
+        return response()->json($response, $statusCode);
+	}
+
+    public function api_register(Request $request)
+	{
+		$data = $request->all();
+		if ($data['practicehandle'] == '0') {
+			$query = DB::table('practiceinfo')->where('practice_id', '=', '1')->first();
+		} else {
+			$query = DB::table('practiceinfo')->where('practicehandle', '=', $data['practicehandle'])->first();
+		}
+		unset($data['practicehandle']);
+		$practice_id = $query->practice_id;
+		$patient_data = [
+			'api_key' => $data['api_key'],
+			'url' => $data['url']
+		];
+		unset($data['api_key']);
+		unset($data['url']);
+		$patient_query = DB::table('demographics')->where('lastname', '=', $data['lastname'])->where('firstname', '=', $data['firstname'])->where('DOB', '=', $data['DOB'])->where('sex', '=', $data['sex'])->first();
+		if ($patient_query) {
+			// Patient exists
+			$pid = $patient_query->pid;
+			$return['status'] = 'Patient already exists, updated API Key and URL';
+		} else {
+			// If patient doesn't exist, create a new one
+			$pid = DB::table('demographics')->insertGetId($data);
+			$this->audit('Add');
+			$data1 = [
+				'billing_notes' => '',
+				'imm_notes' => '',
+				'pid' => $pid,
+				'practice_id' => $practice_id
+			];
+			DB::table('demographics_notes')->insert($data1);
+			$this->audit('Add');
+			$data2 = [
+				'pid' => $pid,
+				'practice_id' => $practice_id
+			];
+			DB::table('demographics_relate')->insert($data2);
+			$this->audit('Add');
+			$directory = $query->documents_dir . $pid;
+			mkdir($directory, 0775);
+			$return['status'] = 'Patient newly created in the chart.';
+		}
+		DB::table('demographics_relate')->where('pid', '=', $pid)->where('practice_id', '=', $practice_id)->update($patient_data);
+		$this->audit('Update');
+		return $return;
+	}
+
     public function google_auth(Request $request)
     {
         $file = File::get(base_path() . '/.google');
@@ -997,7 +1112,7 @@ class LoginController extends Controller {
                             return redirect()->back()->withErrors(['tryagain' => 'Try again']);
                         }
                     } else {
-                        $row3 = DB::table('practiceinfo')->where('practice_id', '=', $request->input('practice_id'))->first();
+                        $row3 = DB::table('practiceinfo')->where('practice_id', '=', '1')->first();
                         $displayname = Session::get('displayname');
                         $data_message2 = [
                             'firstname' => $request->input('firstname'),
@@ -1006,7 +1121,7 @@ class LoginController extends Controller {
                             'username' => $request->input('username1'),
                             'email' => $request->input('email')
                         ];
-                        $this->send_mail('emails.loginregistrationrequest', $data_message2, 'New User Request', $row3->email, Input::get('practice_id'));
+                        $this->send_mail('emails.loginregistrationrequest', $data_message2, 'New User Request', $row3->email, '1');
                         $view_data1['header'] = 'Registration Sent';
                         $view_data1['content'] = "<div>Your registration information has been sent to the administrator and you will receive your registration code within 48-72 hours by e-mail after confirmation of your idenity.<br>Thank you!</div>";
                         return view('welcome', $view_data1);

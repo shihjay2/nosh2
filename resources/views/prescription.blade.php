@@ -17,7 +17,7 @@
         <!-- <div class="col-md-10 col-md-offset-1"> -->
             <div class="panel panel-default">
                 <div class="panel-heading clearfix">
-                    <h3 class="panel-title pull-left" style="padding-top: 7.5px;">Present to Pharmacy</h3>
+                    <h3 class="panel-title pull-left" style="padding-top: 7.5px;">{{ trans('nosh.present_pharmacy') }}</h3>
                     @if (isset($panel_dropdown))
                         <div class="pull-right">
                             {!! $panel_dropdown !!}
@@ -30,7 +30,7 @@
             </div>
             <div class="panel panel-default">
                 <div class="panel-heading clearfix">
-                    <h3 class="panel-title pull-left" style="padding-top: 7.5px;">Prescription</h3>
+                    <h3 class="panel-title pull-left" style="padding-top: 7.5px;">{{ trans('nosh.prescription') }}</h3>
                     @if (isset($panel_dropdown))
                         <div class="pull-right">
                             {!! $panel_dropdown !!}
@@ -43,14 +43,14 @@
                             <img src="{{ $rx_jpg }}" class="img-responsive">
                         </div>
                         <div class="row">
-                            <a href="{{ $document_url }}" target="_blank" class="nosh-no-load btn btn-primary">Save as PDF</a>
+                            <a href="{{ $document_url }}" target="_blank" class="nosh-no-load btn btn-primary">{{ trans('nosh.save_pdf') }}</a>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="panel panel-default">
                 <div class="panel-heading clearfix">
-                    <h3 class="panel-title pull-left" style="padding-top: 7.5px;">GoodRX Information</h3>
+                    <h3 class="panel-title pull-left" style="padding-top: 7.5px;">{{ trans('nosh.goodrx_header')}}</h3>
                 </div>
                 <div class="panel-body" id="goodrx_container">
                     <div class="container">
@@ -66,7 +66,7 @@
                             <div class="row" style="margin-top: 10px;">
                                 <div class="col-md-6 col-md-offset-3">
                                     <a href="{!! $link !!}" class="btn btn-info btn-block nosh-no-load" target="_blank">
-                                        <i class="fa fa-btn fa-forward"></i> More Drug Information from GoodRX
+                                        <i class="fa fa-btn fa-forward"></i> {{ trans('nosh.goodrx_more') }}
                                     </a>
                                 </div>
                             </div>

@@ -18,7 +18,7 @@
             @if (isset($document_url))
                 <div class="panel panel-default">
                     <div class="panel-heading clearfix">
-                        <h3 class="panel-title pull-left" style="padding-top: 7.5px;">Prescription</h3>
+                        <h3 class="panel-title pull-left" style="padding-top: 7.5px;">{{ trans('nosh.prescription') }}</h3>
                     </div>
                     <div class="panel-body">
                         <div class="container">
@@ -26,7 +26,7 @@
                                 <img src="{{ $rx_jpg }}" class="img-responsive">
                             </div>
                             <div class="row">
-                                <a href="{{ $document_url }}" target="_blank" class="nosh-no-load btn btn-primary">Save as PDF</a>
+                                <a href="{{ $document_url }}" target="_blank" class="nosh-no-load btn btn-primary">{{ trans('nosh.save_pdf') }}</a>
                             </div>
                         </div>
                     </div>
@@ -46,7 +46,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 </div>
 @endsection
@@ -61,14 +60,14 @@
         if (transaction !== null) {
             window.location = '{!! $url !!}' + '/' + transaction.input;
         } else {
-            toastr.error('Transaction receipt not found');
+            toastr.error('{{ trans('nosh.no_transaction') }}');
         }
     };
     const uport_need = '{!! $uport_need !!}';
     $(document).ready(function() {
         // Core
         if (noshdata.message_action !== '') {
-            if (noshdata.message_action.search('Error - ') == -1) {
+            if (noshdata.message_action.search('{{ trans('nosh.error_search') }}') == -1) {
                 toastr.success(noshdata.message_action);
             } else {
                 toastr.error(noshdata.message_action);

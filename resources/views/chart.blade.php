@@ -48,7 +48,7 @@
                     @if (isset($search_rx))
                         <div class="container-fluid panel-container">
                             <form class="input-group form" border="0" id="search_rx_form" role="search" action="{{ url('search_rx') }}" method="POST" style="margin-bottom:0px;" data-nosh-target="search_rx_results" data-nosh-search-to="{{ $search_rx }}">
-                                <input type="text" class="form-control search nosh-typeahead" id="search_rx" name="search_rx" placeholder="Search RX" style="margin-bottom:0px;" required data-provide="typeahead" autocomplete="off" data-nosh-typeahead="{{ url('rx_json')}}">
+                                <input type="text" class="form-control search nosh-typeahead" id="search_rx" name="search_rx" placeholder="{{ trans('nosh.search_rx') }}" style="margin-bottom:0px;" required data-provide="typeahead" autocomplete="off" data-nosh-typeahead="{{ url('rx_json')}}">
                                 <span class="input-group-btn">
                                     <button type="button" class="btn btn-md nosh-search-clear"><i class="glyphicon glyphicon-remove"></i></button>
                                 </span>
@@ -62,7 +62,7 @@
                     @if (isset($search_icd))
                         <div class="container-fluid panel-container">
                             <form class="input-group form" border="0" id="search_icd_form" role="search" action="{{ url('search_icd') }}" method="POST" style="margin-bottom:0px;" data-nosh-target="search_icd_results" data-nosh-search-to="{{ $search_icd }}">
-                                <input type="text" class="form-control search" id="search_icd" name="search_icd" placeholder="Search ICD10 for DX" style="margin-bottom:0px;" autocomplete="off">
+                                <input type="text" class="form-control search" id="search_icd" name="search_icd" placeholder="{{ trans('nosh.search_icd') }}" style="margin-bottom:0px;" autocomplete="off">
                                 <span class="input-group-btn">
                                     <button type="button" class="btn btn-md nosh-search-clear" value="Go"><i class="glyphicon glyphicon-remove"></i></button>
                                 </span>
@@ -76,7 +76,7 @@
                     @if (isset($search_cpt))
                         <div class="container-fluid panel-container">
                             <form class="input-group form" border="0" id="search_cpt_form" role="search" action="{{ url('search_cpt') }}" method="POST" style="margin-bottom:0px;" data-nosh-target="search_cpt_results" data-nosh-search-to="{{ $search_cpt }}">
-                                <input type="text" class="form-control search" id="search_cpt" name="search_cpt" placeholder="Search CPT" style="margin-bottom:0px;" autocomplete="off">
+                                <input type="text" class="form-control search" id="search_cpt" name="search_cpt" placeholder="{{ trans('nosh.search_cpt') }}" style="margin-bottom:0px;" autocomplete="off">
                                 <span class="input-group-btn">
                                     <button type="button" class="btn btn-md nosh-search-favorite" value="Go"><i class="glyphicon glyphicon-star"></i></button>
                                 </span>
@@ -93,7 +93,7 @@
                     @if (isset($search_supplement))
                         <div class="container-fluid panel-container">
                             <form class="input-group form" border="0" id="search_supplement_form" role="search" action="{{ url('search_supplement') . '/' . $search_supplement_option }}" method="POST" style="margin-bottom:0px;" data-nosh-target="search_supplement_results" data-nosh-search-to="{{ $search_supplement }}">
-                                <input type="text" class="form-control search" id="search_supplement" name="search_supplement" placeholder="Search supplement" style="margin-bottom:0px;" autocomplete="off">
+                                <input type="text" class="form-control search" id="search_supplement" name="search_supplement" placeholder="{{ trans('nosh.search_supplement') }}" style="margin-bottom:0px;" autocomplete="off">
                                 <span class="input-group-btn">
                                     <button type="button" class="btn btn-md nosh-search-clear" value="Go"><i class="glyphicon glyphicon-remove"></i></button>
                                 </span>
@@ -107,7 +107,7 @@
                     @if (isset($search_immunization))
                         <div class="container-fluid panel-container">
                             <form class="input-group form" border="0" id="search_immunization_form" role="search" action="{{ url('search_immunization') }}" method="POST" style="margin-bottom:0px;" data-nosh-target="search_immunization_results" data-nosh-search-to="{{ $search_immunization }}">
-                                <input type="text" class="form-control search" id="search_immunization" name="search_immunization" placeholder="Search Immunization" style="margin-bottom:0px;" autocomplete="off">
+                                <input type="text" class="form-control search" id="search_immunization" name="search_immunization" placeholder="{{ trans('nosh.search_immunization') }}" style="margin-bottom:0px;" autocomplete="off">
                                 <span class="input-group-btn">
                                     <button type="button" class="btn btn-md nosh-search-clear" value="Go"><i class="glyphicon glyphicon-remove"></i></button>
                                 </span>
@@ -121,7 +121,7 @@
                     @if (isset($search_immunization_inventory))
                         <div class="container-fluid panel-container">
                             <form class="input-group form" border="0" id="search_immunization_inventory_form" role="search" action="{{ url('search_immunization_inventory') }}" method="POST" style="margin-bottom:0px;" data-nosh-target="search_immunization_inventory_results" data-nosh-search-to="{{ $search_immunization_inventory }}">
-                                <input type="text" class="form-control search" id="search_immunization_inventory" name="search_immunization_inventory" placeholder="Search Vaccine Inventory" style="margin-bottom:0px;" autocomplete="off">
+                                <input type="text" class="form-control search" id="search_immunization_inventory" name="search_immunization_inventory" placeholder="{{ trans('nosh.search_immunization_inventory') }}" style="margin-bottom:0px;" autocomplete="off">
                                 <span class="input-group-btn">
                                     <button type="button" class="btn btn-md nosh-search-clear" value="Go"><i class="glyphicon glyphicon-remove"></i></button>
                                 </span>
@@ -135,7 +135,7 @@
                     @if (isset($search_insurance))
                         <div class="container-fluid panel-container">
                             <form class="input-group form" border="0" id="search_insurance_form" role="search" action="{{ url('search_insurance') }}" method="POST" style="margin-bottom:0px;" data-nosh-target="search_insurance_results" data-nosh-search-to="{{ $search_insurance }}">
-                                <input type="text" class="form-control search" id="search_insurance" name="search_insurance" placeholder="Search insurance" style="margin-bottom:0px;" autocomplete="off">
+                                <input type="text" class="form-control search" id="search_insurance" name="search_insurance" placeholder="{{ trans('nosh.search_insurance') }}" style="margin-bottom:0px;" autocomplete="off">
                                 <span class="input-group-btn">
                                     <button type="button" class="btn btn-md nosh-search-clear" value="Go"><i class="glyphicon glyphicon-remove"></i></button>
                                 </span>
@@ -149,7 +149,7 @@
                     @if (isset($search_loinc))
                         <div class="container-fluid panel-container">
                             <form class="input-group form" border="0" id="search_loinc_form" role="search" action="{{ url('search_loinc') }}" method="POST" style="margin-bottom:0px;" data-nosh-target="search_loinc_results" data-nosh-search-to="{{ $search_loinc }}">
-                                <input type="text" class="form-control search" id="search_loinc" name="search_loinc" placeholder="Search LOINC for Tests" style="margin-bottom:0px;" autocomplete="off">
+                                <input type="text" class="form-control search" id="search_loinc" name="search_loinc" placeholder="{{ trans('nosh.search_loinc') }}" style="margin-bottom:0px;" autocomplete="off">
                                 <span class="input-group-btn">
                                     <button type="button" class="btn btn-md nosh-search-clear" value="Go"><i class="glyphicon glyphicon-remove"></i></button>
                                 </span>
@@ -163,7 +163,7 @@
                     @if (isset($search_address))
                         <div class="container-fluid panel-container">
                             <form class="input-group form" border="0" id="search_address_form" role="search" action="{{ url('search_address') }}" method="POST" style="margin-bottom:0px;" data-nosh-target="search_address_results" data-nosh-search-to="{{ $search_address }}">
-                                <input type="text" class="form-control search" id="search_address" name="search_address" placeholder="Search Address Book" style="margin-bottom:0px;" autocomplete="off">
+                                <input type="text" class="form-control search" id="search_address" name="search_address" placeholder="{{ trans('nosh.search_address') }}" style="margin-bottom:0px;" autocomplete="off">
                                 <span class="input-group-btn">
                                     <button type="button" class="btn btn-md nosh-search-clear" value="Go"><i class="glyphicon glyphicon-remove"></i></button>
                                 </span>
@@ -177,7 +177,7 @@
                     @if (isset($search_specialty))
                         <div class="container-fluid panel-container">
                             <form class="input-group form" border="0" id="search_specialty_form" role="search" action="{{ url('search_specialty') }}" method="POST" style="margin-bottom:0px;" data-nosh-target="search_specialty_results" data-nosh-search-to="{{ $search_specialty }}">
-                                <input type="text" class="form-control search" id="search_specialty" name="search_specialty" placeholder="Search specialty" style="margin-bottom:0px;" autocomplete="off">
+                                <input type="text" class="form-control search" id="search_specialty" name="search_specialty" placeholder="{{ trans('nosh.search_specialty') }}" style="margin-bottom:0px;" autocomplete="off">
                                 <span class="input-group-btn">
                                     <button type="button" class="btn btn-md nosh-search-clear" value="Go"><i class="glyphicon glyphicon-remove"></i></button>
                                 </span>
@@ -191,7 +191,7 @@
                     @if (isset($search_healthwise))
                         <div class="container-fluid panel-container">
                             <form class="input-group form" border="0" id="search_healthwise_form" role="search" action="{{ url('search_healthwise') }}" method="POST" style="margin-bottom:0px;" data-nosh-target="search_healthwise_results" data-nosh-search-to="{{ $search_healthwise }}">
-                                <input type="text" class="form-control search" id="search_healthwise" name="search_healthwise" placeholder="Search Patient Education Materials" style="margin-bottom:0px;" autocomplete="off">
+                                <input type="text" class="form-control search" id="search_healthwise" name="search_healthwise" placeholder="{{ trans('nosh.search_healthwise') }}" style="margin-bottom:0px;" autocomplete="off">
                                 <span class="input-group-btn">
                                     <button type="button" class="btn btn-md nosh-search-clear" value="Go"><i class="glyphicon glyphicon-remove"></i></button>
                                 </span>
@@ -205,7 +205,7 @@
                     @if (isset($search_language))
                         <div class="container-fluid panel-container">
                             <form class="input-group form" border="0" id="search_language_form" role="search" action="{{ url('search_language') }}" method="POST" style="margin-bottom:0px;" data-nosh-target="search_language_results" data-nosh-search-to="{{ $search_language }}">
-                                <input type="text" class="form-control search" id="search_language" name="search_language" placeholder="Search Language" style="margin-bottom:0px;" autocomplete="off">
+                                <input type="text" class="form-control search" id="search_language" name="search_language" placeholder="{{ trans('nosh.search_language') }}" style="margin-bottom:0px;" autocomplete="off">
                                 <span class="input-group-btn">
                                     <button type="button" class="btn btn-md nosh-search-clear" value="Go"><i class="glyphicon glyphicon-remove"></i></button>
                                 </span>
@@ -219,7 +219,7 @@
                     @if (isset($search_guardian))
                         <div class="container-fluid panel-container">
                             <form class="input-group form" border="0" id="search_guardian_form" role="search" action="{{ url('search_guardian') }}" method="POST" style="margin-bottom:0px;" data-nosh-target="search_guardian_results" data-nosh-search-to="{{ $search_guardian }}">
-                                <input type="text" class="form-control search" id="search_guardian" name="search_guardian" placeholder="Search Guardian Role" style="margin-bottom:0px;" autocomplete="off">
+                                <input type="text" class="form-control search" id="search_guardian" name="search_guardian" placeholder="{{ trans('nosh.search_guardian') }}" style="margin-bottom:0px;" autocomplete="off">
                                 <span class="input-group-btn">
                                     <button type="button" class="btn btn-md nosh-search-clear" value="Go"><i class="glyphicon glyphicon-remove"></i></button>
                                 </span>
@@ -233,7 +233,7 @@
                     @if (isset($search_imaging))
                         <div class="container-fluid panel-container">
                             <form class="input-group form" border="0" id="search_imaging_form" role="search" action="{{ url('search_imaging') }}" method="POST" style="margin-bottom:0px;" data-nosh-target="search_imaging_results" data-nosh-search-to="{{ $search_imaging }}">
-                                <input type="text" class="form-control search" id="search_imaging" name="search_imaging" placeholder="Search Imaging Studies" style="margin-bottom:0px;" autocomplete="off">
+                                <input type="text" class="form-control search" id="search_imaging" name="search_imaging" placeholder="{{ trans('nosh.search_imaging') }}" style="margin-bottom:0px;" autocomplete="off">
                                 <span class="input-group-btn">
                                     <button type="button" class="btn btn-md nosh-search-clear" value="Go"><i class="glyphicon glyphicon-remove"></i></button>
                                 </span>
@@ -313,7 +313,7 @@
             @if (isset($goodrx))
                 <div class="panel panel-default">
                     <div class="panel-heading clearfix">
-                        <h3 class="panel-title pull-left" style="padding-top: 7.5px;">GoodRX Information</h3>
+                        <h3 class="panel-title pull-left" style="padding-top: 7.5px;">{{ trans('nosh.goodrx_header') }}</h3>
                     </div>
                     <div class="panel-body" id="goodrx_container">
                         <div class="container">
@@ -329,7 +329,7 @@
                                 <div class="row" style="margin-top: 10px;">
                                     <div class="col-md-6 col-md-offset-3">
                                         <a href="{!! $link !!}" class="btn btn-info btn-block nosh-no-load" target="_blank">
-                                            <i class="fa fa-btn fa-forward"></i> More Drug Information from GoodRX
+                                            <i class="fa fa-btn fa-forward"></i> {{ trans('nosh.goodrx_more') }}
                                         </a>
                                     </div>
                                 </div>
@@ -347,7 +347,7 @@
                             <a href="#" class="btn btn-primary btn-sm" role="button" id="template_back"><i class="fa fa-btn fa-chevron-left"></i> <span id="template_back_text">OK</span></a>
                         </div>
                         <h3 id="template_header_text" class="panel-title pull-right" style="padding-top: 7.5px;">
-                            Templates
+                            {{ trans('nosh.templates') }}
                             @if (isset($template_header))
                                 - {!! $template_header !!}
                             @endif
@@ -357,26 +357,26 @@
                         <ul class="list-group">
                             <li class="list-group-item">
                                 <div class="input-group">
-                                    <span class="input-group-addon">Delimiter:</span>
+                                    <span class="input-group-addon">{{ trans('nosh.delimiter') }}</span>
                                     <select class="form-control" id="template_delimiter">
-                                        <option value="&#13;&#10;">new line</option>
-                                        <option value=", ">comma (,)</option>
-                                        <option value=" ">space</option>
-                                        <option value="  ">double space</option>
-                                        <option value="; ">semi-colon (;)</option>
+                                        <option value="&#13;&#10;">{{ trans('nosh.delimiter') }}</option>
+                                        <option value=", ">{{ trans('nosh.delimiter_comma') }}</option>
+                                        <option value=" ">{{ trans('nosh.delimiter_space') }}</option>
+                                        <option value="  ">{{ trans('nosh.delimiter_double_space') }}</option>
+                                        <option value="; ">{{ trans('nosh.delimiter_semi_colon') }}</option>
                                     </select>
                                     <span class="input-group-btn">
                                         <button type="button" class="btn btn-md" id="template-add" value="Add" title="" data-toggle="tooltip"><i class="fa fa-plus fa-lg"></i></button>
                                     </span>
                                     <span class="input-group-btn" id="template-all-items-span" style="display:none;">
-                                        <button type="button" class="btn btn-md" id="template-all-items" value="All" title="Select all items" data-toggle="tooltip"><i class="fa fa-list fa-lg"></i></button>
+                                        <button type="button" class="btn btn-md" id="template-all-items" value="All" title="{{ trans('nosh.select_all_items') }}" data-toggle="tooltip"><i class="fa fa-list fa-lg"></i></button>
                                     </span>
                                     <input type="hidden" id="template_target" value="">
                                     <input type="hidden" id="template_group" value="">
                                 </div>
                             </li>
                         </ul>
-                        <form role="form"><div class="form-group"><input class="form-control" id="searchinput_template" type="search" placeholder="Filter Results..." /></div>
+                        <form role="form"><div class="form-group"><input class="form-control" id="searchinput_template" type="search" placeholder="{{ trans('nosh.filter_results') }}" /></div>
                             <ul id="template_list" class="list-group searchlist_template"></ul>
                         </form>
                     </div>
@@ -390,56 +390,54 @@
                         <div class="pull-left">
                             <a href="#" class="btn btn-primary btn-sm" role="button" id="dosage_ok"><i class="fa fa-btn fa-chevron-left"></i> <span id="template_back_text">OK</span></a>
                         </div>
-                        <h3 id="dosage_header_text" class="panel-title pull-right" style="padding-top: 7.5px;">
-                            Dosage Calculator
-                        </h3>
+                        <h3 id="dosage_header_text" class="panel-title pull-right" style="padding-top: 7.5px;">{{ trans('nosh.dosage_calculator_header') }}</h3>
                     </div>
                     <div class="panel-body" id="dosage_panel_body">
                         <div class="row">
                             <div class="form-horizontal">
                                 <div class="form-group">
-                                    <label class="control-label col-sm-5" for="calc_dosage">Dosage</label>
+                                    <label class="control-label col-sm-5" for="calc_dosage">{{ trans('nosh.dosage') }}</label>
                                     <div class="col-sm-7">
                                         <input type="text" id="calc_dosage" class="form-control input-sm docalcblur">
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-sm-5" for="calc_dosage_unit">Dosage Unit</label>
+                                    <label class="control-label col-sm-5" for="calc_dosage_unit">{{ trans('nosh.dosage_unit') }}</label>
                                     <div class="col-sm-7">
                                         <select id="calc_dosage_unit" class="form-control input-sm docalc">
-                                            <option value="1000|0|gm/kg">gm/kg/day</option>
-                                            <option value="0.001|0|mcg/kg">mcg/kg/day</option>
-                                            <option value="1|0|mg/kg" selected>mg/kg/day</option>
+                                            <option value="1000|0|gm/kg">gm/kg/d</option>
+                                            <option value="0.001|0|mcg/kg">mcg/kg/d</option>
+                                            <option value="1|0|mg/kg" selected>mg/kg/d</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-sm-5" for="email">Weight</label>
+                                    <label class="control-label col-sm-5" for="email">{{ trans('nosh.weight') }}</label>
                                     <div class="col-sm-7">
                                         <p class="form-control-static"><span id="calc_weight_span">{{ $recent_weight }} {{ $weight_unit }}</span></p>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-sm-5" for="calc_frequency">Frquency</label>
+                                    <label class="control-label col-sm-5" for="calc_frequency">{{ trans('nosh.frequency') }}</label>
                                     <div class="col-sm-7">
                                         <select id="calc_frequency" class="form-control input-sm docalc">
-                                            <option value="1" selected>daily</option>
-                                            <option value="2">twice a day (every 12 hours)</option>
-                                            <option value="3">three times a day (every 8 hours)</option>
-                                            <option value="4">four times a day (every 6 hours)</option>
-                                            <option value="5">five times a day</option>
-                                            <option value="6">six times a day (every 4 hours)</option>
+                                            <option value="1" selected>{{ trans('nosh.daily') }}</option>
+                                            <option value="2">{{ trans('nosh.bid') }}</option>
+                                            <option value="3">{{ trans('nosh.tid') }}</option>
+                                            <option value="4">{{ trans('nosh.qid') }}</option>
+                                            <option value="5">{{ trans('nosh.5xd') }}</option>
+                                            <option value="6">{{ trans('nosh.6xd') }}</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-sm-5" for="calc_med_amount">Amount</label>
+                                    <label class="control-label col-sm-5" for="calc_med_amount">{{ trans('nosh.amount') }}</label>
                                     <div class="col-sm-7">
                                         <input type="text" id="calc_med_amount" class="form-control input-sm docalcblur">
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-sm-5" for="calc_med_amount_unit">Amount Unit</label>
+                                    <label class="control-label col-sm-5" for="calc_med_amount_unit">{{ trans('nosh.amount_unit') }}</label>
                                     <div class="col-sm-7">
                                         <select id="calc_med_amount_unit" class="form-control input-sm docalc">
                                             <option value="1000|0|gm">gm</option>
@@ -449,13 +447,13 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-sm-5" for="calc_med_volume">Per Volume</label>
+                                    <label class="control-label col-sm-5" for="calc_med_volume">{{ trans('nosh.volume') }}</label>
                                     <div class="col-sm-7">
                                         <input type="text" id="calc_med_volume" class="form-control input-sm docalcblur">
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-sm-5" for="calc_med_volume_unit">Per Volume Unit</label>
+                                    <label class="control-label col-sm-5" for="calc_med_volume_unit">{{ trans('nosh.volume_unit') }}</label>
                                     <div class="col-sm-7">
                                         <select id="calc_med_volume_unit" class="form-control input-sm docalc">
                                             <option value="1000|0|L">L</option>
@@ -464,13 +462,13 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-sm-5" for="calc_dose">Dose</label>
+                                    <label class="control-label col-sm-5" for="calc_dose">{{ trans('nosh.dose') }}</label>
                                     <div class="col-sm-7">
                                         <input type="text" id="calc_dose" readonly class="form-control input-sm">
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-sm-5" for="calc_dose_unit">Dose Unit</label>
+                                    <label class="control-label col-sm-5" for="calc_dose_unit">{{ trans('nosh.dosage_unit') }}</label>
                                     <div class="col-sm-7">
                                         <select id="calc_dose_unit" class="form-control input-sm docalc">
                                             <option value="1000|0|gm">gm</option>
@@ -480,13 +478,13 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-sm-5" for="calc_liquid_dose">Liquid Dose</label>
+                                    <label class="control-label col-sm-5" for="calc_liquid_dose">{{ trans('nosh.liquid_dose') }}</label>
                                     <div class="col-sm-7">
                                         <input type="text" id="calc_liquid_dose" readonly class="form-control input-sm">
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-sm-5" for="calc_liquid_dose_unit">Liquid Dose Unit</label>
+                                    <label class="control-label col-sm-5" for="calc_liquid_dose_unit">{{ trans('nosh.liquid_dose_unit') }}</label>
                                     <div class="col-sm-7">
                                         <select id="calc_liquid_dose_unit" class="form-control input-sm docalc">
                                             <option value="1000|0|L">L</option>
@@ -548,7 +546,7 @@
         if ($('#encounter_provider').val() !== '') {
             var a = $('#encounter_provider').val();
             $('#encounter_type').removeOption(/./);
-            $('#encounter_type').addOption({'':'Choose appointment to associate encounter!'}, false);
+            $('#encounter_type').addOption({'':'{{ trans('nosh.choose_appt') }}'}, false);
             $.ajax({
                 type: 'POST',
                 url: noshdata.get_appointments,
@@ -563,7 +561,7 @@
             var a = $(this).val();
             if (a !== '') {
                 $('#encounter_type').removeOption(/./);
-                $('#encounter_type').addOption({'':'Choose appointment to associate encounter!'}, false);
+                $('#encounter_type').addOption({'':'{{ trans('nosh.choose_appt') }}'}, false);
                 $.ajax({
                     type: 'POST',
                     url: noshdata.get_appointments,
@@ -595,7 +593,7 @@
                 success: function(data){
                     $('#warningModal_body').html(data.info);
                     var text_data = '<div class="col-md-2 col-md-offset-5"><button id="warning" class="btn btn-default btn-block">Click Here to Learn More</button></div>';
-                    toastr.error(text_data, 'Medication Interaction Information Available', {'timeOut':'20000','tapToDismiss':false,'preventDuplicates':true,"preventOpenDuplicates":true});
+                    toastr.error(text_data, '{{ trans('nosh.medication_interactions') }}', {'timeOut':'20000','tapToDismiss':false,'preventDuplicates':true,"preventOpenDuplicates":true});
                     $('#warning').css('cursor', 'pointer').on('click', function(){
                         $('#warningModal').modal('show');
                     });
@@ -608,15 +606,15 @@
                 var amount = 0;
                 var quantity = '';
                 var unit = '';
-                var one = ['once a day', 'once daily', 'daily', 'qd', 'every 24 hours', 'every 24 hrs', '1x a day', 'q24h'];
-                var two = ['twice a day (every 12 hours)', 'twice a day', 'twice daily', 'two times a day', 'bid', 'every 12 hours', 'every 12 hrs', 'q12h', 'q12 hours', 'q12 hrs', 'every twelve hours', 'every 12 hrs', '2x a day'];
-                var three = ['three times a day (every 8 hours)', 'three times a day', 'tid', 'every 8 hours', 'q8h', 'q8 hours', 'q8 hrs', 'every eight hours', 'every 8 hrs', 'every eight hrs', '3x a day'];
-                var four = ['four times a day (every 6 hours)', 'four times a day', 'qid', 'every 6 hours', 'q6h', 'q6 hours', 'q6 hrs', 'every six hours', 'every 6 hrs', 'every six hrs', '4x a day'];
-                var five = ['five times a day', '5x a day'];
-                var six = ['six times a day (every 4 hours)', 'six times a day', 'every 4 hours', 'q4h', 'q4 hours', 'q4 hrs', 'every four hours', 'every 4 hrs', 'every four hrs', '6x a day'];
-                var eight = ['eight times a day', 'every 3 hours', 'q3h', 'q3 hours', 'q3 hrs', 'every three hours', 'every 3 hrs', 'every three hrs', '8x a day'];
-                var twelve = ['twelve times a day', 'every 2 hours', 'q2h', 'q2 hours', 'q2 hrs', 'every two hours', 'every 2 hrs', 'every two hrs', '12x a day'];
-                var exclude = ['tablet', 'tablets', 'drop', 'drops', 'capsule', 'capsules', 'patch', 'patches', 'spray', 'sprays'];
+                var one = [{!! trans('nosh.one') !!}];
+                var two = [{!! trans('nosh.two') !!}];
+                var three = [{!! trans('nosh.three') !!}];
+                var four = [{!! trans('nosh.four') !!}];
+                var five = [{!! trans('nosh.five') !!}];
+                var six = [{!! trans('nosh.six') !!}];
+                var eight = [{!! trans('nosh.eight') !!}];
+                var twelve = [{!! trans('nosh.twelve') !!}];
+                var exclude = [{!! trans('nosh.exclude') !!}];
                 if ($.inArray($('#rxl_frequency').val().toLowerCase(), one) !== -1) {
                     amount = 1;
                 }
@@ -677,7 +675,7 @@
                 type: 'POST',
                 url: noshdata.test_reminder,
                 success: function(data){
-                    if (data == 'No reminder method set.') {
+                    if (data == '{{ trans('nosh.no_reminder') }}') {
                         toastr.error(data);
                     } else {
                         toastr.success(data);
@@ -748,7 +746,7 @@
             if (w !== '') {
                 var text = '';
                 if ((w >= 500) || (h >= 120)) {
-                    toastr.error('Invalid data.  Please check and re-enter.');
+                    toastr.error('{{ trans('nosh.invalid_data') }}');
                 } else {
                     var bmi = (Math.round((w * 703) / (h * h)));
                     $('#BMI').val(bmi);
@@ -756,19 +754,19 @@
                         text = bmi + ' kg/m2';
                     } else {
                         if (bmi < 19) {
-                            text += ' - Underweight';
+                            text += ' - {{ trans('nosh.underweight') }}';
                         }
                         if (bmi >=19 && bmi <=25) {
-                            text += ' - Desirable';
+                            text += ' - {{ trans('nosh.desirable') }}';
                         }
                         if (bmi >=26 && bmi <=29) {
-                            text += ' - Prone to health risks';
+                            text += ' - {{ trans('nosh.prone_health_risks') }}';
                         }
                         if (bmi >=30 && bmi <=40) {
-                            text += ' - Obese';
+                            text += ' - {{ trans('nosh.obese') }}';
                         }
                         if (bmi >40){
-                            text += ' - Morbidly obese';
+                            text += ' - {{ trans('nosh.morbid_obese') }}';
                         }
                     }
                     var old = $('#vitals_other').val();
@@ -789,7 +787,7 @@
                     $('#temp').css('color','black');
                 }
                 if (a > 106 || a < 93) {
-                    toastr.error('Invalid temperature value.');
+                    toastr.error('{{ trans('nosh.invalid_temp') }}');
                     $('#temp').val('');
                     $('#temp').css('color','black');
                 }
@@ -804,7 +802,7 @@
                     $('#bp_systolic').css('color','black');
                 }
                 if (a > 250 || a < 50) {
-                    toastr.error('Invalid value.');
+                    toastr.error('{{ trans('nosh.invalid_value') }}');
                     $('#bp_systolic').val('');
                     $('#bp_systolic').css('color','black');
                 }
@@ -819,7 +817,7 @@
                     $('#bp_diastolic').css('color','black');
                 }
                 if (a > 200 || a < 30) {
-                    toastr.error('Invalid value.');
+                    toastr.error('{{ trans('nosh.invalid_value') }}');
                     $('#bp_diastolic').val('');
                     $('#bp_diastolic').css('color','black');
                 }
@@ -834,7 +832,7 @@
                     $('#pulse').css('color','black');
                 }
                 if (a > 250 || a < 30) {
-                    toastr.error('Invalid value.');
+                    toastr.error('{{ trans('nosh.invalid_value') }}');
                     $('#pulse').val('');
                     $('#pulse').css('color','black');
                 }
@@ -849,7 +847,7 @@
                     $('#respirations').css('color','black');
                 }
                 if (a > 50 || a < 5) {
-                    toastr.error('Invalid value.');
+                    toastr.error('{{ trans('nosh.invalid_value') }}');
                     $('#respirations').val('');
                     $('#respirations').css('color','black');
                 }
@@ -864,7 +862,7 @@
                     $('#o2_sat').css('color','black');
                 }
                 if (a > 100 || a < 50) {
-                    toastr.error('Invalid value.');
+                    toastr.error('{{ trans('nosh.invalid_value') }}');
                     $('#o2_sat').val('');
                     $('#o2_sat').css('color','black');
                 }
@@ -880,8 +878,8 @@
                     data: 'cpt=' + $(this).val(),
                     success: function(data){
                         if (data == 'y') {
-                            var text_data = '<div class="col-md-2 col-md-offset-5"><button id="add_new_cpt" class="btn btn-default btn-block">Yes</button></div>';
-                            toastr.success(text_data, 'New procedure code.  Do you want to add this code for future lookups?', {"timeOut":"20000","preventDuplicates":true});
+                            var text_data = '<div class="col-md-2 col-md-offset-5"><button id="add_new_cpt" class="btn btn-default btn-block">{{ trans('nosh.button_yes') }}</button></div>';
+                            toastr.success(text_data, '{{ trans('nosh.new_procedure_code') }}', {"timeOut":"20000","preventDuplicates":true});
                             noshdata.toastr_collide = '1';
                         }
                     }
@@ -897,8 +895,8 @@
         $('#cpt_charge').blur(function(){
             if ($(this).val() !== noshdata.billing_charge) {
                 if ($('#cpt').val() !== '' && noshdata.toastr_collide !== '1') {
-                    var text_data = '<div class="col-md-2 col-md-offset-5"><button id="update_cpt" class="btn btn-default btn-block">Yes</button></div>';
-                    toastr.success(text_data, 'New charge value detected.  Do you want to update the default values for this CPT code?', {"timeOut":"20000","preventDuplicates":true});
+                    var text_data = '<div class="col-md-2 col-md-offset-5"><button id="update_cpt" class="btn btn-default btn-block">{{ trans('nosh.button_yes') }}</button></div>';
+                    toastr.success(text_data, '{{ trans('nosh.new_charge') }}', {"timeOut":"20000","preventDuplicates":true});
                     noshdata.toastr_collide = '1';
                 }
             }
@@ -906,8 +904,8 @@
         $('#unit').blur(function(){
             if ($(this).val() !== noshdata.billing_unit) {
                 if ($('#cpt').val() !== '' && noshdata.toastr_collide !== '1') {
-                    var text_data = '<div class="col-md-2 col-md-offset-5"><button id="update_cpt" class="btn btn-default btn-block">Yes</button></div>';
-                    toastr.success(text_data, 'New unit value detected.  Do you want to update the default values for this CPT code?', {"timeOut":"20000","preventDuplicates":true});
+                    var text_data = '<div class="col-md-2 col-md-offset-5"><button id="update_cpt" class="btn btn-default btn-block">{{ trans('nosh.button_yes') }}</button></div>';
+                    toastr.success(text_data, '{{ trans('nosh.new_unit') }}', {"timeOut":"20000","preventDuplicates":true});
                     noshdata.toastr_collide = '1';
                 }
             }
@@ -918,7 +916,7 @@
             var a = $(this).val();
             if (a !== '') {
                 $('#address_id').removeOption(/./);
-                $('#address_id').addOption({'':'Select Provider'}, false);
+                $('#address_id').addOption({'':'{{ trans('nosh.select_provider') }}'}, false);
                 $.ajax({
                     type: 'POST',
                     url: noshdata.search_referral_provider,
@@ -1060,29 +1058,6 @@
 
         // Immunization recomendations
         if ($('#immunization_recs').length) {
-            var noshimm1 = {
-                patientImmunizationHistory: [
-                    {
-                      "date": "05/10/2012",
-                      "product": {
-                        "name": "HepB Vaccine"
-                      }
-                    },
-                    {
-                      "date": "08/10/2012",
-                      "product": {
-                        "name": "HepB Vaccine"
-                      }
-                    },
-                    {
-                      "date": "08/10/2012",
-                      "product": {
-                        "name": "DTaP-Hib-IPV"
-                      }
-                    }
-                ],
-                patientAgeMonths: 12
-            };
             var noshimm = JSON.parse('<?php if (isset($imm_arr)) { echo $imm_arr; }?>');
             var imm_container = document.getElementById('immunization_recs');
             immunizationTable = new ImmunizationTable(noshimm);
@@ -1133,7 +1108,7 @@
     function dosage_calc() {
         doCalc = true;
         if ($('#calc_dosage').val().indexOf(',') >= 0) {
-            toastr.error('Comma character not allowed');
+            toastr.error('{{ trans('nosh.no_comma') }}');
             $('#calc_dosage').val('');
             doCalc = false;
         }
@@ -1142,7 +1117,7 @@
         unit_parts = $('#calc_dosage_unit').val().split('|');
         Dosage = param_value * parseFloat(unit_parts[0]) + parseFloat(unit_parts[1]);
         if (noshdata.recent_weight === '') {
-            toastr.error('No recent weights measured for this patient.  Calculator is disabled.');
+            toastr.error('{{ trans('nosh.disable_calc') }}');
             doCalc = false;
         }
         param_value = parseFloat(noshdata.recent_weight);
@@ -1157,7 +1132,7 @@
             }
         }
         if ($('#calc_med_amount').val().indexOf(',') >= 0) {
-            toastr.error('Comma character not allowed');
+            toastr.error('{{ trans('nosh.no_comma') }}');
             $('#calc_med_amount').val('');
             doCalc = false;
         }
@@ -1165,7 +1140,7 @@
         unit_parts = $('#calc_med_amount_unit').val().split('|');
         Med_Amount = param_value * parseFloat(unit_parts[0]) + parseFloat(unit_parts[1]);
         if ($('#calc_med_volume').val().indexOf(',') >= 0) {
-            toastr.error('Comma character not allowed');
+            toastr.error('{{ trans('nosh.no_comma') }}');
             $('#calc_med_volume').val('');
             doCalc = false;
         }

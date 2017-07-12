@@ -264,7 +264,7 @@
                                 }
                                 $('.nosh-pt-appt').show();
                                 $('.nosh-appt-old').hide();
-                                $('#eventModal_title').text('New Appointment');
+                                $('#eventModal_title').text('{{ trans('nosh.new_appointment') }}');
                                 $('#event_id_div').hide();
                                 $('#pid_div').hide();
                                 $('#eventModal').modal('show');
@@ -290,7 +290,7 @@
                         $('.nosh-event').hide();
                         $('.nosh-appt').show();
                         $('#event_encounter').show();
-                        $('#eventModal_title').text('Edit Appointment');
+                        $('#eventModal_title').text('{{ trans('nosh.edit_appointment') }}');
                         $('#patient_name').text(calEvent.title);
                         $('#end').val('');
                         $('#visit_type').focus();
@@ -410,7 +410,7 @@
                 $('#title').val(noshdata.pt_name);
                 $('#patient_name').text(noshdata.pt_name);
             }
-            $('#eventModal_title').text('New Appointment');
+            $('#eventModal_title').text('{{ trans('nosh.new_appointment') }}');
             $('#event_delete').hide();
             $('#eventModal').modal('show');
             $('#visit_type').focus();

@@ -27,7 +27,7 @@ class ReminderController extends Controller {
 			->get();
 		$j=0;
 		$i=0;
-		if ($query1) {
+		if ($query1->count()) {
 			foreach ($query1 as $row) {
 				$to = $row->reminder_to;
 				$row0 = DB::table('users')->where('id', '=', $row->provider_id)->first();
@@ -121,7 +121,7 @@ class ReminderController extends Controller {
 		$results_count = $this->get_results();
 		$results_alert = $this->alert_message_send();
 		$results_practice_clean = $this->clean_practice();
-		$results_api = $this->process_api();
+		$results_api = $this->api_process();
 		$this->clean_temp_dir();
 		$arr .= "Number of results obtained: " . $results_count . "<br>";
 		$arr .= "Number of alerts sent: " . $results_alert . "<br>";

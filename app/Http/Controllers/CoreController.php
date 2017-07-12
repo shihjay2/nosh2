@@ -198,6 +198,119 @@ class CoreController extends Controller
         return view('core', $data);
     }
 
+    public function api_practice(Request $request)
+	{
+        $practice_id = Session::get('practice_id');
+        if ($request->isMethod('post')) {
+            if ($request->input('submit') !== 'no_sync') {
+        		$url_check = false;
+        		$url_reason = '';
+        		$api_key = uniqid('nosh', true);
+        		$register_code = uniqid();
+        		$patient_portal = DB::table('practiceinfo')->where('practice_id', '=', '1')->first();
+        		$patient = DB::table('demographics')->first();
+        		$register_data = json_decode(json_encode($patient), true);
+        		$register_data['api_key'] = $api_key;
+        		$register_data['url'] = URL::to('/');
+        		$pos = stripos($request->input('practice_url'), 'cloud.noshchartingsystem.com');
+        		if ($pos !== false) {
+        			$url_explode = explode('/', $request->input('practice_url'));
+        			$url = 'https://cloud.noshchartingsystem.com/nosh/api_check/' . $url_explode[5];
+        			$url1 = 'https://cloud.noshchartingsystem.com/nosh/api_register';
+        			$register_data['practicehandle'] = $url_explode[5];
+        		} else {
+        			$url = $request->input('practice_url') . '/api_check/0';
+        			$url1 = $request->input('practice_url') . '/api_register';
+        			$register_data['practicehandle'] = '0';
+        		}
+        		$ch = curl_init();
+        		curl_setopt($ch,CURLOPT_URL, $url);
+        		curl_setopt($ch,CURLOPT_FAILONERROR,1);
+        		curl_setopt($ch,CURLOPT_FOLLOWLOCATION,1);
+        		curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+        		curl_setopt($ch,CURLOPT_TIMEOUT, 60);
+        		curl_setopt($ch,CURLOPT_CONNECTTIMEOUT ,0);
+        		$result = curl_exec($ch);
+        		if(curl_errno($ch)){
+        			$url_reason = 'Error: ' . curl_error($ch);
+        		} else {
+        			if ($result !== 'No') {
+        				$url_check = true;
+        			} else {
+        				$url_reason = 'mdNOSH is not set up to accept API connections.  Please update the mdNOSH installation.';
+        			}
+        		}
+        		if ($url_check == false) {
+        			$status = 'n';
+        			//$data_message['temp_url'] = rtrim($patient_portal->patient_portal, '/') . '/practiceregister/' . $register_code;
+        			$message = 'Error: Problem with contacting the URL problem for NOSH integration.  Please check if you have NOSH and that the URL provided is correct.';
+        			if ($url_reason != '') {
+        				$message .= '  ' . $url_reason;
+        			}
+        		} else {
+        			$data = [
+        				'practice_api_key' => $api_key,
+        				'active' => 'Y',
+        				'practice_registration_key' => $register_code,
+        				'practice_registration_timeout' => time() + 86400,
+        				'practice_api_url' => $request->input('practice_url')
+        			];
+        			DB::table('practiceinfo')->where('practice_id', '=', $practice_id)->update($data);
+                    $this->audit('Update');
+        			$data2['api_key'] = $api_key;
+        			DB::table('demographics_relate')->where('practice_id', '=', $practice_id)->where('pid', '=', $patient->pid)->update($data2);
+        			$this->audit('Update');
+        			//$data_message['temp_url'] = rtrim($patient_portal->patient_portal, '/') . '/practiceregisternosh/' . $register_code;
+        			// Send API key to mdNOSH;
+        			$result = $this->api_data_send($url1, $register_data, '', '');
+        			$status = 'y';
+        			$message = 'Practice added with mdNOSH integration.';
+        			$message .= '  Response from server: ' . $result['status'];
+        		}
+    		    //$this->send_mail('emails.apiregister', $data_message, 'NOSH ChartingSystem API Registration', $request->input('email'), '1');
+            } else {
+                $data3['practice_api_url'] = 'nosync';
+                DB::table('practiceinfo')->where('practice_id', '=', $practice_id)->update($data);
+                $this->audit('Update');
+                $status = 'y';
+                $message = 'No mdNOSH integration set.';
+            }
+            Session::put('message_action', $message);
+            if ($status == 'n') {
+                return route('api_practice');
+            } else {
+                return route('pnosh_provider_redirect');
+            }
+        } else {
+            $data['panel_header'] = 'Integrate with your Practice NOSH (mdNOSH)';
+            $items[] = [
+                'name' => 'practice_url',
+                'label' => 'URL of Practice NOSH (mdNOSH)',
+                'type' => 'text',
+                'default_value' => null
+            ];
+            $form_array = [
+                'form_id' => 'api_practice',
+                'action' => route('api_practice'),
+                'items' => $items,
+                'save_button_label' => 'Save',
+                'add_save_button' => [
+                    'no_sync' => 'No Integration'
+                ]
+            ];
+            $data['content'] = '<div class="alert alert-success"><h5>Integration Tips</h5><ul>';
+            $data['content'] .= '<li>If this patient does not exist in your Practice NOSH, the patient will be added.</li>';
+            $data['content'] .= '<li>If the patient already exsits, this will link the this Patient NOSH to your Practice NOSH</li>';
+            $data['content'] .= '</ul></div>';
+            $data['content'] .= $this->form_build($form_array);
+            $data['message_action'] = Session::get('message_action');
+            Session::forget('message_action');
+            $data['assets_js'] = $this->assets_js();
+            $data['assets_css'] = $this->assets_css();
+            return view('core', $data);
+        }
+	}
+
     public function audit_logs(Request $request)
     {
         $query = DB::table('audit')->where('practice_id', '=', Session::get('practice_id'))->orderBy('timestamp', 'desc')->paginate(20);
@@ -4962,6 +5075,9 @@ class CoreController extends Controller
             DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->update($data1);
             $this->audit('Update');
         }
+        if ($practice->practice_api_url == null) {
+            // return redirect()->route('api_practice');
+        }
         return redirect()->route('patient');
     }
 
@@ -5835,6 +5951,20 @@ class CoreController extends Controller
                 if ($request->input('submit') == 'save') {
                     return redirect()->route('superquery_list');
                 }
+            } else {
+                $array = [];
+                $type = $request->input('title');
+                $array[$type]['search_active_only'] = $search_active_only;
+                $array[$type]['search_no_insurance_only'] = $search_no_insurance_only;
+                $array[$type]['search_gender'] = $search_gender;
+                 for ($j = 0; $j < count($search_field); $j++) {
+                    $array[$type][$j] = [
+                        'search_field' => $search_field[$j],
+                        'search_op' => $search_op[$j],
+                        'search_desc' => $search_desc[$j],
+                        'search_join' => $search_join[$j]
+                    ];
+                }
             }
             $values = [];
             $item = [];
@@ -6192,28 +6322,227 @@ class CoreController extends Controller
                         });
                     }
                     if($search_field[$i] == 'month') {
-                        $query_text1->where(function($query_array8) use ($search_op, $search_desc, $search_join, $i) {
+                        $query_text1->where(function($query_array9) use ($search_op, $search_desc, $search_join, $i) {
                             $query_date = date('-m-', strtotime($search_desc[$i]));
                             if($search_op[$i] == 'equal') {
                                 if($search_join[$i] !== "start") {
                                     if($search_join[$i] == 'AND') {
-                                        $query_array8->where('demographics.DOB', 'LIKE', "%$query_date%");
+                                        $query_array9->where('demographics.DOB', 'LIKE', "%$query_date%");
                                     } else {
-                                        $query_array8->orWhere('demographics.DOB', 'LIKE', "%$query_date%");
+                                        $query_array9->orWhere('demographics.DOB', 'LIKE', "%$query_date%");
                                     }
                                 } else {
-                                    $query_array8->where('demographics.DOB', 'LIKE', "%$query_date%");
+                                    $query_array9->where('demographics.DOB', 'LIKE', "%$query_date%");
                                 }
                             }
                             if($search_op[$i] == 'not equal') {
                                 if($search_join[$i] !== "start") {
                                     if($search_join[$i] == 'AND') {
-                                        $query_array8->where('demographics.DOB', 'NOT LIKE', "%$query_date%");
+                                        $query_array9->where('demographics.DOB', 'NOT LIKE', "%$query_date%");
                                     } else {
-                                        $query_array8->orWhere('demographics.DOB', 'NOT LIKE', "%$query_date%");
+                                        $query_array9->orWhere('demographics.DOB', 'NOT LIKE', "%$query_date%");
                                     }
                                 } else {
-                                    $query_array8->where('demographics.DOB', 'NOT LIKE', "%$query_date%");
+                                    $query_array9->where('demographics.DOB', 'NOT LIKE', "%$query_date%");
+                                }
+                            }
+                        });
+                    }
+                    if ($search_field[$i] == 'bp_systolic') {
+                        $query_text1->join('vitals', function($join){
+                            $join->on('vitals.pid', '=', 'demographics.pid');
+                            $join->whereRaw("vitals.vitals_date = (SELECT MAX(z.vitals_date) FROM vitals as z WHERE z.pid = vitals.pid AND z.bp_systolic != '')");
+                        });
+                        $query_text1->where(function($query_array10) use ($search_op, $search_desc, $search_join, $i) {
+                            if($search_op[$i] == 'equal') {
+                                if($search_join[$i] !== "start") {
+                                    if($search_join[$i] == 'AND') {
+                                        $query_array10->where('vitals.bp_systolic', '=', $search_desc[$i]);
+                                    } else {
+                                        $query_array10->orWhere('vitals.bp_systolic', '=', $search_desc[$i]);
+                                    }
+                                } else {
+                                    $query_array10->where('vitals.bp_systolic', '=', $search_desc[$i]);
+                                }
+                            }
+                            if($search_op[$i] == 'greater than') {
+                                if($search_join[$i] !== "start") {
+                                    if($search_join[$i] == 'AND') {
+                                        $query_array10->where('vitals.bp_systolic', '>', $search_desc[$i]);
+                                    } else {
+                                        $query_array10->orWhere('vitals.bp_systolic', '>', $search_desc[$i]);
+                                    }
+                                } else {
+                                    $query_array10->where('vitals.bp_systolic', '>', $search_desc[$i]);
+                                }
+                            }
+                            if($search_op[$i] == 'less than') {
+                                if($search_join[$i] !== "start") {
+                                    if($search_join[$i] == 'AND') {
+                                        $query_array10->where('vitals.bp_systolic', '<', $search_desc[$i]);
+                                    } else {
+                                        $query_array10->orWhere('vitals.bp_systolic', '<', $search_desc[$i]);
+                                    }
+                                } else {
+                                    $query_array10->where('vitals.bp_systolic', '<', $search_desc[$i]);
+                                }
+                            }
+                        });
+                    }
+                    if ($search_field[$i] == 'bp_diastolic') {
+                        $query_text1->join('vitals', function($join){
+                            $join->on('vitals.pid', '=', 'demographics.pid');
+                            $join->whereRaw("vitals.vitals_date = (SELECT MAX(z.vitals_date) FROM vitals as z WHERE z.pid = vitals.pid AND z.bp_diastolic != '')");
+                        });
+                        $query_text1->where(function($query_array11) use ($search_op, $search_desc, $search_join, $i) {
+                            if($search_op[$i] == 'equal') {
+                                if($search_join[$i] !== "start") {
+                                    if($search_join[$i] == 'AND') {
+                                        $query_array11->where('vitals.bp_diastolic', '=', $search_desc[$i]);
+                                    } else {
+                                        $query_array11->orWhere('vitals.bp_diastolic', '=', $search_desc[$i]);
+                                    }
+                                } else {
+                                    $query_array11->where('vitals.bp_diastolic', '=', $search_desc[$i]);
+                                }
+                            }
+                            if($search_op[$i] == 'greater than') {
+                                if($search_join[$i] !== "start") {
+                                    if($search_join[$i] == 'AND') {
+                                        $query_array11->where('vitals.bp_diastolic', '>', $search_desc[$i]);
+                                    } else {
+                                        $query_array11->orWhere('vitals.bp_diastolic', '>', $search_desc[$i]);
+                                    }
+                                } else {
+                                    $query_array11->where('vitals.bp_diastolic', '>', $search_desc[$i]);
+                                }
+                            }
+                            if($search_op[$i] == 'less than') {
+                                if($search_join[$i] !== "start") {
+                                    if($search_join[$i] == 'AND') {
+                                        $query_array11->where('vitals.bp_diastolic', '<', $search_desc[$i]);
+                                    } else {
+                                        $query_array11->orWhere('vitals.bp_diastolic', '<', $search_desc[$i]);
+                                    }
+                                } else {
+                                    $query_array11->where('vitals.bp_diastolic', '<', $search_desc[$i]);
+                                }
+                            }
+                        });
+                    }
+                    if($search_field[$i] == 'test_name') {
+                        $query_text1->join('tests as tests1', 'tests1.pid', '=', 'demographics.pid');
+                        $query_text1->where(function($query_array12) use ($search_op, $search_desc, $search_join, $i) {
+                            if($search_op[$i] == 'equal') {
+                                if($search_join[$i] !== "start") {
+                                    if($search_join[$i] == 'AND') {
+                                        $query_array12->where('tests1.test_name', '=', $search_desc[$i]);
+                                    } else {
+                                        $query_array12->orWhere('tests1.test_name', '=', $search_desc[$i]);
+                                    }
+                                } else {
+                                    $query_array12->where('tests1.test_name', '=', $search_desc[$i]);
+                                }
+                            }
+                            if($search_op[$i] == 'contains') {
+                                if($search_join[$i] !== "start") {
+                                    if($search_join[$i] == 'AND') {
+                                        $query_array12->where('tests1.test_name', 'LIKE', "%$search_desc[$i]%");
+                                    } else {
+                                        $query_array12->orWhere('tests1.test_name', 'LIKE', "%$search_desc[$i]%");
+                                    }
+                                } else {
+                                    $query_array12->where('tests1.test_name', 'LIKE', "%$search_desc[$i]%");
+                                }
+                            }
+                            if($search_op[$i] == 'not equal') {
+                                if($search_join[$i] !== "start") {
+                                    if($search_join[$i] == 'AND') {
+                                        $query_array12->where('tests1.test_name', '!=', $search_desc[$i]);
+                                    } else {
+                                        $query_array12->orWhere('tests1.test_name', '!=', $search_desc[$i]);
+                                    }
+                                } else {
+                                    $query_array12->where('tests1.test_name', '!=', $search_desc[$i]);
+                                }
+                            }
+                        });
+                    }
+                    if($search_field[$i] == 'test_code') {
+                        $query_text1->join('tests as tests2', 'tests2.pid', '=', 'demographics.pid');
+                        $query_text1->where(function($query_array13) use ($search_op, $search_desc, $search_join, $i) {
+                            if($search_op[$i] == 'equal') {
+                                if($search_join[$i] !== "start") {
+                                    if($search_join[$i] == 'AND') {
+                                        $query_array13->where('tests2.test_code', '=', $search_desc[$i]);
+                                    } else {
+                                        $query_array13->orWhere('tests2.test_code', '=', $search_desc[$i]);
+                                    }
+                                } else {
+                                    $query_array13->where('tests2.test_code', '=', $search_desc[$i]);
+                                }
+                            }
+                            if($search_op[$i] == 'contains') {
+                                if($search_join[$i] !== "start") {
+                                    if($search_join[$i] == 'AND') {
+                                        $query_array13->where('tests2.test_code', 'LIKE', "%$search_desc[$i]%");
+                                    } else {
+                                        $query_array13->orWhere('tests2.test_code', 'LIKE', "%$search_desc[$i]%");
+                                    }
+                                } else {
+                                    $query_array13->where('tests2.test_code', 'LIKE', "%$search_desc[$i]%");
+                                }
+                            }
+                            if($search_op[$i] == 'not equal') {
+                                if($search_join[$i] !== "start") {
+                                    if($search_join[$i] == 'AND') {
+                                        $query_array13->where('tests2.test_code', '!=', $search_desc[$i]);
+                                    } else {
+                                        $query_array13->orWhere('tests2.test_code', '!=', $search_desc[$i]);
+                                    }
+                                } else {
+                                    $query_array13->where('tests2.test_code', '!=', $search_desc[$i]);
+                                }
+                            }
+                        });
+                    }
+                    if ($search_field[$i] == 'test_result') {
+                        $query_text1->join('tests as tests3', function($join){
+                            $join->on('tests3.pid', '=', 'demographics.pid');
+                            $join->whereRaw("tests3.test_datetime = (SELECT MAX(z.test_datetime) FROM tests as z WHERE z.pid = tests3.pid AND z.test_result != '')");
+                        });
+                        $query_text1->where(function($query_array14) use ($search_op, $search_desc, $search_join, $i) {
+                            if($search_op[$i] == 'equal') {
+                                if($search_join[$i] !== "start") {
+                                    if($search_join[$i] == 'AND') {
+                                        $query_array14->where('tests3.test_result', '=', $search_desc[$i]);
+                                    } else {
+                                        $query_array14->orWhere('tests3.test_result', '=', $search_desc[$i]);
+                                    }
+                                } else {
+                                    $query_array14->where('tests3.test_result', '=', $search_desc[$i]);
+                                }
+                            }
+                            if($search_op[$i] == 'greater than') {
+                                if($search_join[$i] !== "start") {
+                                    if($search_join[$i] == 'AND') {
+                                        $query_array14->where('tests3.test_result', '>', $search_desc[$i]);
+                                    } else {
+                                        $query_array14->orWhere('tests3.test_result', '>', $search_desc[$i]);
+                                    }
+                                } else {
+                                    $query_array14->where('tests3.test_result', '>', $search_desc[$i]);
+                                }
+                            }
+                            if($search_op[$i] == 'less than') {
+                                if($search_join[$i] !== "start") {
+                                    if($search_join[$i] == 'AND') {
+                                        $query_array14->where('tests3.test_result', '<', $search_desc[$i]);
+                                    } else {
+                                        $query_array14->orWhere('tests3.test_result', '<', $search_desc[$i]);
+                                    }
+                                } else {
+                                    $query_array14->where('tests3.test_result', '<', $search_desc[$i]);
                                 }
                             }
                         });
@@ -6239,7 +6568,7 @@ class CoreController extends Controller
                     $list_array[] = $arr;
                 }
                 $table = '<h4>Results</h4>';
-                $table .= $this->result_build($list_array, 'vaccine_inventory_list');
+                $table .= $this->result_build($list_array, 'superquery_list');
             } else {
                 $table = 'No result';
             }

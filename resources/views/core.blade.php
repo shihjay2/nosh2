@@ -22,7 +22,7 @@
                     @if (isset($search_patient1))
                         <div class="container-fluid panel-container">
                             <form class="input-group form" border="0" id="search_patient1_form" role="search" action="{{ url('search_patient') }}" method="POST" style="margin-bottom:0px;" data-nosh-target="search_patient1_results" data-nosh-search-to="{{ $search_patient1 }}">
-                                <input type="text" class="form-control search" id="search_patient1" name="search_patient" placeholder="Search Patient" style="margin-bottom:0px;" autocomplete="off">
+                                <input type="text" class="form-control search" id="search_patient1" name="search_patient" placeholder="{{ trans('nosh.search_patient') }}" style="margin-bottom:0px;" autocomplete="off">
                                 <input type="hidden" name="type" value="li">
                                 <span class="input-group-btn">
                                     <button type="button" class="btn btn-md nosh-search-clear"><i class="glyphicon glyphicon-remove"></i></button>
@@ -37,7 +37,7 @@
                     @if (isset($search_rx))
                         <div class="container-fluid panel-container">
                             <form class="input-group form" border="0" id="search_rx_form" role="search" action="{{ url('search_rx') }}" method="POST" style="margin-bottom:0px;" data-nosh-target="search_rx_results" data-nosh-search-to="{{ $search_rx }}">
-                                <input type="text" class="form-control search nosh-typeahead" id="search_rx" name="search_rx" placeholder="Search RX" style="margin-bottom:0px;" required data-provide="typeahead" autocomplete="off" data-nosh-typeahead="{{ url('rx_json')}}">
+                                <input type="text" class="form-control search nosh-typeahead" id="search_rx" name="search_rx" placeholder="{{ trans('nosh.search_rx') }}" style="margin-bottom:0px;" required data-provide="typeahead" autocomplete="off" data-nosh-typeahead="{{ url('rx_json')}}">
                                 <span class="input-group-btn">
                                     <button type="button" class="btn btn-md nosh-search-clear"><i class="glyphicon glyphicon-remove"></i></button>
                                 </span>
@@ -51,7 +51,7 @@
                     @if (isset($search_icd))
                         <div class="container-fluid panel-container">
                             <form class="input-group form" border="0" id="search_icd_form" role="search" action="{{ url('search_icd') }}" method="POST" style="margin-bottom:0px;" data-nosh-target="search_icd_results" data-nosh-search-to="{{ $search_icd }}">
-                                <input type="text" class="form-control search" id="search_icd" name="search_icd" placeholder="Search ICD10 for Dx" style="margin-bottom:0px;" autocomplete="off">
+                                <input type="text" class="form-control search" id="search_icd" name="search_icd" placeholder="{{ trans('nosh.search_icd') }}" style="margin-bottom:0px;" autocomplete="off">
                                 <span class="input-group-btn">
                                     <button type="button" class="btn btn-md nosh-search-clear" value="Go"><i class="glyphicon glyphicon-remove"></i></button>
                                 </span>
@@ -65,7 +65,7 @@
                     @if (isset($search_cpt))
                         <div class="container-fluid panel-container">
                             <form class="input-group form" border="0" id="search_cpt_form" role="search" action="{{ url('search_cpt') }}" method="POST" style="margin-bottom:0px;" data-nosh-target="search_cpt_results" data-nosh-search-to="{{ $search_cpt }}">
-                                <input type="text" class="form-control search" id="search_cpt" name="search_cpt" placeholder="Search CPT" style="margin-bottom:0px;" autocomplete="off">
+                                <input type="text" class="form-control search" id="search_cpt" name="search_cpt" placeholder="{{ trans('nosh.search_cpt') }}" style="margin-bottom:0px;" autocomplete="off">
                                 <span class="input-group-btn">
                                     <button type="button" class="btn btn-md nosh-search-favorite" value="Go"><i class="glyphicon glyphicon-star"></i></button>
                                 </span>
@@ -73,7 +73,7 @@
                                     <button type="button" class="btn btn-md nosh-search-clear" value="Go"><i class="glyphicon glyphicon-remove"></i></button>
                                 </span>
                                 <span class="input-group-btn">
-                                    <button type="submit" class="btn btn-md" id="search_icd_submit" value="Go"><i class="glyphicon glyphicon-search"></i></button>
+                                    <button type="submit" class="btn btn-md" id="search_cpt_submit" value="Go"><i class="glyphicon glyphicon-search"></i></button>
                                 </span>
                             </form>
                             <div class="list-group" id="search_cpt_results"></div>
@@ -82,7 +82,7 @@
                     @if (isset($search_supplement))
                         <div class="container-fluid panel-container">
                             <form class="input-group form" border="0" id="search_supplement_form" role="search" action="{{ url('search_supplement') . '/' . $search_supplement_option }}" method="POST" style="margin-bottom:0px;" data-nosh-target="search_supplement_results" data-nosh-search-to="{{ $search_supplement }}">
-                                <input type="text" class="form-control search" id="search_supplement" name="search_supplement" placeholder="Search supplement" style="margin-bottom:0px;" autocomplete="off">
+                                <input type="text" class="form-control search" id="search_supplement" name="search_supplement" placeholder="{{ trans('nosh.search_supplement') }}" style="margin-bottom:0px;" autocomplete="off">
                                 <span class="input-group-btn">
                                     <button type="button" class="btn btn-md nosh-search-clear" value="Go"><i class="glyphicon glyphicon-remove"></i></button>
                                 </span>
@@ -96,7 +96,7 @@
                     @if (isset($search_immunization))
                         <div class="container-fluid panel-container">
                             <form class="input-group form" border="0" id="search_immunization_form" role="search" action="{{ url('search_immunization') }}" method="POST" style="margin-bottom:0px;" data-nosh-target="search_immunization_results" data-nosh-search-to="{{ $search_immunization }}">
-                                <input type="text" class="form-control search" id="search_immunization" name="search_immunization" placeholder="Search Immunization" style="margin-bottom:0px;" autocomplete="off">
+                                <input type="text" class="form-control search" id="search_immunization" name="search_immunization" placeholder="{{ trans('nosh.search_immunization') }}" style="margin-bottom:0px;" autocomplete="off">
                                 <span class="input-group-btn">
                                     <button type="button" class="btn btn-md nosh-search-clear" value="Go"><i class="glyphicon glyphicon-remove"></i></button>
                                 </span>
@@ -110,7 +110,7 @@
                     @if (isset($search_immunization_inventory))
                         <div class="container-fluid panel-container">
                             <form class="input-group form" border="0" id="search_immunization_inventory_form" role="search" action="{{ url('search_immunization_inventory') }}" method="POST" style="margin-bottom:0px;" data-nosh-target="search_immunization_inventory_results" data-nosh-search-to="{{ $search_immunization_inventory }}">
-                                <input type="text" class="form-control search" id="search_immunization_inventory" name="search_immunization_inventory" placeholder="Search Vaccine Inventory" style="margin-bottom:0px;" autocomplete="off">
+                                <input type="text" class="form-control search" id="search_immunization_inventory" name="search_immunization_inventory" placeholder="{{ trans('nosh.search_immunization_inventory') }}" style="margin-bottom:0px;" autocomplete="off">
                                 <span class="input-group-btn">
                                     <button type="button" class="btn btn-md nosh-search-clear" value="Go"><i class="glyphicon glyphicon-remove"></i></button>
                                 </span>
@@ -124,7 +124,7 @@
                     @if (isset($search_insurance))
                         <div class="container-fluid panel-container">
                             <form class="input-group form" border="0" id="search_insurance_form" role="search" action="{{ url('search_insurance') }}" method="POST" style="margin-bottom:0px;" data-nosh-target="search_insurance_results" data-nosh-search-to="{{ $search_insurance }}">
-                                <input type="text" class="form-control search" id="search_insurance" name="search_insurance" placeholder="Search insurance" style="margin-bottom:0px;" autocomplete="off">
+                                <input type="text" class="form-control search" id="search_insurance" name="search_insurance" placeholder="{{ trans('nosh.search_insurance') }}" style="margin-bottom:0px;" autocomplete="off">
                                 <span class="input-group-btn">
                                     <button type="button" class="btn btn-md nosh-search-clear" value="Go"><i class="glyphicon glyphicon-remove"></i></button>
                                 </span>
@@ -138,7 +138,7 @@
                     @if (isset($search_loinc))
                         <div class="container-fluid panel-container">
                             <form class="input-group form" border="0" id="search_loinc_form" role="search" action="{{ url('search_loinc') }}" method="POST" style="margin-bottom:0px;" data-nosh-target="search_loinc_results" data-nosh-search-to="{{ $search_loinc }}">
-                                <input type="text" class="form-control search" id="search_loinc" name="search_loinc" placeholder="Search LOINC for Tests" style="margin-bottom:0px;" autocomplete="off">
+                                <input type="text" class="form-control search" id="search_loinc" name="search_loinc" placeholder="{{ trans('nosh.search_loinc') }}" style="margin-bottom:0px;" autocomplete="off">
                                 <span class="input-group-btn">
                                     <button type="button" class="btn btn-md nosh-search-clear" value="Go"><i class="glyphicon glyphicon-remove"></i></button>
                                 </span>
@@ -152,7 +152,7 @@
                     @if (isset($search_address))
                         <div class="container-fluid panel-container">
                             <form class="input-group form" border="0" id="search_address_form" role="search" action="{{ url('search_address') }}" method="POST" style="margin-bottom:0px;" data-nosh-target="search_address_results" data-nosh-search-to="{{ $search_address }}">
-                                <input type="text" class="form-control search" id="search_address" name="search_address" placeholder="Search Address Book" style="margin-bottom:0px;" autocomplete="off">
+                                <input type="text" class="form-control search" id="search_address" name="search_address" placeholder="{{ trans('nosh.search_address') }}" style="margin-bottom:0px;" autocomplete="off">
                                 <span class="input-group-btn">
                                     <button type="button" class="btn btn-md nosh-search-clear" value="Go"><i class="glyphicon glyphicon-remove"></i></button>
                                 </span>
@@ -166,7 +166,7 @@
                     @if (isset($search_specialty))
                         <div class="container-fluid panel-container">
                             <form class="input-group form" border="0" id="search_specialty_form" role="search" action="{{ url('search_specialty') }}" method="POST" style="margin-bottom:0px;" data-nosh-target="search_specialty_results" data-nosh-search-to="{{ $search_specialty }}">
-                                <input type="text" class="form-control search" id="search_specialty" name="search_specialty" placeholder="Search specialty" style="margin-bottom:0px;" autocomplete="off">
+                                <input type="text" class="form-control search" id="search_specialty" name="search_specialty" placeholder="{{ trans('nosh.search_specialty') }}" style="margin-bottom:0px;" autocomplete="off">
                                 <span class="input-group-btn">
                                     <button type="button" class="btn btn-md nosh-search-clear" value="Go"><i class="glyphicon glyphicon-remove"></i></button>
                                 </span>
@@ -180,7 +180,7 @@
                     @if (isset($search_healthwise))
                         <div class="container-fluid panel-container">
                             <form class="input-group form" border="0" id="search_healthwise_form" role="search" action="{{ url('search_healthwise') }}" method="POST" style="margin-bottom:0px;" data-nosh-target="search_healthwise_results" data-nosh-search-to="{{ $search_healthwise }}">
-                                <input type="text" class="form-control search" id="search_healthwise" name="search_healthwise" placeholder="Search Patient Education Materials" style="margin-bottom:0px;" autocomplete="off">
+                                <input type="text" class="form-control search" id="search_healthwise" name="search_healthwise" placeholder="{{ trans('nosh.search_healthwise') }}" style="margin-bottom:0px;" autocomplete="off">
                                 <span class="input-group-btn">
                                     <button type="button" class="btn btn-md nosh-search-clear" value="Go"><i class="glyphicon glyphicon-remove"></i></button>
                                 </span>
@@ -194,7 +194,7 @@
                     @if (isset($search_language))
                         <div class="container-fluid panel-container">
                             <form class="input-group form" border="0" id="search_language_form" role="search" action="{{ url('search_language') }}" method="POST" style="margin-bottom:0px;" data-nosh-target="search_language_results" data-nosh-search-to="{{ $search_language }}">
-                                <input type="text" class="form-control search" id="search_language" name="search_language" placeholder="Search Language" style="margin-bottom:0px;" autocomplete="off">
+                                <input type="text" class="form-control search" id="search_language" name="search_language" placeholder="{{ trans('nosh.search_language') }}" style="margin-bottom:0px;" autocomplete="off">
                                 <span class="input-group-btn">
                                     <button type="button" class="btn btn-md nosh-search-clear" value="Go"><i class="glyphicon glyphicon-remove"></i></button>
                                 </span>
@@ -208,7 +208,7 @@
                     @if (isset($search_guardian))
                         <div class="container-fluid panel-container">
                             <form class="input-group form" border="0" id="search_guardian_form" role="search" action="{{ url('search_guardian') }}" method="POST" style="margin-bottom:0px;" data-nosh-target="search_guardian_results" data-nosh-search-to="{{ $search_guardian }}">
-                                <input type="text" class="form-control search" id="search_guardian" name="search_guardian" placeholder="Search Guardian Role" style="margin-bottom:0px;" autocomplete="off">
+                                <input type="text" class="form-control search" id="search_guardian" name="search_guardian" placeholder="{{ trans('nosh.search_guardian') }}" style="margin-bottom:0px;" autocomplete="off">
                                 <span class="input-group-btn">
                                     <button type="button" class="btn btn-md nosh-search-clear" value="Go"><i class="glyphicon glyphicon-remove"></i></button>
                                 </span>
@@ -222,7 +222,7 @@
                     @if (isset($search_imaging))
                         <div class="container-fluid panel-container">
                             <form class="input-group form" border="0" id="search_imaging_form" role="search" action="{{ url('search_imaging') }}" method="POST" style="margin-bottom:0px;" data-nosh-target="search_imaging_results" data-nosh-search-to="{{ $search_imaging }}">
-                                <input type="text" class="form-control search" id="search_imaging" name="search_imaging" placeholder="Search Imaging Studies" style="margin-bottom:0px;" autocomplete="off">
+                                <input type="text" class="form-control search" id="search_imaging" name="search_imaging" placeholder="{{ trans('nosh.search_imaging') }}" style="margin-bottom:0px;" autocomplete="off">
                                 <span class="input-group-btn">
                                     <button type="button" class="btn btn-md nosh-search-clear" value="Go"><i class="glyphicon glyphicon-remove"></i></button>
                                 </span>
@@ -326,7 +326,7 @@
                 <div class="panel">
                     <div id="template_panel" class="panel-heading clearfix">
                         <h3 id="template_header_text" class="panel-title pull-left" style="padding-top: 7.5px;">
-                            Templates
+                            {{ trans('nosh.templates') }}
                             @if (isset($template_header))
                                 - {!! $template_header !!}
                             @endif
@@ -339,26 +339,26 @@
                         <ul class="list-group">
                             <li class="list-group-item">
                                 <div class="input-group">
-                                    <span class="input-group-addon">Delimiter:</span>
+                                    <span class="input-group-addon">{{ trans('nosh.delimiter') }}</span>
                                     <select class="form-control" id="template_delimiter">
-                                        <option value="&#13;&#10;">new line</option>
-                                        <option value=", ">comma (,)</option>
-                                        <option value=" ">space</option>
-                                        <option value="  ">double space</option>
-                                        <option value="; ">semi-colon (;)</option>
+                                        <option value="&#13;&#10;">{{ trans('nosh.delimiter_new_line') }}</option>
+                                        <option value=", ">{{ trans('nosh.delimiter_comma') }}</option>
+                                        <option value=" ">{{ trans('nosh.delimiter_space') }}</option>
+                                        <option value="  ">{{ trans('nosh.delimiter_double_space') }}</option>
+                                        <option value="; ">{{ trans('nosh.delimiter_semi_colon') }}</option>
                                     </select>
                                     <span class="input-group-btn">
                                         <button type="button" class="btn btn-md" id="template-add" value="Add" title="" data-toggle="tooltip"><i class="fa fa-plus fa-lg"></i></button>
                                     </span>
                                     <span class="input-group-btn" id="template-all-items-span" style="display:none;">
-                                        <button type="button" class="btn btn-md" id="template-all-items" value="All" title="Select all items" data-toggle="tooltip"><i class="fa fa-list fa-lg"></i></button>
+                                        <button type="button" class="btn btn-md" id="template-all-items" value="All" title="{{ trans('nosh.select_all_items') }}" data-toggle="tooltip"><i class="fa fa-list fa-lg"></i></button>
                                     </span>
                                     <input type="hidden" id="template_target" value="">
                                     <input type="hidden" id="template_group" value="">
                                 </div>
                             </li>
                         </ul>
-                        <form role="form"><div class="form-group"><input class="form-control" id="searchinput_template" type="search" placeholder="Filter Results..." /></div>
+                        <form role="form"><div class="form-group"><input class="form-control" id="searchinput_template" type="search" placeholder="{{ trans('nosh.filter_results') }}" /></div>
                             <ul id="template_list" class="list-group searchlist_template"></ul>
                         </form>
                     </div>
@@ -371,7 +371,7 @@
 
 @section('view.scripts')
 <script type="text/javascript">
-    var availableMonths = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+    var availableMonths = ["{{ trans('nosh.month1') }}","{{ trans('nosh.month2') }}","{{ trans('nosh.month3') }}","{{ trans('nosh.month4') }}","{{ trans('nosh.month5') }}","{{ trans('nosh.month6') }}","{{ trans('nosh.month7') }}","{{ trans('nosh.month8') }}","{{ trans('nosh.month9') }}","{{ trans('nosh.month10') }}","{{ trans('nosh.month11') }}","{{ trans('nosh.month12') }}"];
     $(function () {
         var activeTab = $('[href="' + location.hash + '"]');
         if (activeTab) {
@@ -412,7 +412,7 @@
         if (noshdata.print_now !== '') {
             window.location = noshdata.print_now;
         }
-        $('#url').attr('title', 'Copy the link (URL) from your email or SMS that you received from your patient').attr('data-toggle', 'tooltip');
+        $('#url').attr('title', '{{ trans('nosh.uma_url') }}').attr('data-toggle', 'tooltip');
         // ERA reconciliation
         $('#pid').change(function() {
             var a = $(this).val();
@@ -433,6 +433,24 @@
             }
         });
         // Super query
+        var superquery_items = {
+            "":"{{ trans('nosh.superquery_select') }}",
+            "age":"{{ trans('nosh.superquery_age') }}",
+            "insurance":"{{ trans('nosh.superquery_insurance') }}",
+            "issue":"{{ trans('nosh.superquery_issue') }}",
+            "billing":"{{ trans('nosh.superquery_billing') }}",
+            "rxl_medication":"{{ trans('nosh.superquery_rxl_medication') }}",
+            "imm_immunization":"{{ trans('nosh.superquery_imm_immunization') }}",
+            "sup_supplement":"{{ trans('nosh.superquery_sup_supplement') }}",
+            "zip":"{{ trans('nosh.superquery_zip') }}",
+            "city":"{{ trans('nosh.superquery_city') }}",
+            "month":"{{ trans('nosh.superquery_month') }}",
+            "bp_systolic":"{{ trans('nosh.superquery_bp_systolic') }}",
+            "bp_diastolic":"{{ trans('nosh.superquery_bp_diastolic') }}",
+            "test_name":"{{ trans('nosh.superquery_test_name') }}",
+            "test_code":"{{ trans('nosh.superquery_test_code') }}",
+            "test_result":"{{ trans('nosh.superquery_test_result') }}"
+        };
         function superquery() {
             $('.search_desc_class').css('cursor', 'pointer').click(function(){
                 var a = $(this).val();
@@ -468,19 +486,19 @@
                 var a = $(this).val();
                 // console.log(a);
                 var a1 = $(this).attr('id').split("_");
-                if (a == "age") {
+                if (a == "age" || a == "bp_systolic" || a == "bp_diastolic" || a == "test_result") {
                     $('#search_op_' + a1[2]).removeOption(/./);
-                    $('#search_op_' + a1[2]).addOption({"":"Select Operator","less than":"is less than","equal":"is equal to","greater than":"is greater than","contains":"contains","not equal":"is not equal to"},false);
+                    $('#search_op_' + a1[2]).addOption({"":"{{ trans('nosh.select_operator') }}","less than":"{{ trans('nosh.less_than') }}","equal":"{{ trans('nosh.equal') }}","greater than":"{{ trans('nosh.greater_than') }}","contains":"{{ trans('nosh.contains') }}","not equal":"{{ trans('nosh.not_equal') }}"},false);
                     $('#search_desc_' + a1[2]).val("");
                 }
-                if (a == "issue" || a == "rxl_medication" || a == "imm_immunization" || a == "insurance" || a == "sup_supplement" || a == "zip" || a == "city") {
+                if (a == "issue" || a == "rxl_medication" || a == "imm_immunization" || a == "insurance" || a == "sup_supplement" || a == "zip" || a == "city" || a == "test_name" || a == "test_code") {
                     $('#search_op_' + a1[2]).removeOption(/./);
-                    $('#search_op_' + a1[2]).addOption({"":"Select Operator","equal":"is equal to","contains":"contains","not equal":"is not equal to"},false);
+                    $('#search_op_' + a1[2]).addOption({"":"{{ trans('nosh.select_operator') }}","equal":"{{ trans('nosh.equal') }}","contains":"{{ trans('nosh.contains') }}","not equal":"{{ trans('nosh.not_equal') }}"},false);
                     $('#search_desc_' + a1[2]).val("");
                 }
                 if (a == "billing") {
                     $('#search_op_' + a1[2]).removeOption(/./);
-                    $('#search_op_' + a1[2]).addOption({"":"Select Operator","equal":"is equal to","not equal":"is not equal to"},false);
+                    $('#search_op_' + a1[2]).addOption({"":"{{ trans('nosh.select_operator') }}","equal":"{{ trans('nosh.equal') }}","not equal":"{{ trans('nosh.not_equal') }}"},false);
                     $('#search_desc_' + a1[2]).val("");
                     $('#search_desc_' + a1[2]).addClass('loading');
                     $('#search_desc_' + a1[2]).prop('disabled', true);
@@ -503,7 +521,7 @@
                 }
                 if (a == "month") {
                     $('#search_op_' + a1[2]).removeOption(/./);
-                    $('#search_op_' + a1[2]).addOption({"":"Select Operator","equal":"is equal to","not equal":"is not equal to"},false);
+                    $('#search_op_' + a1[2]).addOption({"":"{{ trans('nosh.select_operator') }}","equal":"{{ trans('nosh.equal') }}","not equal":"{{ trans('nosh.not_equal') }}"},false);
                     $('#search_desc_' + a1[2]).val("");
                     $('#search_desc_' + a1[2]).typeahead('destroy');
                     $('#search_desc_' + a1[2]).typeahead({
@@ -531,9 +549,9 @@
             var a1 = a.split("_");
             var count = parseInt(a1[2]) + 1;
             $('#super_query_div').append('<br><div class="input-group" id="search_div_' + count + '"><span class="input-group-addon search_remove"><i class="fa fa-trash fa-lg"></i></span><select name="search_join[]" id="search_join_' + count + '" class="form-control search_join_class"></select><select name="search_field[]" id="search_field_' + count + '" class="form-control search_field_class"></select><select name="search_op[]" id="search_op_' + count + '" class="form-control search_op_class"></select><input type="text" name="search_desc[]" id="search_desc_' + count + '"  class="form-control search_desc_class"></input></div>');
-            $('#search_field_' + count).addOption({"":"Select Field","age":"Patient's age","insurance":"Patient's primary insurance","issue":"Patient's active medical issue list","billing":"Patient's billing code","rxl_medication":"Patient's active medication list","imm_immunization":"Patient's immunization list","sup_supplement":"Patient's active supplement list","zip":"Zip code where patient resides","city":"City where patient resides","month":"Patient's birth month"},false);
-            $('#search_op_' + count).addOption({"":"Select Operator"},false);
-            $('#search_join_' + count).addOption({"AND":"And (&)","OR":"Or (||)"},false);
+            $('#search_field_' + count).addOption(superquery_items,false);
+            $('#search_op_' + count).addOption({"":"{{ trans('nosh.select_operator') }}"},false);
+            $('#search_join_' + count).addOption({"AND":"{{ trans('nosh.and') }}","OR":"{{ trans('nosh.or') }}"},false);
             superquery();
         });
         // Messaging
@@ -558,7 +576,7 @@
         if ($("#timezone").val() === '') {
             var tz = jstz.determine();
             $("#timezone").val(tz.name());
-            toastr.success('Timezone not set. Automatically set based on your browser location');
+            toastr.success('{{ trans('nosh.timezone') }}');
         }
     });
 </script>

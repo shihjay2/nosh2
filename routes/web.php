@@ -129,7 +129,7 @@ Route::any('uma_api', ['as' => 'uma_api', 'uses' => 'CoreController@uma_api']);
 Route::any('uma_list', ['as' => 'uma_list', 'uses' => 'CoreController@uma_list']);
 Route::get('uma_resources/{id}', ['as' => 'uma_resources', 'uses' => 'CoreController@uma_resources']);
 Route::get('uma_resource_view', ['as' => 'uma_resource_view', 'uses' => 'CoreController@uma_resource_view']);
-Route::get('users/{type}', ['as' => 'users', 'uses' => 'CoreController@users']);
+Route::get('users/{type}/{active}', ['as' => 'users', 'uses' => 'CoreController@users']);
 Route::any('user_signature', ['as' => 'user_signature', 'uses' => 'CoreController@user_signature']);
 Route::get('vaccines/{type}', ['as' => 'vaccines', 'uses' => 'CoreController@vaccines']);
 Route::get('last_page/{hash}', ['as' => 'last_page', 'uses' => 'AjaxCoreController@last_page']);
@@ -339,14 +339,20 @@ Route::group(['prefix' => 'fhir', 'middleware' => 'fhir'], function () {
 });
 
 // API routes
-Route::get('checkapi/{practicehandle}', ['as' => 'checkapi', 'uses' => 'APIv1Controller@checkapi']);
-Route::any('registerapi', ['as' => 'registerapi', 'uses' => 'APIv1Controller@registerapi']);
-Route::any('practice_api', ['as' => 'practice_api', 'uses' => 'APIv1Controller@practice_api']);
+Route::get('api_check/{practicehandle}', ['as' => 'api_check', 'uses' => 'LoginController@api_check']);
+Route::any('api_login', ['as' => 'api_login', 'uses' => 'LoginController@api_login']);
+Route::any('api_logout', ['as' => 'api_logout', 'uses' => 'LoginController@api_logout']);
+Route::any('api_practice', ['as' => 'api_practice', 'uses' => 'CoreController@api_practice']);
+Route::any('api_register', ['as' => 'api_register', 'uses' => 'LoginController@api_register']);
+Route::group(['prefix' => 'api/v1', 'middleware' => 'auth'], function () {
+    Route::post('add', ['as' => 'add', 'uses' => 'APIv1Controller@add']);
+    Route::post('update', ['as' => 'update', 'uses' => 'APIv1Controller@update']);
+    Route::post('delete', ['as' => 'delete', 'uses' => 'APIv1Controller@delete']);
+});
+
 Route::any('practiceregister/{api}', ['as' => 'practiceregister', 'uses' => 'APIv1Controller@practiceregister']);
 Route::any('practiceregisternosh/{api}', ['as' => 'practiceregisternosh', 'uses' => 'APIv1Controller@practiceregisternosh']);
 Route::any('providerregister/{api}', ['as' => 'providerregister', 'uses' => 'APIv1Controller@providerregister']);
-Route::any('apilogin', ['as' => 'apilogin', 'uses' => 'APIv1Controller@apilogin']);
-Route::any('apilogout', ['as' => 'apilogout', 'uses' => 'APIv1Controller@apilogout']);
 
 // test
 Route::any('test1', array('as' => 'test1', 'uses' => 'InstallController@test1'));

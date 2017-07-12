@@ -30,6 +30,7 @@ use DateTimeZone;
 use SoapBox\Formatter\Formatter;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
+use Google_Client;
 
 class InstallController extends Controller {
 
@@ -898,5 +899,13 @@ public function install_fix(Request $request)
 
     public function test1(Request $request)
     {
+        $type = '100';
+        $active = '0';
+        $query = DB::table('users')
+            ->where('group_id', '=', $type)
+            ->where('active', '=', $active)
+            ->where('practice_id', '=', Session::get('practice_id'));
+        $res = $query->get();
+        return $res;
     }
 }

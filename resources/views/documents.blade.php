@@ -19,7 +19,7 @@
                 </div>
                 <div class="panel-body">
                     <div id="pdf"></div>
-                    <a href="{{ $document_url }}" target="_blank" class="nosh-no-load">Can't see the PDF?</a>
+                    <a href="{{ $document_url }}" target="_blank" class="nosh-no-load">{{ trans('nosh.no_pdf') }}</a>
                 </div>
             </div>
         </div>
@@ -43,7 +43,7 @@
     };
     var myPDF = PDFObject.embed(noshdata.document_url, "#pdf", options);
     if (! myPDF) {
-        toastr.error('Uh-oh, the PDF embed did not work.');
+        toastr.error('{{ trans('nosh.error_pdf') }}');
     }
     $(document).ready(function() {
         $('[data-toggle=offcanvas]').css('cursor', 'pointer').click(function() {

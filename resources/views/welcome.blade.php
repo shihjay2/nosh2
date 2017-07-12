@@ -17,13 +17,13 @@
                         </div>
                         <div class="col-xs-9 text-right">
                             <div class="huge">{{ $number_messages }}</div>
-                            <div>Messages</div>
+                            <div>{{ trans('nosh.messages') }}</div>
                         </div>
                     </div>
                 </div>
                 <a href="{{ route('messaging', ['inbox']) }}">
                     <div class="panel-footer">
-                        <span class="pull-left">View Details</span>
+                        <span class="pull-left">{{ trans('nosh.view_details') }}</span>
                         <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
                         <div class="clearfix"></div>
                     </div>
@@ -41,13 +41,13 @@
                         </div>
                         <div class="col-xs-9 text-right">
                             <div class="huge">{{ $number_encounters }}</div>
-                            <div>Encounters to Complete</div>
+                            <div>{{ trans('nosh.encounters_complete') }}</div>
                         </div>
                     </div>
                 </div>
                 <a href="{{ route('dashboard_encounters') }}">
                     <div class="panel-footer">
-                        <span class="pull-left">View Details</span>
+                        <span class="pull-left">{{ trans('nosh.view_details') }}</span>
                         <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
                         <div class="clearfix"></div>
                     </div>
@@ -65,13 +65,13 @@
                         </div>
                         <div class="col-xs-9 text-right">
                             <div class="huge">{{ $number_t_messages }}</div>
-                            <div>Telephone Messages</div>
+                            <div>{{ trans('nosh.telephone_messages') }}</div>
                         </div>
                     </div>
                 </div>
                 <a href="{{ route('dashboard_t_messages') }}">
                     <div class="panel-footer">
-                        <span class="pull-left">View Details</span>
+                        <span class="pull-left">{{ trans('nosh.view_details') }}</span>
                         <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
                         <div class="clearfix"></div>
                     </div>
@@ -89,13 +89,13 @@
                         </div>
                         <div class="col-xs-9 text-right">
                             <div class="huge">{{ $number_appts }}</div>
-                            <div>Appointments Today</div>
+                            <div>{{ trans('nosh.appointments_today') }}</div>
                         </div>
                     </div>
                 </div>
                 <a href="{{ route('schedule') }}">
                     <div class="panel-footer">
-                        <span class="pull-left">View Details</span>
+                        <span class="pull-left">{{ trans('nosh.view_details') }}</span>
                         <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
                         <div class="clearfix"></div>
                     </div>
@@ -113,13 +113,13 @@
                         </div>
                         <div class="col-xs-9 text-right">
                             <div class="huge">{{ $number_reminders }}</div>
-                            <div>Reminders</div>
+                            <div>{{ trans('nosh.reminders') }}</div>
                         </div>
                     </div>
                 </div>
                 <a href="{{ route('dashboard_reminders') }}">
                     <div class="panel-footer">
-                        <span class="pull-left">View Details</span>
+                        <span class="pull-left">{{ trans('nosh.view_details') }}</span>
                         <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
                         <div class="clearfix"></div>
                     </div>
@@ -137,13 +137,13 @@
                         </div>
                         <div class="col-xs-9 text-right">
                             <div class="huge">{{ $number_scans }}</div>
-                            <div>Scanned Documents</div>
+                            <div>{{ trans('nosh.scanned_documents') }}</div>
                         </div>
                     </div>
                 </div>
                 <a href="{{ route('messaging', ['scans']) }}">
                     <div class="panel-footer">
-                        <span class="pull-left">View Details</span>
+                        <span class="pull-left">{{ trans('nosh.view_details') }}</span>
                         <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
                         <div class="clearfix"></div>
                     </div>
@@ -161,13 +161,13 @@
                         </div>
                         <div class="col-xs-9 text-right">
                             <div class="huge">{{ $number_faxes }}</div>
-                            <div>Fax Messages</div>
+                            <div>{{ trans('nosh.fax_messages') }}</div>
                         </div>
                     </div>
                 </div>
                 <a href="{{ route('messaging', ['faxes']) }}">
                     <div class="panel-footer">
-                        <span class="pull-left">View Details</span>
+                        <span class="pull-left">{{ trans('nosh.view_details') }}</span>
                         <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
                         <div class="clearfix"></div>
                     </div>
@@ -185,13 +185,13 @@
                         </div>
                         <div class="col-xs-9 text-right">
                             <div class="huge">{{ $number_bills }}</div>
-                            <div>Bills to Process</div>
+                            <div>{{ trans('nosh.bills_process') }}</div>
                         </div>
                     </div>
                 </div>
                 <a href="{{ route('financial', ['queue']) }}">
                     <div class="panel-footer">
-                        <span class="pull-left">View Details</span>
+                        <span class="pull-left">{{ trans('nosh.view_details') }}</span>
                         <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
                         <div class="clearfix"></div>
                     </div>
@@ -209,13 +209,13 @@
                         </div>
                         <div class="col-xs-9 text-right">
                             <div class="huge">{{ $number_tests }}</div>
-                            <div>Test Results to Review</div>
+                            <div>{{ trans('nosh.test_results_review') }}</div>
                         </div>
                     </div>
                 </div>
                 <a href="{{ route('dashboard_tests') }}">
                     <div class="panel-footer">
-                        <span class="pull-left">View Details</span>
+                        <span class="pull-left">{{ trans('nosh.view_details') }}</span>
                         <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
                         <div class="clearfix"></div>
                     </div>
@@ -233,13 +233,13 @@
                         </div>
                         <div class="col-xs-9 text-right">
                             <div class="huge"><i class="fa fa-exclamation-triangle"></i></div>
-                            <div>Users Needed</div>
+                            <div>{{ trans('nosh.users_needed') }}</div>
                         </div>
                     </div>
                 </div>
                 <a href="{{ route('users', ['2']) }}">
                     <div class="panel-footer">
-                        <span class="pull-left">View Details</span>
+                        <span class="pull-left">{{ trans('nosh.view_details') }}</span>
                         <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
                         <div class="clearfix"></div>
                     </div>
@@ -257,13 +257,13 @@
                         </div>
                         <div class="col-xs-9 text-right">
                             <div class="huge"><i class="fa fa-exclamation-triangle"></i></div>
-                            <div>Schedule Configuration Needed</div>
+                            <div>{{ trans('nosh.schedule_configuration') }}</div>
                         </div>
                     </div>
                 </div>
                 <a href="{{ route('core_form', ['practiceinfo', 'practice_id', Session::get('practice_id'), 'schedule']) }}">
                     <div class="panel-footer">
-                        <span class="pull-left">View Details</span>
+                        <span class="pull-left">{{ trans('nosh.view_details') }}</span>
                         <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
                         <div class="clearfix"></div>
                     </div>
@@ -281,13 +281,13 @@
                         </div>
                         <div class="col-xs-9 text-right">
                             <div class="huge"><i class="fa fa-check"></i></div>
-                            <div>Good To Go!</div>
+                            <div>{( trans('nosh.good_to_go') )}</div>
                         </div>
                     </div>
                 </div>
                 <a href="{{ route('dashboard') }}">
                     <div class="panel-footer">
-                        <span class="pull-left">View Details</span>
+                        <span class="pull-left">{{ trans('nosh.view_details') }}</span>
                         <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
                         <div class="clearfix"></div>
                     </div>
@@ -305,13 +305,13 @@
                         </div>
                         <div class="col-xs-9 text-right">
                             <div class="huge"><i class="fa fa-cloud"></i></div>
-                            <div>Cancel Practice</div>
+                            <div>{{ trans('nosh.cancel_practice') }}</div>
                         </div>
                     </div>
                 </div>
                 <a href="{{ route('practice_cancel') }}">
                     <div class="panel-footer">
-                        <span class="pull-left">View Details</span>
+                        <span class="pull-left">{{ trans('nosh.view_details') }}</span>
                         <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
                         <div class="clearfix"></div>
                     </div>

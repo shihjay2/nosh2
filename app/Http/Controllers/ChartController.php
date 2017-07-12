@@ -3015,6 +3015,7 @@ class ChartController extends Controller {
                 } else {
                     $vitals_arr['label'] = '<b>Add Vital Signs</b>';
                     $vitals_arr['edit'] = route('chart_form', ['vitals', 'eid', '0']);
+                    $vitals_arr['view'] = route('encounter_vitals_view');
                     $vitals_list_array[] = $vitals_arr;
                 }
                 $return .= $this->result_build($vitals_list_array, 'vitals_list', true);
@@ -6651,6 +6652,12 @@ class ChartController extends Controller {
                 ];
             }
         }
+        $items[] = [
+            'type' => 'item',
+            'label' => 'Vital Signs',
+            'icon' => 'fa-eye',
+            'url' => route('encounter_vitals_view')
+        ];
         $dropdown_array['items'] = $items;
         $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
         $result = $query->get();

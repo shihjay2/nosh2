@@ -45,81 +45,84 @@
                 <!-- Left Side Of Navbar -->
                 <ul class="nav navbar-nav">
                     @if (!Auth::guest())
-                        <li><a href="{{ route('dashboard') }}">Tasks</a></li>
+                        <li><a href="{{ route('dashboard') }}">{{ trans('nosh.tasks') }}</a></li>
                         @if (Session::get('group_id') == '1')
-                            <li><a href="{{ route('setup') }}">Setup</a></li>
-                            <li><a href="{{ route('users', ['2']) }}">Users</a></li>
-                            <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Schedule <span class="caret"></span></a>
+                            <li><a href="{{ route('setup') }}">{{ trans('nosh.setup') }}</a></li>
+                            <li><a href="{{ route('users', ['2', '1']) }}">{{ trans('nosh.users') }}</a></li>
+                            <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{ trans('nosh.schedule') }} <span class="caret"></span></a>
                                 <ul class="dropdown-menu" role="menu" style="width:250px;">
-                                    <li><a href="{{ route('core_form', ['practiceinfo', 'practice_id', Session::get('practice_id'), 'schedule']) }}">Schedule Setup</a></li>
-                                    <li><a href="{{ route('schedule_visit_types', ['y']) }}">Visit Types</a></li>
-                                    <li><a href="{{ route('schedule_provider_exceptions', ['0']) }}">Provider Exceptions</a></li>
+                                    <li><a href="{{ route('core_form', ['practiceinfo', 'practice_id', Session::get('practice_id'), 'schedule']) }}">{{ trans('nosh.schedule_setup') }}</a></li>
+                                    <li><a href="{{ route('schedule_visit_types', ['y']) }}">{{ trans('nosh.schedule_visit_types') }}</a></li>
+                                    <li><a href="{{ route('schedule_provider_exceptions', ['0']) }}">{{ trans('nosh.schedule_provider_exceptions') }}</a></li>
                                 </ul>
                             </li>
-                            <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Export <span class="caret"></span></a>
+                            <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{ trans('nosh.export') }} <span class="caret"></span></a>
                                 <ul class="dropdown-menu" role="menu" style="width:250px;">
-                                    <li><a href="{{ route('download_ccda_entire') }}">All CCDAs</a></li>
-                                    <li><a href="{{ route('download_charts_entire') }}">All Charts</a></li>
-                                    <li><a href="{{ route('download_csv_demographics') }}">All Demographics (CSV format)</a></li>
-                                    <li><a href="{{ route('database_export') }}">Entire Database (SQL format)</a></li>
+                                    <li><a href="{{ route('download_ccda_entire') }}">{{ trans('nosh.download_ccda_entire') }}</a></li>
+                                    <li><a href="{{ route('download_charts_entire') }}">{{ trans('nosh.download_charts_entire') }}</a></li>
+                                    <li><a href="{{ route('download_csv_demographics') }}">{{ trans('nosh.download_csv_demographics') }}</a></li>
+                                    <li><a href="{{ route('database_export') }}">{{ trans('nosh.database_export') }}</a></li>
                                 </ul>
                             </li>
                             @if (isset($saas_admin))
-                                <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Database <span class="caret"></span></a>
+                                <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{ trans('nosh.database') }} <span class="caret"></span></a>
                                     <ul class="dropdown-menu" role="menu" style="width:250px;">
-                                        <li><a href="{{ route('audit_logs') }}">Audit Logs</a></li>
-                                        <li><a href="{{ route('database_import') }}">Import from NOSH in the Cloud</a></li>
+                                        <li><a href="{{ route('audit_logs') }}">{{ trans('nosh.audit_logs') }}</a></li>
+                                        <li><a href="{{ route('database_import') }}">{{ trans('nosh.database_import') }}</a></li>
                                     </ul>
                                 </li>
                             @endif
                         @endif
                         @if (Session::get('group_id') == '2'|| Session::get('group_id') == '3' || Session::get('group_id') == '4' || Session::get('group_id') == '100')
-                            <li><a href="{{ route('messaging', ['inbox']) }}">Messaging <span class="badge">{{ Session::get('messages_count') }}</span></a></li>
-                            <li><a href="{{ route('schedule') }}">Schedule</a></li>
+                            <li><a href="{{ route('messaging', ['inbox']) }}">{{ trans('nosh.messaging') }} <span class="badge">{{ Session::get('messages_count') }}</span></a></li>
+                            <li><a href="{{ route('schedule') }}">{{ trans('nosh.schedule') }}</a></li>
                         @endif
                         @if (Session::get('group_id') == '2' || Session::get('group_id') == '3' || Session::get('group_id') == '4')
-                            <li><a href="{{ route('financial', ['queue']) }}">Financial</a></li>
-                            <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Office <span class="caret"></span></a>
+                            <li><a href="{{ route('financial', ['queue']) }}">{{ trans('nosh.financial') }}</a></li>
+                            <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{ trans('nosh.office') }} <span class="caret"></span></a>
                                 <ul class="dropdown-menu" role="menu" style="width:250px;">
-                                    <li><a href="{{ route('vaccines', ['inventory']) }}">Vaccines</a></li>
-                                    <li><a href="{{ route('supplements', ['inventory']) }}">Supplements</a></li>
-                                    <li><a href="{{ route('superquery_list') }}">Reports</a></li>
+                                    <li><a href="{{ route('vaccines', ['inventory']) }}">{{ trans('nosh.vaccines') }}</a></li>
+                                    <li><a href="{{ route('supplements', ['inventory']) }}">{{ trans('nosh.supplements') }}</a></li>
+                                    <li><a href="{{ route('superquery_list') }}">{{ trans('nosh.reports') }}</a></li>
                                 </ul>
                             </li>
                             @if (Session::has('print_queue') || Session::has('fax_queue'))
-                                <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Queues <span class="caret"></span></a>
+                                <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{ trans('nosh.queues') }} <span class="caret"></span></a>
                                     <ul class="dropdown-menu" role="menu" style="width:250px;">
                                         @if (Session::has('print_queue'))
-                                            <li><a href="{{ route('print_queue', ['run', '0', '0']) }}">Run Print Queue  <span class="badge pull-right">{{ Session::get('print_queue_count') }}</span></a></li>
+                                            <li><a href="{{ route('print_queue', ['run', '0', '0']) }}">{{ trans('nosh.print_queue') }}  <span class="badge pull-right">{{ Session::get('print_queue_count') }}</span></a></li>
                                         @endif
                                         @if (Session::has('fax_queue'))
-                                            <li><a href="{{ route('fax_queue', ['run', '0', '0']) }}">Run Fax Queue  <span class="badge pull-right">{{ Session::get('fax_queue_count') }}</span></a></li>
+                                            <li><a href="{{ route('fax_queue', ['run', '0', '0']) }}">{{ trans('nosh.fax_queue') }}  <span class="badge pull-right">{{ Session::get('fax_queue_count') }}</span></a></li>
                                         @endif
                                     </ul>
                                 </li>
                             @endif
                             @if (Session::has('tags_array') || Session::has('hedis_query'))
-                                <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Queries <span class="caret"></span></a>
+                                <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{ trans('nosh.queries') }} <span class="caret"></span></a>
                                     <ul class="dropdown-menu" role="menu" style="width:250px;">
                                         @if (Session::has('tags_array'))
-                                            <li><a href="{{ route('superquery_tag') }}">Tag Search</a></li>
+                                            <li><a href="{{ route('superquery_tag') }}">{{ trans('nosh.superquery_tag') }}</a></li>
                                         @endif
                                         @if (Session::has('hedis_query'))
-                                            <li><a href="{{ route('superquery_hedis', [Session::get('hedis_query')]) }}">HEDIS Audit</a></li>
+                                            <li><a href="{{ route('superquery_hedis', [Session::get('hedis_query')]) }}">{{ trans('nosh.superquery_hedis') }}</a></li>
                                         @endif
                                     </ul>
                                 </li>
                             @endif
                         @endif
                         @if (Session::get('group_id') == '2' || Session::get('group_id') == '3')
-                            <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Configure <span class="caret"></span></a>
+                            <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{ trans('nosh.configure') }} <span class="caret"></span></a>
                                 <ul class="dropdown-menu" role="menu" style="width:250px;">
-                                    <li><a href="{{ route('addressbook', ['all']) }}">Address Book</a></li>
-                                    <li><a href="{{ route('configure_form_list') }}">My Forms</a></li>
-                                    <li><a href="{{ route('setup') }}">Practice Setup</a></li>
-                                    <li><a href="{{ route('schedule_provider_exceptions', [Session::get('user_id')]) }}">Provider Schedule Exceptions</a></li>
-                                    <li><a href="{{ route('core_form', ['practiceinfo', 'practice_id', Session::get('practice_id'), 'schedule']) }}">Schedule Setup</a></li>
-                                    <li><a href="{{ route('schedule_visit_types', ['y']) }}">Visit Types</a></li>
+                                    @if (Session::get('patient_centric') == 'yp')
+                                        <li><a href="{{ route('api_patient') }}">{{ trans('nosh.api_patient') }}</a></li>
+                                    @endif
+                                    <li><a href="{{ route('addressbook', ['all']) }}">{{ trans('nosh.addressbook') }}</a></li>
+                                    <li><a href="{{ route('configure_form_list') }}">{{ trans('nosh.configure_form_list') }}</a></li>
+                                    <li><a href="{{ route('setup') }}">{{ trans('nosh.practice_setup') }}</a></li>
+                                    <li><a href="{{ route('schedule_provider_exceptions', [Session::get('user_id')]) }}">{{ trans('nosh.schedule_provider_exceptions') }}</a></li>
+                                    <li><a href="{{ route('core_form', ['practiceinfo', 'practice_id', Session::get('practice_id'), 'schedule']) }}">{{ trans('nosh.schedule_setup') }}</a></li>
+                                    <li><a href="{{ route('schedule_visit_types', ['y']) }}">{{ trans('nosh.schedule_visit_types') }}</a></li>
                                 </ul>
                             </li>
                         @endif
@@ -131,11 +134,11 @@
                     <!-- Authentication Links -->
                     @if (Auth::guest())
                         @if (!isset($noheader))
-                            <li><a href="{{ url('/login') }}">Login</a></li>
+                            <li><a href="{{ url('/login') }}">{{ trans('nosh.login_heading') }}</a></li>
                         @endif
                     @else
                         @if (Session::has('pid'))
-                            <li><a href="{{ route('uma_invite') }}"><i class="fa fa-share-square-o fa-fw fa-lg send_uma_invite" data-toggle="tooltip" data-placement="bottom" title="Share your Chart"></i></a></li>
+                            <li><a href="{{ route('uma_invite') }}"><i class="fa fa-share-square-o fa-fw fa-lg send_uma_invite" data-toggle="tooltip" data-placement="bottom" title="{{ trans('nosh.uma_invite') }}"></i></a></li>
                         @endif
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -143,13 +146,13 @@
                             </a>
                             <ul class="dropdown-menu" role="menu">
                                 @if (Session::get('group_id') == '2')
-                                    <li><a href="{{ route('core_form', ['providers', 'id', Session::get('user_id')]) }}"><i class="fa fa-btn fa-cogs"></i>My Information</a></li>
-                                    <li><a href="{{ route('user_signature') }}"><i class="fa fa-btn fa-pencil"></i>Change Signature</a></li>
+                                    <li><a href="{{ route('core_form', ['providers', 'id', Session::get('user_id')]) }}"><i class="fa fa-btn fa-cogs"></i>{{ trans('nosh.my_information') }}</a></li>
+                                    <li><a href="{{ route('user_signature') }}"><i class="fa fa-btn fa-pencil"></i>{{ trans('nosh.user_signature') }}</a></li>
                                 @endif
-                                <li><a href="{{ route('password_change') }}"><i class="fa fa-btn fa-cog"></i>Change Password</a></li>
-                                <li><a href="https://github.com/shihjay2/nosh2/issues/new" target="_blank" class="nosh-no-load"><i class="fa fa-btn fa-github-alt"></i>Report a Bug</a></li>
-                                <li><a href="https://github.com/shihjay2/nosh2/issues/new" target="_blank" class="nosh-no-load"><i class="fa fa-btn fa-heart"></i>Make a Suggestion</a></li>
-                                <li><a href="{{ route('logout') }}"><i class="fa fa-btn fa-sign-out"></i>Logout</a></li>
+                                <li><a href="{{ route('password_change') }}"><i class="fa fa-btn fa-cog"></i>{{ trans('nosh.password_change') }}</a></li>
+                                <li><a href="https://github.com/shihjay2/nosh2/issues/new" target="_blank" class="nosh-no-load"><i class="fa fa-btn fa-github-alt"></i>{{ trans('nosh.report_bug') }}</a></li>
+                                <li><a href="https://github.com/shihjay2/nosh2/issues/new" target="_blank" class="nosh-no-load"><i class="fa fa-btn fa-heart"></i>{{ trans('nosh.make_suggestion') }}</a></li>
+                                <li><a href="{{ route('logout') }}"><i class="fa fa-btn fa-sign-out"></i>{{ trans('nosh.logout') }}</a></li>
                             </ul>
                         </li>
                     @endif
@@ -174,14 +177,14 @@
                             <li>
                                 <a class="btn btn-success" href="{{ $active_encounter_url }}">
                                     <i class="fa fa-hand-o-right fa-fw fa-lg"></i>
-                                    <span class="sidebar-item">Active Encounter: {{ $active_encounter }}</span>
+                                    <span class="sidebar-item">{{ trans('nosh.active_encounter') }}: {{ $active_encounter }}</span>
                                 </a>
                             </li>
                         @endif
                         <li @if(isset($demographics_active)) class="active" @endif>
                             <a href="{{ route('demographics') }}">
                                 <i class="fa fa-user fa-fw fa-lg"></i>
-                                <span class="sidebar-item">Demographics</span>
+                                <span class="sidebar-item">{{ trans('nosh.demographics') }}</span>
                                 @if (isset($demographics_alert))
                                     <span class="label label-danger">{{ $demographics_alert }}</span>
                                 @endif
@@ -190,35 +193,35 @@
                         <li @if(isset($issues_active)) class="active" @endif>
                             <a href="{{ route('conditions_list', ['type' => 'active']) }}">
                                 <i class="fa fa-bars fa-fw fa-lg"></i>
-                                <span class="sidebar-item">Conditions</span>
+                                <span class="sidebar-item">{{ trans('nosh.conditions_list') }}</span>
                                 <span class="badge">{{ $conditions_badge }}</span>
                             </a>
                         </li>
                         <li @if(isset($medications_active)) class="active" @endif>
                             <a href="{{ route('medications_list', ['type' => 'active']) }}">
                                 <i class="fa fa-eyedropper fa-fw fa-lg"></i>
-                                <span class="sidebar-item">Medications</span>
+                                <span class="sidebar-item">{{ trans('nosh.medications_list') }}</span>
                                 <span class="badge">{{ $medications_badge }}</span>
                             </a>
                         </li>
                         <li @if(isset($supplements_active)) class="active" @endif>
                             <a href="{{ route('supplements_list', ['type' => 'active']) }}">
                                 <i class="fa fa-tree fa-fw fa-lg"></i>
-                                <span class="sidebar-item">Supplements</span>
+                                <span class="sidebar-item">{{ trans('nosh.supplements_list') }}</span>
                                 <span class="badge">{{ $supplements_badge }}</span>
                             </a>
                         </li>
                         <li @if(isset($immunizations_active)) class="active" @endif>
                             <a href="{{ route('immunizations_list') }}">
                                 <i class="fa fa-magic fa-fw fa-lg"></i>
-                                <span class="sidebar-item">Immunizations</span>
+                                <span class="sidebar-item">{{ trans('nosh.immunizations_list') }}</span>
                                 <span class="badge">{{ $immunizations_badge }}</span>
                             </a>
                         </li>
                         <li @if(isset($allergies_active)) class="active" @endif>
                             <a href="{{ route('allergies_list', ['type' => 'active']) }}">
                                 <i class="fa fa-exclamation-triangle fa-fw fa-lg"></i>
-                                <span class="sidebar-item">Allergies</span>
+                                <span class="sidebar-item">{{ trans('nosh.allergies_list') }}</span>
                                 <span class="badge">{{ $allergies_badge }}</span>
                             </a>
                         </li>
@@ -226,7 +229,7 @@
                             <li @if(isset($alerts_active)) class="active" @endif>
                                 <a href="{{ route('alerts_list', ['type' => 'active']) }}">
                                     <i class="fa fa-bell fa-fw fa-lg"></i>
-                                    <span class="sidebar-item">Alerts</span>
+                                    <span class="sidebar-item">{{ trans('nosh.alerts_list') }}</span>
                                     <span class="badge">{{ $alerts_badge }}</span>
                                 </a>
                             </li>
@@ -234,50 +237,50 @@
                         <li @if(isset($orders_active)) class="active" @endif>
                             <a href="{{ route('orders_list', ['type' => 'orders_labs']) }}">
                                 <i class="fa fa-thumbs-o-up fa-fw fa-lg"></i>
-                                <span class="sidebar-item">Orders</span>
+                                <span class="sidebar-item">{{ trans('nosh.orders_list') }}</span>
                                 <span class="badge">{{ $orders_badge }}</span>
                             </a>
                         </li>
                         <li @if(isset($encounters_active)) class="active" @endif>
                             <a href="{{ route('encounters_list') }}">
                                 <i class="fa fa-stethoscope fa-fw fa-lg"></i>
-                                <span class="sidebar-item">Encounters</span>
+                                <span class="sidebar-item">{{ trans('nosh.encounters_list') }}</span>
                                 <span class="badge">{{ $encounters_badge }}</span>
                             </a>
                         </li>
                         <li @if(isset($documents_active)) class="active" @endif>
                             <a href="{{ route('documents_list', ['type' => 'Laboratory']) }}">
                                 <i class="fa fa-file-text-o fa-fw fa-lg"></i>
-                                <span class="sidebar-item">Documents</span>
+                                <span class="sidebar-item">{{ trans('nosh.documents_list') }}</span>
                             </a>
                         </li>
                         <li @if(isset($results_active)) class="active" @endif>
                             <a href="{{ route('results_list', ['type' => 'Laboratory']) }}">
                                 <i class="fa fa-flask fa-fw fa-lg"></i>
-                                <span class="sidebar-item">Results</span>
+                                <span class="sidebar-item">{{ trans('nosh.results_list') }}</span>
                             </a>
                         </li>
                         <li @if(isset($t_messages_active)) class="active" @endif>
                             <a href="{{ route('t_messages_list') }}">
                                 <i class="fa fa-phone fa-fw fa-lg"></i>
-                                <span class="sidebar-item">Messages</span>
+                                <span class="sidebar-item">{{ trans('nosh.t_messages_list')}}</span>
                             </a>
                         </li>
                         <li @if(isset($forms_active)) class="active" @endif>
                             <a href="{{ route('form_list', ['fill']) }}">
                                 <i class="fa fa-question-circle-o fa-fw fa-lg"></i>
-                                <span class="sidebar-item">Forms</span>
+                                <span class="sidebar-item">{{ trans('nosh.form_list') }}</span>
                             </a>
                         </li>
                         @if(Session::get('agealldays') < 6574.5)
-                            <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-line-chart fa-fw fa-lg"></i><span class="sidebar-item">Growth Charts</span><span class="caret"></span></a>
+                            <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-line-chart fa-fw fa-lg"></i><span class="sidebar-item">{{ trans('nosh.growth_charts') }}</span><span class="caret"></span></a>
                                 <ul class="dropdown-menu" role="menu">
-                                    <li><a href="{{ route('growth_chart', ['weight-age']) }}">Weight</a></li>
-                                    <li><a href="{{ route('growth_chart', ['height-age']) }}">Height</a></li>
-                                    <li><a href="{{ route('growth_chart', ['head-age']) }}">Head Circumference</a></li>
-                                    <li><a href="{{ route('growth_chart', ['weight-height']) }}">Weight to Height</a></li>
+                                    <li><a href="{{ route('growth_chart', ['weight-age']) }}">{{ trans('nosh.weight') }}</a></li>
+                                    <li><a href="{{ route('growth_chart', ['height-age']) }}">{{ trans('nosh.height') }}</a></li>
+                                    <li><a href="{{ route('growth_chart', ['head-age']) }}">{{ trans('nosh.hc') }}</a></li>
+                                    <li><a href="{{ route('growth_chart', ['weight-height']) }}">{{ trans('nosh.weight_height') }}</a></li>
                                     @if(Session::get('agealldays') > 730.5)
-                                        <li><a href="{{ route('growth_chart', ['bmi-age']) }}">BMI</a></li>
+                                        <li><a href="{{ route('growth_chart', ['bmi-age']) }}">{{ trans('nosh.BMI') }}</a></li>
                                     @endif
                                 </ul>
                             </li>
@@ -285,37 +288,37 @@
                         <li @if(isset($sh_active)) class="active" @endif>
                             <a href="{{ route('social_history') }}">
                                 <i class="fa fa-users fa-fw fa-lg"></i>
-                                <span class="sidebar-item">Social History</span>
+                                <span class="sidebar-item">{{ trans('nosh.social_history') }}</span>
                             </a>
                         </li>
                         <li @if(isset($fh_active)) class="active" @endif>
                             <a href="{{ route('family_history') }}">
                                 <i class="fa fa-sitemap fa-fw fa-lg"></i>
-                                <span class="sidebar-item">Family History</span>
+                                <span class="sidebar-item">{{ trans('nosh.family_history') }}</span>
                             </a>
                         </li>
                         <li @if(isset($care_active)) class="active" @endif>
                             <a href="{{ route('care_opportunities', ['prevention']) }}">
                                 <i class="fa fa-info fa-fw fa-lg"></i>
-                                <span class="sidebar-item">Care Opportunities</span>
+                                <span class="sidebar-item">{{ trans('nosh.care_opportunities') }}</span>
                             </a>
                         </li>
                         <li @if(isset($records_active)) class="active" @endif>
                             <a href="{{ route('records_list', ['release']) }}">
                                 <i class="fa fa-handshake-o fa-fw fa-lg"></i>
-                                <span class="sidebar-item">Coordination of Care</span>
+                                <span class="sidebar-item">{{ trans('nosh.records_list') }}</span>
                             </a>
                         </li>
                         <li @if(isset($billing_active)) class="active" @endif>
                             <a href="{{ route('billing_list', ['type' => 'encounters', 'pid' => Session::get('pid')]) }}">
                                 <i class="fa fa-bank fa-fw fa-lg"></i>
-                                <span class="sidebar-item">Billing</span>
+                                <span class="sidebar-item">{{ trans('nosh.billing_list') }}</span>
                             </a>
                         </li>
                         <li @if(isset($payors_active)) class="active" @endif>
                             <a href="{{ route('payors_list', ['type' => 'active']) }}">
                                 <i class="fa fa-money fa-fw fa-lg"></i>
-                                <span class="sidebar-item">Payors</span>
+                                <span class="sidebar-item">{{ trans('nosh.payors_list') }}</span>
                             </a>
                         </li>
                     @endif
@@ -327,20 +330,20 @@
                 @if (Session::get('patient_centric') !== 'y' && Session::get('patient_centric') !== 'yp' && Session::get('group_id') != '100')
                     <div style="margin:15px">
                         <form class="input-group form" border="0" id="search_patient_form" role="search" action="{{ url('search_patient') }}" method="POST" style="margin-bottom:0px;" data-nosh-target="search_patient_results">
-                            <input type="text" class="form-control search" id="search_patient" name="search_patient" placeholder="Search Patient" style="margin-bottom:0px;" required autocomplete="off">
+                            <input type="text" class="form-control search" id="search_patient" name="search_patient" placeholder="{{ trans('nosh.search_patient') }}" style="margin-bottom:0px;" required autocomplete="off">
                             <input type="hidden" name="type" value="div">
                             <span class="input-group-btn">
                                 <button type="submit" class="btn btn-md" id="search_patient_submit" name="submit" value="Go"><i class="glyphicon glyphicon-search"></i></button>
                             </span>
                             @if (Session::get('group_id') != '1')
                                 <span class="input-group-btn">
-                                    <button type="button" class="btn btn-md btn-default" id="search_patient_recent" data-toggle="tooltip" data-placement="bottom" title="Recent Patients"><i class="fa fa-history fa-lg"></i></button>
+                                    <button type="button" class="btn btn-md btn-default" id="search_patient_recent" data-toggle="tooltip" data-placement="bottom" title="{{ trans('nosh.recent_patients') }}"><i class="fa fa-history fa-lg"></i></button>
                                 </span>
                                 <span class="input-group-btn">
-                                    <a href="{{ route('uma_list') }}" type="button" class="btn btn-md btn-default" data-toggle="tooltip" data-placement="bottom" title="Connected Patients"><i class="fa fa-fire fa-lg"></i></a>
+                                    <a href="{{ route('uma_list') }}" type="button" class="btn btn-md btn-default" data-toggle="tooltip" data-placement="bottom" title="{{ trans('nosh.uma_list') }}"><i class="fa fa-fire fa-lg"></i></a>
                                 </span>
                                 <span class="input-group-btn">
-                                    <a href="{{ route('add_patient') }}" class="btn btn-md btn-default" data-toggle="tooltip" data-placement="bottom" title="Add New Patient"><i class="fa fa-plus fa-lg"></i></a>
+                                    <a href="{{ route('add_patient') }}" class="btn btn-md btn-default" data-toggle="tooltip" data-placement="bottom" title="{{ trans('nosh.add_patient') }}"><i class="fa fa-plus fa-lg"></i></a>
                                 </span>
                             @endif
                         </form>
@@ -359,19 +362,19 @@
                     <div style="margin:15px">
                         <form class="input-group form" border="0" id="search_patient_form" role="search" action="{{ url('search_patient') }}" method="POST" style="margin-bottom:0px;" data-nosh-target="search_patient_results">
                             <input type="hidden" name="type" value="div">
-                            <input type="text" class="form-control search" id="search_patient" name="search_patient" placeholder="Search Patient" style="margin-bottom:0px;" required autocomplete="off">
+                            <input type="text" class="form-control search" id="search_patient" name="search_patient" placeholder="{{ trans('nosh.search_patient') }}" style="margin-bottom:0px;" required autocomplete="off">
                             <span class="input-group-btn">
                                 <button type="submit" class="btn btn-md" id="search_patient_submit" value="Go"><i class="glyphicon glyphicon-search"></i></button>
                             </span>
                             @if (Session::get('group_id') != '1')
                                 <span class="input-group-btn">
-                                    <button type="button" class="btn btn-md btn-default" id="search_patient_recent" data-toggle="tooltip" data-placement="bottom" title="Recent Patients"><i class="fa fa-history fa-lg"></i></button>
+                                    <button type="button" class="btn btn-md btn-default" id="search_patient_recent" data-toggle="tooltip" data-placement="bottom" title="{{ trans('nosh.recent_patients') }}"><i class="fa fa-history fa-lg"></i></button>
                                 </span>
                                 <span class="input-group-btn">
-                                    <a href="{{ route('uma_list') }}" type="button" class="btn btn-md btn-default" data-toggle="tooltip" data-placement="bottom" title="Connected Patients"><i class="fa fa-fire fa-lg"></i></a>
+                                    <a href="{{ route('uma_list') }}" type="button" class="btn btn-md btn-default" data-toggle="tooltip" data-placement="bottom" title="{{ trans('nosh.uma_list') }}"><i class="fa fa-fire fa-lg"></i></a>
                                 </span>
                                 <span class="input-group-btn">
-                                    <a href="{{ route('add_patient') }}" type="button" class="btn btn-md btn-default" data-toggle="tooltip" data-placement="bottom" title="Add New Patient"><i class="fa fa-plus fa-lg"></i></a>
+                                    <a href="{{ route('add_patient') }}" type="button" class="btn btn-md btn-default" data-toggle="tooltip" data-placement="bottom" title="{{ trans('nosh.add_patient') }}"><i class="fa fa-plus fa-lg"></i></a>
                                 </span>
                             @endif
                         </form>
@@ -422,7 +425,7 @@
                 <div id="warningModal_header" class="modal-header"></div>
                 <div id="warningModal_body" class="modal-body" style="height:80vh;overflow-y:auto;">></div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-btn fa-times"></i> Close</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-btn fa-times"></i> {{ trans('nosh.button_close') }}</button>
                   </div>
             </div>
         </div>
@@ -431,69 +434,69 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Template Toolbox</h5>
+                    <h5 class="modal-title">{{ trans('nosh.template_toolbox') }}</h5>
                 </div>
                 <div class="modal-body" style="height:60vh;overflow-y:auto;">
                     <form id="template_toolbox_form">
                         <div class="form-group template_item_divs">
                             <div class="col-md-6 col-md-offset-4">
-                                <button type="button" id="template_modal_copy" class="btn btn-success" style="margin:10px"><i class="fa fa-btn fa-copy"></i> Copy from Text Input</button>
+                                <button type="button" id="template_modal_copy" class="btn btn-success" style="margin:10px"><i class="fa fa-btn fa-copy"></i> {{ trans('nosh.copy_text_input') }}</button>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-sm-5" for="template_text">Template Text</label>
+                            <label class="control-label col-sm-5" for="template_text">{{ trans('nosh.template_text') }}</label>
                             <div class="col-sm-7">
-                                <textarea class="form-control" id="template_text" name="template_text" placeholder="Enter Text to Add to Template Group" required autocomplete="off"></textarea>
+                                <textarea class="form-control" id="template_text" name="template_text" placeholder="{{ trans('nosh.template_text_placeholder') }}" required autocomplete="off"></textarea>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-sm-5" for="template_gender">Gender Association</label>
+                            <label class="control-label col-sm-5" for="template_gender">{{ trans('nosh.gender_association') }}</label>
                             <div class="col-sm-7">
                                 <select id="template_gender" name="template_gender" class="form-control">
-                                    <option value="">All Genders</option>
-                                    <option value="m">Male Only</option>
-                                    <option value="f">Female Only</option>
-                                    <option value="u">Undifferentiated Only</option>
+                                    <option value="">{{ trans('nosh.gender_association_all') }}</option>
+                                    <option value="m">{{ trans('nosh.gender_association_m') }}</option>
+                                    <option value="f">{{ trans('nosh.gender_association_f') }}</option>
+                                    <option value="u">{{ trans('nosh.gender_association_u') }}</option>
                                 </select>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-sm-5" for="template_age">Age Association</label>
+                            <label class="control-label col-sm-5" for="template_age">{{ trans('nosh.age_association') }}</label>
                             <div class="col-sm-7">
                                 <select id="template_age" name="template_age" class="form-control">
-                                    <option value="">All Ages</option>
-                                    <option value="adult">Adult Only</option>
-                                    <option value="child">Child Only</option>
+                                    <option value="">{{ trans('nosh.age_association_all') }}</option>
+                                    <option value="adult">{{ trans('nosh.age_association_adult') }}</option>
+                                    <option value="child">{{ trans('nosh.age_association_child') }}</option>
                                 </select>
                             </div>
                         </div>
                         <div class="form-group template_item_divs" style="display:none;">
-                            <label class="control-label col-sm-5" for="template_input_type">Template Input Type</label>
+                            <label class="control-label col-sm-5" for="template_input_type">{{ trans('nosh.template_input_type') }}</label>
                             <div class="col-sm-7">
                                 <select id="template_input_type" name="template_input_type" class="form-control">
-                                    <option value="">None</option>
-                                    <option value="text">Text Input</option>
-                                    <option value="select">Dropdown List</option>
-                                    <option value="checkbox">Checkbox</option>
-                                    <option value="radio">Radio Button</option>
-                                    <option value="orders">Orders</option>
+                                    <option value="">{{ trans('nosh.template_input_type_none')}}</option>
+                                    <option value="text">{{ trans('nosh.template_input_type_text') }}</option>
+                                    <option value="select">{{ trans('nosh.template_input_type_select') }}</option>
+                                    <option value="checkbox">{{ trans('nosh.template_input_type_checkbox') }}</option>
+                                    <option value="radio">{{ trans('nosh.template_input_type_radio') }}</option>
+                                    <option value="orders">{{ trans('nosh.template_input_type_orders') }}</option>
                                 </select>
                             </div>
                         </div>
                         <div class="form-group" id="template_options_div" style="display:none;">
-                            <label class="control-label col-sm-5" for="template_options" id="template_options_label">Options</label>
+                            <label class="control-label col-sm-5" for="template_options" id="template_options_label">{{ trans('nosh.template_options') }}</label>
                             <div class="col-sm-7">
-                                <input type="text" id="template_options" name="template_options" value="" placeholder="Add Options"/>
+                                <input type="text" id="template_options" name="template_options" value="" placeholder="{{ trans('nosh.template_options_placeholder') }}"/>
                             </div>
                         </div>
                         <div class="form-group" id="template_options_orders_div" style="display:none;">
-                            <label class="control-label col-sm-5" for="template_options" id="template_options_label">Options</label>
+                            <label class="control-label col-sm-5" for="template_options" id="template_options_label">{{ trans('nosh.template_options') }}</label>
                             <div class="col-sm-7">
-                                <input type="text" id="template_options_orders_facility" name="template_options_orders_facility" value="" placeholder="Facility" class="form-control"/>
-                                <input type="text" id="template_options_orders_orders_code" name="template_options_orders_orders_code" value="" placeholder="Orders Code" class="form-control"/>
-                                <input type="text" id="template_options_orders_cpt" name="template_options_orders_cpt" value="" placeholder="CPT Code(s)"/>
-                                <input type="text" id="template_options_orders_loinc" name="template_options_orders_loinc" value="" placeholder="LOINC Code(s)"/>
-                                <input type="text" id="template_options_orders_results_code" name="template_options_orders_results_code" value="" placeholder="Results Code(s)"/>
+                                <input type="text" id="template_options_orders_facility" name="template_options_orders_facility" value="" placeholder="{{ trans('nosh.template_options_orders_facility') }}" class="form-control"/>
+                                <input type="text" id="template_options_orders_orders_code" name="template_options_orders_orders_code" value="" placeholder="{{ trans('nosh.template_options_orders_orders_code') }}" class="form-control"/>
+                                <input type="text" id="template_options_orders_cpt" name="template_options_orders_cpt" value="" placeholder="{{ trans('nosh.template_options_orders_cpt') }}"/>
+                                <input type="text" id="template_options_orders_loinc" name="template_options_orders_loinc" value="" placeholder="{{ trans('nosh.template_options_orders_loinc') }}"/>
+                                <input type="text" id="template_options_orders_results_code" name="template_options_orders_results_code" value="" placeholder="{{ trans('nosh.template_options_orders_results_code') }}"/>
                             </div>
                         </div>
                         <input type="hidden" name="template_edit_type" id="template_edit_type" value="">
@@ -502,8 +505,8 @@
                         <input type="hidden" name="category" id="template_category" value="">
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-4">
-                                <button type="button" id="template_modal_save" class="btn btn-success" style="margin:10px"><i class="fa fa-btn fa-save"></i> Save</button>
-                                <button type="button" id="template_modal_cancel" class="btn btn-danger" style="margin:10px"><i class="fa fa-btn fa-ban"></i> Cancel</button>
+                                <button type="button" id="template_modal_save" class="btn btn-success" style="margin:10px"><i class="fa fa-btn fa-save"></i> {{ trans('nosh.button_save') }}</button>
+                                <button type="button" id="template_modal_cancel" class="btn btn-danger" style="margin:10px"><i class="fa fa-btn fa-ban"></i> {{ trans('nosh.button_cancel') }}</button>
                             </div>
                         </div>
                     </form>
@@ -517,30 +520,30 @@
             <!-- Modal content-->
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Patient Summary</h5>
+                    <h5 class="modal-title">{{ trans('nosh.patient_summary') }}</h5>
                 </div>
                 <div class="modal-body" id="chart_overview" style="height:80vh;overflow-y:auto;">
                     <div class="row">
                         <div class="col-xs-6">
-                            <strong>Conditions</strong>
+                            <strong>{{ trans('nosh.conditions_list') }}</strong>
                             @if (isset($conditions_preview))
                                 {!! $conditions_preview !!}
                             @endif
-                            <strong>Medications</strong>
+                            <strong>{{ trans('nosh.medications_list') }}</strong>
                             @if (isset($medications_preview))
                                 {!! $medications_preview !!}
                             @endif
                         </div>
                         <div class="col-xs-6">
-                            <strong>Supplements</strong>
+                            <strong>{{ trans('nosh.supplements_list') }}</strong>
                             @if (isset($supplements_preview))
                                 {!! $supplements_preview !!}
                             @endif
-                            <strong>Allergies</strong>
+                            <strong>{{ trans('nosh.allergies_list') }}</strong>
                             @if (isset($allergies_preview))
                                 {!! $allergies_preview !!}
                             @endif
-                            <strong>Immunizations</strong>
+                            <strong>{{ trans('nosh.immunizations_list') }}</strong>
                             @if (isset($immunizations_preview))
                                 {!! $immunizations_preview !!}
                             @endif
@@ -548,7 +551,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-btn fa-times"></i> Close</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-btn fa-times"></i> {{ trans('nosh.button_close') }}</button>
                   </div>
             </div>
         </div>
@@ -798,7 +801,7 @@
                 var $target = $('#template_list');
                 var html = '';
                 if (response.response == 'false') {
-                    html = '<li class="list-group-item>No templates groups.</li>';
+                    html = '<li class="list-group-item">{{ trans('nosh.notemplate_group') }}</li>';
                     $target.html(html);
                 }
                 if (response.response == 'li') {
@@ -829,7 +832,7 @@
                 var html = '';
                 var options = '';
                 if (response.response == 'false') {
-                    html = '<li class="list-group-item>No templates groups.</li>';
+                    html = '<li class="list-group-item">{{ trans('nosh.notemplate_item') }}</li>';
                     $target.html(html);
                 }
                 if (response.response == 'li') {
@@ -934,9 +937,9 @@
                 }
             });
             if (i > 0) {
-                $('#template_back_text').text('Copy');
+                $('#template_back_text').text('{{ trans('nosh.template_copy') }}');
             } else {
-                $('#template_back_text').text('Back');
+                $('#template_back_text').text('{{ trans('nosh.template_back') }}');
             }
         }
 
@@ -954,7 +957,7 @@
                     $image.tooltip();
                     $image.first().show();
                     var i = 1;
-                    $('#image_status').html('Image ' + i + ' of ' + image_total);
+                    $('#image_status').html('{{ trans('nosh.image') }} ' + i + ' of ' + image_total);
                     $('#next_image').css('cursor', 'pointer').click(function () {
                         var $next = $image.filter(':visible').hide().next('img');
                         i++;
@@ -963,7 +966,7 @@
                             i = 1;
                         }
                         $next.show();
-                        $('#image_status').html('Image ' + i + ' of ' + image_total);
+                        $('#image_status').html('{{ trans('nosh.image') }} ' + i + ' of ' + image_total);
                     });
                     $('#prev_image').css('cursor', 'pointer').click(function () {
                         var $prev = $image.filter(':visible').hide().prev('img');
@@ -973,7 +976,7 @@
                             i = image_total;
                         }
                         $prev.show();
-                        $('#image_status').html('Image ' + i + ' of ' + image_total);
+                        $('#image_status').html('{{ trans('nosh.image') }} ' + i + ' of ' + image_total);
                     });
                 }
             });
@@ -1005,17 +1008,51 @@
             });
         }
 
+        $(document).on('click', 'a.nosh-icd10', function(event) {
+            if ($(this).hasClass('list-group-item-danger')) {
+                var $this = $(this);
+                event.preventDefault();
+                var list_item = $(this).attr('id');
+                $.ajax({
+                    type: 'POST',
+                    url: noshdata.search_icd_specific,
+                    data: 'icd=' + $(this).attr('data-nosh-id'),
+                    dataType: 'json',
+                    encode: true
+                }).done(function(response) {
+                    var html = '';
+                    $.each(response, function (i, val) {
+                        var proceed1 = 0;
+                        $this.siblings().each(function() {
+                            if ($(this).attr('data-nosh-id') == val.id) {
+                                proceed1++;
+                            }
+                        });
+                        if (proceed1 === 0) {
+                            html += '<a href="' + val.href + '" class="list-group-item nosh-icd10 list-group-item-info';
+                            html += '" data-nosh-value="' + val.value +'" data-nosh-id="' + val.id + '">' + val.label + '</a>';
+                        }
+                    });
+                    if (html === '') {
+                        toastr.error('{{ trans('nosh.more_specific_code') }}');
+                    }
+                    $this.after(html);
+                    $this.remove();
+                });
+            }
+        });
+
         $(document).ready(function() {
             var tz = jstz.determine();
             $.cookie('nosh_tz', tz.name(), { path: '/' });
             $('.nosh-result-list').css('cursor', 'pointer').click(function() {
                 var href = $(this).find('.pull-right').find('a').first().attr('href');
-                $('#modaltext').text('Loading...');
+                $('#modaltext').text('{{ trans('nosh.loading') }}...');
                 $('#loadingModal').modal('show');
                 window.location = href;
             });
             if (noshdata.group_id == '1') {
-                $('#search_patient').attr('placeholder', 'Search Patient to Download Chart');
+                $('#search_patient').attr('placeholder', '{{ trans('nosh.search_patient_placeholder') }}');
             }
             setInterval(chart_notification, 10000);
             $('body').tooltip({
@@ -1023,12 +1060,12 @@
             });
             $('.nosh-dash').css('cursor', 'pointer').click(function() {
                 var href = $(this).find('a').first().attr('href');
-                $('#modaltext').text('Loading...');
+                $('#modaltext').text('{{ trans('nosh.loading') }}...');
                 $('#loadingModal').modal('show');
                 window.location = href;
             });
             $('.nosh-delete').css('cursor', 'pointer').click(function() {
-                var r = confirm('Are you sure you want to delete this item?');
+                var r = confirm('{{ trans('nosh.confirm_delete') }}');
                 if (r === true) {
                     return true;
                 } else {
@@ -1038,13 +1075,13 @@
             });
             $('.nosh-click').css('cursor', 'pointer').click(function(){
                 var url = $(this).attr('data-nosh-click');
-                $('#modaltext').text('Loading...');
+                $('#modaltext').text('{{ trans('nosh.loading') }}...');
                 $('#loadingModal').modal('show');
                 window.location = url;
             });
             $('.nosh-click-view').css('cursor', 'pointer').click(function(){
                 var url = $(this).attr('data-nosh-click');
-                $('#modaltext').text('Loading...');
+                $('#modaltext').text('{{ trans('nosh.loading') }}...');
                 $('#loadingModal').modal('show');
                 $.ajax({
                     type: 'POST',
@@ -1057,10 +1094,10 @@
                     $('#loadingModal').modal('hide');
                 });
             });
-            $('a').css('cursor', 'pointer').click(function() {
+            $('a').css('cursor', 'pointer').on('click', function(event) {
                 if ($(this).attr('href') !== undefined) {
                     if ($(this).attr('href').search('#') == -1 && $(this).hasClass('nosh-no-load') === false) {
-                        $('#modaltext').text('Loading...');
+                        $('#modaltext').text('{{ trans('nosh.loading') }}...');
                         $('#loadingModal').modal('show');
                     }
                     if ($(this).hasClass('nosh-no-load') === true && $(this).hasClass('nosh-delete')) {
@@ -1215,7 +1252,7 @@
                             }
                         }
                     });
-                    $('#' + id).prev().find('input').attr('placeholder', 'Type a few letters...');
+                    $('#' + id).prev().find('input').attr('placeholder', '{{ trans('nosh.tag_placeholder') }}...');
                     $('#' + id).removeClass('loading');
                     $('#' + id).prop('disabled', false);
                 });
@@ -1252,7 +1289,7 @@
                 window.location = noshdata.print_now;
             }
             if (noshdata.download_now !== '') {
-                $('#modaltext').text('Creating document...');
+                $('#modaltext').text('{{ trans('nosh.creating_document') }}...');
                 $('#loadingModal').modal('show');
                 $.fileDownload(noshdata.download_now, {
                     successCallback: function (url) {
@@ -1261,7 +1298,7 @@
                 });
             }
             if (noshdata.download_progress !== '') {
-                $('#progressmodaltext').text('Creating document...');
+                $('#progressmodaltext').text('{{ trans('nosh.creating_document') }}...');
                 $('#progressModal').modal('show');
                 $.fileDownload(noshdata.download_progress, {
                     prepareCallback: function (url) {
@@ -1304,7 +1341,7 @@
                 }
             });
             if (bValid) {
-                $('#modaltext').text('Loading...');
+                $('#modaltext').text('{{ trans('nosh.loading') }}...');
                 $('#loadingModal').modal('show');
                 return;
             } else {
@@ -1317,9 +1354,9 @@
             event.preventDefault();
             var formId = $(this).attr('id');
             if (formId == 'event_form') {
-                if ($('#eventModal_title').text() === 'New Appointment' || $('#eventModal_title').text() === 'Edit Appointment') {
+                if ($('#eventModal_title').text() === '{{ trans('nosh.new_appointment') }}' || $('#eventModal_title').text() === '{{ trans('nosh.edit_appointment') }}') {
                     if ($('#pid').val() === '') {
-                        toastr.error('Patient has not been selected.  Try again');
+                        toastr.error('{{ trans('nosh.patient_not_selected') }}');
                         return false;
                     }
                 }
@@ -1337,9 +1374,9 @@
                 var formTarget = $(this).attr('data-nosh-target');
                 var lastInput = $(this).find('input:last').attr('id');
                 var searchTo= $(this).attr('data-nosh-search-to');
-                $('#modaltext').text('Searching...');
+                $('#modaltext').text('{{ trans('nosh.searching') }}...');
                 if (formId == 'event_form') {
-                    $('#modaltext').text('Calendar Event...');
+                    $('#modaltext').text('{{ trans('nosh.calendar_event') }}...');
                 }
                 $('#loadingModal').modal('show');
                 $.ajax({
@@ -1352,7 +1389,7 @@
                     var $target = $('#' + formTarget);
                     var html = '';
                     if (response.response == 'false') {
-                        html = 'No results.';
+                        html = '{{ trans('nosh.no_results') }}';
                         $target.html(html);
                     }
                     if (response.response == 'div') {
@@ -1374,7 +1411,7 @@
                                         html += ' nosh-icd10 list-group-item-success';
                                     }
                                 }
-                                html += ' data-nosh-value="' + val.value +'" data-nosh-id="' + val.id + '">' + val.label + '</a>';
+                                html += '" data-nosh-value="' + val.value +'" data-nosh-id="' + val.id + '">' + val.label + '</a>';
                                 if (typeof val.category_id !== 'undefined') {
                                     $('#'+ val.category_id).append(html);
                                     html = '';
@@ -1457,7 +1494,7 @@
                                 }
                                 if (typeof val.icd10type !== 'undefined') {
                                     if (val.icd10type == '0') {
-                                        html += ' data-toggle="tooltip" title="Click here to expand"';
+                                        html += ' data-toggle="tooltip" title="{{ trans('nosh.click_to_expand') }}"';
                                     }
                                 }
                                 html +='>' + val.label + '</li>';
@@ -1575,7 +1612,7 @@
                                     }
                                 });
                                 if (html === '') {
-                                    toastr.error('More specific codes are already in this list!');
+                                    toastr.error('{{ trans('nosh.more_specific_code') }}');
                                 }
                                 $this.after(html);
                                 $this.remove();
@@ -1630,8 +1667,8 @@
                     dataType: 'json',
                     success: function(data){
                         $('#warningModal_body').html(data.info);
-                        text_data = '<div class="col-md-2 col-md-offset-5"><button id="warning" class="btn btn-default btn-block">Click Here to Learn More</button></div>';
-                        toastr.error(text_data, 'Medication Interaction Information Available', {"timeOut":"20000","preventDuplicates":true,"preventOpenDuplicates":true});
+                        text_data = '<div class="col-md-2 col-md-offset-5"><button id="warning" class="btn btn-default btn-block">{{ trans('nosh.button_learn_more') }}</button></div>';
+                        toastr.error(text_data, '{{ trans('nosh.medication_interactions') }}', {"timeOut":"20000","preventDuplicates":true,"preventOpenDuplicates":true});
                         $('#warning').css('cursor', 'pointer').on('click', function(){
                             // toastr.clear();
                             $('#warningModal').modal('show');
@@ -1662,17 +1699,17 @@
                         data: 'cpt=' + value,
                         success: function(data){
                             if (data == 'y') {
-                                text_data = '<div class="col-md-2 col-md-offset-5"><button data-nosh-type="favorite" class="btn btn-default btn-block add_cpt" data-nosh-value="' + value + '">Add to Favorites</button></div>';
-                                toastr.success(text_data, 'Do you want to add CPT ' + value + ' to your favorites?', {"timeOut":"20000","preventDuplicates":true});
+                                text_data = '<div class="col-md-2 col-md-offset-5"><button data-nosh-type="favorite" class="btn btn-default btn-block add_cpt" data-nosh-value="' + value + '">{{ trans('nosh.button_add_favorites') }}</button></div>';
+                                toastr.success(text_data, '{{ trans('nosh.add_cpt1') }}' + value + '{{ trans('nosh.add_cpt2') }}', {"timeOut":"20000","preventDuplicates":true});
                                 noshdata.toastr_collide = '1';
                             }
                         }
                     });
                 }
                 if ($(this).attr('data-nosh-category') == 'universal_cpt_result') {
-                    text_data = '<div class="col-md-2 col-md-offset-5"><button data-nosh-type="favorite" class="btn btn-default btn-block add_cpt" data-nosh-value="' + value + '">Add to Favorites</button>';
-                    text_data += '<button data-nosh-type="practice" class="btn btn-default btn-block add_cpt" data-nosh-value="' + value + '">Add to Practice</button></div>';
-                    toastr.success(text_data, 'Do you want to add CPT ' + value + ' to your favorites or practice?', {"timeOut":"20000","preventDuplicates":true});
+                    text_data = '<div class="col-md-2 col-md-offset-5"><button data-nosh-type="favorite" class="btn btn-default btn-block add_cpt" data-nosh-value="' + value + '">{{ trans('nosh.button_add_favorites') }}</button>';
+                    text_data += '<button data-nosh-type="practice" class="btn btn-default btn-block add_cpt" data-nosh-value="' + value + '">{{ trans('nosh.button_add_practice') }}</button></div>';
+                    toastr.success(text_data, '{{ trans('nosh.add_cpt1') }}' + value + '{{ trans('nosh.add_cpt3') }}', {"timeOut":"20000","preventDuplicates":true});
                 }
             }
             if ($(this).attr('data-nosh-cvx') !== undefined) {
@@ -1812,7 +1849,7 @@
                 $('#template_id').val('new');
                 $('#template_group_name').val($('#template_group').val());
                 $('#template_category').val($('#template_target').val());
-                $('#template_text').attr('placeholder', 'Text to Add to Template Group');
+                $('#template_text').attr('placeholder', '{{ trans('nosh.template_text_placeholder') }}');
             }
             $('#templateModal').modal('show');
             $('#template_text').focus();
@@ -1824,7 +1861,7 @@
             $('#template_group_name').val($(this).parent().prev().attr('data-nosh-template-group'));
             $('#template_category').val($(this).parent().prev().attr('data-nosh-template-category'));
             $('#templateModal').modal('show');
-            $('#template_text').attr('placeholder', 'Group Name').focus();
+            $('#template_text').attr('placeholder', '{{ trans('nosh.template_group_name') }}').focus();
         });
 
         $(document).on('click', '.template-edit', function(event){
@@ -1860,7 +1897,7 @@
                 $('#template_gender').val($(this).parent().prev().attr('data-nosh-gender'));
             }
             $('#templateModal').modal('show');
-            $('#template_text').attr('placeholder', 'Text to Add to Template Group').focus();
+            $('#template_text').attr('placeholder', '{{ trans('nosh.template_text_placeholder') }}').focus();
         });
 
         $(document).on('click', '.template-default', function(event) {
@@ -2103,7 +2140,7 @@
                 url: noshdata.add_cpt,
                 data: 'cpt=' + $(this).attr('data-nosh-value') + '&type=' + $(this).attr('data-nosh-type'),
                 success: function(data){
-                    toastr.success('Procedure code added');
+                    toastr.success('{{ trans('nosh.procedure_code_add') }}');
                 }
             });
         });
@@ -2114,7 +2151,7 @@
                 url: noshdata.update_cpt,
                 data: 'cpt=' + $('#cpt').val() + '&cpt_charge=' + $('#cpt_charge').val() + '&unit=' + $('#unit').val(),
                 success: function(data){
-                    toastr.success('Procedure code updated');
+                    toastr.success('{{ trans('nosh.procedure_code_update') }}');
                 }
             });
         });
@@ -2125,7 +2162,7 @@
                 url: noshdata.add_cpt,
                 data: 'cpt=' + $('#cpt').val() + '&cpt_charge=' + $('#cpt_charge').val() + '&unit=' + $('#unit').val(),
                 success: function(data){
-                    toastr.success('Procedure code added');
+                    toastr.success('{{ trans('nosh.procedure_code_add') }}');
                 }
             });
         });
