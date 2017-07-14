@@ -1,1 +1,1 @@
-Reminder - medical appt with {{ $displayname }} on {{ $startdate }}. To cancel/reschedule, call "{{ $phone }}".
+Reminder - appt with {{ $displayname }} on {{ $startdate1 }}. To cancel/change, call "{{ $phone }}".

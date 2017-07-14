@@ -51,6 +51,7 @@ class ReminderController extends Controller {
 							date_default_timezone_set($row2->timezone);
 						}
 						$data_message['startdate'] = date("F j, Y, g:i a", $row->start);
+						$data_message['startdate1'] = date("Y-m-d, g:i a", $row->start);
 						$data_message['displayname'] = $row0->displayname;
 						$data_message['phone'] = $row2->phone;
 						$data_message['email'] = $row2->email;
