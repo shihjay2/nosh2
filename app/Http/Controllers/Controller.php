@@ -15075,7 +15075,7 @@ class Controller extends BaseController
             if ($appt->start > time()) {
                 if ($patient->reminder_to !== '') {
                     $data_message['startdate'] = date("F j, Y, g:i a", $appt->start);
-                    $data_message['startdate1'] = date("Y-m-d, g:i a", $row->start);
+                    $data_message['startdate1'] = date("Y-m-d, g:i a", $appt->start);
                     $data_message['displayname'] = $user->displayname;
                     $data_message['phone'] = $practice->phone;
                     $data_message['email'] = $practice->email;
