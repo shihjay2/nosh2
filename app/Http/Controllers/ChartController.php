@@ -357,6 +357,11 @@ class ChartController extends Controller {
         return view('chart', $data);
     }
 
+    public function api_patient(Request $request)
+    {
+        
+    }
+
     public function billing_delete_invoice(Request $request, $id)
     {
         DB::table('billing_core')->where('billing_core_id', '=', $id)->delete();

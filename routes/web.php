@@ -342,6 +342,7 @@ Route::group(['prefix' => 'fhir', 'middleware' => 'fhir'], function () {
 Route::get('api_check/{practicehandle}', ['as' => 'api_check', 'uses' => 'LoginController@api_check']);
 Route::any('api_login', ['as' => 'api_login', 'uses' => 'LoginController@api_login']);
 Route::any('api_logout', ['as' => 'api_logout', 'uses' => 'LoginController@api_logout']);
+Route::any('api_patient', ['as' => 'api_patient', 'uses' => 'ChartController@api_patient']);
 Route::any('api_practice', ['as' => 'api_practice', 'uses' => 'CoreController@api_practice']);
 Route::any('api_register', ['as' => 'api_register', 'uses' => 'LoginController@api_register']);
 Route::group(['prefix' => 'api/v1', 'middleware' => 'auth'], function () {
