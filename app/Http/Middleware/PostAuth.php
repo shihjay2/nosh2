@@ -50,7 +50,6 @@ class PostAuth
     				'practice_id' => Session::get('practice_id')
     			];
     			DB::table('demographics_notes')->insert($data1);
-    			$this->audit('Add');
             }
         }
         return $next($request);
