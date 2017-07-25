@@ -41,7 +41,7 @@ class PostAuth
         Session::put('notification_run', 'true');
         // Check if pNOSH for provider that patient's demographic supplementary tables exist
         if (Session::get('patient_centric') == 'yp') {
-            $relate = DB::table('demographics_relate')->where('pid', '=', Session::get('pid'))->first();
+            $relate = DB::table('demographics_notes')->where('pid', '=', Session::get('pid'))->first();
             if (!$relate) {
                 $data1 = [
     				'billing_notes' => '',
