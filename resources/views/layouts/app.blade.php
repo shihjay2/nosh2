@@ -149,7 +149,7 @@
                                     <li><a href="{{ route('core_form', ['providers', 'id', Session::get('user_id')]) }}"><i class="fa fa-btn fa-cogs"></i>{{ trans('nosh.my_information') }}</a></li>
                                     <li><a href="{{ route('user_signature') }}"><i class="fa fa-btn fa-pencil"></i>{{ trans('nosh.user_signature') }}</a></li>
                                 @endif
-                                @if (Session::get('patient_centric') !== 'y')
+                                @if (Session::get('patient_centric') == 'y')
                                     <li><a href="{{ route('fhir_connect') }}"><i class="fa fa-btn fa-plug"></i>{{ trans('nosh.fhir_connect') }}</a></li>
                                 @endif
                                 <li><a href="{{ route('password_change') }}"><i class="fa fa-btn fa-cog"></i>{{ trans('nosh.password_change') }}</a></li>
