@@ -247,9 +247,6 @@ class OpenIDConnectClient
 				// Clean up the session a little
 				unset($_SESSION['openid_connect_nonce']);
 
-				// Save the id token
-				$this->idToken = $token_json->id_token;
-
 				// Save the access token
 				$this->accessToken = $token_json->access_token;
 
