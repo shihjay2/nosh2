@@ -899,5 +899,7 @@ public function install_fix(Request $request)
 
     public function test1(Request $request)
     {
+        $q = 'albuterol sulfate';
+        return rawurlencode($q);
     }
 }

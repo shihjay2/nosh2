@@ -91,6 +91,7 @@ return [
     "configure_form_list" => "My Forms",
     "practice_setup" => "Practice Setup",
     "uma_invite" => "Share your Chart",
+    "fhir_connect" => "Connect to a Patient Portal",
     "my_information" => "My Information",
     "user_signature" => "Change Signature",
     "password_change" => "Change Password",

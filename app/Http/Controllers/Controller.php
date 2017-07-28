@@ -3522,6 +3522,45 @@ class Controller extends BaseController
         return $message;
     }
 
+    protected function fhir_metadata($url)
+    {
+        $url .= 'metadata';
+        $ch = curl_init();
+        $return = [];
+        curl_setopt($ch,CURLOPT_URL, $url);
+        curl_setopt($ch,CURLOPT_FAILONERROR,1);
+        curl_setopt($ch,CURLOPT_FOLLOWLOCATION,1);
+        curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+        curl_setopt($ch,CURLOPT_TIMEOUT, 60);
+        curl_setopt($ch,CURLOPT_CONNECTTIMEOUT ,0);
+        $content_type = 'application/json';
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            "Accept: {$content_type}"
+        ]);
+        $metadata_json = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        if($httpCode == 200) {
+            $metadata = json_decode($metadata_json, true);
+            // Get security URLs
+            foreach ($metadata['rest'][0]['security']['extension'][0]['extension'] as $security_row) {
+                if ($security_row['url'] == 'authorize') {
+                    $return['auth_url'] = $security_row['valueUri'];
+                }
+                if ($security_row['url'] == 'token') {
+                    $return['token_url'] = $security_row['valueUri'];
+                }
+            }
+            // Get resources
+            foreach ($metadata['rest'][0]['resource'] as $resource_row) {
+                $return['resources'][] = $resource_row['type'];
+            }
+        } else {
+            $return['error'] = true;
+        }
+        return $return;
+    }
+
     protected function fhir_request($url, $response_header=false, $token='')
     {
         $ch = curl_init();
@@ -8106,10 +8145,10 @@ class Controller extends BaseController
                 'headcircumference' => null,
                 'BMI' => null,
                 'temp' => null,
-                'temp_method' => null,
+                'temp_method' => 'Oral',
                 'bp_systolic' => null,
                 'bp_diastolic' => null,
-                'bp_position' => null,
+                'bp_position' => 'Sitting',
                 'pulse' => null,
                 'respirations' => null,
                 'o2_sat' => null,

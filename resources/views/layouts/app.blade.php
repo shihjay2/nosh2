@@ -149,6 +149,9 @@
                                     <li><a href="{{ route('core_form', ['providers', 'id', Session::get('user_id')]) }}"><i class="fa fa-btn fa-cogs"></i>{{ trans('nosh.my_information') }}</a></li>
                                     <li><a href="{{ route('user_signature') }}"><i class="fa fa-btn fa-pencil"></i>{{ trans('nosh.user_signature') }}</a></li>
                                 @endif
+                                @if (Session::get('patient_centric') !== 'y')
+                                    <li><a href="{{ route('fhir_connect') }}"><i class="fa fa-btn fa-plug"></i>{{ trans('nosh.fhir_connect') }}</a></li>
+                                @endif
                                 <li><a href="{{ route('password_change') }}"><i class="fa fa-btn fa-cog"></i>{{ trans('nosh.password_change') }}</a></li>
                                 <li><a href="https://github.com/shihjay2/nosh2/issues/new" target="_blank" class="nosh-no-load"><i class="fa fa-btn fa-github-alt"></i>{{ trans('nosh.report_bug') }}</a></li>
                                 <li><a href="https://github.com/shihjay2/nosh2/issues/new" target="_blank" class="nosh-no-load"><i class="fa fa-btn fa-heart"></i>{{ trans('nosh.make_suggestion') }}</a></li>

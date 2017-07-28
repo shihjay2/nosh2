@@ -378,6 +378,20 @@ class OpenIDConnectClient
 		return $base_page_url;
 	}
 
+	public function setAud ($url) {
+		if (filter_var($url, FILTER_VALIDATE_URL) !== false) {
+			$this->aud = $url;
+		}
+	}
+
+	public function getAud() {
+		if (property_exists($this, 'aud') && $this->aud) {
+			return $this->aud;
+		} else {
+			return '';
+		}
+	}
+
 	/**
 	 * Used for arbitrary value generation for nonces and state
 	 *
@@ -409,7 +423,8 @@ class OpenIDConnectClient
 			'client_id' => $this->clientID,
 			'nonce' => $nonce,
 			'state' => $state,
-			'scope' => 'openid'
+			'scope' => 'openid',
+			'aud' => $this->getAud()
 		));
 
 		// If the client has been registered with additional scopes

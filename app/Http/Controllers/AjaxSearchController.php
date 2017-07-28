@@ -916,10 +916,10 @@ class AjaxSearchController extends Controller {
 
     public function search_rx(Request $request)
     {
-        $q = strtolower($request->input('search_rx'));
+        $q = rawurlencode(strtolower($request->input('search_rx')));
         if (!$q) return;
         $data['response'] = 'false';
-        $url = 'http://rxnav.nlm.nih.gov/REST/drugs.json?name=' . $q;
+        $url = 'http://rxnav.nlm.nih.gov/REST/Prescribe/drugs.json?name=' . $q;
         $ch = curl_init();
         curl_setopt($ch,CURLOPT_URL, $url);
         curl_setopt($ch,CURLOPT_FAILONERROR,1);

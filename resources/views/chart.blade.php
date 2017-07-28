@@ -541,6 +541,13 @@
                 url: noshdata.last_page + hash,
             });
         });
+        $('.nav-tabs .nosh-encounter_tab').on('hide.bs.tab', function(event){
+            var prev = $(event.target).attr('href').replace('#', '');
+            var next = $(event.relatedTarget).attr('href').replace('#', '');
+            var action = $('#' + prev + '_form').attr('action').slice(0, -1) + next;
+            $('#' + prev + '_form').attr('action', action);
+            $('#' + prev + '_form').submit();
+        });
 
         // Encounter Details
         if ($('#encounter_provider').val() !== '') {
@@ -796,6 +803,23 @@
         $('#bp_systolic').blur(function(){
             var a = $('#bp_systolic').val();
             if (a !== '') {
+                var n = a.search('/')
+                if (n !== -1) {
+                    var b = a.split('/');
+                    $('#bp_systolic').val(b[0]);
+                    a = b[0];
+                    $('#bp_diastolic').val(b[1]);
+                    if (b[1] > 90 || b[1] < 50) {
+                        $('#bp_diastolic').css('color','red');
+                    } else {
+                        $('#bp_diastolic').css('color','black');
+                    }
+                    if (b[1] > 200 || b[1] < 30) {
+                        toastr.error('{{ trans('nosh.invalid_value') }}');
+                        $('#bp_diastolic').val('');
+                        $('#bp_diastolic').css('color','black');
+                    }
+                }
                 if (a > 140 || a < 80) {
                     $('#bp_systolic').css('color','red');
                 } else {
@@ -811,6 +835,23 @@
         $('#bp_diastolic').blur(function(){
             var a = $('#bp_diastolic').val();
             if (a !== '') {
+                var n = a.search('/')
+                if (n !== -1) {
+                    var b = a.split('/');
+                    $('#bp_systolic').val(b[0]);
+                    a = b[1];
+                    $('#bp_diastolic').val(b[1]);
+                    if (b[0] > 140 || b[0] < 80) {
+                        $('#bp_systolic').css('color','red');
+                    } else {
+                        $('#bp_systolic').css('color','black');
+                    }
+                    if (b[0] > 250 || b[0] < 50) {
+                        toastr.error('{{ trans('nosh.invalid_value') }}');
+                        $('#bp_systolic').val('');
+                        $('#bp_systolic').css('color','black');
+                    }
+                }
                 if (a > 90 || a < 50) {
                     $('#bp_diastolic').css('color','red');
                 } else {

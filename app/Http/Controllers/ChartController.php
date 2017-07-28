@@ -359,7 +359,7 @@ class ChartController extends Controller {
 
     public function api_patient(Request $request)
     {
-        
+
     }
 
     public function billing_delete_invoice(Request $request, $id)
@@ -2890,23 +2890,23 @@ class ChartController extends Controller {
         if ($section == 's') {
             $return .= 'class="active"';
         }
-        $return .= '><a data-toggle="tab" href="#s" title="Subjective"><span style="margin-right:15px;">S</span></a></li>';
+        $return .= '><a data-toggle="tab" href="#s" title="Subjective" class="nosh-encounter_tab"><span style="margin-right:15px;">S</span></a></li>';
         if (in_array($encounter->encounter_template, $o_array)) {
             $return .= '<li ';
             if ($section == 'o') {
                 $return .= 'class="active"';
             }
-            $return .= '><a data-toggle="tab" href="#o" title="Objective"><span style="margin-right:15px;">O</span></a></li>';
+            $return .= '><a data-toggle="tab" href="#o" title="Objective" class="nosh-encounter_tab"><span style="margin-right:15px;">O</span></a></li>';
         }
         $return .= '<li ';
         if ($section == 'a') {
             $return .= 'class="active"';
         }
-        $return .= '><a data-toggle="tab" href="#a" title="Assessment"><span style="margin-right:15px;">A</span></a></li><li ';
+        $return .= '><a data-toggle="tab" href="#a" title="Assessment" class="nosh-encounter_tab"><span style="margin-right:15px;">A</span></a></li><li ';
         if ($section == 'p') {
             $return .= 'class="active"';
         }
-        $return .= '><a data-toggle="tab" href="#p" title="Plan"><span style="margin-right:15px;">P</span></a></li></ul><div class="tab-content" style="margin-top:15px;">';
+        $return .= '><a data-toggle="tab" href="#p" title="Plan" class="nosh-encounter_tab"><span style="margin-right:15px;">P</span></a></li></ul><div class="tab-content" style="margin-top:15px;">';
         // S
         $return .= '<div id="s" class="tab-pane fade';
         if ($section == 's') {
@@ -2973,7 +2973,7 @@ class ChartController extends Controller {
         }
         $s_form_array = [
             'form_id' => 's_form',
-            'action' => route('encounter_save', [$eid, 's']),
+            'action' => route('encounter_save', [$eid, 'o']),
             'items' => $s_items,
             'save_button_label' => 'Save and Next'
         ];
@@ -3088,7 +3088,7 @@ class ChartController extends Controller {
             ];
             $o_form_array = [
                 'form_id' => 'o_form',
-                'action' => route('encounter_save', [$eid, 'o']),
+                'action' => route('encounter_save', [$eid, 'a']),
                 'items' => $o_items,
                 'save_button_label' => 'Save and Next'
             ];
@@ -3176,7 +3176,7 @@ class ChartController extends Controller {
         ];
         $a_form_array = [
             'form_id' => 'a_form',
-            'action' => route('encounter_save', [$eid, 'a']),
+            'action' => route('encounter_save', [$eid, 'p']),
             'items' => $a_items,
             'save_button_label' => 'Save and Next'
         ];
@@ -3309,7 +3309,7 @@ class ChartController extends Controller {
         ];
         $p_form_array = [
             'form_id' => 'p_form',
-            'action' => route('encounter_save', [$eid, 'p']),
+            'action' => route('encounter_save', [$eid, 'd']),
             'items' => $p_items,
             'save_button_label' => 'Save'
         ];
@@ -4550,17 +4550,19 @@ class ChartController extends Controller {
                 }
             }
         }
-        if ($section == 's') {
-            $url = route('encounter', [$eid, 'o']) . '#o';
-        }
-        if ($section == 'o') {
-            $url = route('encounter', [$eid, 'a']) . '#a';
-        }
-        if ($section == 'a') {
-            $url = route('encounter', [$eid, 'p']) . '#p';
-        }
-        if ($section == 'p') {
+        // if ($section == 's') {
+        //     $url = route('encounter', [$eid, 'o']) . '#o';
+        // }
+        // if ($section == 'o') {
+        //     $url = route('encounter', [$eid, 'a']) . '#a';
+        // }
+        // if ($section == 'a') {
+        //     $url = route('encounter', [$eid, 'p']) . '#p';
+        // }
+        if ($section == 'd') {
             $url = route('encounter', [$eid]);
+        } else {
+            $url = route('encounter', [$eid, $section]) . '#' . $section;
         }
         Session::put('message_action', 'Encounter saved.');
         return redirect($url);
@@ -5209,6 +5211,72 @@ class ChartController extends Controller {
             }
         }
         return view('home', $data);
+    }
+
+    public function fhir_connect(Request $request, $id='list')
+    {
+        $data['panel_header'] = 'Connect to a Patient Portal';
+        // Get Open Epic servers
+        $url = 'https://open.epic.com/MyApps/EndpointsJson';
+        $ch = curl_init();
+        curl_setopt($ch,CURLOPT_URL, $url);
+        curl_setopt($ch,CURLOPT_FAILONERROR,1);
+        curl_setopt($ch,CURLOPT_FOLLOWLOCATION,1);
+        curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+        curl_setopt($ch,CURLOPT_TIMEOUT, 60);
+        curl_setopt($ch,CURLOPT_CONNECTTIMEOUT ,0);
+        $result = curl_exec($ch);
+        $result_array = json_decode($result, true);
+        if ($id == 'list') {
+            $data['content'] = '<div class="list-group">';
+            $data['content'] .= '<a href="' . route('fhir_connect', ['sandbox']) . '" class="list-group-item">Open Epic Argonaut Profile</a>';
+            $i = 0;
+            foreach ($result_array['Entries'] as $row) {
+                $data['content'] .= '<a href="' . route('fhir_connect', [$i]) . '" class="list-group-item">' . $row['OrganizationName'] . '</a>';
+                $i++;
+            }
+            $data['content'] .= '</div>';
+        } else {
+            if ($id == 'sandbox') {
+                $fhir_url = 'https://open-ic.epic.com/argonaut/api/FHIR/Argonaut/';
+            } else {
+                $fhir_url = $result_array['Entries'][$id]['FHIRPatientFacingURI'];
+            }
+            $metadata = $this->fhir_metadata($fhir_url);
+            if (isset($metadata['error'])) {
+                $data['content'] = 'Cannot connect to site.';
+            } else {
+                Session::put('fhir_url', $fhir_url);
+                Session::put('fhir_auth_url', $metadata['auth_url']);
+                return redirect()->route('fhir_connect_response');
+            }
+        }
+        $data['assets_js'] = $this->assets_js('chart');
+        $data['assets_css'] = $this->assets_css('chart');
+        $data = array_merge($data, $this->sidebar_build('chart'));
+        return view('chart', $data);
+    }
+
+    public function fhir_connect_response(Request $request)
+    {
+        $client_id = 'c735b021-bf59-4d29-9fcc-4415626153c5';
+        $client_secret = ''; //open.epic non-production client ID
+        $oidc = new OpenIDConnectClient(Session::get('fhir_auth_url'), $client_id, $client_secret);
+        $oidc->setRedirectURL(route('fhir_connect_response'));
+        $oidc->providerConfigParam(['authorization_endpoint' => Session::get('fhir_auth_url')]);
+        $oidc->setAud(Session::get('fhir_url'));
+        $oidc->addScope('patient/*.read');
+        $oidc->addScope('user/*.*');
+        $oidc->addScope('openid');
+        $oidc->addScope('profile');
+        $oidc->addScope('launch');
+        $oidc->addScope('launch/patient');
+        $oidc->addScope('offline_access');
+        $oidc->addScope('online_access');
+        $oidc->authenticate();
+        $access_token = $oidc->getAccessToken();
+        $refresh_token = $oidc->getRefreshToken();
+        return $access_token;
     }
 
     public function form_list(Request $request, $type)
