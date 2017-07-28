@@ -211,23 +211,39 @@ class OpenIDConnectClient
 			if ($_REQUEST['state'] != $_SESSION['openid_connect_state']) {
 				throw new OpenIDConnectClientException("Unable to determine state");
 			}
-			if (!property_exists($token_json, 'id_token')) {
-				throw new OpenIDConnectClientException("User did not authorize openid scope.");
-			}
-			$claims = $this->decodeJWT($token_json->id_token, 1);
 
-			// Verify the signature
-			if ($this->canVerifySignatures()) {
-				if (!$this->verifyJWTsignature($token_json->id_token, $uma)) {
-					throw new OpenIDConnectClientException ("Unable to verify signature");
+			// Check if id_token exists to verify signature, if not, skip and get access token
+			if (property_exists($token_json, 'id_token')) {
+				$claims = $this->decodeJWT($token_json->id_token, 1);
+
+				// Verify the signature
+				if ($this->canVerifySignatures()) {
+					if (!$this->verifyJWTsignature($token_json->id_token, $uma)) {
+						throw new OpenIDConnectClientException ("Unable to verify signature");
+					}
+				} else {
+					user_error("Warning: JWT signature verification unavailable.");
+				}
+
+				// If this is a valid claim
+				if ($this->verifyJWTclaims($claims)) {
+
+					// Clean up the session a little
+					unset($_SESSION['openid_connect_nonce']);
+
+					// Save the id token
+					$this->idToken = $token_json->id_token;
+
+					// Save the access token
+					$this->accessToken = $token_json->access_token;
+
+					// Save the refresh token, if we got one
+					if (isset($token_json->refresh_token)) $this->refreshToken = $token_json->refresh_token;
+					return true;
+				} else {
+					throw new OpenIDConnectClientException ("Unable to verify JWT claims");
 				}
 			} else {
-				user_error("Warning: JWT signature verification unavailable.");
-			}
-
-			// If this is a valid claim
-			if ($this->verifyJWTclaims($claims)) {
-
 				// Clean up the session a little
 				unset($_SESSION['openid_connect_nonce']);
 
@@ -240,8 +256,6 @@ class OpenIDConnectClient
 				// Save the refresh token, if we got one
 				if (isset($token_json->refresh_token)) $this->refreshToken = $token_json->refresh_token;
 				return true;
-			} else {
-				throw new OpenIDConnectClientException ("Unable to verify JWT claims");
 			}
 		} else {
 			if ($uma == false) {
