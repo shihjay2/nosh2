@@ -5248,6 +5248,7 @@ class ChartController extends Controller {
             } else {
                 Session::put('fhir_url', $fhir_url);
                 Session::put('fhir_auth_url', $metadata['auth_url']);
+                Session::put('fhir_token_url', $metadata['token_url']);
                 return redirect()->route('fhir_connect_response');
             }
         }
@@ -5264,6 +5265,7 @@ class ChartController extends Controller {
         $oidc = new OpenIDConnectClient(Session::get('fhir_auth_url'), $client_id, $client_secret);
         $oidc->setRedirectURL(route('fhir_connect_response'));
         $oidc->providerConfigParam(['authorization_endpoint' => Session::get('fhir_auth_url')]);
+        $oidc->providerConfigParam(['token_endpoint' => Session::get('fhir_token_url')]);
         $oidc->setAud(Session::get('fhir_url'));
         $oidc->addScope('patient/*.read');
         $oidc->addScope('user/*.*');
