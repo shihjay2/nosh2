@@ -5263,7 +5263,7 @@ class ChartController extends Controller {
         $token = Session::get('fhir_access_token');
         $data['panel_header'] = 'Patient Portal Data';
         $url = Session::get('fhir_url') . $type . '/' . Session::get('fhir_patient_token');
-        $result = $this->fhir_request($urlinit,false,$token);
+        $result = $this->fhir_request($url,false,$token);
 
 
         // $data['assets_js'] = $this->assets_js('chart');
