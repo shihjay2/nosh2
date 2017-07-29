@@ -5475,6 +5475,7 @@ class ChartController extends Controller {
         }
         $data['assets_js'] = $this->assets_js('chart');
         $data['assets_css'] = $this->assets_css('chart');
+        Session::put('last_page', $request->fullUrl());
         $data = array_merge($data, $this->sidebar_build('chart'));
         return view('chart', $data);
     }
