@@ -3561,7 +3561,7 @@ class Controller extends BaseController
         return $return;
     }
 
-    protected function fhir_request($url, $response_header=false, $token='')
+    protected function fhir_request($url, $response_header=false, $token='', $epic=false)
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -3574,9 +3574,17 @@ class Controller extends BaseController
             curl_setopt($ch, CURLOPT_HEADER, 0);
         }
         if ($token != '') {
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                'Authorization: Bearer ' . $token
-            ));
+            if ($epic == true) {
+                $content_type = 'application/json';
+                curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                    "Accept: {$content_type}",
+                    'Authorization: Bearer ' . $token
+                ]);
+            } else {
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                    'Authorization: Bearer ' . $token
+                ));
+            }
         }
         $output = curl_exec($ch);
         // if ($response_header == true) {
