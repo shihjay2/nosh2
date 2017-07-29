@@ -192,6 +192,7 @@ Route::get('encounters_list', ['as' => 'encounters_list', 'uses' => 'ChartContro
 Route::get('family_history', ['as' => 'family_history', 'uses' => 'ChartController@family_history']);
 Route::any('family_history_update/{id}', ['as' => 'family_history_update', 'uses' => 'ChartController@family_history_update']);
 Route::any('fhir_connect/{id?}', ['as' => 'fhir_connect', 'uses' => 'ChartController@fhir_connect']);
+Route::any('fhir_connect_display/{type?}', ['as' => 'fhir_connect_display', 'uses' => 'ChartController@fhir_connect_display']);
 Route::any('fhir_connect_response', ['as' => 'fhir_connect_response', 'uses' => 'ChartController@fhir_connect_response']);
 Route::get('form_list/{type}', ['as' => 'form_list', 'uses' => 'ChartController@form_list']);
 Route::any('form_show/{id}/{type}/{origin?}', ['as' => 'form_show', 'uses' => 'ChartController@form_show']);

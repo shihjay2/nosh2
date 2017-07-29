@@ -5258,6 +5258,21 @@ class ChartController extends Controller {
         return view('chart', $data);
     }
 
+    public function fhir_connect_display(Request $request, $type='Patient')
+    {
+        $token = Session::get('fhir_access_token');
+        $data['panel_header'] = 'Patient Portal Data';
+        $url = Session::get('fhir_url') . $type . '/' . Session::get('fhir_patient_token');
+        $result = $this->fhir_request($urlinit,false,$token);
+
+
+        // $data['assets_js'] = $this->assets_js('chart');
+        // $data['assets_css'] = $this->assets_css('chart');
+        // $data = array_merge($data, $this->sidebar_build('chart'));
+        // return view('chart', $data);
+        return $result;
+    }
+
     public function fhir_connect_response(Request $request)
     {
         $client_id = 'c735b021-bf59-4d29-9fcc-4415626153c5';
@@ -5277,8 +5292,12 @@ class ChartController extends Controller {
         $oidc->addScope('online_access');
         $oidc->authenticate();
         $access_token = $oidc->getAccessToken();
-        $refresh_token = $oidc->getRefreshToken();
-        return $access_token;
+        $patient_token = $oidc->getPatientToken();
+        // $refresh_token = $oidc->getRefreshToken();
+        Session::put('fhir_access_token', $access_token);
+        Session::put('fhir_patient_token', $patient_token);
+        // Session::put('fhir_refresh_token', $refresh_token);
+        return redirect()->route('fhir_connect_display');
     }
 
     public function form_list(Request $request, $type)

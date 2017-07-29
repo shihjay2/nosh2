@@ -132,12 +132,12 @@ class OpenIDConnectClient
 	private $certPath;
 
 	/**
-	 * @var string if we aquire an access token it will be stored here
+	 * @var string if we acquire an access token it will be stored here
 	 */
 	private $accessToken;
 
 	/**
-	 * @var string if we aquire a refresh token it will be stored here
+	 * @var string if we acquire a refresh token it will be stored here
 	 */
 	private $refreshToken;
 
@@ -145,6 +145,11 @@ class OpenIDConnectClient
 	* @var string if we acquire an id token it will be stored here
 	*/
 	private $idToken;
+
+	/**
+	 * @var string if we acquire a patient token it will be stored here
+	 */
+	private $patientToken;
 
 	/**
 	 * @var array holds scopes
@@ -252,6 +257,9 @@ class OpenIDConnectClient
 
 				// Save the refresh token, if we got one
 				if (isset($token_json->refresh_token)) $this->refreshToken = $token_json->refresh_token;
+
+				// Save patient identifier, if we got one
+				if (isset($token_json->patient)) $this->patientToken = $token_json->patient;
 				return true;
 			}
 		} else {
@@ -950,6 +958,13 @@ class OpenIDConnectClient
 	 */
 	public function getRefreshToken() {
 		return $this->refreshToken;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getPatientToken() {
+		return $this->patientToken;
 	}
 
 	/**
