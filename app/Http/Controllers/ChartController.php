@@ -5262,14 +5262,18 @@ class ChartController extends Controller {
     {
         $token = Session::get('fhir_access_token');
         $title_array = [
-            'Condition' => 'Conditions',
-            'MedicationStatement' => 'Medication List',
-            'AllergyIntolerance' => 'Allergy List',
-            'Immunization' => 'Immunizations',
-            'Patient' => 'Patient Information'
+            'Condition' => ['Conditions', 'fa-bars', 'issues', 'issue'],
+            'MedicationStatement' => ['Medication List', 'fa-eyedropper', 'rx_list', 'rxl_medication'],
+            'AllergyIntolerance' => ['Allergy List', 'fa-exclamation-triangle', 'allergies', 'allergies_med'],
+            'Immunization' => ['Immunizations', 'fa-magic', 'immunizations', 'imm_immunization'],
+            'Patient' => ['Patient Information', 'fa-user', 'demographics', 'pid']
         ];
-        $data['panel_header'] = 'Portal Data - ' . $title_array[$type];
-        $url = Session::get('fhir_url') . $type . '/' . Session::get('fhir_patient_token');
+        $data['panel_header'] = 'Portal Data - ' . $title_array[$type][0];
+        if ($type == 'Patient') {
+            $url = Session::get('fhir_url') . $type . '/' . Session::get('fhir_patient_token');
+        } else {
+            $url = Session::get('fhir_url') . $type . '?Patient=' . Session::get('fhir_patient_token');
+        }
         $result = $this->fhir_request($url,false,$token,true);
         $data['message_action'] = Session::get('message_action');
         Session::forget('message_action');
@@ -5281,12 +5285,170 @@ class ChartController extends Controller {
             $data['content'] .= '<br><strong>Gender:</strong> ' . $gender_arr[strtolower(substr($result['gender'],0,1))];
             $data['content'] .= '</div>';
             $data['content'] .= '<div class="list-group">';
-            $data['content'] .= '<a href="' . route('fhir_connect_display', ['Condition']) . '" class="list-group-item"><i class="fa fa-bars fa-fw"></i><span style="margin:10px;">Conditions</span></a>';
-            $data['content'] .= '<a href="' . route('fhir_connect_display', ['MedicationStatement']) . '" class="list-group-item"><i class="fa fa-eyedropper fa-fw"></i><span style="margin:10px;">Medication List</span></a>';
-            $data['content'] .= '<a href="' . route('fhir_connect_display', ['AllergyIntolerance']) . '" class="list-group-item"><i class="fa fa-exclamation-triangle fa-fw"></i><span style="margin:10px;">Allergy List</span></a>';
-            $data['content'] .= '<a href="' . route('fhir_connect_display', ['Immunization']) . '" class="list-group-item"><i class="fa fa-magic fa-fw"></i><span style="margin:10px;">Immunizations</span></a>';
+            foreach ($title_array as $title_k=>$title_v) {
+                if ($title_k !== 'Patient') {
+                    $data['content'] .= '<a href="' . route('fhir_connect_display', [$title_k]) . '" class="list-group-item"><i class="fa ' . $title_v[1] . ' fa-fw"></i><span style="margin:10px;">' . $title_v[0] . '</span></a>';
+                }
+            }
             $data['content'] .= '</div>';
         } else {
+            $query = DB::table($title_array[$type][2])->where('pid', '=', Session::get('pid'))->orderBy($title_array[$type][4], 'asc');
+            if ($type == 'Condition') {
+                $query->where('issue_date_inactive', '=', '0000-00-00 00:00:00');
+            }
+            if ($type == 'MedicationStatement') {
+                $query->where('rxl_date_inactive', '=', '0000-00-00 00:00:00')->where('rxl_date_old', '=', '0000-00-00 00:00:00');
+            }
+            if ($type == 'Immunization') {
+                $query->orderBy('imm_sequence', 'asc');
+            }
+            if ($type == 'AllergyIntolerance') {
+                $query->where('allergies_date_inactive', '=', '0000-00-00 00:00:00');
+            }
+            $result1 = $query->get();
+            $list_array = [];
+            if ($result1->count()) {
+                if ($type == 'Condition') {
+                    foreach($result1 as $row1) {
+                        $arr = [];
+                        $arr['label'] = $row1->issue;
+                        $list_array[] = $arr;
+                    }
+                }
+                if ($type == 'MedicationStatement') {
+                    foreach($result1 as $row1) {
+                        $arr = [];
+                        if ($row1->rxl_sig == '') {
+                            $arr['label'] = $row1->rxl_medication . ' ' . $row1->rxl_dosage . ' ' . $row1->rxl_dosage_unit . ', ' . $row1->rxl_instructions . ' for ' . $row1->rxl_reason;
+                        } else {
+                            $arr['label'] = $row1->rxl_medication . ' ' . $row1->rxl_dosage . ' ' . $row1->rxl_dosage_unit . ', ' . $row1->rxl_sig . ', ' . $row1->rxl_route . ', ' . $row1->rxl_frequency . ' for ' . $row1->rxl_reason;
+                        }
+                        $list_array[] = $arr;
+                    }
+                }
+                if ($type == 'Immunization') {
+                    $seq_array = [
+                        '1' => ', first',
+                        '2' => ', second',
+                        '3' => ', third',
+                        '4' => ', fourth',
+                        '5' => ', fifth'
+                    ];
+                    foreach ($result1 as $row1) {
+                        $arr = [];
+                        $arr['label'] = $row1->imm_immunization;
+                        if (isset($row1->imm_sequence)) {
+                            if (isset($seq_array[$row1->imm_sequence])) {
+                                $arr['label'] = $row1->imm_immunization . $seq_array[$row1->imm_sequence];
+                            }
+                        }
+                        $list_array[] = $arr;
+                    }
+                }
+                if ($type == 'AllergyIntolerance') {
+                    foreach ($result1 as $row1) {
+                        $arr = [];
+                        $arr['label'] = $row1->allergies_med . ' - ' . $row1->allergies_reaction;
+                        $list_array[] = $arr;
+                    }
+                }
+            }
+            if ($type == 'Condition') {
+                if ($result['total'] > 0) {
+                    foreach ($result['entry'] as $row2) {
+                        if ($row2['resource']['clinicalStatus'] == 'active') {
+                            foreach($row2['resource']['code']['coding'] as $code) {
+                                if ($code['system'] !== "http://snomed.info/sct") {
+                                    $icd = (string) $code['code'];
+                                    $icd_desc = $this->icd_search($icd);
+                                    if ($icd_desc == '') {
+                                        $icd_desc = (string) $code['display'];
+                                    }
+                                    $arr = [];
+                                    $arr['label'] = $icd_desc;
+                                    $arr['label_class'] = 'nosh-ccda-list';
+                                    $arr['danger'] = true;
+                                    $arr['label_data_arr'] = [
+                                        'data-nosh-type' => 'issues',
+                                        'data-nosh-name' => $icd_desc,
+                                        'data-nosh-code' => $icd,
+                                        'data-nosh-date' => (string) $row2['resource']['onsetDateTime']
+                                    ];
+                                    $list_array[] = $arr;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if ($type == 'MedicationStatement') {
+                if ($result['total'] > 0) {
+                    foreach ($result['entry'] as $row2) {
+                        if ($row2['resource']['status'] == 'active') {
+                            $arr = [];
+                            $arr['label'] = (string) $row2['resource']['medicationCodeableConcept']['text'];
+                            $arr['label_class'] = 'nosh-ccda-list';
+                            $arr['danger'] = true;
+                            $rx_date = explode('T', $row2['resource']['effectivePeriod']['start']);
+                            $arr['label_data_arr'] = [
+                                'data-nosh-type' => 'rx_list',
+                                'data-nosh-name' => (string) $row2['resource']['medicationCodeableConcept']['text'],
+                                'data-nosh-code' => '',
+                                'data-nosh-dosage' => '',
+                                'data-nosh-dosage-unit' => '',
+                                'data-nosh-route' => '',
+                                'data-nosh-reason' => '',
+                                'data-nosh-date' => $rx_date[0],
+                                'data-nosh-administration' => $row2['resource']['dosage'][0]['text']
+                            ];
+                            $list_array[] = $arr;
+                        }
+                    }
+                }
+            }
+            if ($type == 'Immunization') {
+                if ($result['total'] > 0) {
+                    foreach ($result['entry'] as $row2) {
+                        if ($row2['resource']['status'] == 'completed') {
+                            $imm_immunization = $row2['resource']['vaccineCode']['text'];
+                            $arr = [];
+                            $arr['label'] = $imm_immunization;
+                            $arr['label_class'] = 'nosh-ccda-list';
+                            $arr['danger'] = true;
+                            $imm_date = explode('T', $row2['resource']['date']);
+                            $arr['label_data_arr'] = [
+                                'data-nosh-type' => 'immunizations',
+                                'data-nosh-name' =>  $imm_immunization,
+                                'data-nosh-route' => '',
+                                'data-nosh-date' => $imm_date,
+                                'data-nosh-code' => $row2['resource']['vaccineCode']['coding'][0]['code'],
+                                'data-nosh-sequence' => $imm_sequence
+                            ];
+                            $list_array[] = $arr;
+                        }
+                    }
+                }
+            }
+            if ($type == 'AllergyIntolerance') {
+                if ($result['total'] > 0) {
+                    foreach ($result['entry'] as $row2) {
+                        if ($row2['resource']['status'] == 'confirmed') {
+                            $arr = [];
+                            $arr['label'] = (string) $row2['resource']['substance']['text'];
+                            $arr['label_class'] = 'nosh-ccda-list';
+                            $arr['danger'] = true;
+                            $allergy_date = explode('T', $row2['resource']['recordedDate']);
+                            $arr['label_data_arr'] = [
+                                'data-nosh-type' => 'allergies',
+                                'data-nosh-name' => (string) $row2['resource']['substance']['text'],
+                                'data-nosh-reaction' => (string) $row2['resource']['reaction'][0]['manifestation'][0]['text'],
+                                'data-nosh-date' => $allergy_date,
+                            ];
+                            $list_array[] = $arr;
+                        }
+                    }
+                }
+            }
             $dropdown_array = [];
             $items = [];
             $items[] = [
@@ -5299,7 +5461,9 @@ class ChartController extends Controller {
             $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
             $data['content'] = '<div class="alert alert-success">';
             $data['content'] .= '<h5>Rows in red come from the upload and need to be reconciled.  Click on the row to accept.</h5>';
-            $data['content'] = '</div>';
+            $data['content'] .= '</div>';
+            $data['content'] .= $this->result_build($list_array, $type . '_reconcile_list');
+            // $data['content'] .= $result;
         }
         $data['assets_js'] = $this->assets_js('chart');
         $data['assets_css'] = $this->assets_css('chart');
