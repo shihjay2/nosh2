@@ -5261,16 +5261,49 @@ class ChartController extends Controller {
     public function fhir_connect_display(Request $request, $type='Patient')
     {
         $token = Session::get('fhir_access_token');
-        $data['panel_header'] = 'Patient Portal Data';
+        $title_array = [
+            'Condition' => 'Conditions',
+            'MedicationStatement' => 'Medication List',
+            'AllergyIntolerance' => 'Allergy List',
+            'Immunization' => 'Immunizations',
+            'Patient' => 'Patient Information'
+        ];
+        $data['panel_header'] = 'Portal Data - ' . $title_array[$type];
         $url = Session::get('fhir_url') . $type . '/' . Session::get('fhir_patient_token');
         $result = $this->fhir_request($url,false,$token,true);
-
-
-        // $data['assets_js'] = $this->assets_js('chart');
-        // $data['assets_css'] = $this->assets_css('chart');
-        // $data = array_merge($data, $this->sidebar_build('chart'));
-        // return view('chart', $data);
-        return $result;
+        $data['message_action'] = Session::get('message_action');
+        Session::forget('message_action');
+        if ($type == 'patient') {
+            $data['content'] = '<div class="alert alert-success">';
+            $data['content'] .= '<strong>Name:</strong> ' . $result['name'][0]['given'][0] . ' ' . $result['name'][0]['family'][0];
+            $data['content'] .= '<strong>Date of Birth:</strong> ' . date('Y-m-d', strtotime($result['birthDate']));
+            $data['content'] .= '<strong>Gender:</strong> ' . array_search($result['gender'], $this->array_gender());
+            $data['content'] = '</div>';
+            $data['content'] .= '<div class="list-group">';
+            $data['content'] .= '<a href="' . route('fhir_connect_display', ['Condition']) . '" class="list-group-item"><i class="fa fa-bars fa-fw"></i><span style="margin:10px;">Conditions</span></a>';
+            $data['content'] .= '<a href="' . route('fhir_connect_display', ['MedicationStatement']) . '" class="list-group-item"><i class="fa fa-eyedropper fa-fw"></i><span style="margin:10px;">Medication List</span></a>';
+            $data['content'] .= '<a href="' . route('fhir_connect_display', ['AllergyIntolerance']) . '" class="list-group-item"><i class="fa fa-exclamation-triangle fa-fw"></i><span style="margin:10px;">Allergy List</span></a>';
+            $data['content'] .= '<a href="' . route('fhir_connect_display', ['Immunization']) . '" class="list-group-item"><i class="fa fa-magic fa-fw"></i><span style="margin:10px;">Immunizations</span></a>';
+            $data['content'] .= '</div>';
+        } else {
+            $dropdown_array = [];
+            $items = [];
+            $items[] = [
+                'type' => 'item',
+                'label' => 'Back',
+                'icon' => 'fa-chevron-left',
+                'url' => route('fhir_connect_display', ['Patient'])
+            ];
+            $dropdown_array['items'] = $items;
+            $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
+            $data['content'] = '<div class="alert alert-success">';
+            $data['content'] .= '<h5>Rows in red come from the upload and need to be reconciled.  Click on the row to accept.</h5>';
+            $data['content'] = '</div>';
+        }
+        $data['assets_js'] = $this->assets_js('chart');
+        $data['assets_css'] = $this->assets_css('chart');
+        $data = array_merge($data, $this->sidebar_build('chart'));
+        return view('chart', $data);
     }
 
     public function fhir_connect_response(Request $request)

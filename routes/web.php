@@ -128,7 +128,7 @@ Route::get('uma_add_patient/{type?}', ['as' => 'uma_add_patient', 'uses' => 'Cor
 Route::any('uma_api', ['as' => 'uma_api', 'uses' => 'CoreController@uma_api']);
 Route::any('uma_list', ['as' => 'uma_list', 'uses' => 'CoreController@uma_list']);
 Route::get('uma_resources/{id}', ['as' => 'uma_resources', 'uses' => 'CoreController@uma_resources']);
-Route::get('uma_resource_view', ['as' => 'uma_resource_view', 'uses' => 'CoreController@uma_resource_view']);
+Route::get('uma_resource_view/{type}', ['as' => 'uma_resource_view', 'uses' => 'CoreController@uma_resource_view']);
 Route::get('users/{type}/{active}', ['as' => 'users', 'uses' => 'CoreController@users']);
 Route::any('user_signature', ['as' => 'user_signature', 'uses' => 'CoreController@user_signature']);
 Route::get('vaccines/{type}', ['as' => 'vaccines', 'uses' => 'CoreController@vaccines']);

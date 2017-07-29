@@ -7720,11 +7720,6 @@ class CoreController extends Controller
     {
         if (Session::has('uma_add_patient')) {
             $data = Session::get('uma_add_patient');
-            $data1 = [
-                'hieofone_as_client_id' => $client_id,
-                'hieofone_as_client_secret' => $client_secret,
-                'hieofone_as_url' => $as_uri
-            ];
             Session::put('uma_uri', $data['hieofone_as_url']);
             Session::put('uma_client_id', $data['hieofone_as_client_id']);
             Session::put('uma_client_secret', $data['hieofone_as_client_secret']);
