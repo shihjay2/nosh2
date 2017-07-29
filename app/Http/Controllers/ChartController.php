@@ -5292,7 +5292,7 @@ class ChartController extends Controller {
             }
             $data['content'] .= '</div>';
         } else {
-            $query = DB::table($title_array[$type][2])->where('pid', '=', Session::get('pid'))->orderBy($title_array[$type][4], 'asc');
+            $query = DB::table($title_array[$type][2])->where('pid', '=', Session::get('pid'))->orderBy($title_array[$type][3], 'asc');
             if ($type == 'Condition') {
                 $query->where('issue_date_inactive', '=', '0000-00-00 00:00:00');
             }
