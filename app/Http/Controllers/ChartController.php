@@ -5278,7 +5278,7 @@ class ChartController extends Controller {
             $data['content'] .= '<strong>Name:</strong> ' . $result['name'][0]['given'][0] . ' ' . $result['name'][0]['family'][0];
             $data['content'] .= '<strong>Date of Birth:</strong> ' . date('Y-m-d', strtotime($result['birthDate']));
             $data['content'] .= '<strong>Gender:</strong> ' . array_search($result['gender'], $this->array_gender());
-            $data['content'] = '</div>';
+            $data['content'] .= '</div>';
             $data['content'] .= '<div class="list-group">';
             $data['content'] .= '<a href="' . route('fhir_connect_display', ['Condition']) . '" class="list-group-item"><i class="fa fa-bars fa-fw"></i><span style="margin:10px;">Conditions</span></a>';
             $data['content'] .= '<a href="' . route('fhir_connect_display', ['MedicationStatement']) . '" class="list-group-item"><i class="fa fa-eyedropper fa-fw"></i><span style="margin:10px;">Medication List</span></a>';
