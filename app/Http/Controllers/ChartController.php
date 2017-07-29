@@ -5273,7 +5273,7 @@ class ChartController extends Controller {
         $result = $this->fhir_request($url,false,$token,true);
         $data['message_action'] = Session::get('message_action');
         Session::forget('message_action');
-        if ($type == 'patient') {
+        if ($type == 'Patient') {
             $data['content'] = '<div class="alert alert-success">';
             $data['content'] .= '<strong>Name:</strong> ' . $result['name'][0]['given'][0] . ' ' . $result['name'][0]['family'][0];
             $data['content'] .= '<strong>Date of Birth:</strong> ' . date('Y-m-d', strtotime($result['birthDate']));
