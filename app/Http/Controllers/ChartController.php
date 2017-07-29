@@ -5273,11 +5273,12 @@ class ChartController extends Controller {
         $result = $this->fhir_request($url,false,$token,true);
         $data['message_action'] = Session::get('message_action');
         Session::forget('message_action');
+        $gender_arr = $this->array_gender();
         if ($type == 'Patient') {
             $data['content'] = '<div class="alert alert-success">';
             $data['content'] .= '<strong>Name:</strong> ' . $result['name'][0]['given'][0] . ' ' . $result['name'][0]['family'][0];
             $data['content'] .= '<br><strong>Date of Birth:</strong> ' . date('Y-m-d', strtotime($result['birthDate']));
-            $data['content'] .= '<br><strong>Gender:</strong> ' . array_search(substr($result['gender'],0,1), $this->array_gender());
+            $data['content'] .= '<br><strong>Gender:</strong> ' . $gender_arr[strtolower(substr($result['gender'],0,1))];
             $data['content'] .= '</div>';
             $data['content'] .= '<div class="list-group">';
             $data['content'] .= '<a href="' . route('fhir_connect_display', ['Condition']) . '" class="list-group-item"><i class="fa fa-bars fa-fw"></i><span style="margin:10px;">Conditions</span></a>';
