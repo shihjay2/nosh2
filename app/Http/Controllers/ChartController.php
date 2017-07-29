@@ -5356,25 +5356,27 @@ class ChartController extends Controller {
             if ($type == 'Condition') {
                 if ($result['total'] > 0) {
                     foreach ($result['entry'] as $row2) {
-                        if ($row2['resource']['clinicalStatus'] == 'active') {
-                            foreach($row2['resource']['code']['coding'] as $code) {
-                                if ($code['system'] !== "http://snomed.info/sct") {
-                                    $icd = (string) $code['code'];
-                                    $icd_desc = $this->icd_search($icd);
-                                    if ($icd_desc == '') {
-                                        $icd_desc = (string) $code['display'];
+                        if (isset($row2['resource']['clinicalStatus'])) {
+                            if ($row2['resource']['clinicalStatus'] == 'active') {
+                                foreach($row2['resource']['code']['coding'] as $code) {
+                                    if ($code['system'] !== "http://snomed.info/sct") {
+                                        $icd = (string) $code['code'];
+                                        $icd_desc = $this->icd_search($icd);
+                                        if ($icd_desc == '') {
+                                            $icd_desc = (string) $code['display'];
+                                        }
+                                        $arr = [];
+                                        $arr['label'] = $icd_desc;
+                                        $arr['label_class'] = 'nosh-ccda-list';
+                                        $arr['danger'] = true;
+                                        $arr['label_data_arr'] = [
+                                            'data-nosh-type' => 'issues',
+                                            'data-nosh-name' => $icd_desc,
+                                            'data-nosh-code' => $icd,
+                                            'data-nosh-date' => (string) $row2['resource']['onsetDateTime']
+                                        ];
+                                        $list_array[] = $arr;
                                     }
-                                    $arr = [];
-                                    $arr['label'] = $icd_desc;
-                                    $arr['label_class'] = 'nosh-ccda-list';
-                                    $arr['danger'] = true;
-                                    $arr['label_data_arr'] = [
-                                        'data-nosh-type' => 'issues',
-                                        'data-nosh-name' => $icd_desc,
-                                        'data-nosh-code' => $icd,
-                                        'data-nosh-date' => (string) $row2['resource']['onsetDateTime']
-                                    ];
-                                    $list_array[] = $arr;
                                 }
                             }
                         }
@@ -5384,24 +5386,26 @@ class ChartController extends Controller {
             if ($type == 'MedicationStatement') {
                 if ($result['total'] > 0) {
                     foreach ($result['entry'] as $row2) {
-                        if ($row2['resource']['status'] == 'active') {
-                            $arr = [];
-                            $arr['label'] = (string) $row2['resource']['medicationCodeableConcept']['text'];
-                            $arr['label_class'] = 'nosh-ccda-list';
-                            $arr['danger'] = true;
-                            $rx_date = explode('T', $row2['resource']['effectivePeriod']['start']);
-                            $arr['label_data_arr'] = [
-                                'data-nosh-type' => 'rx_list',
-                                'data-nosh-name' => (string) $row2['resource']['medicationCodeableConcept']['text'],
-                                'data-nosh-code' => '',
-                                'data-nosh-dosage' => '',
-                                'data-nosh-dosage-unit' => '',
-                                'data-nosh-route' => '',
-                                'data-nosh-reason' => '',
-                                'data-nosh-date' => $rx_date[0],
-                                'data-nosh-administration' => $row2['resource']['dosage'][0]['text']
-                            ];
-                            $list_array[] = $arr;
+                        if (isset($row2['resource']['status'])) {
+                            if ($row2['resource']['status'] == 'active') {
+                                $arr = [];
+                                $arr['label'] = (string) $row2['resource']['medicationCodeableConcept']['text'];
+                                $arr['label_class'] = 'nosh-ccda-list';
+                                $arr['danger'] = true;
+                                $rx_date = explode('T', $row2['resource']['effectivePeriod']['start']);
+                                $arr['label_data_arr'] = [
+                                    'data-nosh-type' => 'rx_list',
+                                    'data-nosh-name' => (string) $row2['resource']['medicationCodeableConcept']['text'],
+                                    'data-nosh-code' => '',
+                                    'data-nosh-dosage' => '',
+                                    'data-nosh-dosage-unit' => '',
+                                    'data-nosh-route' => '',
+                                    'data-nosh-reason' => '',
+                                    'data-nosh-date' => $rx_date[0],
+                                    'data-nosh-administration' => $row2['resource']['dosage'][0]['text']
+                                ];
+                                $list_array[] = $arr;
+                            }
                         }
                     }
                 }
@@ -5409,22 +5413,24 @@ class ChartController extends Controller {
             if ($type == 'Immunization') {
                 if ($result['total'] > 0) {
                     foreach ($result['entry'] as $row2) {
-                        if ($row2['resource']['status'] == 'completed') {
-                            $imm_immunization = $row2['resource']['vaccineCode']['text'];
-                            $arr = [];
-                            $arr['label'] = $imm_immunization;
-                            $arr['label_class'] = 'nosh-ccda-list';
-                            $arr['danger'] = true;
-                            $imm_date = explode('T', $row2['resource']['date']);
-                            $arr['label_data_arr'] = [
-                                'data-nosh-type' => 'immunizations',
-                                'data-nosh-name' =>  $imm_immunization,
-                                'data-nosh-route' => '',
-                                'data-nosh-date' => $imm_date,
-                                'data-nosh-code' => $row2['resource']['vaccineCode']['coding'][0]['code'],
-                                'data-nosh-sequence' => $imm_sequence
-                            ];
-                            $list_array[] = $arr;
+                        if (isset($row2['resource']['status'])) {
+                            if ($row2['resource']['status'] == 'completed') {
+                                $imm_immunization = $row2['resource']['vaccineCode']['text'];
+                                $arr = [];
+                                $arr['label'] = $imm_immunization;
+                                $arr['label_class'] = 'nosh-ccda-list';
+                                $arr['danger'] = true;
+                                $imm_date = explode('T', $row2['resource']['date']);
+                                $arr['label_data_arr'] = [
+                                    'data-nosh-type' => 'immunizations',
+                                    'data-nosh-name' =>  $imm_immunization,
+                                    'data-nosh-route' => '',
+                                    'data-nosh-date' => $imm_date,
+                                    'data-nosh-code' => $row2['resource']['vaccineCode']['coding'][0]['code'],
+                                    'data-nosh-sequence' => $imm_sequence
+                                ];
+                                $list_array[] = $arr;
+                            }
                         }
                     }
                 }
@@ -5432,19 +5438,21 @@ class ChartController extends Controller {
             if ($type == 'AllergyIntolerance') {
                 if ($result['total'] > 0) {
                     foreach ($result['entry'] as $row2) {
-                        if ($row2['resource']['status'] == 'confirmed') {
-                            $arr = [];
-                            $arr['label'] = (string) $row2['resource']['substance']['text'];
-                            $arr['label_class'] = 'nosh-ccda-list';
-                            $arr['danger'] = true;
-                            $allergy_date = explode('T', $row2['resource']['recordedDate']);
-                            $arr['label_data_arr'] = [
-                                'data-nosh-type' => 'allergies',
-                                'data-nosh-name' => (string) $row2['resource']['substance']['text'],
-                                'data-nosh-reaction' => (string) $row2['resource']['reaction'][0]['manifestation'][0]['text'],
-                                'data-nosh-date' => $allergy_date,
-                            ];
-                            $list_array[] = $arr;
+                        if (isset($row2['resource']['status'])) {
+                            if ($row2['resource']['status'] == 'confirmed') {
+                                $arr = [];
+                                $arr['label'] = (string) $row2['resource']['substance']['text'];
+                                $arr['label_class'] = 'nosh-ccda-list';
+                                $arr['danger'] = true;
+                                $allergy_date = explode('T', $row2['resource']['recordedDate']);
+                                $arr['label_data_arr'] = [
+                                    'data-nosh-type' => 'allergies',
+                                    'data-nosh-name' => (string) $row2['resource']['substance']['text'],
+                                    'data-nosh-reaction' => (string) $row2['resource']['reaction'][0]['manifestation'][0]['text'],
+                                    'data-nosh-date' => $allergy_date,
+                                ];
+                                $list_array[] = $arr;
+                            }
                         }
                     }
                 }
