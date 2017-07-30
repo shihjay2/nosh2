@@ -5422,12 +5422,16 @@ class ChartController extends Controller {
                                 $arr['label_class'] = 'nosh-ccda-list';
                                 $arr['danger'] = true;
                                 $imm_date = explode('T', $row2['resource']['date']);
+                                $imm_code = '';
+                                if (isset($row2['resource']['vaccineCode']['coding'][0]['code'])) {
+                                    $imm_code = $row2['resource']['vaccineCode']['coding'][0]['code'];
+                                }
                                 $arr['label_data_arr'] = [
                                     'data-nosh-type' => 'immunizations',
                                     'data-nosh-name' =>  $imm_immunization,
                                     'data-nosh-route' => '',
                                     'data-nosh-date' => $imm_date[0],
-                                    'data-nosh-code' => $row2['resource']['vaccineCode']['coding'][0]['code'],
+                                    'data-nosh-code' => $imm_code,
                                     'data-nosh-sequence' => ''
                                 ];
                                 $list_array[] = $arr;
