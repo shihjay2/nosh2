@@ -5228,14 +5228,15 @@ class ChartController extends Controller {
         $result = curl_exec($ch);
         $result_array = json_decode($result, true);
         if ($id == 'list') {
-            $data['content'] = '<div class="list-group">';
+            $data['content'] = '<form role="form"><div class="form-group"><input class="form-control" id="searchinput" type="search" placeholder="Filter Results..." /></div>';
+            $data['content'] .= '<div class="list-group searchlist">';
             $data['content'] .= '<a href="' . route('fhir_connect', ['sandbox']) . '" class="list-group-item">Open Epic Argonaut Profile</a>';
             $i = 0;
             foreach ($result_array['Entries'] as $row) {
                 $data['content'] .= '<a href="' . route('fhir_connect', [$i]) . '" class="list-group-item">' . $row['OrganizationName'] . '</a>';
                 $i++;
             }
-            $data['content'] .= '</div>';
+            $data['content'] .= '</div></form>';
         } else {
             if ($id == 'sandbox') {
                 $fhir_url = 'https://open-ic.epic.com/argonaut/api/FHIR/Argonaut/';
@@ -5482,8 +5483,11 @@ class ChartController extends Controller {
 
     public function fhir_connect_response(Request $request)
     {
-        $client_id = 'c735b021-bf59-4d29-9fcc-4415626153c5';
-        $client_secret = ''; //open.epic non-production client ID
+        $client_id = 'c72e25d5-8544-4583-bc11-fd1b37112607';
+        if (Session::get('fhir_url') == 'https://open-ic.epic.com/argonaut/api/FHIR/Argonaut/') {
+            $client_id = 'c735b021-bf59-4d29-9fcc-4415626153c5';
+        }
+        $client_secret = '';
         $oidc = new OpenIDConnectClient(Session::get('fhir_auth_url'), $client_id, $client_secret);
         $oidc->setRedirectURL(route('fhir_connect_response'));
         $oidc->providerConfigParam(['authorization_endpoint' => Session::get('fhir_auth_url')]);
