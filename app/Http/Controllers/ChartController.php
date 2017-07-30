@@ -5425,9 +5425,9 @@ class ChartController extends Controller {
                                     'data-nosh-type' => 'immunizations',
                                     'data-nosh-name' =>  $imm_immunization,
                                     'data-nosh-route' => '',
-                                    'data-nosh-date' => $imm_date,
+                                    'data-nosh-date' => $imm_date[0],
                                     'data-nosh-code' => $row2['resource']['vaccineCode']['coding'][0]['code'],
-                                    'data-nosh-sequence' => $imm_sequence
+                                    'data-nosh-sequence' => ''
                                 ];
                                 $list_array[] = $arr;
                             }
@@ -5449,7 +5449,7 @@ class ChartController extends Controller {
                                     'data-nosh-type' => 'allergies',
                                     'data-nosh-name' => (string) $row2['resource']['substance']['text'],
                                     'data-nosh-reaction' => (string) $row2['resource']['reaction'][0]['manifestation'][0]['text'],
-                                    'data-nosh-date' => $allergy_date,
+                                    'data-nosh-date' => $allergy_date[0],
                                 ];
                                 $list_array[] = $arr;
                             }
@@ -5468,7 +5468,7 @@ class ChartController extends Controller {
             $dropdown_array['items'] = $items;
             $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
             $data['content'] = '<div class="alert alert-success">';
-            $data['content'] .= '<h5>Rows in red come from the upload and need to be reconciled.  Click on the row to accept.</h5>';
+            $data['content'] .= '<h5>Rows in red come from the patient portal and need to be reconciled.  Click on the row to accept.</h5>';
             $data['content'] .= '</div>';
             $data['content'] .= $this->result_build($list_array, $type . '_reconcile_list');
             // $data['content'] .= $result;

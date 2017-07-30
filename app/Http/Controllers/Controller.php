@@ -5452,6 +5452,7 @@ class Controller extends BaseController
                 $imm['imm_immunization'] = $ccda['name'];
                 $imm['imm_route'] = $ccda['route'];
                 $imm['imm_date'] = date('Y-m-d', $this->human_to_unix($ccda['date']));
+                $imm['imm_cvxcode'] = $ccda['code'];
                 if (isset($ccda['sequence'])) {
                     $imm['imm_sequence'] = $ccda['sequence'];
                 }
