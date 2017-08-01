@@ -5216,6 +5216,8 @@ class ChartController extends Controller {
     public function fhir_connect(Request $request, $id='list')
     {
         $data['panel_header'] = 'Connect to a Patient Portal';
+        $data['message_action'] = Session::get('message_action');
+        Session::forget('message_action');
         // Get Open Epic servers
         $url = 'https://open.epic.com/MyApps/EndpointsJson';
         $ch = curl_init();
@@ -5228,15 +5230,52 @@ class ChartController extends Controller {
         $result = curl_exec($ch);
         $result_array = json_decode($result, true);
         if ($id == 'list') {
-            $data['content'] = '<form role="form"><div class="form-group"><input class="form-control" id="searchinput" type="search" placeholder="Filter Results..." /></div>';
-            $data['content'] .= '<div class="list-group searchlist">';
-            $data['content'] .= '<a href="' . route('fhir_connect', ['sandbox']) . '" class="list-group-item">Open Epic Argonaut Profile</a>';
-            $i = 0;
-            foreach ($result_array['Entries'] as $row) {
-                $data['content'] .= '<a href="' . route('fhir_connect', [$i]) . '" class="list-group-item">' . $row['OrganizationName'] . '</a>';
-                $i++;
+            if ($request->isMethod('post')) {
+                $data['openepic_client_id'] = $request->input('openepic_client_id');
+                $data['openepic_sandbox_client_id'] = $request->input('openepic_sandbox_client_id');
+                DB::table('practiceinfo')->where('practice_id', '=', '1')->update($data);
+                $this->audit('Update');
+                Session::put('message_action', 'open.epic Client ID updated');
+                return redirect()->route('fhir_connect', ['list']);
+            } else {
+                $practice = DB::table('practiceinfo')->where('practice_id', '=', '1')->first();
+                $data['content'] = '';
+                if ($practice->openepic_client_id !== null && $practice->openepic_client_id !== '') {
+                    $data['content'] .= '<div class="alert alert-danger"><p>' . trans('nosh.openepic1') . '   Once you have the ';
+                    $data['content'] .= '<p><a href="https://github.com/shihjay2/hieofone-as/wiki/Client-registration-for-open.epic" target="_blank">' . trans('nosh.openepic2') . '</a></p>';
+                    $data['content'] .= '<p>' . trans('nosh.openepic3') . '</p></div>';
+                    $epic_items[] = [
+                        'name' => 'openepic_client_id',
+                        'label' => trans('nosh.openepic_client_id'),
+                        'type' => 'text',
+                        'default_value' => null,
+                        'required' => true
+                    ];
+                    $epic_items[] = [
+                        'name' => 'openepic_sandbox_client_id',
+                        'label' => trans('nosh.openepic_sandbox_client_id'),
+                        'type' => 'text',
+                        'default_value' => null,
+                        'required' => true
+                    ];
+                    $epic_form_array = [
+                        'form_id' => 'epic_form',
+                        'action' => route('fhir_connect', ['list']),
+                        'items' => $epic_items
+                    ];
+                    $data['content'] .= $this->form_build($epic_form_array);
+                } else {
+                    $data['content'] .= '<form role="form"><div class="form-group"><input class="form-control" id="searchinput" type="search" placeholder="Filter Results..." /></div>';
+                    $data['content'] .= '<div class="list-group searchlist">';
+                    $data['content'] .= '<a href="' . route('fhir_connect', ['sandbox']) . '" class="list-group-item">Open Epic Argonaut Profile</a>';
+                    $i = 0;
+                    foreach ($result_array['Entries'] as $row) {
+                        $data['content'] .= '<a href="' . route('fhir_connect', [$i]) . '" class="list-group-item">' . $row['OrganizationName'] . '</a>';
+                        $i++;
+                    }
+                    $data['content'] .= '</div></form>';
+                }
             }
-            $data['content'] .= '</div></form>';
         } else {
             if ($id == 'sandbox') {
                 $fhir_url = 'https://open-ic.epic.com/argonaut/api/FHIR/Argonaut/';
@@ -5487,9 +5526,15 @@ class ChartController extends Controller {
 
     public function fhir_connect_response(Request $request)
     {
-        $client_id = 'c72e25d5-8544-4583-bc11-fd1b37112607';
+        $practice = DB::table('practiceinfo')->where('practice_id', '=', '1')->first();
+        if ($practice->openepic_client_id == null || $practice->openepic_client_id == '' || $practice->openepic_sandbox_client_id == null || $practice->openepic_sandbox_client_id == '') {
+            return redirect()->route('fhir_connect', ['list']);
+        }
+        $client_id = $practice->openepic_client_id;
+        // $client_id = 'c72e25d5-8544-4583-bc11-fd1b37112607';
         if (Session::get('fhir_url') == 'https://open-ic.epic.com/argonaut/api/FHIR/Argonaut/') {
-            $client_id = 'c735b021-bf59-4d29-9fcc-4415626153c5';
+            $client_id = $practice->openepic_sandbox_client_id;
+            // $client_id = 'c735b021-bf59-4d29-9fcc-4415626153c5';
         }
         $client_secret = '';
         $oidc = new OpenIDConnectClient(Session::get('fhir_auth_url'), $client_id, $client_secret);

@@ -351,6 +351,13 @@ return [
     "uma_error_text5" => "the patient directly.",
     "uma_error_text6" => "If you previously had access, your acesss has been revoked by the patient.",
 
+    // FHIR
+    "openepic1" => "You do not have an open.epic client id registered.",
+    "openepic2" => "Click here for detailed instructions.",
+    "openepic3" => "Once you have the client id, enter it here.  You will need to wait for 24 hours after client registration for the registration process to complete.",
+    "openepic_client_id" => "open.epic Client ID",
+    "openepic_sandbox_client_id" => "open.epic Sandbox Client ID",
+
     // Prescription
     "present_pharmacy" => "Present to Pharmacy",
     "prescription" => "Prescription",
