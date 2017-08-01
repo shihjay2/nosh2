@@ -5231,9 +5231,9 @@ class ChartController extends Controller {
         $result_array = json_decode($result, true);
         if ($id == 'list') {
             if ($request->isMethod('post')) {
-                $data['openepic_client_id'] = $request->input('openepic_client_id');
-                $data['openepic_sandbox_client_id'] = $request->input('openepic_sandbox_client_id');
-                DB::table('practiceinfo')->where('practice_id', '=', '1')->update($data);
+                $data1['openepic_client_id'] = $request->input('openepic_client_id');
+                $data1['openepic_sandbox_client_id'] = $request->input('openepic_sandbox_client_id');
+                DB::table('practiceinfo')->where('practice_id', '=', '1')->update($data1);
                 $this->audit('Update');
                 Session::put('message_action', 'open.epic Client ID updated');
                 return redirect()->route('fhir_connect', ['list']);
