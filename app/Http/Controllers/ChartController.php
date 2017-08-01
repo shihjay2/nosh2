@@ -5242,7 +5242,7 @@ class ChartController extends Controller {
                 $data['content'] = '';
                 if ($practice->openepic_client_id == null || $practice->openepic_client_id == '') {
                     $data['content'] .= '<div class="alert alert-danger"><p>' . trans('nosh.openepic1') . '   Once you have the ';
-                    $data['content'] .= '<p><a href="https://github.com/shihjay2/hieofone-as/wiki/Client-registration-for-open.epic" target="_blank">' . trans('nosh.openepic2') . '</a></p>';
+                    $data['content'] .= '<p><a href="https://github.com/shihjay2/hieofone-as/wiki/Client-registration-for-open.epic" target="_blank" class="nosh-no-load">' . trans('nosh.openepic2') . '</a></p>';
                     $data['content'] .= '<p>' . trans('nosh.openepic3') . '</p></div>';
                     $epic_items[] = [
                         'name' => 'openepic_client_id',
