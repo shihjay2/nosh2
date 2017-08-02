@@ -281,7 +281,7 @@
                         </div>
                         <div class="col-xs-9 text-right">
                             <div class="huge"><i class="fa fa-check"></i></div>
-                            <div>{( trans('nosh.good_to_go') )}</div>
+                            <div>{{ trans('nosh.good_to_go') }}</div>
                         </div>
                     </div>
                 </div>
