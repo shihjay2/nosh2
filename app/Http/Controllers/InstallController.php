@@ -899,5 +899,6 @@ public function install_fix(Request $request)
 
     public function test1(Request $request)
     {
+        return public_path();
     }
 }
