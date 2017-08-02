@@ -1169,6 +1169,34 @@ class LoginController extends Controller {
         }
     }
 
+    public function smart_on_fhir_list(Request $request)
+    {
+        $connected = DB::table('refresh_tokens')->where('practice_id', '=', '1')->get();
+        $connected_arr = [];
+        $url = 'https://open.epic.com/MyApps/EndpointsJson';
+        $ch = curl_init();
+        curl_setopt($ch,CURLOPT_URL, $url);
+        curl_setopt($ch,CURLOPT_FAILONERROR,1);
+        curl_setopt($ch,CURLOPT_FOLLOWLOCATION,1);
+        curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+        curl_setopt($ch,CURLOPT_TIMEOUT, 60);
+        curl_setopt($ch,CURLOPT_CONNECTTIMEOUT ,0);
+        $result = curl_exec($ch);
+        $result_array = json_decode($result, true);
+        if ($connected->count()) {
+            foreach ($connected as $connect_row) {
+                if ($connect_row->pnosh !== null && $connect_row->pnosh !== '') {
+                    $id = array_search($connect_row->endpoint_uri, array_column($result_array['Entries'], 'FHIRPatientFacingURI'));
+                    $connected_arr[] = [
+                        'org_name' => $connect_row->pnosh,
+                        'endpoint_uri' => route('fhir_connect', [$id])
+                    ];
+                }
+            }
+        }
+        return $connected_arr;
+    }
+
     public function start($practicehandle=null)
     {
         if ($practicehandle !== null) {

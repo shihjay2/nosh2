@@ -29,6 +29,7 @@ Route::post('practice_logo_login', ['as' => 'practice_logo_login', 'uses' => 'Lo
 Route::any('register_user', ['as' => 'register_user', 'uses' => 'LoginController@register_user']);
 Route::get('remote_logout', ['as' => 'remote_logout', 'uses' => 'LoginController@remote_logout']);
 Route::get('reset_demo', ['as' => 'reset_demo', 'uses' => 'LoginController@reset_demo']);
+Route::get('smart_on_fhir_list', ['as' => 'smart_on_fhir_list', 'uses' => 'LoginController@smart_on_fhir_list']);
 Route::get('start/{practicehandle?}', ['as' => 'start', 'uses' => 'LoginController@start']);
 Route::any('uma_auth', ['as' => 'uma_auth', 'uses' => 'LoginController@uma_auth']); // Login with HIE of One AS
 Route::get('uma_invitation_request', ['as' => 'uma_invitation_request', 'uses' => 'LoginController@uma_invitation_request']);

@@ -5269,8 +5269,19 @@ class ChartController extends Controller {
                     $data['content'] .= '<div class="list-group searchlist">';
                     $data['content'] .= '<a href="' . route('fhir_connect', ['sandbox']) . '" class="list-group-item">Open Epic Argonaut Profile</a>';
                     $i = 0;
+                    $connected = DB::table('refresh_tokens')->where('practice_id', '=', '1')->get();
+                    $connected_arr = [];
+                    if ($connected->count()) {
+                        if ($connected->pnosh !== null && $connected->pnosh !== '') {
+                            $connected_arr[] = $connected->endpoint_uri;
+                        }
+                    }
                     foreach ($result_array['Entries'] as $row) {
-                        $data['content'] .= '<a href="' . route('fhir_connect', [$i]) . '" class="list-group-item">' . $row['OrganizationName'] . '</a>';
+                        if (in_array($row['FHIRPatientFacingURI'], $connected_arr)) {
+                            $data['content'] .= '<a href="' . route('fhir_connect', [$i]) . '" class="list-group-item list-group-item-success">Connected - ' . $row['OrganizationName'] . '</a>';
+                        } else {
+                            $data['content'] .= '<a href="' . route('fhir_connect', [$i]) . '" class="list-group-item">' . $row['OrganizationName'] . '</a>';
+                        }
                         $i++;
                     }
                     $data['content'] .= '</div></form>';
@@ -5279,8 +5290,10 @@ class ChartController extends Controller {
         } else {
             if ($id == 'sandbox') {
                 $fhir_url = 'https://open-ic.epic.com/argonaut/api/FHIR/Argonaut/';
+                $fhir_name = 'Open Epic Argonaut Profile';
             } else {
                 $fhir_url = $result_array['Entries'][$id]['FHIRPatientFacingURI'];
+                $fhir_name = $result_array['Entries'][$id]['OrganizationName'];
             }
             $metadata = $this->fhir_metadata($fhir_url);
             if (isset($metadata['error'])) {
@@ -5289,6 +5302,19 @@ class ChartController extends Controller {
                 Session::put('fhir_url', $fhir_url);
                 Session::put('fhir_auth_url', $metadata['auth_url']);
                 Session::put('fhir_token_url', $metadata['token_url']);
+                $connected1 = DB::table('refresh_tokens')->where('practice_id', '=', '1')->where('endpoint_uri', '=', $fhir_url)->first();
+                if (!$connected1) {
+                    $refresh = [
+                        'refresh_token' => $metadata['token_url'],
+                        'pid' => Session::get('pid'),
+                        'practice_id' => Session::get('practice_id'),
+                        'user_id' => Session::get('user_id'),
+                        'endpoint_uri' => $fhir_url,
+                        'pnosh' => $fhir_name
+                    ];
+                    DB::table('refresh_tokens')->insert($refresh);
+                    $this->audit('Add');
+                }
                 return redirect()->route('fhir_connect_response');
             }
         }
