@@ -5272,8 +5272,10 @@ class ChartController extends Controller {
                     $connected = DB::table('refresh_tokens')->where('practice_id', '=', '1')->get();
                     $connected_arr = [];
                     if ($connected->count()) {
-                        if ($connected->pnosh !== null && $connected->pnosh !== '') {
-                            $connected_arr[] = $connected->endpoint_uri;
+                        foreach ($connected as $connect_row) {
+                            if ($connect_row->pnosh !== null && $connect_row->pnosh !== '') {
+                                $connected_arr[] = $connect_row->endpoint_uri;
+                            }
                         }
                     }
                     foreach ($result_array['Entries'] as $row) {
