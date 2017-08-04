@@ -1172,6 +1172,7 @@ class LoginController extends Controller {
     public function smart_on_fhir_list(Request $request)
     {
         $connected = DB::table('refresh_tokens')->where('practice_id', '=', '1')->get();
+        $practice = DB::table('practiceinfo')->where('practice_id', '=', '1')->first();
         $connected_arr = [];
         $url = 'https://open.epic.com/MyApps/EndpointsJson';
         $ch = curl_init();
@@ -1187,9 +1188,15 @@ class LoginController extends Controller {
             foreach ($connected as $connect_row) {
                 if ($connect_row->pnosh !== null && $connect_row->pnosh !== '') {
                     $id = array_search($connect_row->endpoint_uri, array_column($result_array['Entries'], 'FHIRPatientFacingURI'));
+                    $client_id = $practice->openepic_client_id;
+                    if ($connect_row->endpoint_uri == 'https://open-ic.epic.com/argonaut/api/FHIR/Argonaut/') {
+                        $client_id = $practice->openepic_sandbox_client_id;
+                    }
                     $connected_arr[] = [
                         'org_name' => $connect_row->pnosh,
-                        'endpoint_uri' => route('fhir_connect', [$id])
+                        'endpoint_uri' => route('fhir_connect', [$id]),
+                        'endpoint_uri_raw' => $connect_row->endpoint_uri,
+                        'client_id' => $client_id
                     ];
                 }
             }
