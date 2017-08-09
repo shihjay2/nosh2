@@ -1126,6 +1126,19 @@
             $('#rxl_frequency').val($('#calc_frequency option:selected').text());
         });
 
+        // Smart-on-FHIR
+        $(document).on('click', '.nosh_icon_ban', function(event){
+            var url = 'name=' + $(this).attr('nosh-val');
+            $.ajax({
+                type: 'POST',
+                url: noshdata.remove_smart_on_fhir,
+                data: 'url=' + url
+            }).done(function(response) {
+				toastr.success(response);
+				location.reload(true);
+            });
+        });
+
         // Demo
         if (noshdata.demo_comment !== '') {
             var response = '<p>Thank you for testing our demo.  <a href="mailto:agropper@gmaill.com?Subject=HIEofONe%20Demo" target="_blank">Please send us your comments</a>';

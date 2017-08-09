@@ -214,6 +214,7 @@ Route::get('print_chart_action/{hippa_id}/{type}', ['as' => 'print_chart_action'
 Route::get('orders_list/{type}', ['as' => 'orders_list', 'uses' => 'ChartController@orders_list']);
 Route::get('records_list/{type}', ['as' => 'records_list', 'uses' => 'ChartController@records_list']);
 Route::get('register_patient', ['as' => 'register_patient', 'uses' => 'ChartController@register_patient']);
+Route::post('remove_smart_on_fhir', ['as' => 'remove_smart_on_fhir', 'uses' => 'AjaxChartController@remove_smart_on_fhir']);
 Route::get('results_chart/{id}', ['as' => 'results_chart', 'uses' => 'ChartController@results_chart']);
 Route::get('results_list/{type}', ['as' => 'results_list', 'uses' => 'ChartController@results_list']);
 Route::get('results_print/{id}', ['as' => 'results_print', 'uses' => 'ChartController@results_print']);

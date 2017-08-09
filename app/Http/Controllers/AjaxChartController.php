@@ -98,6 +98,13 @@ class AjaxChartController extends Controller
         return $data;
     }
 
+    public function remove_smart_on_fhir(Request $request)
+    {
+        DB::table('refresh_tokens')->where('practice_id', '=', '1')->where('endpoint_uri', '=', $request->input('url'))->delete();
+        $this->audit('Delete');
+        return 'Removed connection to patient portal';
+    }
+
     public function set_ccda_data(Request $request)
     {
         $data = $request->all();

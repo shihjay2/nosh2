@@ -586,6 +586,7 @@
             'progress': '<?php echo url("progress"); ?>',
             'provider_schedule': '<?php echo url("provider_schedule"); ?>',
             'read_message': '<?php echo url("read_message"); ?>',
+            'remove_smart_on_fhir': '<?php echo url("remove_smart_on_fhir"); ?>',
             'rx_json': '<?php echo url("rx_json"); ?>',
             'rxnorm': '<?php echo url("rxnorm"); ?>',
             'schedule_url': '<?php echo url("schedule"); ?>',
