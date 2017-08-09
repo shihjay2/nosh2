@@ -1128,7 +1128,8 @@
 
         // Smart-on-FHIR
         $(document).on('click', '.nosh_icon_ban', function(event){
-            var url = 'name=' + $(this).attr('nosh-val');
+            var url = $(this).attr('nosh-val');
+            event.preventDefault();
             $.ajax({
                 type: 'POST',
                 url: noshdata.remove_smart_on_fhir,

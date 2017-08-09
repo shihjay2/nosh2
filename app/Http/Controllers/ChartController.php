@@ -5267,7 +5267,9 @@ class ChartController extends Controller {
                 } else {
                     $data['content'] .= '<form role="form"><div class="form-group"><input class="form-control" id="searchinput" type="search" placeholder="Filter Results..." /></div>';
                     $data['content'] .= '<div class="list-group searchlist">';
-                    $data['content'] .= '<a href="' . route('fhir_connect', ['sandbox']) . '" class="list-group-item">Open Epic Argonaut Profile</a>';
+                    $sandbox_link = '<a href="' . route('fhir_connect', ['sandbox']) . '" class="list-group-item">Open Epic Argonaut Profile</a>';
+                    $conn_link = '';
+                    $oth_link = '';
                     $i = 0;
                     $connected = DB::table('refresh_tokens')->where('practice_id', '=', '1')->get();
                     $connected_arr = [];
@@ -5280,12 +5282,13 @@ class ChartController extends Controller {
                     }
                     foreach ($result_array['Entries'] as $row) {
                         if (in_array($row['FHIRPatientFacingURI'], $connected_arr)) {
-                            $data['content'] .= '<a href="' . route('fhir_connect', [$i]) . '" class="list-group-item list-group-item-success">Connected - ' . $row['OrganizationName'] . '<span class="pull-right"><i class="fa fa-ban fa-lg nosh_icon_ban" nosh-val="' . $row['FHIRPatientFacingURI'] . '" title="Remove" style="cursor:pointer;"></i></span></a>';
+                            $conn_link .= '<a href="' . route('fhir_connect', [$i]) . '" class="list-group-item list-group-item-success">Connected - ' . $row['OrganizationName'] . '<span class="pull-right"><i class="fa fa-ban fa-lg nosh_icon_ban" nosh-val="' . $row['FHIRPatientFacingURI'] . '" title="Remove" style="cursor:pointer;"></i></span></a>';
                         } else {
-                            $data['content'] .= '<a href="' . route('fhir_connect', [$i]) . '" class="list-group-item">' . $row['OrganizationName'] . '</a>';
+                            $oth_link .= '<a href="' . route('fhir_connect', [$i]) . '" class="list-group-item">' . $row['OrganizationName'] . '</a>';
                         }
                         $i++;
                     }
+                    $data['content'] .= $conn_link . $sandbox_link . $oth_link;
                     $data['content'] .= '</div></form>';
                 }
             }
