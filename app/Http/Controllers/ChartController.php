@@ -5280,7 +5280,7 @@ class ChartController extends Controller {
                     }
                     foreach ($result_array['Entries'] as $row) {
                         if (in_array($row['FHIRPatientFacingURI'], $connected_arr)) {
-                            $data['content'] .= '<a href="' . route('fhir_connect', [$i]) . '" class="list-group-item list-group-item-success">Connected - ' . $row['OrganizationName'] . '<span class="pull-right"></span><i class="fa fa-ban fa-lg nosh_icon_ban" nosh-val="' . $row['FHIRPatientFacingURI'] . '" title="Remove" style="cursor:pointer;"></i></a>';
+                            $data['content'] .= '<a href="' . route('fhir_connect', [$i]) . '" class="list-group-item list-group-item-success">Connected - ' . $row['OrganizationName'] . '<span class="pull-right"><i class="fa fa-ban fa-lg nosh_icon_ban" nosh-val="' . $row['FHIRPatientFacingURI'] . '" title="Remove" style="cursor:pointer;"></i></span></a>';
                         } else {
                             $data['content'] .= '<a href="' . route('fhir_connect', [$i]) . '" class="list-group-item">' . $row['OrganizationName'] . '</a>';
                         }
