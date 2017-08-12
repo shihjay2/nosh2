@@ -4217,6 +4217,9 @@ class Controller extends BaseController
                 $allergy['allergies_reaction'] = $ccda['reaction'];
                 $allergy['allergies_date_active'] = date('Y-m-d', $this->human_to_unix($ccda['date']));
                 $allergy['meds_ndcid'] = $this->rxnorm_search($ccda['name']);
+                if (isset($ccda['from'])) {
+                    $allergy['notes'] = 'Obtained via FHIR from ' . $ccda['from'];
+                }
             }
         } else {
             $allergy = [
@@ -5807,6 +5810,9 @@ class Controller extends BaseController
                 Session::forget('ccda');
                 $issue['issue'] = $ccda['name'] . ' [' . $ccda['code'] . ']';
                 $issue['issue_date_active'] = date('Y-m-d', $this->human_to_unix($ccda['date']));
+                if (isset($ccda['from'])) {
+                    $issue['notes'] = 'Obtained via FHIR from ' . $ccda['from'];
+                }
             }
         } else {
             $issue = [
@@ -7111,6 +7117,9 @@ class Controller extends BaseController
                 $rx['rxl_reason'] = $ccda['reason'];
                 $rx['rxl_ndcid'] = $ccda['code'];
                 $rx['rxl_date_active'] = date('Y-m-d', $this->human_to_unix($ccda['date']));
+                if (isset($ccda['from'])) {
+                    $rx['rxl_instructions'] = 'Obtained via FHIR from ' . $ccda['from'];
+                }
             }
         } else {
             if ($subtype !== '') {
@@ -15857,7 +15866,11 @@ class Controller extends BaseController
                 if ($row3->type == 'Surgical History') {
                     $title = 'New Surgical Event';
                 }
-                $div3 = $this->timeline_item($row3->issue_id, 'issue_id', $title, $this->human_to_unix($row3->issue_date_active), $title, $row3->issue);
+                $description3 = $row3->issue;
+                if ($row3->notes !== null && $row3->notes !== '') {
+                    $description3 .= ', ' . $row3->notes;
+                }
+                $div3 = $this->timeline_item($row3->issue_id, 'issue_id', $title, $this->human_to_unix($row3->issue_date_active), $title, $description3);
                 $json[] = [
                     'div' => $div3,
                     'startDate' => $this->human_to_unix($row3->issue_date_active)
@@ -15884,6 +15897,9 @@ class Controller extends BaseController
                     $instructions5 = $row5->rxl_instructions;
                 } else {
                     $instructions5 = $row5->rxl_sig . ', ' . $row5->rxl_route . ', ' . $row5->rxl_frequency;
+                    if ($row5->rxl_instructions !== null && $row5->rxl_instructions !== '') {
+                        $instructions5 .= ', ' . $row5->rxl_instructions;
+                    }
                 }
                 $description5 = $row5->rxl_medication . ' ' . $row5->rxl_dosage . ' ' . $row5->rxl_dosage_unit . ', ' . $instructions5 . ' for ' . $row5->rxl_reason;
                 $div5 = $this->timeline_item($row5->rxl_id, 'rxl_id', 'Medication Stopped', $this->human_to_unix($row5->rxl_date_inactive), 'Medication Stopped', $description5);
@@ -15897,6 +15913,10 @@ class Controller extends BaseController
         $query6 = DB::table('allergies')->where('pid', '=', $pid)->where('allergies_date_inactive', '=', '0000-00-00 00:00:00')->get();
         if ($query6->count()) {
             foreach ($query6 as $row6) {
+                $description6 = $row->allergies_med;
+                if ($row6->notes !== null && $row6->notes !== '') {
+                    $description6 .= ', ' . $row6->notes;
+                }
                 $div6 = $this->timeline_item($row6->allergies_id, 'allergies_id', 'New Allergy', $this->human_to_unix($row6->allergies_date_active), 'New Allergy', $row6->allergies_med);
                 $json[] = [
                     'div' => $div6,

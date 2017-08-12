@@ -5353,6 +5353,7 @@ class ChartController extends Controller {
                 Session::put('fhir_url', $fhir_url);
                 Session::put('fhir_auth_url', $metadata['auth_url']);
                 Session::put('fhir_token_url', $metadata['token_url']);
+                Session::put('fhir_name', $fhir_name);
                 $connected1 = DB::table('refresh_tokens')->where('practice_id', '=', '1')->where('endpoint_uri', '=', $fhir_url)->first();
                 if (!$connected1) {
                     $refresh = [
@@ -5490,7 +5491,8 @@ class ChartController extends Controller {
                                             'data-nosh-type' => 'issues',
                                             'data-nosh-name' => $icd_desc,
                                             'data-nosh-code' => $icd,
-                                            'data-nosh-date' => (string) $row2['resource']['onsetDateTime']
+                                            'data-nosh-date' => (string) $row2['resource']['onsetDateTime'],
+                                            'data-nosh-from' => Session::get('fhir_name')
                                         ];
                                         $list_array[] = $arr;
                                     }
@@ -5519,7 +5521,8 @@ class ChartController extends Controller {
                                     'data-nosh-route' => '',
                                     'data-nosh-reason' => '',
                                     'data-nosh-date' => $rx_date[0],
-                                    'data-nosh-administration' => $row2['resource']['dosage'][0]['text']
+                                    'data-nosh-administration' => $row2['resource']['dosage'][0]['text'],
+                                    'data-nosh-from' => Session::get('fhir_name')
                                 ];
                                 $list_array[] = $arr;
                             }
@@ -5548,7 +5551,8 @@ class ChartController extends Controller {
                                     'data-nosh-route' => '',
                                     'data-nosh-date' => $imm_date[0],
                                     'data-nosh-code' => $imm_code,
-                                    'data-nosh-sequence' => ''
+                                    'data-nosh-sequence' => '',
+                                    'data-nosh-from' => Session::get('fhir_name')
                                 ];
                                 $list_array[] = $arr;
                             }
@@ -5571,6 +5575,7 @@ class ChartController extends Controller {
                                     'data-nosh-name' => (string) $row2['resource']['substance']['text'],
                                     'data-nosh-reaction' => (string) $row2['resource']['reaction'][0]['manifestation'][0]['text'],
                                     'data-nosh-date' => $allergy_date[0],
+                                    'data-nosh-from' => Session::get('fhir_name')
                                 ];
                                 $list_array[] = $arr;
                             }
