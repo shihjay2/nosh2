@@ -12101,6 +12101,68 @@ class Controller extends BaseController
         return $return;
     }
 
+    protected function icd10data($icd10q)
+    {
+        $url = 'http://www.icd10data.com/Search.aspx?search=' . $icd10q . '&codeBook=ICD10CM';
+        $ch = curl_init();
+        curl_setopt($ch,CURLOPT_URL, $url);
+        curl_setopt($ch,CURLOPT_FAILONERROR,1);
+        curl_setopt($ch,CURLOPT_FOLLOWLOCATION,1);
+        curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+        curl_setopt($ch,CURLOPT_TIMEOUT, 60);
+        curl_setopt($ch,CURLOPT_CONNECTTIMEOUT ,0);
+        $result = curl_exec($ch);
+        $html = new Htmldom($result);
+        $data = [];
+        if (isset($html)) {
+            // Get pages_data
+            $pagination = $html->find('ul.pagination', 0);
+            $i = 1;
+            foreach ($pagination->find('li') as $page_icd) {
+                // Limit searh to 3 pages or less
+                if ($i < 3) {
+                    $data = $this->icd10data_get($i, $data, $icd10q);
+                }
+                $i++;
+            }
+        }
+        return $data;
+    }
+
+    protected function icd10data_get($page, $data, $icd10q)
+    {
+        $url = 'http://www.icd10data.com/Search.aspx?search=' . $icd10q . '&codeBook=ICD10CM' . '&page=' . $page;
+        $ch = curl_init();
+        curl_setopt($ch,CURLOPT_URL, $url);
+        curl_setopt($ch,CURLOPT_FAILONERROR,1);
+        curl_setopt($ch,CURLOPT_FOLLOWLOCATION,1);
+        curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+        curl_setopt($ch,CURLOPT_TIMEOUT, 60);
+        curl_setopt($ch,CURLOPT_CONNECTTIMEOUT ,0);
+        $result = curl_exec($ch);
+        $html = new Htmldom($result);
+        if (isset($html)) {
+            foreach ($html->find('div.SearchResultItem') as $link) {
+                $status1 = $link->find('img.img2', 0);
+                if (isset($status1->src)) {
+                    $status = $status1->src;
+                    if ($status == '/images/bullet_triangle_green.png') {
+                        $code1 = $link->find('span.identifier', 0);
+                        $code = $code1->innertext;
+                        $desc1 = $link->find('div.SearchResultDescription', 0);
+                        $desc = $desc1->plaintext;
+                        $common_records = $desc . ' [' . $code . ']';
+                        $data[] = [
+                            'code' => $code,
+                            'desc' => $common_records
+                        ];
+                    }
+                }
+            }
+        }
+        return $data;
+    }
+
     protected function ndc_convert($ndc)
     {
         $pos1 = strpos($ndc, '-');
@@ -15017,6 +15079,15 @@ class Controller extends BaseController
                 }
                 if (isset($item['delete'])) {
                     $return .= '<a href="' . $item['delete'] . '" class="btn fa-btn nosh-delete" data-toggle="tooltip" title="Delete"><i class="fa fa-trash fa-lg"></i></a>';
+                }
+                if (isset($item['move_mh'])) {
+                    $return .= '<a href="' . $item['move_mh'] . '" class="btn fa-btn" data-toggle="tooltip" title="Move to Medical History"><i class="fa fa-share-square fa-lg"></i></a>';
+                }
+                if (isset($item['move_sh'])) {
+                    $return .= '<a href="' . $item['move_sh'] . '" class="btn fa-btn" data-toggle="tooltip" title="Move to Surgical History"><i class="fa fa-share-square fa-lg" style="color:red"></i></a>';
+                }
+                if (isset($item['move_pl'])) {
+                    $return .= '<a href="' . $item['move_pl'] . '" class="btn fa-btn" data-toggle="tooltip" title="Move to Problem List"><i class="fa fa-share-square fa-lg" style="color:green"></i></a>';
                 }
                 if (isset($item['move_down'])) {
                     $return .= '<a href="' . $item['move_down'] . '" class="btn fa-btn" data-toggle="tooltip" title="Move Down"><i class="fa fa-chevron-down fa-lg"></i></a>';

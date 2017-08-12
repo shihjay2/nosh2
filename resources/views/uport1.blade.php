@@ -54,7 +54,7 @@
 <script src="{{ asset('assets/js/web3.min.js') }}"></script>
 <script type="text/javascript">
     const validatetx = () => {
-        var web3 = new Web3(new Web3.providers.HttpProvider('https://ropsten.infura.io/'));
+        var web3 = new Web3(new Web3.providers.HttpProvider('https://rinkeby.infura.io/'));
         var tx = $('#tx_hash').val();
         var transaction = web3.eth.getTransaction(tx);
         if (transaction !== null) {

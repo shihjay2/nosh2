@@ -332,6 +332,38 @@ class AjaxSearchController extends Controller {
             }
         } else {
             $pos = explode(' ', $q);
+            $data['message'] = [];
+            // ICD10data
+            $icd10q = implode('+', $pos);
+            $icd10data = $this->icd10data($icd10q);
+            if (count($icd10data) > 0) {
+                $data['response'] = 'li';
+                if ($assessment == true) {
+                    $data['response'] = 'div';
+                }
+            }
+            foreach ($icd10data as $icd10data_r) {
+                if ($assessment == true) {
+                    $data['message'][] = [
+                        'id' => $icd10data_r['code'],
+                        'label' => $icd10data_r['desc'],
+                        'value' => $icd10data_r['desc'],
+                        'href' => route('encounter_assessment_add', ['icd', $icd10data_r['code']]),
+                        'category' => 'ICD10Data',
+                        'category_id' => 'icd10data_result',
+                        'icd10type' => '1',
+                    ];
+                } else {
+                    $data['message'][] = [
+                        'id' => $icd10data_r['code'],
+                        'label' => $icd10data_r['desc'],
+                        'value' => $icd10data_r['desc'],
+                        'category' => 'ICD10Data',
+                        'category_id' => 'icd10data_result',
+                        'icd10type' => '1',
+                    ];
+                }
+            }
             // Get common codes
             $common = File::get(resource_path() . '/common_icd.yaml');
             $formatter = Formatter::make($common, Formatter::YAML);
@@ -379,7 +411,6 @@ class AjaxSearchController extends Controller {
                 });
             }
             if ($common_result) {
-                $data['message'] = [];
                 $data['response'] = 'li';
                 if ($assessment == true) {
                     $data['response'] = 'div';
@@ -393,7 +424,7 @@ class AjaxSearchController extends Controller {
                             'label' => $common_records,
                             'value' => $common_records,
                             'href' => route('encounter_assessment_add', ['icd', $common_row['code']]),
-                            'category' => 'Common Codes',
+                            'category' => 'Common Library',
                             'category_id' => 'common_icd_result',
                             'icd10type' => '1',
                         ];
@@ -402,7 +433,7 @@ class AjaxSearchController extends Controller {
                             'id' => $common_row['code'],
                             'label' => $common_records,
                             'value' => $common_records,
-                            'category' => 'Common Codes',
+                            'category' => 'Common Library',
                             'category_id' => 'common_icd_result',
                             'icd10type' => '1',
                         ];
@@ -463,7 +494,7 @@ class AjaxSearchController extends Controller {
                             'value' => $records,
                             'href' => $href,
                             'icd10type' => $row['type'],
-                            'category' => 'Universal Codes',
+                            'category' => 'Universal Library',
                             'category_id' => 'universal_icd_result'
                         ];
                     } else {
@@ -472,7 +503,7 @@ class AjaxSearchController extends Controller {
                             'label' => $records,
                             'value' => $records,
                             'icd10type' => $row['type'],
-                            'category' => 'Universal Codes',
+                            'category' => 'Universal Library',
                             'category_id' => 'universal_icd_result'
                         ];
                     }
@@ -916,10 +947,11 @@ class AjaxSearchController extends Controller {
 
     public function search_rx(Request $request)
     {
-        $q = rawurlencode(strtolower($request->input('search_rx')));
+        $q = $request->input('search_rx');
         if (!$q) return;
+        $q1 = explode(' ', $q);
         $data['response'] = 'false';
-        $url = 'http://rxnav.nlm.nih.gov/REST/Prescribe/drugs.json?name=' . $q;
+        $url = 'http://rxnav.nlm.nih.gov/REST/Prescribe/drugs.json?name=' . $q1[0];
         $ch = curl_init();
         curl_setopt($ch,CURLOPT_URL, $url);
         curl_setopt($ch,CURLOPT_FAILONERROR,1);

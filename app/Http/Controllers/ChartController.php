@@ -1439,6 +1439,30 @@ class ChartController extends Controller {
             // }
             $arr['message'] = $message . 'reactivated!';
         }
+        if ($action == 'move_mh') {
+            if ($table == 'issues') {
+                $data_mh['type'] = 'Medical History';
+            }
+            DB::table($table)->where($index, '=', $id)->update($data_mh);
+            $this->audit('Update');
+            $arr['message'] = $message . 'moved to Medical History';
+        }
+        if ($action == 'move_pl') {
+            if ($table == 'issues') {
+                $data_pl['type'] = 'Problem List';
+            }
+            DB::table($table)->where($index, '=', $id)->update($data_pl);
+            $this->audit('Update');
+            $arr['message'] = $message . 'moved to Problem List';
+        }
+        if ($action == 'move_sh') {
+            if ($table == 'issues') {
+                $data_sh['type'] = 'Surgical History';
+            }
+            DB::table($table)->where($index, '=', $id)->update($data_sh);
+            $this->audit('Update');
+            $arr['message'] = $message . 'moved to Surgical History';
+        }
         if ($action == 'delete') {
             if($practice->rcopia_extension == 'y') {
                 foreach ($rcopia_tables as $rcopia_table) {
@@ -2212,7 +2236,7 @@ class ChartController extends Controller {
         $mh_list_array = [];
         $sh_list_array = [];
         if ($result->count()) {
-            $return .= '<ul class="nav nav-tabs"><li class="active"><a data-toggle="tab" href="#pl">Problems</a></li><li><a data-toggle="tab" href="#mh" title="Medical History">Past</a></li><li><a data-toggle="tab" href="#sh" title="Surgical History">Surgeries</a></li></ul><div class="tab-content" style="margin-top:15px;">';
+            $return .= '<ul class="nav nav-tabs"><li class="active"><a data-toggle="tab" href="#pl" style="color:green;">Problems</a></li><li><a data-toggle="tab" href="#mh" title="Medical History">Past</a></li><li><a data-toggle="tab" href="#sh" title="Surgical History" style="color:red;">Surgeries</a></li></ul><div class="tab-content" style="margin-top:15px;">';
             foreach ($result as $row) {
                 if ($row->type == 'Problem List') {
                     $pl_arr = [];
@@ -2224,6 +2248,8 @@ class ChartController extends Controller {
                         } else {
                             $pl_arr['reactivate'] = route('chart_action', ['table' => 'issues', 'action' => 'reactivate', 'index' => $row_index, 'id' => $row->$row_index]);
                         }
+                        $pl_arr['move_mh'] = route('chart_action', ['table' => 'issues', 'action' => 'move_mh', 'index' => $row_index, 'id' => $row->$row_index]);
+                        $pl_arr['move_sh'] = route('chart_action', ['table' => 'issues', 'action' => 'move_sh', 'index' => $row_index, 'id' => $row->$row_index]);
                         $pl_arr['delete'] = route('chart_action', ['table' => 'issues', 'action' => 'delete', 'index' => $row_index, 'id' => $row->$row_index]);
                         if (Session::has('eid')) {
                             $pl_arr['encounter'] = route('encounter_assessment_add', ['issue', $row->$row_index]);
@@ -2244,6 +2270,7 @@ class ChartController extends Controller {
                         } else {
                             $mh_arr['reactivate'] = route('chart_action', ['table' => 'issues', 'action' => 'reactivate', 'index' => $row_index, 'id' => $row->$row_index]);
                         }
+                        $mh_arr['move_pl'] = route('chart_action', ['table' => 'issues', 'action' => 'move_pl', 'index' => $row_index, 'id' => $row->$row_index]);
                         $mh_arr['delete'] = route('chart_action', ['table' => 'issues', 'action' => 'delete', 'index' => $row_index, 'id' => $row->$row_index]);
                         if (Session::has('eid')) {
                             $mh_arr['encounter'] = route('encounter_assessment_add', ['issue', $row->$row_index]);
@@ -2264,6 +2291,7 @@ class ChartController extends Controller {
                         } else {
                             $sh_arr['reactivate'] = route('chart_action', ['table' => 'issues', 'action' => 'reactivate', 'index' => $row_index, 'id' => $row->$row_index]);
                         }
+                        $sh_arr['move_pl'] = route('chart_action', ['table' => 'issues', 'action' => 'move_pl', 'index' => $row_index, 'id' => $row->$row_index]);
                         $sh_arr['delete'] = route('chart_action', ['table' => 'issues', 'action' => 'delete', 'index' => $row_index, 'id' => $row->$row_index]);
                         if (Session::has('eid')) {
                             $sh_arr['encounter'] = route('encounter_assessment_add', ['issue', $row->$row_index]);
@@ -2803,19 +2831,37 @@ class ChartController extends Controller {
             if (Session::get('uport_id') !== '') {
                 $data['uport_need'] = 'n';
                 $data['uport_id'] = Session::get('uport_id');
-                $ether_data = [
-                    // 'toWhom' => '0xb65e3a3027fa941eec63411471d90e6c24b11ed1',
-                    'toWhom' => Session::get('uport_id')
-                ];
-                $url = 'https://ropsten.faucet.b9lab.com/tap';
-                $ch = curl_init($url);
-                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($ether_data));
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($ch, CURLOPT_HTTPHEADER, [
-                    'Content-Type: application/json'
-                ]);
-                $result = curl_exec($ch);
+                // $ether_data = [
+                //     'description' => 'Get Ether',
+                //     'public' => 1,
+                //     'files' => [
+                //         'file.txt' => ['content' => Session::get('uport_id')]
+                //     ]
+                // ];
+                // $data_string = json_encode($ether_data);
+                // $url = 'https://api.github.com/gists';
+                // $ch = curl_init($url);
+                // curl_setopt($ch, CURLOPT_POST, 1);
+                // curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
+                // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                // $response = curl_exec($ch);
+                // curl_close($ch);
+                // $decoded = json_decode($response, TRUE);
+                // $gistlink = $decoded['html_url'];
+
+                // $ether_data = [
+                //     // 'toWhom' => '0xb65e3a3027fa941eec63411471d90e6c24b11ed1',
+                //     'toWhom' => Session::get('uport_id')
+                // ];
+                // $url = 'https://ropsten.faucet.b9lab.com/tap';
+                // $ch = curl_init($url);
+                // curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+                // curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($ether_data));
+                // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                // curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                //     'Content-Type: application/json'
+                // ]);
+                // $result = curl_exec($ch);
             }
         }
         $data['content'] = '<p>Your identity requires confirmation to sign off on your order</p>';
@@ -3580,7 +3626,7 @@ class ChartController extends Controller {
                             $message_some = '  Some conditions were not copied due to incorrect format.';
                         } else {
                             $copy_arr[] = [
-                                'desc' => $issue->issue,
+                                'desc' => rtrim($issue_arr[0]),
                                 'icd' => str_replace(']', '', $issue_arr[1])
                             ];
                         }
@@ -3597,7 +3643,7 @@ class ChartController extends Controller {
                     return redirect(Session::get('last_page'));
                 } else {
                     $copy_arr[] = [
-                        'desc' => $issue->issue,
+                        'desc' => rtrim($issue_arr[0]),
                         'icd' => str_replace(']', '', $issue_arr[1])
                     ];
                 }
