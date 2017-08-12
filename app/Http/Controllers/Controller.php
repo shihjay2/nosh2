@@ -15913,11 +15913,11 @@ class Controller extends BaseController
         $query6 = DB::table('allergies')->where('pid', '=', $pid)->where('allergies_date_inactive', '=', '0000-00-00 00:00:00')->get();
         if ($query6->count()) {
             foreach ($query6 as $row6) {
-                $description6 = $row->allergies_med;
+                $description6 = $row6->allergies_med;
                 if ($row6->notes !== null && $row6->notes !== '') {
                     $description6 .= ', ' . $row6->notes;
                 }
-                $div6 = $this->timeline_item($row6->allergies_id, 'allergies_id', 'New Allergy', $this->human_to_unix($row6->allergies_date_active), 'New Allergy', $row6->allergies_med);
+                $div6 = $this->timeline_item($row6->allergies_id, 'allergies_id', 'New Allergy', $this->human_to_unix($row6->allergies_date_active), 'New Allergy', $description6);
                 $json[] = [
                     'div' => $div6,
                     'startDate' => $this->human_to_unix($row6->allergies_date_active)
