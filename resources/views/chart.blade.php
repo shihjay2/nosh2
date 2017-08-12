@@ -1072,6 +1072,9 @@
             if ($(this).attr('data-nosh-sequence') !== undefined) {
                 query += '&sequence=' + $(this).attr('data-nosh-sequence');
             }
+            if ($(this).attr('data-nosh-from') !== undefined) {
+                query += '&from=' + $(this).attr('data-nosh-from');
+            }
             $.ajax({
                 type: 'POST',
                 url: noshdata.set_ccda_data,
