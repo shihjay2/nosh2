@@ -33,6 +33,41 @@ class AjaxChartController extends Controller
          $this->middleware('patient');
     }
 
+    public function electronic_sign_gas(Request $request)
+    {
+        $ether_data = [
+            'description' => 'Get Ether',
+            'public' => 1,
+            'files' => [
+                'file.txt' => ['content' => $request->input('uportId')]
+            ]
+        ];
+        $data_string = json_encode($ether_data);
+        $url = 'https://api.github.com/gists';
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($ch);
+        curl_close($ch);
+        $decoded = json_decode($response, TRUE);
+        $gistlink = $decoded['html_url'];
+
+        // $ether_data = [
+        //     // 'toWhom' => '0xb65e3a3027fa941eec63411471d90e6c24b11ed1',
+        //     'toWhom' => Session::get('uport_id')
+        // ];
+        // $url = 'https://ropsten.faucet.b9lab.com/tap';
+        // $ch = curl_init($url);
+        // curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        // curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($ether_data));
+        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        //     'Content-Type: application/json'
+        // ]);
+        // $result = curl_exec($ch);
+    }
+
     public function electronic_sign_login(Request $request)
     {
         $user = DB::table('users')->where('id', '=', Session::get('user_id'))->first();

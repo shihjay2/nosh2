@@ -58,7 +58,8 @@
     const Connect = window.uportconnect.Connect;
     const Mnid = window.mnid;
 	const appName = 'nosh';
-    const connect = new Connect(appName, {'clientId': '0xe56550b7b094b37e722082ccfe13b0c5b4e441df'});
+    const connect = new Connect(appName, {'clientId': '2oyVF8cuGih6VQy7LseeXjaXHHFNzzoqBTk'});
+    // const connect = new Connect(appName, {'clientId': '0xe56550b7b094b37e722082ccfe13b0c5b4e441df'});
 	const web3 = connect.getWeb3();
 	const globalState = {
 		uportId: "{!! $uport_id !!}",
@@ -85,6 +86,7 @@
 						// console.log(data);
 					} else {
                         globalState.uportId = credentials.address;
+                        setEther();
 						sendEther();
 					}
 				}
@@ -93,10 +95,6 @@
 		}, console.err);
 	};
 	const sendEther = () => {
-        if (Mnid.isMNID(globalState.uportId)) {
-            var address = Mnid.decode(globalState.uportId);
-            globalState.uportId = address.address;
-        }
         web3.eth.sendTransaction(
 			{
 				from: globalState.uportId,
@@ -127,6 +125,24 @@
 			}
 		);
 	};
+    const setEther = function () {
+        if (Mnid.isMNID(globalState.uportId)) {
+            var address = Mnid.decode(globalState.uportId);
+            globalState.uportId = address.address;
+        }
+        // $.ajax({
+        //     type: "POST",
+        //     url: '{!! $ajax2 !!}',
+        //     data: 'uportId=' + globalState.uportId,
+        //     dataType: 'json',
+        //     success: function(data){
+        //         if (data.message !== 'OK') {
+        //             toastr.error(data.message);
+        //             // console.log(data);
+        //         }
+        //     }
+        // });
+    };
     $(document).ready(function() {
         // Core
         if (noshdata.message_action !== '') {
@@ -140,6 +156,7 @@
             uportConnect();
         }
         if (uport_need == 'n') {
+            setEther();
             sendEther();
         }
     });
