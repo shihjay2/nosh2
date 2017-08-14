@@ -15839,6 +15839,9 @@ class Controller extends BaseController
                     $instructions = $row2->rxl_instructions;
                 } else {
                     $instructions = $row2->rxl_sig . ', ' . $row2->rxl_route . ', ' . $row2->rxl_frequency;
+                    if ($row2->rxl_instructions !== null && $row2->rxl_instructions !== '') {
+                        $instructions .= ', ' . $row2->rxl_instructions;
+                    }
                 }
                 $description2 = $row2->rxl_medication . ' ' . $row2->rxl_dosage . ' ' . $row2->rxl_dosage_unit . ', ' . $instructions . ' for ' . $row2->rxl_reason;
                 if ($row2->rxl_date_prescribed == null || $row2->rxl_date_prescribed == '0000-00-00 00:00:00') {
