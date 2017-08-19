@@ -7119,8 +7119,9 @@ class Controller extends BaseController
                 $rx['rxl_reason'] = $ccda['reason'];
                 $rx['rxl_ndcid'] = $ccda['code'];
                 $rx['rxl_date_active'] = date('Y-m-d', $this->human_to_unix($ccda['date']));
+                $rx['rxl_instructions'] = $ccda['administration'];
                 if (isset($ccda['from'])) {
-                    $rx['rxl_instructions'] = 'Obtained via FHIR from ' . $ccda['from'];
+                    $rx['rxl_instructions'] .= 'Obtained via FHIR from ' . $ccda['from'];
                 }
             }
         } else {
@@ -15165,6 +15166,59 @@ class Controller extends BaseController
         $return = '';
         if (isset($rxnorm['idGroup']['rxnormId'])) {
             $return = $rxnorm['idGroup']['rxnormId'][0];
+        }
+        return $return;
+    }
+
+    protected function rxnorm_search1($item)
+    {
+        $url = 'http://rxnav.nlm.nih.gov/REST/Prescribe/rxcui/' . $item . '/properties.json';
+        $ch = curl_init();
+        curl_setopt($ch,CURLOPT_URL, $url);
+        curl_setopt($ch,CURLOPT_FAILONERROR,1);
+        curl_setopt($ch,CURLOPT_FOLLOWLOCATION,1);
+        curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+        curl_setopt($ch,CURLOPT_TIMEOUT, 15);
+        $json = curl_exec($ch);
+        curl_close($ch);
+        $rxnorm = json_decode($json, true);
+        $return = [
+            'name' => '',
+            'dosage' => '',
+            'dosage_unit' => ''
+        ];
+        if (isset($rxnorm['properties']['name'])) {
+            $return['name'] = $rxnorm['properties']['name'];
+        }
+        $url1 = 'https://rxnav.nlm.nih.gov/REST/Prescribe/rxcui/' . $item . '/allProperties.json?prop=attributes';
+        $ch1 = curl_init();
+        curl_setopt($ch1,CURLOPT_URL, $url1);
+        curl_setopt($ch1,CURLOPT_FAILONERROR,1);
+        curl_setopt($ch1,CURLOPT_FOLLOWLOCATION,1);
+        curl_setopt($ch1,CURLOPT_RETURNTRANSFER,1);
+        curl_setopt($ch1,CURLOPT_TIMEOUT, 15);
+        $json1 = curl_exec($ch1);
+        curl_close($ch1);
+        $rxnorm1 = json_decode($json1, true);
+        if (isset($rxnorm1['propConceptGroup']['propConcept'])) {
+            foreach ($rxnorm1['propConceptGroup']['propConcept'] as $row1) {
+                if ($row1['propName'] == 'AVAILABLE_STRENGTH') {
+                    $units = ['MG', 'MG/ML', 'MCG'];
+                    $dosage_arr = [];
+                    $unit_arr = [];
+                    $arr = explode(' ', $row1['propValue']);
+                    foreach ($units as $unit) {
+                        $key = array_search($unit, $arr);
+                        if ($key) {
+                            $key1 = $key-1;
+                            $dosage_arr[] = $arr[$key1];
+                            $unit_arr[] = $arr[$key];
+                        }
+                    }
+                    $return['dosage'] = implode(';', $dosage_arr);
+                    $return['dosage_unit'] =implode(';', $unit_arr);
+                }
+            }
         }
         return $return;
     }

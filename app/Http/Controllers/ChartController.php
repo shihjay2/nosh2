@@ -5482,12 +5482,20 @@ class ChartController extends Controller {
                                 $arr['label_class'] = 'nosh-ccda-list';
                                 $arr['danger'] = true;
                                 $rx_date = explode('T', $row2['resource']['effectivePeriod']['start']);
+                                $rx_norm = [
+                                    'name' => (string) $row2['resource']['medicationCodeableConcept']['text'],
+                                    'dosage' => '',
+                                    'dosage_unit' => ''
+                                ];
+                                if ($row2['resource']['medicationCodeableConcept']['coding'][0]['system'] == 'http://www.nlm.nih.gov/research/umls/rxnorm') {
+                                    $rx_norm = $this->rxnorm_search1($row2['resource']['medicationCodeableConcept']['coding'][0]['code']);
+                                }
                                 $arr['label_data_arr'] = [
                                     'data-nosh-type' => 'rx_list',
-                                    'data-nosh-name' => (string) $row2['resource']['medicationCodeableConcept']['text'],
+                                    'data-nosh-name' => $rx_norm['name'],
                                     'data-nosh-code' => '',
-                                    'data-nosh-dosage' => '',
-                                    'data-nosh-dosage-unit' => '',
+                                    'data-nosh-dosage' => $rx_norm['dosage'],
+                                    'data-nosh-dosage-unit' => $rx_norm['dosage_unit'],
                                     'data-nosh-route' => '',
                                     'data-nosh-reason' => '',
                                     'data-nosh-date' => $rx_date[0],
