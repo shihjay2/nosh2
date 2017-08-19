@@ -7121,7 +7121,7 @@ class Controller extends BaseController
                 $rx['rxl_date_active'] = date('Y-m-d', $this->human_to_unix($ccda['date']));
                 $rx['rxl_instructions'] = $ccda['administration'];
                 if (isset($ccda['from'])) {
-                    $rx['rxl_instructions'] .= 'Obtained via FHIR from ' . $ccda['from'];
+                    $rx['rxl_instructions'] .= '; Obtained via FHIR from ' . $ccda['from'];
                 }
             }
         } else {
@@ -15185,7 +15185,8 @@ class Controller extends BaseController
         $return = [
             'name' => '',
             'dosage' => '',
-            'dosage_unit' => ''
+            'dosage_unit' => '',
+            'ndcid' => ''
         ];
         if (isset($rxnorm['properties']['name'])) {
             $return['name'] = $rxnorm['properties']['name'];
@@ -15219,6 +15220,19 @@ class Controller extends BaseController
                     $return['dosage_unit'] =implode(';', $unit_arr);
                 }
             }
+        }
+        $url2 = 'https://rxnav.nlm.nih.gov/REST/Prescribe/rxcui/' . $item . '/ndcs.json';
+        $ch2 = curl_init();
+        curl_setopt($ch2,CURLOPT_URL, $url2);
+        curl_setopt($ch2,CURLOPT_FAILONERROR,1);
+        curl_setopt($ch2,CURLOPT_FOLLOWLOCATION,1);
+        curl_setopt($ch2,CURLOPT_RETURNTRANSFER,1);
+        curl_setopt($ch2,CURLOPT_TIMEOUT, 15);
+        $json2 = curl_exec($ch2);
+        curl_close($ch2);
+        $rxnorm2 = json_decode($json2, true);
+        if (isset($rxnorm2['ndcGroup']['ndcList']['ndc'][0])) {
+            $return['ndcid'] = $rxnorm2['ndcGroup']['ndcList']['ndc'][0];
         }
         return $return;
     }

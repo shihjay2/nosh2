@@ -5485,7 +5485,8 @@ class ChartController extends Controller {
                                 $rx_norm = [
                                     'name' => (string) $row2['resource']['medicationCodeableConcept']['text'],
                                     'dosage' => '',
-                                    'dosage_unit' => ''
+                                    'dosage_unit' => '',
+                                    'ndcid' => ''
                                 ];
                                 if ($row2['resource']['medicationCodeableConcept']['coding'][0]['system'] == 'http://www.nlm.nih.gov/research/umls/rxnorm') {
                                     $rx_norm = $this->rxnorm_search1($row2['resource']['medicationCodeableConcept']['coding'][0]['code']);
@@ -5493,7 +5494,7 @@ class ChartController extends Controller {
                                 $arr['label_data_arr'] = [
                                     'data-nosh-type' => 'rx_list',
                                     'data-nosh-name' => $rx_norm['name'],
-                                    'data-nosh-code' => '',
+                                    'data-nosh-code' => $rx_norm['ndcid'],
                                     'data-nosh-dosage' => $rx_norm['dosage'],
                                     'data-nosh-dosage-unit' => $rx_norm['dosage_unit'],
                                     'data-nosh-route' => '',
