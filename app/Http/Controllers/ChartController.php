@@ -5491,14 +5491,35 @@ class ChartController extends Controller {
                                 if ($row2['resource']['medicationCodeableConcept']['coding'][0]['system'] == 'http://www.nlm.nih.gov/research/umls/rxnorm') {
                                     $rx_norm = $this->rxnorm_search1($row2['resource']['medicationCodeableConcept']['coding'][0]['code']);
                                 }
+                                $reason = '';
+                                if (isset($row2['resource']['reasonCode'][0]['coding'][0]['display'])) {
+                                    $reason = $row2['resource']['reasonCode'][0]['coding'][0]['display'];
+                                }
+                                $route = '';
+                                if (isset($row2['resource']['dosage'][0]['route']['coding'][0])) {
+                                    if ($row2['resource']['dosage'][0]['route']['coding'][0]['system'] == 'http://snomed.info/sct') {
+                                        $yaml = File::get(resource_path() . '/routes.yaml');
+                                        $formatter = Formatter::make($yaml, Formatter::YAML);
+                                        $route_arr = $formatter->toArray();
+                                        $q = $row2['resource']['dosage'][0]['route']['coding'][0]['code'];
+                                        $route_result = array_where($route_arr, function($value, $key) use ($q) {
+                                            if (stripos($value['code'], $q) !== false) {
+                                                return true;
+                                            }
+                                        });
+                                        foreach ($route_result as $route_row) {
+                                            $route = $route_row['desc'];
+                                        }
+                                    }
+                                }
                                 $arr['label_data_arr'] = [
                                     'data-nosh-type' => 'rx_list',
                                     'data-nosh-name' => $rx_norm['name'],
                                     'data-nosh-code' => $rx_norm['ndcid'],
                                     'data-nosh-dosage' => $rx_norm['dosage'],
                                     'data-nosh-dosage-unit' => $rx_norm['dosage_unit'],
-                                    'data-nosh-route' => '',
-                                    'data-nosh-reason' => '',
+                                    'data-nosh-route' => $route,
+                                    'data-nosh-reason' => $reason,
                                     'data-nosh-date' => $rx_date[0],
                                     'data-nosh-administration' => $row2['resource']['dosage'][0]['text'],
                                     'data-nosh-from' => Session::get('fhir_name')
