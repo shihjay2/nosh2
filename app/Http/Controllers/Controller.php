@@ -2599,8 +2599,10 @@ class Controller extends BaseController
             $line = explode('_', $files[$i]);
             $file = $dir . '/' . $files[$i];
             if (file_exists($file)) {
-                if ($line[0] < $time) {
-                    unlink($file);
+                if ($line[0] !== '.gitignore') {
+                    if ($line[0] < $time) {
+                        unlink($file);
+                    }
                 }
             }
         }

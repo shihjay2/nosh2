@@ -33,13 +33,13 @@ class ReminderController extends Controller {
 				$row0 = DB::table('users')->where('id', '=', $row->provider_id)->first();
 				$row2 = DB::table('practiceinfo')->where('practice_id', '=', $row0->practice_id)->first();
 				$proceed = true;
-				if ($row2->reminder_interval !== 'Default' && $row2->reminder_interval !== null) {
+				if ($row2->reminder_interval !== 'Default' && $row2->reminder_interval !== null && $row2->reminder_interval !== '') {
 					$practice_end = $start + ((int)$row2->reminder_interval * 60 * 60);
 					if ($row->start > $practice_end) {
 						$proceed = false;
 					}
 				}
-				if ($row->reminder_interval !== 'Default' && $row->reminder_interval !== null) {
+				if ($row->reminder_interval !== 'Default' && $row->reminder_interval !== null && $row->reminder_interval !== '') {
 					$patient_end = $start + ((int)$row->reminder_interval * 60 * 60);
 					if ($row->start > $patient_end) {
 						$proceed = false;
