@@ -1215,6 +1215,43 @@ class LoginController extends Controller {
         return redirect()->route('login');
     }
 
+    public function transactions(Request $request)
+    {
+        $query = DB::table('rx_list')->whereNotNull('transaction')->orderBy('rxl_date_prescribed', 'desc');
+        $result = $query->get();
+        $return = [];
+        $return['count'] = $query->count();
+        $i = 0;
+        $provider = [];
+        if ($return['count']) {
+            foreach ($result as $row) {
+                if ($i < 10) {
+                    $return['transactions'][] = [
+                        'transaction' => $row->transaction,
+                        'date' => $this->human_to_unix($row->rxl_date_prescribed),
+                        'provider' => $row->rxl_provider
+                    ];
+                }
+                if (isset($provider[$row->id])) {
+                    $provider[$row->id]++;
+                } else {
+                    $provider[$row->id] = 1;
+                }
+                $i++;
+            }
+            arsort($provider);
+            array_slice($provider, 0, 5);
+            foreach ($provider as $provider_row_k => $provider_row_v) {
+                $query1 = DB::table('users')->where('id', '=', $provider_row_k)->first();
+                $return['providers'][] = [
+                    'provider' => $query1->displayname,
+                    'count' => $provider_row_v
+                ];
+            }
+        }
+        return $return;
+    }
+
 
     // Patient-centric, UMA login
     public function uma_auth()
