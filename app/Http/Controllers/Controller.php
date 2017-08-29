@@ -15319,7 +15319,7 @@ class Controller extends BaseController
             if ($demographics->address == '') {
                 $return['demographics_alert'] = 'Address';
             }
-            if ($demographics->nickname !== '') {
+            if ($demographics->nickname !== '' && $demographics->nickname !== null) {
                 $return['name'] .= ' (' . $demographics->nickname . ')';
             }
             $return['demographics_quick'] = '<p style="margin:2px"><strong>DOB: </strong>' . date('F jS, Y', strtotime($demographics->DOB)) . '</p>';
