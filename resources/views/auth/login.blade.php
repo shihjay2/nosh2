@@ -146,15 +146,23 @@
 
                             <div class="form-group">
                                 <div class="col-md-6 col-md-offset-4">
-                                    <button type="submit" class="btn btn-primary">
+                                    <button type="submit" class="btn btn-primary btn-block">
                                         <i class="fa fa-btn fa-sign-in"></i> {{ trans('nosh.login_heading') }}
                                     </button>
-                                    <a class="btn btn-link" href="{{ url('/password_email') }}">{{ trans('nosh.forgot_password') }}</a>
+                                    <a class="btn btn-primary btn-block" href="{{ url('/password_email') }}">{{ trans('nosh.forgot_password') }}</a>
                                     @if ($patient_centric == 'n' && $demo == 'n')
-                                        <a class="btn btn-link" href="#" id="register">{{ trans('nosh.new_patient_portal') }}</a>
+                                        <a class="btn btn-primary btn-block" href="#" id="register">{{ trans('nosh.new_patient_portal') }}</a>
                                     @endif
                                 </div>
                             </div>
+
+							<div class="form-group">
+								<div class="col-md-6 col-md-offset-4">
+									<button type="button" class="btn btn-primary btn-block" id="connectUportBtn" onclick="loginBtnClick()">
+										<img src="{{ asset('assets/uport-logo-white.svg') }}" height="25" width="25" style="margin-right:5px"></img> {{ trans('nosh.login_uport') }}
+									</button>
+								</div>
+							</div>
                         </form>
                         @if ($errors->has('registration_code') || $errors->has('lastname') || $errors->has('firstname') || $errors->has('dob') || $errors->has('email') || $errors->has('username1') || $errors->has('numberReal'))
                             <form id="register_form" class="form-horizontal" role="form" method="POST" action="{{ url('register_user') }}">
@@ -343,6 +351,9 @@
 @endsection
 
 @section('view.scripts')
+<script src="{{ asset('assets/js/web3.js') }}"></script>
+<script src="{{ asset('assets/js/uport-connect.js') }}"></script>
+<script src="{{ asset('assets/js/toastr.min.js') }}"></script>
 <script type="text/javascript">
     $(document).ready(function() {
         if (noshdata.message_action !== '') {
@@ -385,5 +396,43 @@
             loadlogo();
         }
     });
+
+	// Uport
+	const Connect = window.uportconnect.Connect;
+	const appName = 'nosh';
+	const connect = new Connect(appName, {
+		'clientId': '2oyVF8cuGih6VQy7LseeXjaXHHFNzzoqBTk',
+		'signer': window.uportconnect.SimpleSigner('82de57b7883af687b673f7c6521e143d28e02d00ba39aed237beac97f2a96f2e'),
+		'network': 'rinkeby'
+	});
+	const web3 = connect.getWeb3();
+	const loginBtnClick = () => {
+		connect.requestCredentials({
+	      requested: ['name', 'phone', 'country', 'email', 'description'],
+	      notifications: true // We want this if we want to recieve credentials
+	    }).then((credentials) => {
+			console.log(credentials);
+			var uport_data = 'name=' + credentials.name + '&uport=' + credentials.address;
+			if (typeof credentials.description !== 'undefined') {
+				uport_data += '&npi=' + credentials.description;
+			}
+			if (typeof credentials.email !== 'undefined') {
+				uport_data += '&email=' + credentials.email;
+			}
+			$.ajax({
+				type: "POST",
+				url: noshdata.login_uport,
+				data: uport_data,
+				dataType: 'json',
+				success: function(data){
+					if (data.message !== 'OK') {
+						toastr.error(data.message);
+					} else {
+						window.location = data.url;
+					}
+				}
+			});
+		}, console.err);
+	};
 </script>
 @endsection

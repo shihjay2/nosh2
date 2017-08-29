@@ -151,6 +151,7 @@
                                 @endif
                                 @if (Session::get('patient_centric') == 'y')
                                     <li><a href="{{ route('fhir_connect') }}"><i class="fa fa-btn fa-plug"></i>{{ trans('nosh.fhir_connect') }}</a></li>
+                                    <li><a href="{{ str_replace('/nosh', '', route('dashboard')) }}"><i class="fa fa-btn fa-openid"></i>{{ trans('nosh.hieofone') }}</a></li>
                                 @endif
                                 <li><a href="{{ route('password_change') }}"><i class="fa fa-btn fa-cog"></i>{{ trans('nosh.password_change') }}</a></li>
                                 <li><a href="https://github.com/shihjay2/nosh2/issues/new" target="_blank" class="nosh-no-load"><i class="fa fa-btn fa-github-alt"></i>{{ trans('nosh.report_bug') }}</a></li>
@@ -169,11 +170,12 @@
         <!-- Sidebar -->
         <div id="sidebar" class="sidebar-offcanvas">
             <div class="col-md-12">
-                <h4>
-                    @if (isset($name))
-                        <a href="{{ url('patient') }}">{{ $name }}</a>
-                    @endif
-                </h4>
+                @if (isset($name))
+                    <a href="{{ url('patient') }}">
+                        <h4>{{ $name }}</h4>
+                        {!! $demographics_quick !!}
+                    </a>
+                @endif
                 <ul class="nav nav-pills nav-stacked">
                     @if ($sidebar_content == 'chart')
                         @if (isset($active_encounter))
@@ -184,6 +186,19 @@
                                 </a>
                             </li>
                         @endif
+                        <li class="sidebar-search">
+                            <form class="nosh-form" role="form" method="POST" action="{{ route('search_chart') }}">
+                                {{ csrf_field() }}
+                                <div class="input-group custom-search-form">
+                                    <input type="text" name="search_chart" class="form-control" placeholder="{{ trans('nosh.search_chart') }}">
+                                    <span class="input-group-btn">
+                                    <button class="btn btn-default" type="submit">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </span>
+                                </div>
+                            </form>
+                        </li>
                         <li @if(isset($demographics_active)) class="active" @endif>
                             <a href="{{ route('demographics') }}">
                                 <i class="fa fa-user fa-fw fa-lg"></i>
@@ -526,6 +541,13 @@
                     <h5 class="modal-title">{{ trans('nosh.patient_summary') }}</h5>
                 </div>
                 <div class="modal-body" id="chart_overview" style="height:80vh;overflow-y:auto;">
+                    @if (isset($encounters_preview))
+                        <div class="row">
+                            <div class="col-xs-12">
+                                {!! $encounters_preview !!}
+                            </div>
+                        </div>
+                    @endif
                     <div class="row">
                         <div class="col-xs-6">
                             <strong>{{ trans('nosh.conditions_list') }}</strong>
@@ -579,6 +601,7 @@
             'home_url': '<?php echo url("/") . '/'; ?>',
             'image_dimensions': '<?php echo url("image_dimensions"); ?>',
             'last_page': '<?php echo url("last_page"); ?>',
+            'login_uport': '<?php echo route("login_uport"); ?>',
             'logout_url': '<?php echo url("logout"); ?>',
             'notification': '<?php echo url("notification"); ?>',
             'patient_url': '<?php echo url("patient"); ?>',

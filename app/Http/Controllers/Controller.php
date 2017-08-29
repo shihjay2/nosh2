@@ -13477,6 +13477,24 @@ class Controller extends BaseController
         return $return;
     }
 
+    protected function pnosh_notification()
+    {
+        $core_practice = DB::table('practiceinfo')->where('practice_id', '=', '1')->first();
+        if ($core_practice->patient_centric == 'y') {
+            $providers = DB::table('users')->where('group_id', '=', '2')->get();
+            $patient = DB::table('demographics')->where('pid', '=', '1')->first();
+            $dob = date('m/d/Y', strtotime($patient->DOB));
+            $name = $patient->lastname . ', ' . $patient->firstname . ' (DOB: ' . $dob . ')';
+            if ($providers->count()) {
+                $data_message['item'] = 'There is a new health update for ' . $name . '.  For more details, click here: ' . route('dashboard');
+                foreach ($providers as $provider) {
+                    $this->send_mail('emails.blank', $data_message, 'Health Update', $provider->email, '1');
+                }
+            }
+        }
+        return true;
+    }
+
     protected function practice_logo($practice_id)
     {
         $logo = '<br><br><br><br><br>';
@@ -15301,6 +15319,12 @@ class Controller extends BaseController
             if ($demographics->address == '') {
                 $return['demographics_alert'] = 'Address';
             }
+            if ($demographics->nickname !== '') {
+                $return['name'] .= ' (' . $demographics->nickname . ')';
+            }
+            $return['demographics_quick'] = '<p style="margin:2px"><strong>DOB: </strong>' . date('F jS, Y', strtotime($demographics->DOB)) . '</p>';
+            $return['demographics_quick'] .= '<p style="margin:2px"><strong>Age: </strong>' . Session::get('age') . '</p>';
+            $return['demographics_quick'] .= '<p style="margin-top:2px; margin-bottom:8px;"><strong>Gender: </strong>' . ucfirst(Session::get('gender')) . '</p>';
             // Conditions
             $conditions = DB::table('issues')->where('pid', '=', Session::get('pid'))->where('issue_date_inactive', '=', '0000-00-00 00:00:00')->orderBy('issue', 'asc')->get();
             $return['conditions_badge'] = '0';
@@ -15375,9 +15399,125 @@ class Controller extends BaseController
                 $encounters_query->where('encounter_signed', '=', 'Yes');
             }
             $return['encounters_badge'] = $encounters_query->count();
+            $return['encounters_preview'] = '';
             if (Session::has('eid')) {
                 $return['active_encounter'] = Session::get('eid');
                 $return['active_encounter_url'] = Session::get('last_page_encounter');
+                $eid = Session::get('eid');
+                $return['encounters_preview'] .= '<strong>Encounter Action Items</strong>';
+                $procedureInfo = DB::table('procedure')->where('eid', '=', $eid)->first();
+                if ($procedureInfo) {
+                    $procedure_arr = $this->array_procedure();
+                    $return['encounters_preview'] .= '<br><h5>Procedures:</h5><p class="view">';
+                    foreach ($procedure_arr as $procedure_k => $procedure_v) {
+                        if ($procedureInfo->{$procedure_k} !== '' && $procedureInfo->{$procedure_k} !== null) {
+                            if ($procedure_k == 'proc_description') {
+                                if ($this->yaml_check($procedureInfo->{$procedure_k})) {
+                                    $proc_search_arr = ['code:', 'timestamp:', 'procedure:', 'type:', '---' . "\n", '|'];
+                                    $proc_replace_arr = ['<b>Procedure Code:</b>', '<b>When:</b>', '<b>Procedure Description:</b>', '<b>Type:</b>', '', ''];
+                                    $return['encounters_preview'] .= nl2br(str_replace($proc_search_arr, $proc_replace_arr, $procedureInfo->{$procedure_k}));
+                                } else {
+                                    $return['encounters_preview'] .= '<strong>' . $procedure_v . ': </strong>';
+                                    $return['encounters_preview'] .= nl2br($procedureInfo->{$procedure_k});
+                                    $return['encounters_preview'] .= '<br /><br />';
+                                }
+                            } else {
+                                $return['encounters_preview'] .= '<strong>' . $procedure_v . ': </strong>';
+                                $return['encounters_preview'] .= nl2br($procedureInfo->{$procedure_k});
+                                $return['encounters_preview'] .= '<br /><br />';
+                            }
+                        }
+                    }
+                    $return['encounters_preview'] .= '</p>';
+                }
+                $ordersInfo1 = DB::table('orders')->where('eid', '=', $eid)->get();
+                if ($ordersInfo1->count()) {
+                    $return['encounters_preview'] .= '<br><h5>Orders:</h5><p class="view">';
+                    $orders_lab_array = [];
+                    $orders_radiology_array = [];
+                    $orders_cp_array = [];
+                    $orders_referrals_array = [];
+                    foreach ($ordersInfo1 as $ordersInfo) {
+                        $address_row1 = DB::table('addressbook')->where('address_id', '=', $ordersInfo->address_id)->first();
+                        if ($address_row1) {
+                            $orders_displayname = $address_row1->displayname;
+                            if ($ordersInfo->orders_referrals != '') {
+                                $orders_displayname = $address_row1->specialty . ': ' . $address_row1->displayname;
+                            }
+                        } else {
+                            $orders_displayname = 'Unknown';
+                        }
+                        if ($ordersInfo->orders_labs != '') {
+                            $orders_lab_array[] = 'Orders sent to ' . $orders_displayname . ': '. nl2br($ordersInfo->orders_labs) . '<br />';
+                        }
+                        if ($ordersInfo->orders_radiology != '') {
+                            $orders_radiology_array[] = 'Orders sent to ' . $orders_displayname . ': '. nl2br($ordersInfo->orders_radiology) . '<br />';
+                        }
+                        if ($ordersInfo->orders_cp != '') {
+                            $orders_cp_array[] = 'Orders sent to ' . $orders_displayname . ': '. nl2br($ordersInfo->orders_cp) . '<br />';
+                        }
+                        if ($ordersInfo->orders_referrals != '') {
+                            $orders_referrals_array[] = 'Referral sent to ' . $orders_displayname . ': '. nl2br($ordersInfo->orders_referrals) . '<br />';
+                        }
+                    }
+                    if (count($orders_lab_array) > 0) {
+                        $return['encounters_preview'] .= '<strong>Labs: </strong><br>';
+                        foreach ($orders_lab_array as $lab_item) {
+                            $return['encounters_preview'] .= $lab_item;
+                        }
+                    }
+                    if (count($orders_radiology_array) > 0) {
+                        $return['encounters_preview'] .= '<strong>Imaging: </strong><br>';
+                        foreach ($orders_radiology_array as $radiology_item) {
+                            $return['encounters_preview'] .= $radiology_item;
+                        }
+                    }
+                    if (count($orders_cp_array) > 0) {
+                        $return['encounters_preview'] .= '<strong>Cardiopulmonary: </strong><br>';
+                        foreach ($orders_cp_array as $cp_item) {
+                            $return['encounters_preview'] .= $cp_item;
+                        }
+                    }
+                    if (count($orders_referrals_array) > 0) {
+                        $return['encounters_preview'] .= '<strong>Referrals: </strong><br>';
+                        foreach ($orders_referrals_array as $referrals_item) {
+                            $return['encounters_preview'] .= $referrals_item;
+                        }
+                    }
+                    $return['encounters_preview'] .= '</p>';
+                }
+                $rxInfo = DB::table('rx')->where('eid', '=', $eid)->first();
+                if ($rxInfo) {
+                    $rx_arr = $this->array_rx();
+                    $return['encounters_preview'] .= '<br><h5>Prescriptions and Immunizations:</h5><p class="view">';
+                    foreach ($rx_arr as $rx_k => $rx_v) {
+                        if ($rxInfo->{$rx_k} !== '' && $rxInfo->{$rx_k} !== null) {
+                            $return['encounters_preview'] .= '<strong>' . $rx_v . ': </strong><br>';
+                            $return['encounters_preview'] .= nl2br($rxInfo->{$rx_k});
+                            if ($rx_k == 'rx_immunizations') {
+                                $return['encounters_preview'] .= 'CDC Vaccine Information Sheets given for each immunization and consent obtained.<br />';
+                            }
+                            $return['encounters_preview'] .= '<br /><br />';
+                        }
+                    }
+                    $return['encounters_preview'] .= '</p>';
+                }
+                $planInfo = DB::table('plan')->where('eid', '=', $eid)->first();
+                if ($planInfo) {
+                    $plan_arr = $this->array_plan();
+                    $return['encounters_preview'] .= '<br><h5>Plan:</h5><p class="view">';
+                    foreach ($plan_arr as $plan_k => $plan_v) {
+                        if ($planInfo->{$plan_k} !== '' && $planInfo->{$plan_k} !== null) {
+                            $return['encounters_preview'] .= '<strong>' . $plan_v . ': </strong>';
+                            $return['encounters_preview'] .= nl2br($planInfo->{$plan_k});
+                            if ($plan_k == 'duration') {
+                                $return['encounters_preview'] .= '  minutes';
+                            }
+                            $return['encounters_preview'] .= '<br /><br />';
+                        }
+                    }
+                    $return['encounters_preview'] .= '</p>';
+                }
             }
         }
         return $return;

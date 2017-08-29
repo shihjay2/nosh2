@@ -446,6 +446,38 @@ class LoginController extends Controller {
         }
     }
 
+    public function login_uport(Request $request)
+    {
+        if ($request->has('uport')) {
+            $user = DB::table('users')->where('email', '=', $request->input('email'))->first();
+            if ($user) {
+                // Save uport id stub
+                Auth::loginUsingId($user->id);
+                $practice = DB::table('practiceinfo')->where('practice_id', '=', $user->practice_id)->first();
+                Session::put('user_id', $user->id);
+                Session::put('group_id', $user->group_id);
+                Session::put('practice_id', $user->practice_id);
+                Session::put('version', $practice->version);
+                Session::put('practice_active', $practice->active);
+                Session::put('displayname', $user->displayname);
+                Session::put('documents_dir', $practice->documents_dir);
+                Session::put('rcopia', $practice->rcopia_extension);
+                Session::put('mtm_extension', $practice->mtm_extension);
+                Session::put('patient_centric', $practice->patient_centric);
+                Session::put('uport_id', $request->input('uport'));
+                Session::save();
+                setcookie("login_attempts", 0, time()+900, '/');
+                $return['url'] =  route('dashboard');
+                $return['message'] = 'OK';
+            } else {
+                $return['message'] = 'You are not authorized to access NOSH';
+            }
+        } else {
+            $return['message'] = 'Please contact the administrator for assistance.';
+        }
+        return $return;
+    }
+
     public function logout()
     {
         if (Session::has('uma_auth_access_token')) {
@@ -841,8 +873,8 @@ class LoginController extends Controller {
     {
         $query = DB::table('users')->where('password', '=', $id)->first();
         if ($query) {
-            $expires = strtotime($query->updated_at) + 7200;
-            if ($expires > time()) {
+            // $expires = strtotime($query->updated_at) + 7200;
+            // if ($expires > time()) {
                 if ($request->isMethod('post')) {
                     $this->validate($request, [
                         'password' => 'min:4',
@@ -865,9 +897,9 @@ class LoginController extends Controller {
                     $data['assets_css'] = $this->assets_css();
                     return view('changepassword', $data);
                 }
-            } else {
-                return 'Your code expired.  Contact your administrator to have your password reset again.';
-            }
+            // } else {
+                // return 'Your code expired.  Contact your administrator to have your password reset again.';
+            // }
         } else {
             return 'Your code is invalid.';
         }

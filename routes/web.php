@@ -17,6 +17,7 @@ Route::get('fhir/oidc', ['as' => 'oidc_api', 'uses' => 'LoginController@oidc_api
 Route::any('google_auth', ['as' => 'google_auth', 'uses' => 'LoginController@google_auth']);
 Route::any('googleoauth', ['as' => 'googleoauth', 'uses' => 'LoginController@googleoauth']);
 Route::any('login/{type?}', ['as' => 'login', 'uses' => 'LoginController@login']);
+Route::post('login_uport', ['as' => 'login_uport', 'middleware' => 'csrf', 'uses' => 'LoginController@login_uport']);
 Route::any('logout', ['as' => 'logout', 'uses' => 'LoginController@logout']);
 Route::any('oidc', ['as' => 'oidc', 'uses' => 'LoginController@oidc']); // Login with mdNOSH
 Route::get('oidc_check_patient_centric', ['as' => 'oidc_check_patient_centric', 'uses' => 'LoginController@oidc_check_patient_centric']);
@@ -223,6 +224,7 @@ Route::get('results_print/{id}', ['as' => 'results_print', 'uses' => 'ChartContr
 Route::any('results_reply', ['as' => 'results_reply', 'uses' => 'ChartController@results_reply']);
 Route::get('results_view/{id}', ['as' => 'results_view', 'uses' => 'ChartController@results_view']);
 Route::post('set_ccda_data', ['as' => 'set_ccda_data', 'uses' => 'AjaxChartController@set_ccda_data']);
+Route::any('search_chart', ['as' => 'search_chart', 'uses' => 'ChartController@search_chart']);
 Route::post('set_chart_queue', ['as' => 'set_chart_queue', 'uses' => 'AjaxChartController@set_chart_queue']);
 Route::get('social_history', ['as' => 'social_history', 'uses' => 'ChartController@social_history']);
 Route::get('supplements_list/{type}', ['as' => 'supplements_list', 'uses' => 'ChartController@supplements_list']);

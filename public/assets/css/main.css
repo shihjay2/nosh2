@@ -270,6 +270,10 @@ div.list-category li.list-group-item:first-child {
 
 :required:not(#search_patient):not(#search_rx) { border: 1px solid red; }
 
+.nav-stacked>li>a {
+    padding: 5px; //whatever values you want...
+}
+
 /*
  * off Canvas sidebar
  * --------------------------------------------------

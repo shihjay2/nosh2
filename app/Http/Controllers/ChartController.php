@@ -203,6 +203,7 @@ class ChartController extends Controller {
         if ($result->count()) {
             $list_array = [];
             foreach ($result as $row) {
+                $arr = [];
                 $arr['label'] = $row->alert . ' (Due ' . date('m/d/Y', $this->human_to_unix($row->alert_date_active)) . ') - ' . $row->alert_description;
                 if ($edit == true) {
                     $arr['edit'] = route('chart_form', ['alerts', $row_index, $row->$row_index]);
@@ -6573,7 +6574,12 @@ class ChartController extends Controller {
         $data['content'] .= '</section>';
         // $data['template_content'] = 'test';
         $data['title'] = Session::get('ptname');
-        $data['panel_header'] = Session::get('ptname') . ', ' . Session::get('age') . ', ' . Session::get('gender');
+        $data['panel_header'] = Session::get('ptname');
+        $demographics = DB::table('demographics')->where('pid', '=', Session::get('pid'))->first();
+        if ($demographics->nickname !== '') {
+            $data['panel_header'] .= ' (' . $demographics->nickname . ')';
+        }
+        $data['panel_header'] .= ', ' . Session::get('age') . ', ' . ucfirst(Session::get('gender'));
         $edit = $this->access_level('2');
         $edit1 = $this->access_level('1');
         if ($edit == true) {
@@ -7476,6 +7482,534 @@ class ChartController extends Controller {
                 $data['message_action'] .= 'Test result marked as reviewed for encounter.';
             }
         }
+        $data['assets_js'] = $this->assets_js('chart');
+        $data['assets_css'] = $this->assets_css('chart');
+        return view('chart', $data);
+    }
+
+    public function search_chart(Request $request)
+    {
+        $data['message_action'] = Session::get('message_action');
+        Session::forget('message_action');
+        $edit = $this->access_level('2');
+        $edit1 = $this->access_level('7');
+        $return = '';
+        if ($request->isMethod('post')) {
+            $q = $request->input('search_chart');
+            Session::put('search_chart', $q);
+        } else {
+            $q = Session::get('search_chart');
+            Session::forget('search_chart');
+        }
+        $allergies = DB::table('allergies')
+            ->where('pid', '=', Session::get('pid'))
+            ->where('allergies_date_inactive', '=', '0000-00-00 00:00:00')
+            ->where(function($allergies1) use ($q) {
+                $allergies1->where('allergies_med', 'LIKE', "%$q%")
+                ->orWhere('allergies_reaction', 'LIKE', "%$q%");
+            })
+            ->get();
+        $issues = DB::table('issues')
+            ->where('pid', '=', Session::get('pid'))
+            ->where('issue_date_inactive', '=', '0000-00-00 00:00:00')
+            ->where(function($issues1) use ($q) {
+                $issues1->where('issue', 'LIKE', "%$q%")
+                ->orWhere('notes', 'LIKE', "%$q%");
+            })
+            ->get();
+        $rx = DB::table('rx_list')
+            ->where('pid', '=', Session::get('pid'))
+            ->where('rxl_date_inactive', '=', '0000-00-00 00:00:00')
+            ->where('rxl_date_old', '=', '0000-00-00 00:00:00')
+            ->where(function($rx1) use ($q) {
+                $rx1->where('rxl_medication', 'LIKE', "%$q%")
+                ->orWhere('rxl_sig', 'LIKE', "%$q%")
+                ->orWhere('rxl_reason', 'LIKE', "%$q%")
+                ->orWhere('rxl_instructions', 'LIKE', "%$q%");
+            })
+            ->get();
+        $sup = DB::table('sup_list')
+            ->where('pid', '=', Session::get('pid'))
+            ->where('sup_date_inactive', '=', '0000-00-00 00:00:00')
+            ->where(function($sup1) use ($q) {
+                $sup1->where('sup_supplement', 'LIKE', "%$q%")
+                ->orWhere('sup_sig', 'LIKE', "%$q%")
+                ->orWhere('sup_reason', 'LIKE', "%$q%")
+                ->orWhere('sup_instructions', 'LIKE', "%$q%");
+            })
+            ->get();
+        $imm = DB::table('immunizations')
+            ->where('pid', '=', Session::get('pid'))
+            ->where(function($imm1) use ($q) {
+                $imm1->where('imm_immunization', 'LIKE', "%$q%")
+                ->orWhere('imm_sequence', 'LIKE', "%$q%")
+                ->orWhere('imm_manufacturer', 'LIKE', "%$q%");
+            })
+            ->get();
+        $orders = DB::table('orders')
+            ->where('pid', '=', Session::get('pid'))
+            ->where(function($orders1) use ($q) {
+                $orders1->where('orders_labs', 'LIKE', "%$q%")
+                ->orWhere('orders_radiology', 'LIKE', "%$q%")
+                ->orWhere('orders_cp', 'LIKE', "%$q%")
+                ->orWhere('orders_referrals', 'LIKE', "%$q%")
+                ->orWhere('orders_notes', 'LIKE', "%$q%");
+            })
+            ->get();
+        $encounters = DB::table('encounters')
+            ->join('assessment', 'assessment.eid', '=', 'encounters.eid')
+            ->join('image', 'image.eid', '=', 'encounters.eid')
+            ->join('pe', 'pe.eid', '=', 'encounters.eid')
+            ->join('plan', 'plan.eid', '=', 'encounters.eid')
+            ->join('procedure', 'procedure.eid', '=', 'encounters.eid')
+            ->join('ros', 'ros.eid', '=', 'encounters.eid')
+            ->join('rx', 'rx.eid', '=', 'encounters.eid')
+            ->join('vitals', 'vitals.eid', '=', 'encounters.eid')
+            ->select('encounters.eid', 'encounters.encounter_DOS', 'encounters.encounter_type', 'encounters.encounter_cc', 'encounters.encounter_provider', 'encounters.encounter_template', 'encounters.encounter_signed')
+            ->where('encounters.pid', '=', Session::get('pid'))
+            ->where('encounters.addendum', '=', 'n')
+            ->where(function($encounters1) use ($q) {
+                $encounters1->where('encounters.encounter_type', 'LIKE', "%$q%")
+                ->orWhere('encounters.encounter_cc', 'LIKE', "%$q%")
+                ->orWhere('assessment.assessment_1', 'LIKE', "%$q%")
+                ->orWhere('assessment.assessment_2', 'LIKE', "%$q%")
+                ->orWhere('assessment.assessment_3', 'LIKE', "%$q%")
+                ->orWhere('assessment.assessment_4', 'LIKE', "%$q%")
+                ->orWhere('assessment.assessment_5', 'LIKE', "%$q%")
+                ->orWhere('assessment.assessment_6', 'LIKE', "%$q%")
+                ->orWhere('assessment.assessment_7', 'LIKE', "%$q%")
+                ->orWhere('assessment.assessment_8', 'LIKE', "%$q%")
+                ->orWhere('assessment.assessment_9', 'LIKE', "%$q%")
+                ->orWhere('assessment.assessment_10', 'LIKE', "%$q%")
+                ->orWhere('assessment.assessment_11', 'LIKE', "%$q%")
+                ->orWhere('assessment.assessment_12', 'LIKE', "%$q%")
+                ->orWhere('assessment.assessment_other', 'LIKE', "%$q%")
+                ->orWhere('assessment.assessment_ddx', 'LIKE', "%$q%")
+                ->orWhere('assessment.assessment_notes', 'LIKE', "%$q%")
+                ->orWhere('image.image_description', 'LIKE', "%$q%")
+                ->orWhere('pe.pe', 'LIKE', "%$q%")
+                ->orWhere('plan.plan', 'LIKE', "%$q%")
+                ->orWhere('plan.goals', 'LIKE', "%$q%")
+                ->orWhere('plan.tp', 'LIKE', "%$q%")
+                ->orWhere('procedure.proc_description', 'LIKE', "%$q%")
+                ->orWhere('ros.ros', 'LIKE', "%$q%")
+                ->orWhere('rx.rx_rx', 'LIKE', "%$q%")
+                ->orWhere('rx.rx_supplements', 'LIKE', "%$q%")
+                ->orWhere('rx.rx_immunizations', 'LIKE', "%$q%")
+                ->orWhere('rx.rx_orders_summary', 'LIKE', "%$q%")
+                ->orWhere('rx.rx_supplements_orders_summary', 'LIKE', "%$q%")
+                ->orWhere('vitals.vitals_other', 'LIKE', "%$q%");
+            })
+            ->get();
+        $notes = DB::table('demographics_notes')->where('pid', '=', Session::get('pid'))->where('imm_notes', 'LIKE', "%$q%")->get();
+        $notes1 = DB::table('demographics_notes')->where('pid', '=', Session::get('pid'))->where('billing_notes', 'LIKE', "%$q%")->get();
+        $documents = DB::table('documents')
+            ->where('pid', '=', Session::get('pid'))
+            ->where(function($documents1) use ($q) {
+                $documents1->where('documents_desc', 'LIKE', "%$q%")
+                ->orWhere('documents_from', 'LIKE', "%$q%");
+            })
+            ->get();
+        $tests = DB::table('tests')
+            ->where('pid', '=', Session::get('pid'))
+            ->where(function($tests1) use ($q) {
+                $tests1->where('test_name', 'LIKE', "%$q%")
+                ->orWhere('test_from', 'LIKE', "%$q%");
+            })
+            ->get();
+        $alerts = DB::table('alerts')
+            ->where('pid', '=', Session::get('pid'))
+            ->where('practice_id', '=', Session::get('practice_id'))
+            ->where('alert_date_complete', '=', '0000-00-00 00:00:00')
+            ->where('alert_reason_not_complete', '=', '')
+            ->where(function($alerts1) use ($q) {
+                $alerts1->where('alert', 'LIKE', "%$q%")
+                ->orWhere('alert_description', 'LIKE', "%$q%");
+            })
+            ->get();
+        $t_messages_query = DB::table('t_messages')->where('pid', '=', Session::get('pid'));
+        if (Session::get('patient_centric') == 'n') {
+            $t_messages_query->where('practice_id', '=', Session::get('practice_id'));
+        }
+        if (Session::get('group_id') == '100') {
+            $t_messages_query->where('t_messages_signed', '=', 'Yes');
+        }
+        $t_messages = $t_messages_query->where(function($t_messages_query1) use ($q) {
+            $t_messages_query1->where('t_messages_subject', 'LIKE', "%$q%")
+            ->orWhere('t_messages_message', 'LIKE', "%$q%");
+            })->get();
+        $demographics = DB::table('demographics')
+            ->where('pid', '=', Session::get('pid'))
+            ->where(function($demographics1) use ($q) {
+                $demographics1->where('firstname', 'LIKE', "%$q%")
+                ->orWhere('lastname', 'LIKE', "%$q%")
+                ->orWhere('nickname', 'LIKE', "%$q%")
+                ->orWhere('race', 'LIKE', "%$q%")
+                ->orWhere('ethnicity', 'LIKE', "%$q%")
+                ->orWhere('language', 'LIKE', "%$q%")
+                ->orWhere('employer', 'LIKE', "%$q%");
+            })
+            ->get();
+        $demographics_a = DB::table('demographics')
+            ->where('pid', '=', Session::get('pid'))
+            ->where(function($demographics_a1) use ($q) {
+                $demographics_a1->where('address', 'LIKE', "%$q%")
+                ->orWhere('city', 'LIKE', "%$q%")
+                ->orWhere('email', 'LIKE', "%$q%")
+                ->orWhere('emergency_contact', 'LIKE', "%$q%");
+            })
+            ->get();
+        $demographics_b = DB::table('demographics')
+            ->where('pid', '=', Session::get('pid'))
+            ->where(function($demographics_b1) use ($q) {
+                $demographics_b1->where('guardian_firstname', 'LIKE', "%$q%")
+                ->orWhere('guardian_lastname', 'LIKE', "%$q%")
+                ->orWhere('guardian_address', 'LIKE', "%$q%")
+                ->orWhere('guardian_city', 'LIKE', "%$q%");
+            })
+            ->get();
+        $demographics_c = DB::table('demographics')
+            ->where('pid', '=', Session::get('pid'))
+            ->where(function($demographics_c1) use ($q) {
+                $demographics_c1->where('preferred_pharmacy', 'LIKE', "%$q%")
+                ->orWhere('comments', 'LIKE', "%$q%")
+                ->orWhere('other1', 'LIKE', "%$q%")
+                ->orWhere('other2', 'LIKE', "%$q%");
+            })
+            ->get();
+        $tags = DB::table('tags')->where('tag', 'LIKE', "%$q%")->get();
+        $encounters_arr = [];
+        $t_messages_arr = [];
+        $documents_arr = [];
+        $tests_arr = [];
+        if ($tags->count()) {
+            foreach ($tags as $tag) {
+                $tags_query = DB::table('tags_relate')->where('tags_id', '=', $tag->tags_id)->where('pid', '=', Session::get('pid'))->get();
+                if ($tags_query->count()) {
+                    foreach ($tags_query as $tags_row) {
+                        if ($tags_row->eid !== null && $tags_row->eid !== '') {
+                            $encounters_arr[] = $tags_row->eid;
+                        }
+                        if ($tags_row->t_messages_id !== null && $tags_row->t_messages_id !== '') {
+                            $t_messages_arr[] = $tags_row->t_messages_id;
+                        }
+                        if ($tags_row->documents_id !== null && $tags_row->documents_id !== '') {
+                            $documents_arr[] = $tags_row->documents_id;
+                        }
+                        if ($tags_row->tests_id !== null && $tags_row->tests_id !== '') {
+                            $tests_arr[] = $tags_row->tests_id;
+                        }
+                    }
+                }
+            }
+        }
+        if ($allergies->count() || $issues->count() || $rx->count() || $sup->count() || $imm->count() || $orders->count() || $encounters->count() || $notes->count() || $notes1->count() || $documents->count() || $tests->count() || $alerts->count() || $t_messages->count() || $demographics->count() || $demographics_a->count() || $demographics_b->count() || $demographics_c->count() || count($encounters_arr) > 0 || count($t_messages_arr) > 0 || count($documents_arr) > 0 || count($tests_arr) > 0) {
+            $list_array = [];
+            $encounter_type = $this->array_encounter_type();
+            if ($encounters->count()) {
+                foreach ($encounters as $encounters_row) {
+                    $arr = [];
+                    $arr['label'] = '<b>Encounter - ' . date('Y-m-d', $this->human_to_unix($encounters_row->encounter_DOS)) . '</b> - ' . $encounter_type[$encounters_row->encounter_template] . ' - ' . $encounters_row->encounter_cc . '<br>Provider: ' . $encounters_row->encounter_provider;
+                    if ($edit == true && $encounters_row->encounter_signed == 'No') {
+                        $arr['edit'] = route('encounter', [$encounters_row->eid]);
+                    }
+                    $arr['view'] = route('encounter_view', [$encounters_row->eid]);
+                    $list_array[] = $arr;
+                }
+            }
+            if (count($encounters_arr) > 0) {
+                foreach ($encounters_arr as $encounters_item) {
+                    $encounters_row1 = DB::table('encounters')->where('eid', '=', $encounters_item)->first();
+                    $arr = [];
+                    $arr['label'] = '<b>Tagged Encounter - ' . date('Y-m-d', $this->human_to_unix($encounters_row1->encounter_DOS)) . '</b> - ' . $encounter_type[$encounters_row1->encounter_template] . ' - ' . $encounters_row1->encounter_cc . '<br>Provider: ' . $encounters_row1->encounter_provider;
+                    if ($edit == true && $encounters_row1->encounter_signed == 'No') {
+                        $arr['edit'] = route('encounter', [$encounters_row1->eid]);
+                    }
+                    $arr['view'] = route('encounter_view', [$encounters_row1->eid]);
+                    $list_array[] = $arr;
+                }
+            }
+            if ($issues->count()) {
+                $issue_arr = [
+                    'Problem List' => 'pl',
+                    'Medical History' => 'mh',
+                    'Surgical History' => 'sh'
+                ];
+                foreach ($issues as $issues_row) {
+                    $arr = [];
+                    $arr['label'] = '<br>' . $issues_row->type . ' - </b>' . $issues_row->issue;
+                    if ($edit == true) {
+                        $arr['edit'] = route('chart_form', ['issues', 'issue_id', $issues_row->issue_id, $issue_arr[$issues_row->type]]);
+                    }
+                    if ($issues_row->reconcile !== null && $issues_row->reconcile !== 'y') {
+                        $arr['danger'] = true;
+                    }
+                    $list_array[] = $arr;
+                }
+            }
+            if ($allergies->count()) {
+                foreach ($allergies as $allergies_row) {
+                    $arr = [];
+                    $arr['label'] = '<b>Allergy - ' . $allergies_row->allergies_med . ' - ' . $allergies_row->allergies_reaction;
+                    if ($edit == true) {
+                        $arr['edit'] = route('chart_form', ['allergies', 'allergies_id', $allergies_row->allergies_id]);
+                    }
+                    if ($allergies_row->reconcile !== null && $allergies_row->reconcile !== 'y') {
+                        $arr['danger'] = true;
+                    }
+                    $list_array[] = $arr;
+                }
+            }
+            if ($rx->count()) {
+                foreach ($rx as $rx_row) {
+                    $arr = [];
+                    if ($rx_row->rxl_sig == '') {
+                        $arr['label'] = '<b>Medication - </b><strong>' . $rx_row->rxl_medication . '</strong> ' . $rx_row->rxl_dosage . ' ' . $rx_row->rxl_dosage_unit . ', ' . $rx_row->rxl_instructions . ' for ' . $rx_row->rxl_reason;
+                    } else {
+                        $arr['label'] = '<b>Medication - </b><strong>' . $rx_row->rxl_medication . '</strong> ' . $rx_row->rxl_dosage . ' ' . $rx_row->rxl_dosage_unit . ', ' . $rx_row->rxl_sig . ', ' . $rx_row->rxl_route . ', ' . $rx_row->rxl_frequency . ' for ' . $rx_row->rxl_reason;
+                    }
+                    $previous = DB::table('rx_list')
+            			->where('pid', '=', Session::get('pid'))
+            			->where('rxl_medication', '=', $rx_row->rxl_medication)
+            			->select('rxl_date_prescribed', 'prescription')
+                        ->orderBy('rxl_date_prescribed', 'desc')
+            			->first();
+                    if ($previous) {
+                        if ($previous->rxl_date_prescribed !== null && $previous->rxl_date_prescribed !== '0000-00-00 00:00:00') {
+                            $previous_date = new Date($this->human_to_unix($previous->rxl_date_prescribed));
+                            $ago = $previous_date->diffInDays();
+                            $arr['label'] .= '<br><strong>Last Prescribed:</strong> ' . date('Y-m-d', $this->human_to_unix($previous->rxl_date_prescribed)) . ', ' . $ago . ' days ago';
+                            $arr['label'] .= '<br><strong>Prescription Status:</strong> ' . ucfirst($previous->prescription);
+                        }
+                    }
+                    if ($edit1 == true) {
+                        $arr['edit'] = route('chart_form', ['rx_list', 'rxl_id', $rx_row->rxl_id]);
+                        if (Session::get('group_id') == '2') {
+                            $arr['refill'] = route('chart_form', ['rx_list', 'rxl_id', $rx_row->rxl_id, 'refill']);
+                            $arr['eie'] = route('chart_action', ['table' => 'rx_list', 'action' => 'eie', 'index' => 'rxl_id', 'id' => $rx_row->rxl_id]);
+                        }
+                    }
+                    if ($rx_row->reconcile !== null && $rx_row->reconcile !== 'y') {
+                        $arr['danger'] = true;
+                    }
+                    $list_array[] = $arr;
+                }
+            }
+            if ($sup->count()) {
+                foreach ($sup as $sup_row) {
+                    $arr = [];
+                    if ($sup_row->sup_sig == '') {
+                        $arr['label'] = '<b>Supplement - </b>' . $sup_row->sup_supplement . ' ' . $sup_row->sup_dosage . ' ' . $sup_row->sup_dosage_unit . ', ' . $sup_row->sup_instructions . ' for ' . $sup_row->sup_reason;
+                    } else {
+                        $arr['label'] = '<b>Supplement - </b>' . $sup_row->sup_supplement . ' ' . $sup_row->sup_dosage . ' ' . $sup_row->sup_dosage_unit . ', ' . $sup_row->sup_sig . ', ' . $sup_row->sup_route . ', ' . $sup_row->sup_frequency . ' for ' . $sup_row->sup_reason;
+                    }
+                    if ($edit1 == true) {
+                        $arr['edit'] = route('chart_form', ['sup_list', 'sup_id', $sup_row->sup_id]);
+                    }
+                    if ($sup_row->reconcile !== null && $sup_row->reconcile !== 'y') {
+                        $arr['danger'] = true;
+                    }
+                    $list_array[] = $arr;
+                }
+            }
+            if ($imm->count()) {
+                $seq_array = [
+                    '1' => ', first',
+                    '2' => ', second',
+                    '3' => ', third',
+                    '4' => ', fourth',
+                    '5' => ', fifth'
+                ];
+                foreach ($imm as $imm_row) {
+                    $arr = [];
+                    $arr['label'] = '<b>Immunization - ' . $imm_row->imm_immunization . '</b> - ' . date('Y-m-d', $this->human_to_unix($imm_row->imm_date));
+                    if (isset($imm_row->imm_sequence)) {
+                        if (isset($seq_array[$imm_row->imm_sequence])) {
+                            $arr['label'] = '<b>Immunization - ' . $imm_row->imm_immunization . $seq_array[$imm_row->imm_sequence]  . '</b> - ' . date('Y-m-d', $this->human_to_unix($imm_row->imm_date));
+                        }
+                    }
+                    if ($edit1 == true) {
+                        $arr['edit'] = route('chart_form', ['immunizations', 'imm_id', $imm_row->imm_id]);
+                    }
+                    if ($imm_row->reconcile !== null && $imm_row->reconcile !== 'y') {
+                        $arr['danger'] = true;
+                    }
+                    $list_array[] = $arr;
+                }
+            }
+            if ($tests->count()) {
+                foreach ($tests as $tests_row) {
+                    $arr = [];
+                    $arr['label'] = '<b>Test Result - ' . date('Y-m-d', $this->human_to_unix($tests_row->test_datetime)) . '</b> - ' . $tests_row->test_name;
+                    $arr['view'] = route('results_view', [$tests_row->tests_id]);
+                    $arr['chart'] = route('results_chart', [$tests_row->tests_id]);
+                    if ($edit == true) {
+                        $arr['edit'] = route('chart_form', ['tests', 'tests_id', $tests_row->tests_id]);
+                    }
+                    $list_array[] = $arr;
+                }
+            }
+            if (count($tests_arr) > 0) {
+                foreach ($tests_arr as $tests_item) {
+                    $tests_row1 = DB::table('tests')->where('tests_id', '=', $tests_item)->first();
+                    $arr = [];
+                    $arr['label'] = '<b>Tagged Test Result - ' . date('Y-m-d', $this->human_to_unix($tests_row1->test_datetime)) . '</b> - ' . $tests_row1->test_name;
+                    $arr['view'] = route('results_view', [$tests_row1->tests_id]);
+                    $arr['chart'] = route('results_chart', [$tests_row1->tests_id]);
+                    if ($edit == true) {
+                        $arr['edit'] = route('chart_form', ['tests', 'tests_id', $tests_row1->tests_id]);
+                    }
+                    $list_array[] = $arr;
+                }
+            }
+            if ($documents->count()) {
+                foreach ($documents as $documents_row) {
+                    $arr = [];
+                    $arr['label'] = '<b>Document - ' . date('Y-m-d', $this->human_to_unix($documents_row->documents_date)) . '</b> - ' . $documents_row->documents_desc . ' from ' . $documents_row->documents_from;
+                    $arr['view'] = route('document_view', [$documents_row->documents_id]);
+                    if ($edit == true) {
+                        $arr['edit'] = route('chart_form', ['documents', 'documents_id', $documents_row->documents_id]);
+                    }
+                    if ($documents_row->reconcile !== null && $documents_row->reconcile !== 'y') {
+                        $arr['danger'] = true;
+                    }
+                    $list_array[] = $arr;
+                }
+            }
+            if (count($documents_arr) > 0) {
+                foreach ($documents_arr as $documents_item) {
+                    $documents_row1 = DB::table('documents')->where('documents_id', '=', $documents_item)->first();
+                    $arr = [];
+                    $arr['label'] = '<b>Tagged Document - ' . date('Y-m-d', $this->human_to_unix($documents_row1->documents_date)) . '</b> - ' . $documents_row1->documents_desc . ' from ' . $documents_row1->documents_from;
+                    $arr['view'] = route('document_view', [$documents_row1->documents_id]);
+                    if ($edit == true) {
+                        $arr['edit'] = route('chart_form', ['documents', 'documents_id', $documents_row1->documents_id]);
+                    }
+                    if ($documents_row1->reconcile !== null && $documents_row1->reconcile !== 'y') {
+                        $arr['danger'] = true;
+                    }
+                    $list_array[] = $arr;
+                }
+            }
+            if ($t_messages->count()) {
+                foreach ($t_messages as $t_messages_row) {
+                    $arr = [];
+                    $arr['label'] = '<b>Telephone Message - ' . date('Y-m-d', $this->human_to_unix($t_messages_row->t_messages_dos)) . '</b> - ' . $t_messages_row->t_messages_subject;
+                    if ($edit == true && $t_messages_row->t_messages_signed == 'No') {
+                        $arr['edit'] = route('chart_form', ['t_messages', 't_messages_id', $t_messages_row->t_messages_id]);
+                    }
+                    $arr['view'] = route('t_message_view', [$t_messages_row->t_messages_id]);
+                    $list_array[] = $arr;
+                }
+            }
+            if (count($t_messages_arr) > 0) {
+                foreach ($t_messages_arr as $t_messages_item) {
+                    $t_messages_row1 = DB::table('t_messages')->where('t_messages_id', '=', $t_messages_item)->first();
+                    $arr = [];
+                    $arr['label'] = '<b>Tagged Telephone Message - ' . date('Y-m-d', $this->human_to_unix($t_messages_row1->t_messages_dos)) . '</b> - ' . $t_messages_row1->t_messages_subject;
+                    if ($edit == true && $t_messages_row1->t_messages_signed == 'No') {
+                        $arr['edit'] = route('chart_form', ['t_messages', 't_messages_id', $t_messages_row1->t_messages_id]);
+                    }
+                    $arr['view'] = route('t_message_view', [$t_messages_row1->t_messages_id]);
+                    $list_array[] = $arr;
+                }
+            }
+            if ($orders->count()) {
+                foreach ($orders as $orders_row) {
+                    $arr = [];
+                    if ($orders_row->orders_labs !== '') {
+                        $arr['label'] = '<b>Laboratory Orders - ' . date('Y-m-d', $this->human_to_unix($orders_row->orders_date)) . '</b> - ' . $orders_row->orders_labs;
+                        $order_type = 'orders_labs';
+                    }
+                    if ($orders_row->orders_radiology !== '') {
+                        $arr['label'] = '<b>Imaging Orders - ' . date('Y-m-d', $this->human_to_unix($orders_row->orders_date)) . '</b> - ' . $orders_row->orders_radiology;
+                        $order_type = 'orders_radiology';
+                    }
+                    if ($orders_row->orders_cp !== '') {
+                        $arr['label'] = '<b>Cardiopulmonary Orders - ' . date('Y-m-d', $this->human_to_unix($orders_row->orders_date)) . '</b> - ' . $orders_row->orders_cp;
+                        $order_type = 'orders_cp';
+                    }
+                    if ($orders_row->orders_referrals !== '') {
+                        $address = DB::table('addressbook')->where('address_id', '=', $orders_row->address_id)->first();
+                        $arr['label'] = '<b>Referral - ' . date('Y-m-d', $this->human_to_unix($orders_row->orders_date)) . '</b> - ' . $address->specialty . ': ' . $address->displayname;
+                        $order_type = 'orders_referrals';
+                    }
+                    if ($edit == true) {
+                        $arr['edit'] = route('chart_form', ['orders', 'orders_id', $orders_row->orders_id, $order_type]);
+                    }
+                    $list_array[] = $arr;
+                }
+            }
+            if ($alerts->count()) {
+                foreach ($alerts as $alerts_row) {
+                    $arr = [];
+                    $arr['label'] = '<b>Alert - </b>' . $alerts_row->alert . ' (Due ' . date('m/d/Y', $this->human_to_unix($alerts_row->alert_date_active)) . ') - ' . $alerts_row->alert_description;
+                    if ($edit == true) {
+                        $arr['edit'] = route('chart_form', ['alerts', 'alert_id', $alerts_row->alert_id]);
+                    }
+                    $list_array[] = $arr;
+                }
+            }
+            if ($notes->count()) {
+                foreach ($notes as $notes_row) {
+                    $arr = [];
+                    $arr['label'] = '<b>Immunization Note - </b>' . $notes_row->imm_notes;
+                    if ($edit == true) {
+                        $arr['edit'] = route('immunizations_notes');
+                    }
+                    $list_array[] = $arr;
+                }
+            }
+            if ($notes1->count()) {
+                foreach ($notes1 as $notes1_row) {
+                    $arr = [];
+                    $arr['label'] = '<b>Billing Note - </b>' . $notes1_row->billing_notes;
+                    if ($edit == true) {
+                        $arr['edit'] = route('billing_notes');
+                    }
+                    $list_array[] = $arr;
+                }
+            }
+            if ($demographics->count()) {
+                $arr = [];
+                $arr['label'] = '<b>Demographics - Name and Identity</b>';
+                if ($edit == true) {
+                    $arr['edit'] = route('chart_form', ['demographics', 'pid', Session::get('pid'), 'name']);
+                }
+                $list_array[] = $arr;
+            }
+            if ($demographics_a->count()) {
+                $arr = [];
+                $arr['label'] = '<b>Demographics - Contacts</b>';
+                if ($edit == true) {
+                    $arr['edit'] = route('chart_form', ['demographics', 'pid', Session::get('pid'), 'contacts']);
+                }
+                $list_array[] = $arr;
+            }
+            if ($demographics_b->count()) {
+                $arr = [];
+                $arr['label'] = '<b>Demographics - Guardians</b>';
+                if ($edit == true) {
+                    $arr['edit'] = route('chart_form', ['demographics', 'pid', Session::get('pid'), 'guardians']);
+                }
+                $list_array[] = $arr;
+            }
+            if ($demographics_c->count()) {
+                $arr = [];
+                $arr['label'] = '<b>Demographics - Other</b>';
+                if ($edit == true) {
+                    $arr['edit'] = route('chart_form', ['demographics', 'pid', Session::get('pid'), 'other']);
+                }
+                $list_array[] = $arr;
+            }
+            $return .= $this->result_build($list_array, 'search_chart', false, true);
+        } else {
+            $return .= ' None.';
+        }
+        $data['content'] = $return;
+        $data['panel_header'] = 'Search Results';
+        $data = array_merge($data, $this->sidebar_build('chart'));
+        Session::put('last_page', $request->fullUrl());
         $data['assets_js'] = $this->assets_js('chart');
         $data['assets_css'] = $this->assets_css('chart');
         return view('chart', $data);

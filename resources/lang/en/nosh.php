@@ -40,6 +40,7 @@ return [
     "reset_password" => "Reset Password",
     "new_password" => "New Password",
     "confirm_new_password" => "Confirm New Password",
+    "login_uport" => "Login with uPort",
 
     // Dashboard
     "messages" => "Messages",
@@ -92,6 +93,7 @@ return [
     "practice_setup" => "Practice Setup",
     "uma_invite" => "Share your Chart",
     "fhir_connect" => "Connect to a Patient Portal",
+    "hieofone" => "Authorization Server",
     "my_information" => "My Information",
     "user_signature" => "Change Signature",
     "password_change" => "Change Password",
@@ -120,6 +122,7 @@ return [
     "records_list" => "Coordination of Care",
     "billing_list" => "Billing",
     "payors_list" => "Payors",
+    "search_chart" => "Search Chart...",
 
     // Search
     "search_patient" => "Search Patient",

@@ -720,34 +720,6 @@ class CoreController extends Controller
                 }
             }
         }
-        if ($table == 'users') {
-            if ($id == '0') {
-                $this->validate($request, [
-                    'username' => 'unique:users,username',
-                    'email' => 'required|unique:users,email'
-                ]);
-                // For new users, invitation code will be generated and queried upon acceptance of invite
-                $data['password'] = $this->gen_secret();
-                $data['created_at'] = date('Y-m-d H:i:s');
-                $url = URL::to('accept_invitation') . '/' . $data['password'];
-                $email['message_data'] = 'You are invited to use the NOSH ChartingSystem for ' . $practice->practice_name . '.<br>Go to ' . $url . ' to get registered.';
-                $this->send_mail('auth.emails.generic', $email, 'Invitation to NOSH ChartingSystem', $data['email'], Session::get('practice_id'));
-            }
-            $data['displayname'] = $data['firstname'] . " " . $data['lastname'];
-            if($data['title'] !== ''){
-                $data['displayname'] = $data['firstname'] . " " . $data['lastname'] . ", " . $data['title'];
-            }
-            if ($subtype == '2') {
-                foreach ($provider_column_arr as $key3) {
-                    if (array_key_exists($key3, $data)) {
-                        $provider_data[$key3] = $data[$key3];
-                        if ($key3 !== 'practice_id') {
-                            unset($data[$key3]);
-                        }
-                    }
-                }
-            }
-        }
         if ($table == 'calendar') {
             if ($id !== '0') {
                 $calendar = DB::table('calendar')->where('calendar_id', '=', $id)->first();
@@ -766,6 +738,34 @@ class CoreController extends Controller
             }
         }
         if ($action == 'save') {
+            if ($table == 'users') {
+                if ($id == '0') {
+                    $this->validate($request, [
+                        'username' => 'unique:users,username',
+                        'email' => 'required|unique:users,email'
+                    ]);
+                    // For new users, invitation code will be generated and queried upon acceptance of invite
+                    $data['password'] = $this->gen_secret();
+                    $data['created_at'] = date('Y-m-d H:i:s');
+                    $url = URL::to('accept_invitation') . '/' . $data['password'];
+                    $email['message_data'] = 'You are invited to use the NOSH ChartingSystem for ' . $practice->practice_name . '.<br>Go to ' . $url . ' to get registered.';
+                    $this->send_mail('auth.emails.generic', $email, 'Invitation to NOSH ChartingSystem', $data['email'], Session::get('practice_id'));
+                }
+                $data['displayname'] = $data['firstname'] . " " . $data['lastname'];
+                if ($data['title'] !== ''){
+                    $data['displayname'] = $data['firstname'] . " " . $data['lastname'] . ", " . $data['title'];
+                }
+                if ($subtype == '2') {
+                    foreach ($provider_column_arr as $key3) {
+                        if (array_key_exists($key3, $data)) {
+                            $provider_data[$key3] = $data[$key3];
+                            if ($key3 !== 'practice_id') {
+                                unset($data[$key3]);
+                            }
+                        }
+                    }
+                }
+            }
             if ($id == '0') {
                 unset($data[$index]);
                 $row_id1 = DB::table($table)->insertGetId($data);
