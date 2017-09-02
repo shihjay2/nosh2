@@ -13,6 +13,7 @@
 
 // Authentication routes
 Route::any('accept_invitation/{id}', ['as' => 'accept_invitation', 'uses' => 'LoginController@accept_invitation']);
+Route::post('as_sync', ['as' => 'as_sync', 'uses' => 'LoginController@as_sync']);
 Route::get('fhir/oidc', ['as' => 'oidc_api', 'uses' => 'LoginController@oidc_api']);
 Route::any('google_auth', ['as' => 'google_auth', 'uses' => 'LoginController@google_auth']);
 Route::any('googleoauth', ['as' => 'googleoauth', 'uses' => 'LoginController@googleoauth']);

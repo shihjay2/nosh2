@@ -191,6 +191,26 @@ class LoginController extends Controller {
 		return $return;
 	}
 
+    public function as_sync(Request $request)
+    {
+        $message = '';
+        $query = DB::table('practiceinfo')->where('practice_id', '=', '1')->first();
+        if ($query) {
+            if ($query->patient_centric == 'y') {
+                if ($query->uma_client_id == $request->input('client_id') && $query->uma_client_secret == $request->input('client_secret')) {
+                    $data = [
+                        'email' => $request->input('email'),
+                        'phone_cell' => $request->input('sms')
+                    ];
+                    DB::table('demographics')->where('pid', '=', '1')->update($data);
+                    $this->audit('Update');
+                    $message = 'Contact data synchronized';
+                }
+            }
+        }
+        return $message;
+    }
+
     public function google_auth(Request $request)
     {
         $file = File::get(base_path() . '/.google');

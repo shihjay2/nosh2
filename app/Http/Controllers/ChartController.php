@@ -1174,6 +1174,24 @@ class ChartController extends Controller {
                     }
                 }
             } else {
+                $sync_message = '';
+                if ($table == 'demographics' && isset($data['email'])) {
+                    if (Session::get('patient_centric') == 'yp' || Session::get('patient_centric') == 'y') {
+                        // Synchronize with HIE of One AS
+                        $old_demo = DB::table('demographics')->where('pid', '=', '1')->first();
+                        if ($data['email'] !==  $old_demo->email && $data['phone_cell'] !== $old_demo->phone_cell) {
+                            $pnosh_practice = DB::table('practiceinfo')->where('practice_id', '=', '1')->first();
+                            $sync_data = [
+                                'old_email' => $old_demo->email,
+                                'email' => $data['email'],
+                                'sms' => $data['phone_cell'],
+                                'client_id' => $pnosh_practice->uma_client_id,
+                                'client_secret' => $pnosh_practice->uma_client_secret
+                            ];
+                            $sync_message = $this->pnosh_sync($sync_data);
+                        }
+                    }
+                }
                 DB::table($table)->where($index, '=', $id)->update($data);
                 $this->audit('Update');
                 // foreach ($api_tables as $api_table) {
@@ -1183,6 +1201,9 @@ class ChartController extends Controller {
                 // }
                 $row_id1 = $id;
                 $arr['message'] = $message . 'updated!';
+                if ($sync_message !== '') {
+                    $arr['message'] .= ' ' . $sync_message;
+                }
                 if ($next_action !== '') {
                     if (filter_var($next_action, FILTER_VALIDATE_URL) == false) {
                         $type = '';

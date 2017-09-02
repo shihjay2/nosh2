@@ -13495,6 +13495,26 @@ class Controller extends BaseController
         return true;
     }
 
+    protected function pnosh_sync($sync_data)
+    {
+        $result = '';
+        if (Session::get('patient_centric') == 'yp' || Session::get('patient_centric') == 'y') {
+            $url = str_replace('/nosh', '/pnosh_sync', URL::to('/'));
+            $ch = curl_init();
+            $message = http_build_query($sync_data);
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $message);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION,1);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT ,0);
+            $result = curl_exec($ch);
+        }
+        return $result;
+    }
+
     protected function practice_logo($practice_id)
     {
         $logo = '<br><br><br><br><br>';
