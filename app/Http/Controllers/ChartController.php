@@ -1179,7 +1179,7 @@ class ChartController extends Controller {
                     if (Session::get('patient_centric') == 'yp' || Session::get('patient_centric') == 'y') {
                         // Synchronize with HIE of One AS
                         $old_demo = DB::table('demographics')->where('pid', '=', '1')->first();
-                        if ($data['email'] !==  $old_demo->email && $data['phone_cell'] !== $old_demo->phone_cell) {
+                        if ($data['email'] !==  $old_demo->email || $data['phone_cell'] !== $old_demo->phone_cell) {
                             $pnosh_practice = DB::table('practiceinfo')->where('practice_id', '=', '1')->first();
                             $sync_data = [
                                 'old_email' => $old_demo->email,
