@@ -1202,7 +1202,7 @@ class ChartController extends Controller {
                 $row_id1 = $id;
                 $arr['message'] = $message . 'updated!';
                 if ($sync_message !== '') {
-                    $arr['message'] .= ' ' . $sync_message;
+                    $arr['message'] .= '<br>' . $sync_message;
                 }
                 if ($next_action !== '') {
                     if (filter_var($next_action, FILTER_VALIDATE_URL) == false) {
