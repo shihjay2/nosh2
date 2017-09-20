@@ -742,7 +742,7 @@ class CoreController extends Controller
                 if ($id == '0') {
                     $this->validate($request, [
                         'username' => 'unique:users,username',
-                        'email' => 'required|unique:users,email'
+                        // 'email' => 'required|unique:users,email'
                     ]);
                     // For new users, invitation code will be generated and queried upon acceptance of invite
                     $data['password'] = $this->gen_secret();
