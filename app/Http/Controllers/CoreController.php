@@ -2575,7 +2575,7 @@ class CoreController extends Controller
             $zip = new ZipArchive;
             $open = $zip->open($directory . '/' . $file->getClientOriginalName());
             if ($open === TRUE) {
-                $sqlsearch = glob(Session::get('documents_dir') . '*_noshexport.sql');
+                $sqlsearch = glob($directory . '/*_noshexport.sql');
                 if (count($sqlsearch) > 0) {
                     foreach ($sqlsearch as $sqlfile) {
                         $command = "mysql -u " . env('DB_USERNAME') . " -p". env('DB_PASSWORD') . " " . env('DB_DATABASE') . " < " . $sqlfile;
