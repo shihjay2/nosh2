@@ -2596,7 +2596,7 @@ class CoreController extends Controller
             return redirect(Session::get('last_page'));
         } else {
             $data['panel_header'] = 'Import NOSH in the Cloud Database';
-            $data['document_upload'] = route('practice_logo_upload');
+            $data['document_upload'] = route('database_import');
             $type_arr = ['zip'];
             $data['document_type'] = json_encode($type_arr);
             $dropdown_array['default_button_text'] = '<i class="fa fa-chevron-left fa-fw fa-btn"></i>Back';
