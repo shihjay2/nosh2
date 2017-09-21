@@ -2568,6 +2568,7 @@ class CoreController extends Controller
         ini_set('memory_limit','196M');
         ini_set('max_execution_time', 300);
         if ($request->isMethod('post')) {
+            $file = $request->file('file_input');
             $directory = public_path() . '/temp';
             $new_name = str_replace('.' . $file->getClientOriginalExtension(), '', $file->getClientOriginalName()) . '_' . time() . '.' . $file->getClientOriginalExtension();
             $file->move($directory,$file->getClientOriginalName());
