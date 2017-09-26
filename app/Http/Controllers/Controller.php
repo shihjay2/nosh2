@@ -7804,6 +7804,7 @@ class Controller extends BaseController
     protected function form_users($result, $table, $id, $subtype)
     {
         $users_arr = $this->array_groups();
+        $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
         if ($id == '0') {
             $data = [
                 'username' => null,
@@ -7828,6 +7829,9 @@ class Controller extends BaseController
                     'dea' => null,
                     'medicare' => null,
                     'tax_id' => null,
+                    'rcopia_username' => null,
+                    'schedule_increment' => null,
+                    'peacehealth_id' => null,
                     'practice_id' => Session::get('practice_id')
                 ];
             }
@@ -7856,6 +7860,9 @@ class Controller extends BaseController
                     'dea' => $provider->dea,
                     'medicare' => $provider->medicare,
                     'tax_id' => $provider->tax_id,
+                    'rcopia_username' => $provider->rcopia_username,
+                    'schedule_increment' => $provider->schedule_increment,
+                    'peacehealth_id' => $provider->peacehealth_id,
                     'practice_id' => $provider->practice_id
                 ];
             }
@@ -7979,6 +7986,26 @@ class Controller extends BaseController
                 'label' => 'Tax ID Number',
                 'type' => 'text',
                 'default_value' => $data2['tax_id']
+            ];
+            $items[] = [
+                'name' => 'peacehealth_id',
+                'label' => 'PeaceHealth ID Number',
+                'type' => 'text',
+                'default_value' => $data2['peacehealth_id']
+            ];
+            if ($practice->rcopia_extension == 'y') {
+                $items[] = [
+                    'name' => 'rcopia_username',
+                    'label' => 'rCopia Username',
+                    'type' => 'text',
+                    'default_value' => $data2['rcopia_username']
+                ];
+            }
+            $items[] = [
+                'name' => 'schedule_increment',
+                'label' => 'Time Increment for schedule (minuntes)',
+                'type' => 'text',
+                'default_value' => $data2['schedule_increment']
             ];
             $items[] = [
                 'name' => 'practice_id',

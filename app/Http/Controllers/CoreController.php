@@ -548,7 +548,9 @@ class CoreController extends Controller
             'dea',
             'medicare',
             'tax_id',
-            'rcopia_username'
+            'peacehealth_id',
+            'rcopia_username',
+            'schedule_increment'
         ];
         $message = '';
         if (isset($table_message_arr[$table])) {
