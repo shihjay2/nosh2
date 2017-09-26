@@ -550,7 +550,8 @@ class CoreController extends Controller
             'tax_id',
             'peacehealth_id',
             'rcopia_username',
-            'schedule_increment'
+            'schedule_increment',
+            'practice_id'
         ];
         $message = '';
         if (isset($table_message_arr[$table])) {
