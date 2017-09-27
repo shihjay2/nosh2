@@ -7927,7 +7927,9 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'practice_id',
-            'type' => 'hidden',
+            'label' => 'Practice ID',
+            'type' => 'text',
+            'readonly' => true,
             'default_value' => $data['practice_id']
         ];
         if ($subtype == '2') {
@@ -8006,11 +8008,6 @@ class Controller extends BaseController
                 'label' => 'Time Increment for schedule (minuntes)',
                 'type' => 'text',
                 'default_value' => $data2['schedule_increment']
-            ];
-            $items[] = [
-                'name' => 'practice_id',
-                'type' => 'hidden',
-                'default_value' => $data2['practice_id']
             ];
         }
         return $items;
