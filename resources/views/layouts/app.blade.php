@@ -441,7 +441,7 @@
           <!-- Modal content-->
             <div class="modal-content">
                 <div id="warningModal_header" class="modal-header"></div>
-                <div id="warningModal_body" class="modal-body" style="height:80vh;overflow-y:auto;">></div>
+                <div id="warningModal_body" class="modal-body" style="height:80vh;overflow-y:auto;"></div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-btn fa-times"></i> {{ trans('nosh.button_close') }}</button>
                   </div>
