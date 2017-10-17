@@ -143,7 +143,7 @@ class AjaxScheduleController extends Controller {
                 'start' => $start
             ];
             if ($id == '') {
-                DB::table('schedule')->insert($data1);
+                DB::table('repeat_schedule')->insert($data1);
                 $this->audit('Add');
                 $data['message'] = 'Repeated event added.';
             } else {

@@ -169,7 +169,7 @@
                         <div class="form-group nosh-event" id="until_div">
                             <label for="until" class="col-md-3 control-label">Until</label>
                             <div class="col-md-8">
-                                <input type="text" id="until" class="form-control" name="until" value="" placeholder="Leave blank if repeat goes on forever">
+                                <input type="date" id="until" class="form-control" name="until" value="" placeholder="Leave blank if repeat goes on forever">
                             </div>
                         </div>
                         <div class="form-group">
