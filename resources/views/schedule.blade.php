@@ -293,12 +293,16 @@
                         $('#eventModal_title').text('{{ trans('nosh.edit_appointment') }}');
                         $('#patient_name').text(calEvent.title);
                         $('#end').val('');
+                        $('#end').prop('required', false);
+                        $('#visit_type').prop('required', true);
                         $('#visit_type').focus();
                     } else {
                         $('.nosh-appt').hide();
                         $('.nosh-event').show();
                         $('#event_encounter').hide();
                         $('#eventModal_title').text('Edit Event');
+                        $('#end').prop('required', true);
+                        $('#visit_type').prop('required', false);
                         $('#reason').focus();
                     }
                     $('#reason').val(calEvent.reason);
@@ -413,6 +417,8 @@
             $('#eventModal_title').text('{{ trans('nosh.new_appointment') }}');
             $('#event_delete').hide();
             $('#eventModal').modal('show');
+            $('#end').prop('required', false);
+            $('#visit_type').prop('required', true);
             $('#visit_type').focus();
         });
         $('#event_button').css('cursor', 'pointer').click(function() {
@@ -422,6 +428,8 @@
             $('#event_encounter').hide();
             $('#eventModal_title').text('New Event');
             $('#eventModal').modal('show');
+            $('#end').prop('required', true);
+            $('#visit_type').prop('required', false);
             $('#reason').focus();
         });
         $('#repeat').change(function() {
