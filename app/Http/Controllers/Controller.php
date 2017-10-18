@@ -6919,7 +6919,7 @@ class Controller extends BaseController
         }
         $items[] = [
             'name' => 'schedule_increment',
-            'label' => 'Time Increment for schedule (minuntes)',
+            'label' => 'Time increment for schedule (minutes)',
             'type' => 'text',
             'default_value' => $provider['schedule_increment']
         ];
