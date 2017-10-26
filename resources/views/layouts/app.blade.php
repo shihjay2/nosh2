@@ -69,6 +69,8 @@
                                     <ul class="dropdown-menu" role="menu" style="width:250px;">
                                         <li><a href="{{ route('audit_logs') }}">{{ trans('nosh.audit_logs') }}</a></li>
                                         <li><a href="{{ route('database_import') }}">{{ trans('nosh.database_import') }}</a></li>
+                                        <li><a href="{{ route('database_import_file') }}">{{ trans('nosh.database_import_file') }}</a></li>
+                                        <li><a href="{{ route('database_import_cloud') }}">{{ trans('nosh.database_import_cloud') }}</a></li>
                                     </ul>
                                 </li>
                             @endif

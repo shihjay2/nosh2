@@ -326,6 +326,7 @@ class CoreController extends Controller
         } else {
             $return = 'None.';
         }
+        $data['saas_admin'] = 'y';
         $data['panel_header'] = 'Audit Logs';
         $data['content'] = $return;
         $data['assets_js'] = $this->assets_js();
@@ -2571,6 +2572,55 @@ class CoreController extends Controller
         ini_set('memory_limit','196M');
         ini_set('max_execution_time', 300);
         if ($request->isMethod('post')) {
+            $file = $request->input('backup');
+            $command = "mysql -u " . env('DB_USERNAME') . " -p". env('DB_PASSWORD') . " " . env('DB_DATABASE') . " < " . $file;
+            system($command);
+            $message = "Restoring backup database successful";
+            Session::put('message_action', $message);
+            return redirect(Session::get('last_page'));
+        } else {
+            $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
+			$dir = $practice->documents_dir;
+			$files = glob($dir . "*.sql");
+			arsort($files);
+            $backups_arr = [];
+			foreach ($files as $file) {
+				$explode = explode("_", $file);
+				$time = intval(str_replace(".sql","",$explode[1]));
+                $backups_arr[$file] = date("Y-m-d H:i:s", $time);
+			}
+            $items[] = [
+                'name' => 'backup',
+                'label' => 'Select Backup Database to Restore',
+                'type' => 'select',
+                'select_items' => $backups_arr,
+                'required' => true,
+                'default_value' => null
+            ];
+            $form_array = [
+                'form_id' => 'database_form',
+                'action' => route('database_import'),
+                'items' => $items,
+                'save_button_label' => 'Backup'
+            ];
+            $data['content'] = $this->form_build($form_array);
+            $data['saas_admin'] = 'y';
+            $data['panel_header'] = trans('nosh.database_import');
+            $data['document_upload'] = route('database_import');
+            $dropdown_array['default_button_text'] = '<i class="fa fa-chevron-left fa-fw fa-btn"></i>Back';
+            $dropdown_array['default_button_text_url'] = Session::get('last_page');
+            $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
+            $data['assets_js'] = $this->assets_js();
+            $data['assets_css'] = $this->assets_css();
+            return view('core', $data);
+        }
+    }
+
+    public function database_import_cloud(Request $request)
+    {
+        ini_set('memory_limit','196M');
+        ini_set('max_execution_time', 300);
+        if ($request->isMethod('post')) {
             $file = $request->file('file_input');
             $directory = public_path() . '/temp';
             $new_name = str_replace('.' . $file->getClientOriginalExtension(), '', $file->getClientOriginalName()) . '_' . time() . '.' . $file->getClientOriginalExtension();
@@ -2599,9 +2649,39 @@ class CoreController extends Controller
             Session::put('message_action', $message);
             return redirect(Session::get('last_page'));
         } else {
-            $data['panel_header'] = 'Import NOSH in the Cloud Database';
-            $data['document_upload'] = route('database_import');
+            $data['panel_header'] = trans('nosh.database_import_cloud');
+            $data['document_upload'] = route('database_import_cloud');
             $type_arr = ['zip'];
+            $data['document_type'] = json_encode($type_arr);
+            $dropdown_array['default_button_text'] = '<i class="fa fa-chevron-left fa-fw fa-btn"></i>Back';
+            $dropdown_array['default_button_text_url'] = Session::get('last_page');
+            $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
+            $data['assets_js'] = $this->assets_js('document_upload');
+            $data['assets_css'] = $this->assets_css('document_upload');
+            return view('document_upload', $data);
+        }
+    }
+
+    public function database_import_file(Request $request)
+    {
+        ini_set('memory_limit','196M');
+        ini_set('max_execution_time', 300);
+        if ($request->isMethod('post')) {
+            $file = $request->file('file_input');
+            $directory = public_path() . '/temp';
+            $file->move($directory, $file->getClientOriginalName());
+            $new_file = $directory . '/' . $file->getClientOriginalName();
+            $command = "mysql -u " . env('DB_USERNAME') . " -p". env('DB_PASSWORD') . " " . env('DB_DATABASE') . " < " . $new_file;
+            system($command);
+            unlink($new_file);
+            $message = "Restoring backup database successful";
+            Session::put('message_action', $message);
+            return redirect(Session::get('last_page'));
+        } else {
+            $data['saas_admin'] = 'y';
+            $data['panel_header'] = trans('nosh.database_import_file');
+            $data['document_upload'] = route('database_import_file');
+            $type_arr = ['sql'];
             $data['document_type'] = json_encode($type_arr);
             $dropdown_array['default_button_text'] = '<i class="fa fa-chevron-left fa-fw fa-btn"></i>Back';
             $dropdown_array['default_button_text_url'] = Session::get('last_page');
@@ -4670,7 +4750,7 @@ class CoreController extends Controller
                 Session::put('message_action', 'Job ' . $id . ' saved as draft');
                 return redirect(Session::get('last_page'));
             } else {
-                $message = $this->send_fax($id, $faxnumber, $faxrecipient);
+                $message = $this->send_fax($id, '', '');
             }
         } else {
             $data['message_action'] = Session::get('message_action');

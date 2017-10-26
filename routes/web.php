@@ -74,6 +74,8 @@ Route::any('dashboard_tests_reconcile/{id}', ['as' => 'dashboard_tests_reconcile
 Route::get('dashboard_t_messages', ['as' => 'dashboard_t_messages', 'uses' => 'CoreController@dashboard_t_messages']);
 Route::get('database_export/{tracK_id?}', ['as' => 'database_export', 'uses' => 'CoreController@database_export']);
 Route::any('database_import', ['as' => 'database_import', 'uses' => 'CoreController@database_import']);
+Route::any('database_import_cloud', ['as' => 'database_import_cloud', 'uses' => 'CoreController@database_import_cloud']);
+Route::any('database_import_file', ['as' => 'database_import_file', 'uses' => 'CoreController@database_import_file']);
 Route::get('download_ccda_entire/{track_id?}', ['as' => 'download_ccda_entire', 'uses' => 'CoreController@download_ccda_entire']);
 Route::get('download_charts_entire/{track_id?}', ['as' => 'download_charts_entire', 'uses' => 'CoreController@download_charts_entire']);
 Route::get('download_csv_demographics/{track_id?}', ['as' => 'download_csv_demographics', 'uses' => 'CoreController@download_csv_demographics']);
