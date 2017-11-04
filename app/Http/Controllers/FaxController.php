@@ -53,24 +53,25 @@ class FaxController extends Controller {
 	{
 		$row = DB::table('practiceinfo')->where('practice_id', '=', $practice_id)->first();
 		if ($row->fax_type == 'phaxio') {
-			$result = json_decode($request->input('fax'), true);
-			$data['fileDateTime'] = date('Y-m-d H:i:s', $result['completed_at']);
-			$data['practice_id'] = $practice_id;
-			$data['fileFrom'] = $result['from_number'];
-			$data['filePages'] = $result['num_pages'];
-			$file1 = $result['id'] . '_' . time() . '.pdf';
-			$received_dir = $row->documents_dir . 'received/' . $practice_id;
-			if (! file_exists($received_dir)) {
-				mkdir($received_dir, 0777);
+			if ($request->input('success') == 'true' && $request->input('direction') == 'received') {
+				$received_dir = $row->documents_dir . 'received/' . $practice_id;
+				if (! file_exists($received_dir)) {
+					mkdir($received_dir, 0777);
+				}
+				$file = $request->input('filename');
+				$result = json_decode($request->input('fax'), true);
+				$data['fileDateTime'] = date('Y-m-d H:i:s', $result['completed_at']);
+				$data['practice_id'] = $practice_id;
+				$data['fileFrom'] = $result['from_number'];
+				$data['filePages'] = $result['num_pages'];
+				$new_name = $result['id'] . '_' . $result['completed_at'] . '.pdf';
+				$path = $received_dir . '/' . $new_name;
+				$file->move($received_dir, $new_name);
+				$data['fileName'] = $new_name;
+				$data['filePath'] = $path;
+				DB::table('received')->insert($data);
+				$this->audit('Add');
 			}
-			$path = $row->documents_dir . 'received/' . $practice_id . '/' . $file1;
-			$phaxio = new Phaxio($row->phaxio_api_key, $row->phaxio_api_secret);
-			$file_result = $phaxio->faxFile($result['id']);
-			File::put($path, $file_result);
-			$data['fileName'] = $file1;
-			$data['filePath'] = $path;
-			DB::table('received')->insert($data);
-			$this->audit('Add');
 		}
 	}
 }
