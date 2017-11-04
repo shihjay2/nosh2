@@ -4751,6 +4751,8 @@ class CoreController extends Controller
                 return redirect(Session::get('last_page'));
             } else {
                 $message = $this->send_fax($id, '', '');
+                Session::put('message_action', $message);
+                return redirect(Session::get('last_page'));
             }
         } else {
             $data['message_action'] = Session::get('message_action');
