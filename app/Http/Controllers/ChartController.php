@@ -5534,6 +5534,10 @@ class ChartController extends Controller {
                                         }
                                     }
                                 }
+                                $administration = '';
+                                if (isset($row2['resource']['dosage'][0]['text'])) {
+                                    $administration = $row2['resource']['dosage'][0]['text'];
+                                }
                                 $arr['label_data_arr'] = [
                                     'data-nosh-type' => 'rx_list',
                                     'data-nosh-name' => $rx_norm['name'],
@@ -5543,7 +5547,7 @@ class ChartController extends Controller {
                                     'data-nosh-route' => $route,
                                     'data-nosh-reason' => $reason,
                                     'data-nosh-date' => $rx_date[0],
-                                    'data-nosh-administration' => $row2['resource']['dosage'][0]['text'],
+                                    'data-nosh-administration' => $administration,
                                     'data-nosh-from' => Session::get('fhir_name')
                                 ];
                                 $list_array[] = $arr;
