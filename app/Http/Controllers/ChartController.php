@@ -5513,8 +5513,10 @@ class ChartController extends Controller {
                                     'dosage_unit' => '',
                                     'ndcid' => ''
                                 ];
-                                if ($row2['resource']['medicationCodeableConcept']['coding'][0]['system'] == 'http://www.nlm.nih.gov/research/umls/rxnorm') {
-                                    $rx_norm = $this->rxnorm_search1($row2['resource']['medicationCodeableConcept']['coding'][0]['code']);
+                                if (isset($row2['resource']['medicationCodeableConcept']['coding'][0]['system'])) {
+                                    if ($row2['resource']['medicationCodeableConcept']['coding'][0]['system'] == 'http://www.nlm.nih.gov/research/umls/rxnorm') {
+                                        $rx_norm = $this->rxnorm_search1($row2['resource']['medicationCodeableConcept']['coding'][0]['code']);
+                                    }
                                 }
                                 $reason = '';
                                 if (isset($row2['resource']['reasonCode'][0]['coding'][0]['display'])) {
