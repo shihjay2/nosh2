@@ -5503,7 +5503,10 @@ class ChartController extends Controller {
                                 $arr['label'] = (string) $row2['resource']['medicationCodeableConcept']['text'];
                                 $arr['label_class'] = 'nosh-ccda-list';
                                 $arr['danger'] = true;
-                                $rx_date = explode('T', $row2['resource']['effectivePeriod']['start']);
+                                $rx_date = [date('Y-m-d')];
+                                if (isset($row2['resource']['effectivePeriod']['start'])) {
+                                    $rx_date = explode('T', $row2['resource']['effectivePeriod']['start']);
+                                }
                                 $rx_norm = [
                                     'name' => (string) $row2['resource']['medicationCodeableConcept']['text'],
                                     'dosage' => '',
