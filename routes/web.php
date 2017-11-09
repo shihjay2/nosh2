@@ -289,7 +289,7 @@ Route::post('tagsinput_icd_all', ['as' => 'tagsinput_icd_all', 'uses' => 'AjaxSe
 
 // Fax routes
 Route::get('fax', ['as' => 'fax', 'uses' => 'FaxController@fax']);
-Route::post('phaxio/{id}', ['as' => 'phaxio', 'uses' => 'FaxController@phaxio']);
+Route::post('phaxio/{practice_id}', ['as' => 'phaxio', 'uses' => 'FaxController@phaxio']);
 
 // Reminders
 Route::get('reminder', ['as' => 'reminder', 'uses' => 'ReminderController@reminder']);

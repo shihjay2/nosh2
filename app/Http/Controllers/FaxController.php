@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Libraries\Phaxio;
 use DB;
+use File;
 use Response;
 use URL;
 
@@ -58,7 +59,7 @@ class FaxController extends Controller {
 				if (! file_exists($received_dir)) {
 					mkdir($received_dir, 0777);
 				}
-				$file = $request->input('filename');
+				$file = $request->file('filename');
 				$result = json_decode($request->input('fax'), true);
 				$data['fileDateTime'] = date('Y-m-d H:i:s', $result['completed_at']);
 				$data['practice_id'] = $practice_id;
@@ -71,7 +72,12 @@ class FaxController extends Controller {
 				$data['filePath'] = $path;
 				DB::table('received')->insert($data);
 				$this->audit('Add');
+				return "Recieved file";
+			} else {
+				return "No success";
 			}
+		} else {
+			return "Phaxio module not activated";
 		}
 	}
 }
