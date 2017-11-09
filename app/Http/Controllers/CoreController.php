@@ -644,8 +644,10 @@ class CoreController extends Controller
             }
         }
         if ($table == 'messaging') {
-            if ($data['patient_name'] !== '') {
-                $data['subject'] = $data['subject'] . ' [RE: ' . $data['patient_name'] . ']';
+            if (isset($data['patient_name'])) {
+                if ($data['patient_name'] !== '') {
+                    $data['subject'] = $data['subject'] . ' [RE: ' . $data['patient_name'] . ']';
+                }
             }
             $data['mailbox'] = '0';
             $data['status'] = 'Sent';
@@ -682,17 +684,19 @@ class CoreController extends Controller
                         }
                     }
                 }
-                if ($data['t_messages_id'] !== '' && $data['t_messages_id'] !== '0' && $data['t_messages_id'] !== null) {
-                    $row = DB::table('users')->where('id', '=', $data['message_from'])->first();
-                    $displayname = $row->displayname . ' (' . $row->id . ')';
-                    $t_message = DB::table('t_messages')->where('t_messages_id', '=', $data['t_messages_id'])->first();
-                    $message = $t_message->t_messages_message . "\n\r" . 'On ' . date('Y-m-d', $this->human_to_unix($data['date'])) . ', ' . $displayname . ' wrote:' . "\n---------------------------------\n" . $data['body'];
-                    $data1 = [
-                        't_messages_message' => $message,
-                        't_messages_to' => ''
-                    ];
-                    DB::table('t_messages')->where('t_messages_id', '=', $t_messages_id)->update($data1);
-                    $this->audit('Update');
+                if (isset($data['t_messages_id'])) {
+                    if ($data['t_messages_id'] !== '' && $data['t_messages_id'] !== '0' && $data['t_messages_id'] !== null) {
+                        $row = DB::table('users')->where('id', '=', $data['message_from'])->first();
+                        $displayname = $row->displayname . ' (' . $row->id . ')';
+                        $t_message = DB::table('t_messages')->where('t_messages_id', '=', $data['t_messages_id'])->first();
+                        $message = $t_message->t_messages_message . "\n\r" . 'On ' . date('Y-m-d', $this->human_to_unix($data['date'])) . ', ' . $displayname . ' wrote:' . "\n---------------------------------\n" . $data['body'];
+                        $data1 = [
+                            't_messages_message' => $message,
+                            't_messages_to' => ''
+                        ];
+                        DB::table('t_messages')->where('t_messages_id', '=', $t_messages_id)->update($data1);
+                        $this->audit('Update');
+                    }
                 }
             }
         }
