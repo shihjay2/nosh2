@@ -6606,7 +6606,7 @@ class ChartController extends Controller {
         $data['title'] = Session::get('ptname');
         $data['panel_header'] = Session::get('ptname');
         $demographics = DB::table('demographics')->where('pid', '=', Session::get('pid'))->first();
-        if ($demographics->nickname !== '') {
+        if ($demographics->nickname !== '' && $demographics->nickname !== null) {
             $data['panel_header'] .= ' (' . $demographics->nickname . ')';
         }
         $data['panel_header'] .= ', ' . Session::get('age') . ', ' . ucfirst(Session::get('gender'));
