@@ -861,6 +861,217 @@ class ChartController extends Controller {
         return view('chart', $data);
     }
 
+    public function cms_bluebutton(Request $request)
+    {
+        $data['panel_header'] = 'Connect to CMS Bluebutton';
+        $data['message_action'] = Session::get('message_action');
+        Session::forget('message_action');
+        $base_url = 'https://dev.bluebutton.cms.fhirservice.net';
+        // Generate sample token for synthetic patient 20140000008325
+        $cms_pid = '20140000008325';
+        $token_url = $base_url . '/protected/bluebutton/fhir/v1/Patient/'. $cms_pid;
+        $authorization_endpoint = $base_url . '/o/authorize/';
+        $token_endpoint = $base_url . '/o/token/';
+        $client_id = 'g64gaSFq972Jpk88Ql8ZoO307jsbZyaSXtrVnfql';
+        $client_secret = 'EiyTnDZnBR1p2OhLWBFpr0qV4SNXDw10IGwtEGf2B8sgJploBJ2NhmaQSqdcSO7eNi4xIxbP5Bk8wPvHnqdlaMLLImYCJF2EzKW5ie7snbNm5Joyphf87RvzDl7r6cO0';
+        $oidc = new OpenIDConnectClient($token_url, $client_id, $client_secret);
+        $oidc->setRedirectURL(route('cms_bluebutton'));
+        $oidc->providerConfigParam(['authorization_endpoint' => $authorization_endpoint]);
+        $oidc->providerConfigParam(['token_endpoint' => $token_endpoint]);
+        // $oidc->setAud(Session::get('fhir_url'));
+        $oidc->addScope('patient/Patient.read');
+        $oidc->addScope('patient/ExplanationOfBenefit.read');
+        $oidc->addScope('patient/Coverage.read');
+        // $oidc->addScope('openid');
+        $oidc->addScope('profile');
+        // $oidc->addScope('launch');
+        // $oidc->addScope('launch/patient');
+        // $oidc->addScope('offline_access');
+        // $oidc->addScope('online_access');
+        $oidc->authenticate();
+        $access_token = $oidc->getAccessToken();
+        $patient_token = $oidc->getPatientToken();
+        Session::put('cms_access_token', $access_token);
+        Session::put('cms_pid', $cms_pid);
+        return redirect()->route('cms_bluebutton_display');
+    }
+
+    public function cms_bluebutton_display(Request $request, $type='Summary')
+    {
+        $token = Session::get('cms_access_token');
+        $base_url = 'https://dev.bluebutton.cms.fhirservice.net';
+        $title_array = [
+            'Summary' => ['Patient Summary', 'fa-address-card', '/connect/userinfo'],
+            'EOB' => ['Explaination of Benefits', 'fa-money', '/protected/bluebutton/fhir/v1/ExplanationOfBenefit/?patient=' . Session::get('cms_pid')],
+            'Coverage' => ['Coverage Information', 'fa-address-book', '/protected/bluebutton/fhir/v1/Coverage/?patient=' . Session::get('cms_pid')]
+        ];
+        $data['panel_header'] = 'CMS Bluebutton Data - ' . $title_array[$type][0];
+        $url = $base_url . $title_array[$type][2];
+        $result = $this->fhir_request($url,false,$token,true);
+        $data['message_action'] = Session::get('message_action');
+        Session::forget('message_action');
+        $gender_arr = $this->array_gender();
+        if ($type == 'Summary') {
+            $data['content'] = '<div class="alert alert-success">';
+            if (isset($result)) {
+                foreach ($result as $result_k=>$result_v) {
+                    if ($result_k !== 'iat' && $result_k !== 'ial') {
+                        if ($result_k == 'sub') {
+                            $result_k = 'Subject';
+                        }
+                        if ($result_k == 'patient') {
+                            $result_k = 'Patient ID';
+                        }
+                        $result_k = str_replace('_', ' ', $result_k);
+                        $data['content'] .= '<strong>' . ucfirst($result_k) . ': </strong>' . $result_v . '<br>';
+                    }
+                }
+            }
+            $data['content'] .= '</div>';
+            $data['content'] .= '<div class="list-group">';
+            foreach ($title_array as $title_k=>$title_v) {
+                if ($title_k !== 'Summary') {
+                    $data['content'] .= '<a href="' . route('cms_bluebutton_display', [$title_k]) . '" class="list-group-item"><i class="fa ' . $title_v[1] . ' fa-fw"></i><span style="margin:10px;">' . $title_v[0] . '</span></a>';
+                }
+            }
+            $data['content'] .= '</div>';
+            $data['panel_header'] = 'Billing';
+            $dropdown_array = [
+                'items_button_text' => 'CMS Bluebutton Data'
+            ];
+            $items[] = [
+                'type' => 'item',
+                'label' => 'Encounters',
+                'icon' => 'fa-stethoscope',
+                'url' => route('billing_list', ['encounters', Session::get('pid')])
+            ];
+            $items[] = [
+                'type' => 'item',
+                'label' => 'Miscellaneous Bills',
+                'icon' => 'fa-shopping-basket',
+                'url' => route('billing_list', ['misc', Session::get('pid')])
+            ];
+            $dropdown_array['items'] = $items;
+            $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
+        } else {
+            $dropdown_array = [];
+            $items = [];
+            $items[] = [
+                'type' => 'item',
+                'label' => 'Back',
+                'icon' => 'fa-chevron-left',
+                'url' => route('cms_bluebutton_display', ['Summary'])
+            ];
+            $dropdown_array['items'] = $items;
+            $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
+            $data['content'] = '';
+            $list_array = [];
+            if (isset($result)) {
+                // $data['content'] .= json_encode($result);
+                if ($type == 'Coverage') {
+                    if ($result['total'] > 0) {
+                        foreach ($result['entry'] as $row1) {
+                            if (isset($row1['resource']['status'])) {
+                                if ($row1['resource']['status'] == 'active') {
+                                    $arr = [];
+                                    $arr['label'] = (string) $row1['resource']['type']['coding'][0]['system'] . ' ' . $row1['resource']['type']['coding'][0]['code'] . ', ID: ' . $row1['resource']['id'];
+                                    $list_array[] = $arr;
+                                }
+                            }
+                        }
+                    }
+                }
+                if ($type == 'EOB') {
+                    if ($result['total'] > 0) {
+                        foreach ($result['entry'] as $row2) {
+                            if (isset($row2['resource']['status'])) {
+                                if ($row2['resource']['status'] == 'active') {
+                                    if (isset($row2['resource']['billablePeriod']['start'])) {
+                                        $arr = [];
+                                        $arr['label'] = (string) $row2['resource']['billablePeriod']['start'] . ' - Payment Amount: ' . $row2['resource']['payment']['amount']['value'] . ' ' . $row2['resource']['payment']['amount']['system'];
+                                        $dx_session = [];
+                                        foreach ($row2['resource']['diagnosis'] as $dx_row) {
+                                            $dx_session[$dx_row['sequence']] = $dx_row['diagnosisCodeableConcept']['coding'][0]['code'];
+                                        }
+                                        $sub_session = [];
+                                        foreach ($row2['resource']['item'] as $sub_row) {
+                                            $adj_session = [];
+                                            foreach ($sub_row['adjudication'] as $adj_row) {
+                                                $adj_session_text = $adj_row['category']['coding'][0]['code'];
+                                                if (isset($adj_row['amount'])) {
+                                                    $adj_session_text .= ', ' . $adj_row['amount']['value'] . ' ' . $adj_row['amount']['code'];
+                                                }
+                                                $adj_session[] = $adj_session_text;
+                                            }
+                                            $diagnosis = '';
+                                            if (isset($sub_row['diagnosisLinkId'][0])) {
+                                                $diagnosis = $dx_session[$sub_row['diagnosisLinkId'][0]];
+                                            }
+                                            $sub_session[$sub_row['sequence']] = [
+                                                'date' => $row2['resource']['billablePeriod']['start'],
+                                                'quantity' => $sub_row['quantity']['value'],
+                                                'diagnosis' => $diagnosis,
+                                                'adjudications' => $adj_session
+                                            ];
+                                        }
+                                        Session::put('sub_session', $sub_session);
+                                        $arr['view'] = route('cms_bluebutton_eob', [$sub_row['sequence']]);
+                                        $list_array[] = $arr;
+                                    } else {
+                                        if (isset($row2['resource']['item'][0]['servicedDate'])) {
+                                            $arr = [];
+                                            $arr['label'] = (string) $row2['resource']['item'][0]['servicedDate'];
+                                            $list_array[] = $arr;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                if (count($list_array) > 0) {
+                    $data['content'] .= $this->result_build($list_array, $type . '_cms_list');
+                }
+            }
+        }
+        $data['assets_js'] = $this->assets_js('chart');
+        $data['assets_css'] = $this->assets_css('chart');
+        $data['billing_active'] = true;
+        Session::put('last_page', $request->fullUrl());
+        $data = array_merge($data, $this->sidebar_build('chart'));
+        return view('chart', $data);
+    }
+
+    public function cms_bluebutton_eob(Request $request, $sequence)
+    {
+        $data['panel_header'] = 'CMS Bluebutton EOB Details';
+        $sub = Session::get('sub_session');
+        $dropdown_array = [];
+        $items = [];
+        $items[] = [
+            'type' => 'item',
+            'label' => 'Back',
+            'icon' => 'fa-chevron-left',
+            'url' => route('cms_bluebutton_display', ['EOB'])
+        ];
+        $dropdown_array['items'] = $items;
+        $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
+        $data['content'] = '<strong>Date: </strong>' . $sub[$sequence]['date'] . '<br>';
+        $data['content'] .= '<strong>Quantitiy: </strong>' . $sub[$sequence]['quantity'] . '<br>';
+        $data['content'] .= '<strong>Diagnosis Code: </strong>' . $sub[$sequence]['diagnosis'] . '<br>';
+        $data['content'] .= '<strong>Adjudications: </strong><ul>';
+        foreach ($sub[$sequence]['adjudications'] as $row) {
+            $data['content'] .= '<li>' . $row . '</li>';
+        }
+        $data['content'] .= '</ul>';
+        $data['assets_js'] = $this->assets_js('chart');
+        $data['assets_css'] = $this->assets_css('chart');
+        $data['billing_active'] = true;
+        Session::put('last_page', $request->fullUrl());
+        $data = array_merge($data, $this->sidebar_build('chart'));
+        return view('chart', $data);
+    }
+
     /**
     * Chart form action
     * @param string  $table

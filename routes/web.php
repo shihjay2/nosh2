@@ -161,6 +161,9 @@ Route::any('billing_notes', ['as' => 'billing_notes', 'uses' => 'ChartController
 Route::get('billing_payment_delete/{id}/{index}/{billing_id}', ['as' => 'billing_payment_delete', 'uses' => 'ChartController@billing_payment_delete']);
 Route::get('billing_payment_history/{id}/{index}', ['as' => 'billing_payment_history', 'uses' => 'ChartController@billing_payment_history']);
 Route::get('care_opportunities/{type}', ['as' => 'care_opportunities', 'uses' => 'ChartController@care_opportunities']);
+Route::any('cms_bluebutton', ['as' => 'cms_bluebutton', 'uses' => 'ChartController@cms_bluebutton']);
+Route::get('cms_bluebutton_display/{type?}', ['as' => 'cms_bluebutton_display', 'uses' => 'ChartController@cms_bluebutton_display']);
+Route::get('cms_bluebutton_eob/{sequence}', ['as' => 'cms_bluebutton_eob', 'uses' => 'ChartController@cms_bluebutton_eob']);
 Route::any('chart_action/{table}/{action}/{id}/{index}', ['as' => 'chart_action', 'uses' => 'ChartController@chart_action']);
 Route::get('chart_form/{table}/{index}/{id}/{subtype?}', ['as' => 'chart_form', 'uses' => 'ChartController@chart_form']);
 Route::get('chart_queue/{action}/{hippa_id}/{pid}/{type}', ['as' => 'chart_queue', 'uses' => 'ChartController@chart_queue']);
