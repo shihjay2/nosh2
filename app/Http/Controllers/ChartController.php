@@ -878,19 +878,31 @@ class ChartController extends Controller {
         $oidc->setRedirectURL(route('cms_bluebutton'));
         $oidc->providerConfigParam(['authorization_endpoint' => $authorization_endpoint]);
         $oidc->providerConfigParam(['token_endpoint' => $token_endpoint]);
-        // $oidc->setAud(Session::get('fhir_url'));
         $oidc->addScope('patient/Patient.read');
         $oidc->addScope('patient/ExplanationOfBenefit.read');
         $oidc->addScope('patient/Coverage.read');
-        // $oidc->addScope('openid');
         $oidc->addScope('profile');
-        // $oidc->addScope('launch');
-        // $oidc->addScope('launch/patient');
-        // $oidc->addScope('offline_access');
-        // $oidc->addScope('online_access');
         $oidc->authenticate();
         $access_token = $oidc->getAccessToken();
-        $patient_token = $oidc->getPatientToken();
+        $connected1 = DB::table('refresh_tokens')->where('practice_id', '=', '1')->where('endpoint_uri', '=', $base_url)->first();
+        if (!$connected1) {
+            $refresh = [
+                'refresh_token' => $access_token,
+                'pid' => Session::get('pid'),
+                'practice_id' => Session::get('practice_id'),
+                'user_id' => Session::get('user_id'),
+                'endpoint_uri' => $base_url,
+                'pnosh' => 'CMS Bluebutton',
+                'client_id' => $client_id,
+                'client_secret' => $client_secret
+            ];
+            DB::table('refresh_tokens')->insert($refresh);
+            $this->audit('Add');
+        } else {
+            $refresh['refresh_token'] = $access_token;
+            DB::table('refresh_tokens')->where('id', '=', $connected1->id)->update($refresh);
+            $this->audit('Update');
+        }
         Session::put('cms_access_token', $access_token);
         Session::put('cms_pid', $cms_pid);
         return redirect()->route('cms_bluebutton_display');
