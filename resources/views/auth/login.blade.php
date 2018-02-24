@@ -380,14 +380,16 @@
         $('#numberReal').realperson({includeNumbers: true});
         function loadlogo() {
             var a = $('#practice_id').val();
-            $.ajax({
-                type: "POST",
-                url: noshdata.practice_logo,
-                data: "practice_id=" + a,
-                success: function(data){
-                    $("#login_practice_logo").html(data);
-                }
-            });
+			if (a !== undefined) {
+	            $.ajax({
+	                type: "POST",
+	                url: noshdata.practice_logo,
+	                data: "practice_id=" + a,
+	                success: function(data){
+	                    $("#login_practice_logo").html(data);
+	                }
+	            });
+			}
         }
         $('#practice_id').change(function(){
             loadlogo();

@@ -1214,8 +1214,8 @@ class LoginController extends Controller {
             system($command1);
             Auth::logout();
             Session::flush();
-            $mdnosh_url = 'http://noshchartingsystem.com/oidc/reset_demo';
-            return redirect($mdnosh_url);
+            $directory_url = 'https://cloud.noshchartingsystem.com/hiedirectory/reset_demo';
+            return redirect($directory_url);
         } else {
             return redirect()->route('dashboard');
         }

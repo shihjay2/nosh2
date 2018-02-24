@@ -3080,6 +3080,7 @@ class ChartController extends Controller {
             }
         }
         $data['content'] = '<p>Your identity requires confirmation to sign off on your order</p>';
+        $data['content'] .= '<p>After it is signed, an ERC20 Token will be generated with metadata of your name, URL of the authorization server, and the date/time of the transaction.</p>';
         $provider = DB::table('providers')->where('id', '=', $raw->id)->first();
         if ($provider) {
             if ($provider->npi == '1234567890') {
