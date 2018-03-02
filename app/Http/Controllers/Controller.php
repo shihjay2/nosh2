@@ -14412,7 +14412,8 @@ class Controller extends BaseController
             }
             $med_prn_array = ["as needed", "PRN"];
             if ($row->rxl_sig == '') {
-                $response['text']['div'] = '<div>' . $row->rxl_medication . ' ' . $row->rxl_dosage . ' ' . $row->rxl_dosage_unit . ', ' . $row->rxl_instructions . ' for ' . $row->rxl_reason . '</div>';
+                $response['text']['div'] = '<div>' . $row->rxl_medication . ' ' . $row->rxl_dosage . ' ' . $row->rxl_dosage_unit . ', ' . $row->rxl_instructions . ' for ' . $row->rxl_reason;
+                $response['text']['div'] .= ', Date Active: ' . date("Y-m-d", $this->human_to_unix($row->rxl_date_active)) . '</div>';
                 $dosage_text = $row->rxl_instructions . ' for ' . $row->rxl_reason;
                 $asNeededBoolean = false;
                 if (in_array($med_row->rxl_instructions, $med_prn_array)) {
@@ -14426,7 +14427,8 @@ class Controller extends BaseController
                     ]
                 ];
             } else {
-                $response['text']['div'] = '<div>' . $row->rxl_medication . ' ' . $row->rxl_dosage . ' ' . $row->rxl_dosage_unit . ', ' . $row->rxl_sig . ', ' . $row->rxl_route . ', ' . $row->rxl_frequency . ' for ' . $row->rxl_reason . '</div>';
+                $response['text']['div'] = '<div>' . $row->rxl_medication . ' ' . $row->rxl_dosage . ' ' . $row->rxl_dosage_unit . ', ' . $row->rxl_sig . ', ' . $row->rxl_route . ', ' . $row->rxl_frequency;
+                $response['text']['div'] .= ' for ' . $row->rxl_reason . ', Date Active: ' . date("Y-m-d", $this->human_to_unix($row->rxl_date_active)) . '</div>';
                 $dosage_text = $row->rxl_sig . ', ' . $row->rxl_route . ', ' . $row->rxl_frequency . ' for ' . $row->rxl_reason;
                 $med_dosage_parts = explode(" ", $row->rxl_sig);
                 $med_dosage = $med_dosage_parts[0];
@@ -14697,7 +14699,7 @@ class Controller extends BaseController
                     $response['substance']['text'] = $row->allergies_med;
                 }
             }
-            $response['text']['div'] = '<div>' . $row->allergies_med . ', Reaction: ' . $row->allergies_reaction . ', Severeity ' . $row->allergies_severity . '</div>';
+            $response['text']['div'] = '<div>' . $row->allergies_med . ', Reaction: ' . $row->allergies_reaction . ', Severeity ' . $row->allergies_severity . ', Date Active: ' . date('Y-m-d', $this->human_to_unix($row->allergies_date_active)) . '</div>';
             $response['reaction'][] = [
                 'manifestation' => [
                     '0' => [
