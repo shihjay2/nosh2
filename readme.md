@@ -8,7 +8,7 @@ already set up, you are golden!
 ##### 1. Apache web server (needs to be running)
 ##### 2. MySQL database.  Make sure you remember the root password.  This will be asked during the
 NOSH ChartingSystem installation. (needs to be running)
-##### 3. PHP 5.2 and higher
+##### 3. PHP 5.4 and higher
 ##### 4. The following PHP modules installed and enabled:
 mysql, imap, mcrypt, imagick, gd, cli, curl, soap, pear
 ##### 5. PERL
@@ -17,10 +17,10 @@ mysql, imap, mcrypt, imagick, gd, cli, curl, soap, pear
 ##### 8. cURL
 
 ## Installation
-Installing NOSH ChartingSystem is easy to install if you run [NOSH-in-a-Box](https://github.com/shihjay2/nosh-in-a-box) NOSH and all its dependencies are already configured and installed properly.  Just deploy the Vagrant virtual machine and you're ready to start.  The previous method through Ubuntu Linux PPA's is now depreciated.  If you have access to a terminal shell for your server (any distro for Linux or Mac OS-X), you can install NOSH with the [Manual Method](https://github.com/shihjay2/nosh-cs/wiki/Installation#manual-method).  
+Installing NOSH ChartingSystem is easy to install if you run [NOSH-in-a-Box](https://github.com/shihjay2/nosh-in-a-box).  NOSH and all its dependencies are already configured and installed properly.  Just deploy the Vagrant virtual machine and you're ready to start.  The previous method through Ubuntu Linux PPA's is now depreciated.  If you have access to a terminal shell for your server (any distro for Linux or Mac OS-X), you can [install NOSH](https://github.com/shihjay2/nosh2/wiki/Installation).  
 The installation script automatically adds scheduled task commands (cron files) and web server configuration files to make NOSH
 work seamlessly the first time.  The script also determines if your system meets all the package dependencies before installation.
-For detailed information, go to the [Wiki link](https://github.com/shihjay2/nosh-cs/wiki/Installation).
+For detailed information, go to the [Wiki link](https://github.com/shihjay2/nosh2/wiki/Installation).
 
 If this is the first time using NOSH, make sure you login to NOSH ChartingSystem as admin and configure your users and clinic
 parameters.  It's important to do this first before any other users use NOSH ChartingSystem; otherwise,
@@ -29,7 +29,7 @@ some features such as scheduling will not work correctly!
 ## Updates
 Like Laravel, NOSH now utilizes [Composer](http://getcomposer.org) to manage its PHP dependencies.  
 Composer is automatically installed when you use the installation script (it is located in /usr/local/bin/composer).
-Because the [core NOSH files](https://github.com/shihjay2/nosh-core/) are now served on GitHub, NOSH is self-updating daily
+Because the [core NOSH files](https://github.com/shihjay2/nosh2) are now served on GitHub, NOSH is self-updating daily
 whenever a new commit (updated files) is uploaded.  There is no more user intervention anymore, and you get the latest and greatest
 NOSH version at your fingertips!
 

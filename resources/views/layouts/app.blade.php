@@ -147,7 +147,9 @@
                                 {{ Auth::user()->displayname }} <span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu" role="menu">
-                                <li><a href="{{ route('core_form', ['users', 'id', Session::get('user_id'), Session::get('group_id')]) }}"><i class="fa fa-btn fa-cogs"></i>{{ trans('nosh.my_information') }}</a></li>
+                                @if (Session::get('group_id') !== 1)
+                                    <li><a href="{{ route('core_form', ['users', 'id', Session::get('user_id'), Session::get('group_id')]) }}"><i class="fa fa-btn fa-cogs"></i>{{ trans('nosh.my_information') }}</a></li>
+                                @endif
                                 @if (Session::get('group_id') == '2')
                                     <li><a href="{{ route('user_signature') }}"><i class="fa fa-btn fa-pencil"></i>{{ trans('nosh.user_signature') }}</a></li>
                                 @endif
