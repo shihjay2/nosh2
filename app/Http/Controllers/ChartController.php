@@ -6914,7 +6914,7 @@ class ChartController extends Controller {
         $query = DB::table('insurance')->where('pid', '=', Session::get('pid'))->orderBy('insurance_order', 'asc');
         $cc_active = false;
         $query1 = DB::table('demographics')->select('creditcard_number', 'creditcard_expiration', 'creditcard_type', 'creditcard_key')->where('pid', '=', Session::get('pid'))->first();
-        if ($query1->creditcard_key !== '') {
+        if ($query1->creditcard_key !== '' && $query1->creditcard_key !== null) {
             $cc_active = true;
         }
         if ($type == 'active') {
