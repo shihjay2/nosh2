@@ -29,6 +29,9 @@
                         <div style="margin:5px;"><i style="color:black;" class="fa fa-square-o fa-lg"></i> DNKA</div>
                         <div style="margin:5px;"><i style="color:red;" class="fa fa-square-o fa-lg"></i> LMC</div>
                     @endif
+                    <div style="margin:15px;">
+                        <button type="button" id="schedule_view_button" class="btn btn-default btn-block"></button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -477,6 +480,20 @@
                 toastr.error(noshdata.message_action);
             }
         }
+        if ($('#calendar').fullCalendar('getView').type == 'agendaDay') {
+            $('#schedule_view_button').text('Week View');
+        } else {
+            $('#schedule_view_button').text('Day View');
+        };
+        $('#schedule_view_button').click(function() {
+            if ($('#calendar').fullCalendar('getView').type == 'agendaDay') {
+                $('#calendar').fullCalendar('changeView', 'agendaWeek');
+                $('#schedule_view_button').text('Day View');
+            } else {
+                $('#calendar').fullCalendar('changeView', 'agendaDay');
+                $('#schedule_view_button').text('Week View');
+            }
+        });
     });
 </script>
 @endsection
