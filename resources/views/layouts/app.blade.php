@@ -294,7 +294,7 @@
                                 <span class="sidebar-item">{{ trans('nosh.form_list') }}</span>
                             </a>
                         </li>
-                        @if(Session::get('agealldays') < 6574.5)
+                        @if($growth_chart_show == 'yes')
                             <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-line-chart fa-fw fa-lg"></i><span class="sidebar-item">{{ trans('nosh.growth_charts') }}</span><span class="caret"></span></a>
                                 <ul class="dropdown-menu" role="menu">
                                     <li><a href="{{ route('growth_chart', ['weight-age']) }}">{{ trans('nosh.weight') }}</a></li>

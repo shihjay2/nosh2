@@ -15603,6 +15603,14 @@ class Controller extends BaseController
                     $return['encounters_preview'] .= '</p>';
                 }
             }
+            // Vitals
+            $return['growth_chart_show'] = 'no';
+            if (Session::get('agealldays') < 6574.5) {
+                $vitals = DB::table('vitals')->where('pid', '=', Session::get('pid'))->first();
+                if ($vitals) {
+                    $return['growth_chart_show'] = 'yes';
+                }
+            }
         }
         return $return;
     }
