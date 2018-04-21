@@ -69,11 +69,11 @@ class CheckInstall
         }
 
         // Check if OpenID Connect beta testing and register if not yet
-        if (route('dashboard') == 'https://hieofone.com/nosh' || route('dashboard') == 'https://cloud.noshchartingsystem.com/nosh' || route('dashboard') == 'https://noshchartingsystem.com/nosh' || route('dashboard') == 'https://www.noshchartingsystem.com/nosh' || route('dashboard') == 'https://shihjay.xyz/nosh' || route('dashboard') == 'https://agropper.xyz/nosh') {
-            if ($install->openidconnect_client_id == '') {
-                return redirect()->route('oidc_register_client');
-            }
-        }
+        // if (route('dashboard') == 'https://hieofone.com/nosh' || route('dashboard') == 'https://cloud.noshchartingsystem.com/nosh' || route('dashboard') == 'https://noshchartingsystem.com/nosh' || route('dashboard') == 'https://www.noshchartingsystem.com/nosh' || route('dashboard') == 'https://shihjay.xyz/nosh' || route('dashboard') == 'https://agropper.xyz/nosh') {
+            // if ($install->openidconnect_client_id == '') {
+                // return redirect()->route('oidc_register_client');
+            // }
+        // }
 
         // Check if pNOSH instance
         if ($install->patient_centric == 'y') {

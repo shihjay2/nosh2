@@ -629,14 +629,29 @@ public function install_fix(Request $request)
     public function uma_patient_centric(Request $request)
     {
         $query = DB::table('practiceinfo')->where('practice_id', '=', '1')->first();
-        $open_id_url = str_replace('/nosh', '', URL::to('/'));
         if ($query->patient_centric == 'y') {
             if ($query->uma_client_id == '') {
+                // Check if AS is on the same $domain_name
+                $check_open_id_url = str_replace('/nosh', '/.well-known/webfinger', URL::to('/'));
+                $ch = curl_init();
+                curl_setopt($ch,CURLOPT_URL, $check_open_id_url);
+                curl_setopt($ch,CURLOPT_FAILONERROR,1);
+                curl_setopt($ch,CURLOPT_FOLLOWLOCATION,1);
+                curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+                curl_setopt($ch,CURLOPT_TIMEOUT, 60);
+                curl_setopt($ch,CURLOPT_CONNECTTIMEOUT ,0);
+                $check_exec = curl_exec($ch);
+                $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                curl_close ($ch);
+                if ($httpCode == 404) {
+                    return redirect()->route('uma_patient_centric_designate');
+                }
+                $data['uma_uri'] = str_replace('/nosh', '', URL::to('/'));
                 // Register as resource server
                 $patient = DB::table('demographics')->where('pid', '=', '1')->first();
                 $client_name = 'Patient NOSH for ' .  $patient->firstname . ' ' . $patient->lastname . ', DOB: ' . date('Y-m-d', strtotime($patient->DOB));
                 $url = route('uma_auth');
-                $oidc = new OpenIDConnectClient($open_id_url);
+                $oidc = new OpenIDConnectClient($data['uma_uri']);
                 $oidc->setClientName($client_name);
                 $oidc->setRedirectURL($url);
                 $oidc->addScope('openid');
@@ -664,6 +679,7 @@ public function install_fix(Request $request)
                     // Get refresh token and link patient with user
                     $client_id = $query->uma_client_id;
                     $client_secret = $query->uma_client_secret;
+                    $open_id_url = $query->uma_uri;
                     $url = route('uma_patient_centric');
                     $oidc = new OpenIDConnectClient($open_id_url, $client_id, $client_secret);
                     $oidc->setRedirectURL($url);
@@ -786,6 +802,54 @@ public function install_fix(Request $request)
             }
         }
         return redirect()->route('dashboard');
+    }
+
+    public function uma_patient_centric_designate(Request $request)
+    {
+        if ($request->isMethod('post')) {
+            $this->validate($request, [
+                'uri' => 'required'
+            ]);
+            $pre_url = rtrim($request->input('uri'), '/');
+            $open_id_url = $pre_url . '/.well-known/webfinger';
+            $ch = curl_init();
+            curl_setopt($ch,CURLOPT_URL, $url);
+            curl_setopt($ch,CURLOPT_FAILONERROR,1);
+            curl_setopt($ch,CURLOPT_FOLLOWLOCATION,1);
+            curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+            curl_setopt($ch,CURLOPT_TIMEOUT, 60);
+            curl_setopt($ch,CURLOPT_CONNECTTIMEOUT ,0);
+            $domain_name = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close ($ch);
+            if ($httpCode !== 404) {
+                $uma_data['uma_uri'] = $pre_url;
+                DB::table('practiceinfo')->where('practice_id', '=', '1')->update($uma_data);
+                $this->audit('Update');
+                return redirect()->route('uma_patient_centric');
+            } else {
+                return redirect()->back()->withErrors(['uri' => 'The URL you entered is not valid.']);
+            }
+        } else {
+            $data['panel_header'] = 'HIE of One Authorization Server Registration';
+            $items[] = [
+                'name' => 'uri',
+                'label' => 'URL of your HIE of One Authorization Server',
+                'type' => 'text',
+                'required' => true
+            ];
+            $form_array = [
+                'form_id' => 'uma_form',
+                'action' => route('uma_patient_centric_designate'),
+                'items' => $items,
+                'save_button_label' => 'Submit'
+            ];
+            $data['content'] = '<p>An Authorization Server has not been found in the same domain as your NOSH ChartingSystem installation.</p><p>You will need to designate the URL of your Authorization Server to proceed with using NOSH ChartingSystem</p>';
+            $data['content'] .= $this->form_build($form_array);
+            $data['assets_js'] = $this->assets_js();
+            $data['assets_css'] = $this->assets_css();
+            return view('core', $data);
+        }
     }
 
     public function update()

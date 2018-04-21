@@ -16725,10 +16725,10 @@ class Controller extends BaseController
 
     protected function uma_policy($resource_set_id, $email, $name, $scopes, $policy_id='')
     {
-        $open_id_url = str_replace('/nosh', '', URL::to('/'));
         $practice = DB::table('practiceinfo')->where('practice_id', '=', '1')->first();
         $client_id = $practice->uma_client_id;
         $client_secret = $practice->uma_client_secret;
+        $open_id_url = $practice->uma_uri;
         $refresh_token = $practice->uma_refresh_token;
         $oidc1 = new OpenIDConnectClient($open_id_url, $client_id, $client_secret);
         $oidc1->refresh($refresh_token,true);

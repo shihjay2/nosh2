@@ -501,10 +501,10 @@ class LoginController extends Controller {
     public function logout()
     {
         if (Session::has('uma_auth_access_token')) {
-            $open_id_url = str_replace('/nosh', '', URL::to('/'));
             $practice = DB::table('practiceinfo')->where('practice_id', '=', '1')->first();
             $client_id = $practice->uma_client_id;
             $client_secret = $practice->uma_client_secret;
+            $open_id_url = $practice->uma_uri;
             $url = route('uma_logout');
             $oidc = new OpenIDConnectClient($open_id_url, $client_id, $client_secret);
             $oidc->setRedirectURL($url);
@@ -1317,10 +1317,10 @@ class LoginController extends Controller {
     // Patient-centric, UMA login
     public function uma_auth()
     {
-        $open_id_url = str_replace('/nosh', '', URL::to('/'));
         $practice = DB::table('practiceinfo')->where('practice_id', '=', '1')->first();
         $client_id = $practice->uma_client_id;
         $client_secret = $practice->uma_client_secret;
+        $open_id_url = $practice->uma_uri;
         $url = route('uma_auth');
         $oidc = new OpenIDConnectClient($open_id_url, $client_id, $client_secret);
         $oidc->setRedirectURL($url);
@@ -1493,10 +1493,10 @@ class LoginController extends Controller {
 
     public function uma_logout(Request $request)
     {
-        $open_id_url = str_replace('/nosh', '', URL::to('/'));
         $practice = DB::table('practiceinfo')->where('practice_id', '=', '1')->first();
         $client_id = $practice->uma_client_id;
         $client_secret = $practice->uma_client_secret;
+        $open_id_url = $practice->uma_uri;
         $url = route('uma_logout');
         $oidc = new OpenIDConnectClient($open_id_url, $client_id, $client_secret);
         $oidc->setRedirectURL($url);

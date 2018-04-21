@@ -46,6 +46,7 @@ Route::any('install_fix', ['as' => 'install_fix', 'uses' => 'InstallController@i
 Route::any('prescription_pharmacy_view/{id}/{ret?}', ['as' => 'prescription_pharmacy_view', 'uses' => 'InstallController@prescription_pharmacy_view']);
 Route::get('set_version', ['as' => 'set_version', 'uses' => 'InstallController@set_version']);
 Route::get('uma_patient_centric', ['as' => 'uma_patient_centric', 'uses' => 'InstallController@uma_patient_centric']);
+Route::any('uma_patient_centric_designate', ['as' => 'uma_patient_centric_designate', 'uses' => 'InstallController@uma_patient_centric_designate']);
 Route::get('update', ['as' => 'update', 'uses' => 'InstallController@update']);
 Route::get('update_env', ['as' => 'update_env', 'uses' => 'InstallController@update_env']);
 Route::get('update_system', ['as' => 'update_system', 'uses' => 'InstallController@update_system']);
