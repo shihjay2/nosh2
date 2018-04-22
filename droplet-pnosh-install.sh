@@ -57,7 +57,7 @@ read -e -p "Enter your MySQL password: " -i "" MYSQL_PASSWORD
 USERNAME=$MYSQL_USERNAME
 
 # Install PHP and MariaDB
-apt-get -y install software-properties-common
+apt-get -y install software-properties-common build-essential binutils-doc git subversion bc apache2
 apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8
 add-apt-repository ppa:ondrej/php -y
 add-apt-repository 'deb [arch=amd64,i386,ppc64el] http://ftp.osuosl.org/pub/mariadb/repo/10.1/ubuntu xenial main'
@@ -76,11 +76,13 @@ collation_server = 'utf8_general_ci'" >> /etc/mysql/my.cnf
 sed -i '/^bind-address/s/bind-address.*=.*/bind-address = 0.0.0.0/' /etc/mysql/my.cnf
 mysql --user="root" --password="$MYSQL_PASSWORD" -e "GRANT ALL ON *.* TO root@'0.0.0.0' IDENTIFIED BY '$MYSQL_PASSWORD' WITH GRANT OPTION;"
 systemctl restart mysql
-mysql --user="root" --password="$MYSQL_PASSWORD" -e "CREATE USER '$USERNAME'@'0.0.0.0' IDENTIFIED BY '$MYSQL_PASSWORD';"
-mysql --user="root" --password="$MYSQL_PASSWORD" -e "GRANT ALL ON *.* TO '$USERNAME'@'0.0.0.0' IDENTIFIED BY '$MYSQL_PASSWORD' WITH GRANT OPTION;"
-mysql --user="root" --password="$MYSQL_PASSWORD" -e "GRANT ALL ON *.* TO '$USERNAME'@'%' IDENTIFIED BY '$MYSQL_PASSWORD' WITH GRANT OPTION;"
-mysql --user="root" --password="$MYSQL_PASSWORD" -e "FLUSH PRIVILEGES;"
-systemctl restart mysql
+if [ $MYSQL_USERNAME != "root"]; then
+	mysql --user="root" --password="$MYSQL_PASSWORD" -e "CREATE USER '$USERNAME'@'0.0.0.0' IDENTIFIED BY '$MYSQL_PASSWORD';"
+	mysql --user="root" --password="$MYSQL_PASSWORD" -e "GRANT ALL ON *.* TO '$USERNAME'@'0.0.0.0' IDENTIFIED BY '$MYSQL_PASSWORD' WITH GRANT OPTION;"
+	mysql --user="root" --password="$MYSQL_PASSWORD" -e "GRANT ALL ON *.* TO '$USERNAME'@'%' IDENTIFIED BY '$MYSQL_PASSWORD' WITH GRANT OPTION;"
+	mysql --user="root" --password="$MYSQL_PASSWORD" -e "FLUSH PRIVILEGES;"
+	systemctl restart mysql
+fi
 echo "phpmyadmin phpmyadmin/dbconfig-install boolean true" | debconf-set-selections
 echo "phpmyadmin phpmyadmin/app-password-confirm password $MYSQL_PASSWORD" | debconf-set-selections
 echo "phpmyadmin phpmyadmin/mysql/admin-pass password $MYSQL_PASSWORD" | debconf-set-selections
@@ -197,6 +199,7 @@ echo "create database $MYSQL_DATABASE" | mysql -u $MYSQL_USERNAME -p$MYSQL_PASSW
 php artisan migrate:install
 php artisan migrate
 log_only "Installed NOSH ChartingSystem database schema."
+a2enmod rewrite
 a2enmod ssl
 if [ -e "$WEB_CONF"/nosh2.conf ]; then
 	rm "$WEB_CONF"/nosh2.conf
