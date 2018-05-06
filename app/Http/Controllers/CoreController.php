@@ -170,7 +170,7 @@ class CoreController extends Controller
                 $list_array[] = $arr;
             }
         }
-        if (count($list_array) > 0) {
+        if (! empty($list_array)) {
             $return .= $this->result_build($list_array, $type . '_list');
         } else {
             $return .= ' None.';
@@ -446,7 +446,7 @@ class CoreController extends Controller
         $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
         $return = '';
         $edit = $this->access_level('1');
-        if (count($result) > 0) {
+        if (! empty($result)) {
             $head_arr = [
                 'Date' => 'date',
                 'Reason' => 'reason',
@@ -1343,7 +1343,7 @@ class CoreController extends Controller
             $arr['delete'] = route('configure_form_delete', [$row_k]);
             $list_array[] = $arr;
         }
-        if (count($list_array) > 0) {
+        if (! empty($list_array)) {
             $return .= $this->result_build($list_array, 'forms_list');
         } else {
             $return .= ' None.';
@@ -2645,7 +2645,7 @@ class CoreController extends Controller
             $open = $zip->open($directory . '/' . $file->getClientOriginalName());
             if ($open === TRUE) {
                 $sqlsearch = glob($directory . '/*_noshexport.sql');
-                if (count($sqlsearch) > 0) {
+                if (! empty($sqlsearch)) {
                     foreach ($sqlsearch as $sqlfile) {
                         $command = "mysql -u " . env('DB_USERNAME') . " -p". env('DB_PASSWORD') . " " . env('DB_DATABASE') . " < " . $sqlfile;
                         system($command);
@@ -3009,7 +3009,7 @@ class CoreController extends Controller
         }
         $message = implode('<br>', $message_arr);
         Session::put('message_action', $message);
-        if (count($fix) > 0) {
+        if (! empty($fix)) {
             $fix_address_id = $fix[0];
             Session::put('addressbook_last_page', $request->fullUrl());
             return redirect()->route('core_form', ['addressbook', 'address_id', $fix_address_id, 'faxonly']);
@@ -3116,7 +3116,7 @@ class CoreController extends Controller
             }
             $message = implode('<br>', $message_arr);
             Session::put('message_action', $message);
-            if (count($fix) > 0) {
+            if (! empty($fix)) {
                 $fix_address_id = $fix[0];
                 Session::put('addressbook_last_page', $request->fullUrl());
                 return redirect()->route('core_form', ['addressbook', 'address_id', $fix_address_id, 'faxonly']);
@@ -3631,7 +3631,7 @@ class CoreController extends Controller
             ];
             $return .= $this->form_build($form_array);
         }
-        if (count($result) > 0) {
+        if (! empty($result)) {
             if ($type == 'monthly_report' || $type == 'yearly_report') {
                 $return .= '<div class="alert alert-success"><h5>Click on a row to get the insurance specifics for each time period.</h5></div>';
             }
@@ -3682,7 +3682,7 @@ class CoreController extends Controller
         $html .= '<tr><td>Check Amount: ' . money_format('%n', $claim['check_amount']) .'<br><br>Check Number: ' . $claim['check_number'] .'<br><br>Check Date: ' . date('m/d/Y', $claim['check_date']) . '<br><br>Production Date: ' . date('m/d/Y', $claim['production_date']) . '</td>';
         $html .= '<td>Name: ' . $claim['payer_name'] . '<br><br>Tax ID: ' . $claim['payer_tax_id'] . '<br><br>Address: ' . $claim['payer_street'] . '<br>' . $claim['payer_city'] . ', ' . $claim['payer_state'] . ' ' . $claim['payer_zip'] . '</td>';
         $html .= '<td>Name: ' . $claim['payee_name'] . '<br><br>Tax ID: ' . $claim['payee_tax_id'] . '<br><br>Address: ' . $claim['payee_street'] . '<br>' . $claim['payee_city'] . ', ' . $claim['payee_state'] . ' ' . $claim['payee_zip'] . '</td></tr></tbody></table>';
-        if (count($claim['claim']) > 0) {
+        if (! empty($claim['claim'])) {
             $i = 0;
             $html .= '<br><table id="era_grid_' . $i .'" class="table table-striped">';
             $html .= '<thead><tr><th style="width:200px">Claim Details</th><th style="width:200px">Patient Details</th><th>Line Item Details</th></tr></thead><tbody>';
@@ -3713,14 +3713,14 @@ class CoreController extends Controller
                 $html .='<br><br>Date of Service: ' . date('m/d/Y', $row['dos']) . '<br><br>Claim Status: ' . $claim_status_code . '<br><br>Claim ID: ' . $row['payer_claim_id'] . $claim_forward . '</td>';
                 $html .= '<td>Patient: ' . $row['patient_lastname'] . ', ' . $row['patient_firstname'] . ' ' . $row['patient_middle'] . '<br><br>Insurance: ' . $row['payer_insurance'] . '<br><br>Patient Member ID: ' . $row['patient_member_id'] . '<br><br>Subscriber: ' . $row['subscriber_lastname'] . ', ' . $row['subscriber_firstname'] . ' ' . $row['subscriber_middle'] .'</td>';
                 $html .= '<td><ul>';
-                if (count($row['item']) > 0) {
+                if (! empty($row['item'])) {
                     foreach ($row['item'] as $row1) {
                         $html .= '<li>CPT: ' . $row1['cpt'];
                         if ($row1['modifier'] != '') {
                             $html .= ', Modifier: ' . $row1['modifier'];
                         }
                         $html .= ', Charge: ' . money_format('%n', $row1['charge']) . ', Paid: ' . money_format('%n', $row1['paid']) . ', Allowed: ' . money_format('%n', $row1['allowed']);
-                        if (count($row1['adjustment']) > 0) {
+                        if (! empty($row1['adjustment'])) {
                             $j = 1;
                             foreach ($row1['adjustment'] as $row2) {
                                 $html .= '<br><br>Adjustment Reason # ' . $j . ': ' . $this->claim_reason_code($row2['reason_cpt']);;
@@ -3787,7 +3787,7 @@ class CoreController extends Controller
             }
             unset($arr[0]);
             $arr = array_values($arr);
-            if (count($arr) > 0) {
+            if (! empty($arr)) {
                 Session::put('era', $arr);
                 return redirect()->route('financial_era_form');
             } else {
@@ -3872,7 +3872,7 @@ class CoreController extends Controller
             'Insurance' => 'insurance',
             'Patients Seen' => 'patients_seen',
         ];
-        if (count($result) > 0) {
+        if (! empty($result)) {
             $return .= '<div class="table-responsive"><table class="table table-striped"><thead><tr>';
             foreach ($head_arr as $head_row_k => $head_row_v) {
                 $return .= '<th>' . $head_row_k . '</th>';
@@ -3970,7 +3970,7 @@ class CoreController extends Controller
             }
         }
         if ($request->input('submit') == 'print') {
-            if (count($result) > 0) {
+            if (! empty($result)) {
                 $file_path = public_path() . '/temp/' . time() . '_' . Session::get('user_id') . '_financialquery.pdf';
                 $html = $this->page_intro('Financial Query Results', Session::get('practice_id'));
                 $html .= $this->page_financial_results($result);
@@ -3993,7 +3993,7 @@ class CoreController extends Controller
                 'Amount' => 'amount',
                 'Payment Type' => 'type',
             ];
-            if (count($result) > 0) {
+            if (! empty($result)) {
                 $return = '<div class="table-responsive"><table class="table table-striped"><thead><tr>';
                 foreach ($head_arr as $head_row_k => $head_row_v) {
                     $return .= '<th>' . $head_row_k . '</th>';
@@ -4160,10 +4160,10 @@ class CoreController extends Controller
                     }
                 }
                 unlink($file_path);
-                if (count($message_arr) > 0) {
+                if (! empty($message_arr)) {
                     Session::put('message_action', implode('<br>', $message_arr));
                 }
-                if (count($arr) > 0) {
+                if (! empty($arr)) {
                     Session::put('era', $arr);
                     return redirect()->route('financial_era_form');
                 }
@@ -4375,7 +4375,7 @@ class CoreController extends Controller
                 }
             }
         }
-        if (count($list_array) > 0) {
+        if (! empty($list_array)) {
             $return .= $this->result_build($list_array, $type . '_list');
         } else {
             $return .= ' None.';
@@ -7062,7 +7062,7 @@ class CoreController extends Controller
             'view' => route('superquery_hedis', ['all']),
             'active' => true
         ];
-        if (count($array) > 0) {
+        if (! empty($array)) {
             foreach ($array as $row_k => $row_v) {
                 $arr = [];
                 $arr['label'] = $row_k;
@@ -7291,7 +7291,7 @@ class CoreController extends Controller
                 'Date' => 'doc_date',
                 'Type' => 'doctype'
             ];
-            if (count($records1) > 0) {
+            if (! empty($records1)) {
                 $html .= '<h4>Results</h4><h6>Click on row to show item</h6><div class="table-responsive"><table class="table table-striped"><thead><tr>';
                 foreach ($head_arr as $head_row_k => $head_row_v) {
                     $html .= '<th>' . $head_row_k . '</th>';
@@ -8143,7 +8143,7 @@ class CoreController extends Controller
                 'Action' => 'action',
                 '' => 'delete'
             ];
-            if (count($result) > 0) {
+            if (! empty($result)) {
                 $return .= '<div class="table-responsive"><table class="table table-striped"><thead><tr>';
                 foreach ($head_arr as $head_row_k => $head_row_v) {
                     $return .= '<th>' . $head_row_k . '</th>';

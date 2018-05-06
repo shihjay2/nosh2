@@ -336,7 +336,7 @@ class AjaxSearchController extends Controller {
             // ICD10data
             $icd10q = implode('+', $pos);
             $icd10data = $this->icd10data($icd10q);
-            if (count($icd10data) > 0) {
+            if (! empty($icd10data)) {
                 $data['response'] = 'li';
                 if ($assessment == true) {
                     $data['response'] = 'div';
@@ -761,7 +761,7 @@ class AjaxSearchController extends Controller {
                 }
             }
         }
-        if (count($q_arr) > 0) {
+        if (! empty($q_arr)) {
             // If more than on rxcui is gathered, proceed with interaction check
             $q_arr[] = $rxcui;
             $q = implode('+', $q_arr);
@@ -844,7 +844,7 @@ class AjaxSearchController extends Controller {
                 }
             });
         }
-        if (count($result) > 0) {
+        if (! empty($result)) {
             $data['message'] = [];
             $data['response'] = 'li';
             foreach($result as $row) {
@@ -926,7 +926,7 @@ class AjaxSearchController extends Controller {
             $result = Session::get('history_pid');
         }
         $data['response'] = 'false';
-        if (count($result) > 0) {
+        if (! empty($result)) {
             $data['message'] = [];
             $data['response'] = 'div';
             foreach ($result as $pid) {
@@ -1021,7 +1021,7 @@ class AjaxSearchController extends Controller {
     {
         $data['response'] = 'n';
         $query = $this->array_orders_provider('Referral', $request->input('specialty'));
-        if (count($query) > 0) {
+        if (! empty($query)) {
             $data['response'] = 'y';
             foreach ($query as $k => $v) {
                 $data['options'][$k] = $v;

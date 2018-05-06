@@ -333,7 +333,7 @@ class ChartController extends Controller {
             if (Session::get('group_id') == '2') {
                 // Mark conditions list as reviewed by physician
                 $allergies_encounter = '';
-                if (count($list_array) > 0) {
+                if (! empty($list_array)) {
                     $allergies_encounter .= implode("\n", array_column($list_array, 'label'));
                 }
                 $allergies_encounter .= "\n" . 'Reviewed by ' . Session::get('displayname') . ' on ' . date('Y-m-d');
@@ -841,7 +841,7 @@ class ChartController extends Controller {
                         $ascvd_arr1[$ascvd_item_v] = $ascvd_item_k;
                     }
                 }
-                if (count($ascvd_arr1) > 0) {
+                if (! empty($ascvd_arr1)) {
                     krsort($ascvd_arr1);
                     foreach ($ascvd_arr1 as $ascvd_item1_k => $ascvd_item1_v) {
                         $return .= '<div class="alert alert-danger"><strong>' . $ascvd_rec[$ascvd_item1_v] . ':</strong> - ' . $ascvd_item1_k . '%</div>';
@@ -1041,7 +1041,7 @@ class ChartController extends Controller {
                         }
                     }
                 }
-                if (count($list_array) > 0) {
+                if (! empty($list_array)) {
                     $data['content'] .= $this->result_build($list_array, $type . '_cms_list');
                 }
             }
@@ -1298,7 +1298,7 @@ class ChartController extends Controller {
                 $oh_data['sexuallyactive'] = $data['sexuallyactive'];
                 unset($data['sexuallyactive']);
             }
-            if (count($oh_data) > 0) {
+            if (! empty($oh_data)) {
                 DB::table('demographics')->where('pid', '=', Session::get('pid'))->update($oh_data);
             }
         }
@@ -2614,10 +2614,10 @@ class ChartController extends Controller {
                 // Mark conditions list as reviewed by physician
                 $mh_encounter = '';
                 $sh_encounter = '';
-                if (count($mh_list_array) > 0) {
+                if (! empty($mh_list_array)) {
                     $mh_encounter .= implode("\n", array_column($mh_list_array, 'label'));
                 }
-                if (count($sh_list_array) > 0) {
+                if (! empty($sh_list_array)) {
                     $sh_encounter .= implode("\n", array_column($sh_list_array, 'label'));
                 }
                 $mh_encounter .= "\n" . 'Reviewed by ' . Session::get('displayname') . ' on ' . date('Y-m-d');
@@ -3115,6 +3115,7 @@ class ChartController extends Controller {
         $data['message_action'] = Session::get('message_action');
         Session::forget('message_action');
         Session::put('eid', $eid);
+        Session::forget('eid_billing');
         $data['template_content'] = 'test';
         $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
         $encounter = DB::table('encounters')->where('eid', '=', $eid)->first();
@@ -3267,7 +3268,7 @@ class ChartController extends Controller {
                             $vitals_display_arr[] = '<b>' .$vitals_value1 . ':</b> ' . $vitals->{$vitals_key1};
                         }
                     }
-                    if (count($vitals_display_arr) > 0) {
+                    if (! empty($vitals_display_arr)) {
                         $vitals_arr['label'] .= '<p>';
                         $vitals_arr['label'] .= implode('; ', $vitals_display_arr);
                         $vitals_arr['label'] .= '</p>';
@@ -3387,7 +3388,7 @@ class ChartController extends Controller {
                     $dx_pre_array[] = $j;
                 }
             }
-            if (count($dx_pre_array) > 0) {
+            if (! empty($dx_pre_array)) {
                 $first_dx = $dx_pre_array[0];
                 $last_dx = $dx_pre_array[count($dx_pre_array) - 1];
                 foreach ($dx_pre_array as $dx_num) {
@@ -3479,25 +3480,25 @@ class ChartController extends Controller {
                     $orders_referrals_array[] = 'Referral sent to ' . $orders_displayname . ': '. nl2br($ordersInfo->orders_referrals) . '<br />';
                 }
             }
-            if (count($orders_lab_array) > 0) {
+            if (! empty($orders_lab_array)) {
                 $orders_section .= '<strong>Labs: </strong>';
                 foreach ($orders_lab_array as $lab_item) {
                     $orders_section .= $lab_item;
                 }
             }
-            if (count($orders_radiology_array) > 0) {
+            if (! empty($orders_radiology_array)) {
                 $orders_section .= '<strong>Imaging: </strong>';
                 foreach ($orders_radiology_array as $radiology_item) {
                     $orders_section .= $radiology_item;
                 }
             }
-            if (count($orders_cp_array) > 0) {
+            if (! empty($orders_cp_array)) {
                 $orders_section .= '<strong>Cardiopulmonary: </strong>';
                 foreach ($orders_cp_array as $cp_item) {
                     $orders_section .= $cp_item;
                 }
             }
-            if (count($orders_referrals_array) > 0) {
+            if (! empty($orders_referrals_array)) {
                 $orders_section .= '<strong>Referrals: </strong>';
                 foreach ($orders_referrals_array as $referrals_item) {
                     $orders_section .= $referrals_item;
@@ -4119,7 +4120,7 @@ class ChartController extends Controller {
             $columns = Schema::getColumnListing('billing_core');
             $row_index = $columns[0];
             $dx_pointer_arr = $this->array_assessment_billing($eid);
-            if (count($dx_pointer_arr) == 0) {
+            if (empty($dx_pointer_arr)) {
                 Session::put('message_action', 'Error - Assessment needs to assigned to encounter first');
                 return redirect()->route('encounter', [$eid, 'a']);
             }
@@ -4294,6 +4295,7 @@ class ChartController extends Controller {
                 Session::put('message_action', 'Encounter created.');
                 if (Session::has('encounter_redirect')) {
                     Session::put('eid', $eid);
+                    Session::forget('eid_billing');
                     $redirect_url = Session::get('encounter_redirect');
                     Session::forget('encounter_redirect');
                     return redirect($redirect_url);
@@ -4854,7 +4856,7 @@ class ChartController extends Controller {
         if (!$billing) {
             $error_arr[] = "Billing";
         }
-        if (count($error_arr) > 0) {
+        if (! empty($error_arr)) {
             $error = 'Error - Missing items: ' . implode(', ', $error_arr);
             Session::put('message_action', $error);
             return redirect(Session::get('last_page_encounter'));
@@ -6021,7 +6023,7 @@ class ChartController extends Controller {
                 }
             }
         }
-        if (count($list_array) > 0) {
+        if (! empty($list_array)) {
             $return .= $this->result_build($list_array, 'forms_list');
         } else {
             $return .= ' None.';
@@ -6093,7 +6095,7 @@ class ChartController extends Controller {
                     }
                 }
             }
-            if (count($score_arr) > 0) {
+            if (! empty($score_arr)) {
                 foreach ($score_arr as $range => $description) {
                     $range_arr = explode('-', $range);
                     if ($score >= $range_arr[0] && $score <= $range_arr[1]) {
@@ -6764,7 +6766,7 @@ class ChartController extends Controller {
             if (Session::get('group_id') == '2') {
                 // Mark medication list as reviewed by physician
                 $medications_encounter = '';
-                if (count($list_array) > 0) {
+                if (! empty($list_array)) {
                     $medications_encounter .= implode("\n", array_column($list_array, 'label'));
                 }
                 $medications_encounter .= "\n" . 'Reviewed by ' . Session::get('displayname') . ' on ' . date('Y-m-d');
@@ -7430,7 +7432,7 @@ class ChartController extends Controller {
             $file_path = $practice->documents_dir . $pid . '/letter_' . time() . '.pdf';
             $tests_performed = $request->input('tests_performed');
             $body = '';
-            if (count($tests_performed) > 0) {
+            if (! empty($tests_performed)) {
                 $body .= 'The following tests were performed: ';
                 foreach ($tests_performed as $test) {
                     $data1['alert_date_complete'] = date('Y-m-d H:i:s');
@@ -7957,7 +7959,7 @@ class ChartController extends Controller {
                 }
             }
         }
-        if ($allergies->count() || $issues->count() || $rx->count() || $sup->count() || $imm->count() || $orders->count() || $encounters->count() || $notes->count() || $notes1->count() || $documents->count() || $tests->count() || $alerts->count() || $t_messages->count() || $demographics->count() || $demographics_a->count() || $demographics_b->count() || $demographics_c->count() || count($encounters_arr) > 0 || count($t_messages_arr) > 0 || count($documents_arr) > 0 || count($tests_arr) > 0) {
+        if ($allergies->count() || $issues->count() || $rx->count() || $sup->count() || $imm->count() || $orders->count() || $encounters->count() || $notes->count() || $notes1->count() || $documents->count() || $tests->count() || $alerts->count() || $t_messages->count() || $demographics->count() || $demographics_a->count() || $demographics_b->count() || $demographics_c->count() || ! empty($encounters_arr) || ! empty($t_messages_arr) || ! empty($documents_arr) || ! empty($tests_arr)) {
             $list_array = [];
             $encounter_type = $this->array_encounter_type();
             if ($encounters->count()) {
@@ -7971,7 +7973,7 @@ class ChartController extends Controller {
                     $list_array[] = $arr;
                 }
             }
-            if (count($encounters_arr) > 0) {
+            if (! empty($encounters_arr)) {
                 foreach ($encounters_arr as $encounters_item) {
                     $encounters_row1 = DB::table('encounters')->where('eid', '=', $encounters_item)->first();
                     $arr = [];
@@ -8103,7 +8105,7 @@ class ChartController extends Controller {
                     $list_array[] = $arr;
                 }
             }
-            if (count($tests_arr) > 0) {
+            if (! empty($tests_arr)) {
                 foreach ($tests_arr as $tests_item) {
                     $tests_row1 = DB::table('tests')->where('tests_id', '=', $tests_item)->first();
                     $arr = [];
@@ -8130,7 +8132,7 @@ class ChartController extends Controller {
                     $list_array[] = $arr;
                 }
             }
-            if (count($documents_arr) > 0) {
+            if (! empty($documents_arr)) {
                 foreach ($documents_arr as $documents_item) {
                     $documents_row1 = DB::table('documents')->where('documents_id', '=', $documents_item)->first();
                     $arr = [];
@@ -8156,7 +8158,7 @@ class ChartController extends Controller {
                     $list_array[] = $arr;
                 }
             }
-            if (count($t_messages_arr) > 0) {
+            if (! empty($t_messages_arr)) {
                 foreach ($t_messages_arr as $t_messages_item) {
                     $t_messages_row1 = DB::table('t_messages')->where('t_messages_id', '=', $t_messages_item)->first();
                     $arr = [];
@@ -8487,7 +8489,7 @@ class ChartController extends Controller {
             if (Session::get('group_id') == '2') {
                 // Mark supplement list as reviewed by physician
                 $supplements_encounter = '';
-                if (count($list_array) > 0) {
+                if (! empty($list_array)) {
                     $supplements_encounter .= implode("\n", array_column($list_array, 'label'));
                 }
                 $supplements_encounter .= "\n" . 'Reviewed by ' . Session::get('displayname') . ' on ' . date('Y-m-d');

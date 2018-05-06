@@ -1661,7 +1661,7 @@ class Controller extends BaseController
             unset($missing_arr[5]);
             $tc = $tc_query->test_result;
         }
-        if (count($missing_arr) == 0) {
+        if (empty($missing_arr)) {
             $data = [
                 'AspirinTherapy' => $aspirin,
                 'CurrentSmoker' => $smoker,
@@ -2558,7 +2558,7 @@ class Controller extends BaseController
     }
 
     protected function changeEnv($data = []){
-		if(count($data) > 0){
+		if(! empty($data)){
 			// Read .env-file
 			$env = file_get_contents(base_path() . '/.env');
 			// Split string on every " " and write into array
@@ -2835,7 +2835,7 @@ class Controller extends BaseController
                                 }
                             }
                         }
-                        if (count($options) > 0) {
+                        if (! empty($options)) {
                             $item['options'] = implode(',', $options);
                         }
                     }
@@ -3429,25 +3429,25 @@ class Controller extends BaseController
                     $orders_referrals_array[] = 'Referral sent to ' . $orders_displayname . ': '. nl2br($ordersInfo->orders_referrals) . '<br />';
                 }
             }
-            if (count($orders_lab_array) > 0) {
+            if (! empty($orders_lab_array)) {
                 $data['orders'] .= '<strong>Labs: </strong><br>';
                 foreach ($orders_lab_array as $lab_item) {
                     $data['orders'] .= $lab_item;
                 }
             }
-            if (count($orders_radiology_array) > 0) {
+            if (! empty($orders_radiology_array)) {
                 $data['orders'] .= '<strong>Imaging: </strong><br>';
                 foreach ($orders_radiology_array as $radiology_item) {
                     $data['orders'] .= $radiology_item;
                 }
             }
-            if (count($orders_cp_array) > 0) {
+            if (! empty($orders_cp_array)) {
                 $data['orders'] .= '<strong>Cardiopulmonary: </strong><br>';
                 foreach ($orders_cp_array as $cp_item) {
                     $data['orders'] .= $cp_item;
                 }
             }
-            if (count($orders_referrals_array) > 0) {
+            if (! empty($orders_referrals_array)) {
                 $data['orders'] .= '<strong>Referrals: </strong><br>';
                 foreach ($orders_referrals_array as $referrals_item) {
                     $data['orders'] .= $referrals_item;
@@ -4344,6 +4344,7 @@ class Controller extends BaseController
                 $eid = Session::get('eid');
             }
             if (Session::has('eid_billing')) {
+            // if (Session::has('eid_billing') && Session::get('eid_billing') !== Session::get('eid')) {
                 $encounter = DB::table('encounters')->where('eid', '=', Session::get('eid_billing'))->first();
                 $eid = Session::get('eid_billing');
             }
@@ -5074,7 +5075,7 @@ class Controller extends BaseController
         ];
         $name_arr[''] = '';
         $name_arr['Patient'] = 'Patient';
-        if (count($arr) > 0) {
+        if (! empty($arr)) {
             foreach($arr as $person) {
                 $name_arr[$person['Name']] = $person['Name'];
             }
@@ -8840,7 +8841,7 @@ class Controller extends BaseController
             $lms = $this->gc_lms2($type, $sex, $length);
         }
         $percentile = 0;
-        if (count($lms) > 0) {
+        if (! empty($lms)) {
             $l = $lms['l'];
             $m = $lms['m'];
             $s = $lms['s'];
@@ -9551,7 +9552,7 @@ class Controller extends BaseController
         $proc_file_final = "";
         if ($recent_encounter_query) {
             $pre_proc = $this->procedure_build($recent_encounter_query->eid);
-            if (count($pre_proc) > 0) {
+            if (! empty($pre_proc)) {
                 $n = 1;
                 foreach ($pre_proc as $pre_proc_item) {
                     $proc_table .= "<tr>";
@@ -13364,23 +13365,23 @@ class Controller extends BaseController
                     }
                 }
             }
-            if(count($rx_prescribe_text_arr) > 0) {
+            if(! empty($rx_prescribe_text_arr)) {
                 array_unshift($rx_prescribe_text_arr, "PRESCRIBED MEDICATIONS:  ");
                 $rx_rx_arr[] = implode("\n", $rx_prescribe_text_arr);
             }
-            if(count($rx_eie_text_arr) > 0) {
+            if(! empty($rx_eie_text_arr)) {
                 array_unshift($rx_eie_text_arr, "ENTERED MEDICATIONS IN ERROR:  ");
                 $rx_rx_arr[]= implode("\n", $rx_eie_text_arr);
             }
-            if(count($rx_inactivate_text_arr) > 0) {
+            if(! empty($rx_inactivate_text_arr)) {
                 array_unshift($rx_inactivate_text_arr, "DISCONTINUED MEDICATIONS:  ");
                 $rx_rx_arr[] = implode("\n", $rx_inactivate_text_arr);
             }
-            if(count($rx_reactivate_text_arr) > 0) {
+            if(! empty($rx_reactivate_text_arr)) {
                 array_unshift($rx_reactivate_text_arr, "REINSTATED MEDICATIONS:  ");
                 $rx_rx_arr[] = implode("\n", $rx_reactivate_text_arr);
             }
-            if (count($rx_rx_arr) > 0) {
+            if(! empty($rx_rx_arr)) {
                 $rx_rx = implode("\n\n", $rx_rx_arr);
                 $rx_orders_summary_text = implode("\n\n", $rx_rx_arr);
             }
@@ -13497,23 +13498,23 @@ class Controller extends BaseController
                     }
                 }
             }
-            if(count($sup_order_text_arr) > 0) {
+            if(! empty($sup_order_text_arr)) {
                 array_unshift($sup_order_text_arr, "SUPPLEMENTS ADVISED:  ");
                 $rx_supplements_arr[] = implode("\n", $sup_order_text_arr);
             }
-            if(count($sup_purchase_text_arr) > 0) {
+            if(! empty($sup_purchase_text_arr)) {
                 array_unshift($sup_purchase_text_arr, "SUPPLEMENTS PURCHASED BY PATIENT:  ");
                 $rx_supplements_arr[]= implode("\n", $sup_purchase_text_arr);
             }
-            if(count($sup_inactivate_text_arr) > 0) {
+            if(! empty($sup_inactivate_text_arr)) {
                 array_unshift($sup_inactivate_text_arr, "DISCONTINUED SUPPLEMENTS:  ");
                 $rx_supplements_arr[] = implode("\n", $sup_inactivate_text_arr);
             }
-            if(count($sup_reactivate_text_arr) > 0) {
+            if(! empty($sup_reactivate_text_arr)) {
                 array_unshift($sup_reactivate_text_arr, "REINSTATED SUPPLEMENTS:  ");
                 $rx_supplements_arr[] = implode("\n", $sup_reactivate_text_arr);
             }
-            if (count($rx_supplements_arr) > 0) {
+            if(! empty($rx_supplements_arr)) {
                 $rx_supplements = implode("\n\n", $rx_supplements_arr);
                 $sup_orders_summary_text .= implode("\n\n", $rx_supplements_arr);
             }
@@ -14395,11 +14396,11 @@ class Controller extends BaseController
             $response['dateAsserted'] = date('Y-m-d');
             $response['effectiveDateTime'] = date('Y-m-d', $this->human_to_unix($row->rxl_date_active));
             $medication_reference = $this->resource_medication_reference($row->rxl_ndcid);
-            if (count($medication_reference) > 0) {
+            if (! empty($medication_reference)) {
                 $response['medicationReference'] = $medication_reference;
             }
             $reason_snomed = $this->snomed($row->rxl_reason, true);
-            if (count($reason_snomed) > 0) {
+            if (! empty($reason_snomed)) {
                 $response['reasonCodeableConcept'] = [
                     'coding' => [
                         '0' => [
@@ -14432,7 +14433,7 @@ class Controller extends BaseController
                 $dosage_text = $row->rxl_sig . ', ' . $row->rxl_route . ', ' . $row->rxl_frequency . ' for ' . $row->rxl_reason;
                 $med_dosage_parts = explode(" ", $row->rxl_sig);
                 $med_dosage = $med_dosage_parts[0];
-                if (count($med_dosage_parts) > 1) {
+                if (! empty($med_dosage_parts)) {
                     $med_dosage_unit = $med_dosage_parts[1];
                 } else {
                     $med_dosage_unit = '';
@@ -14530,11 +14531,11 @@ class Controller extends BaseController
             }
             $response['dateWritten'] = date('Y-m-d', $this->human_to_unix($row->rxl_date_active));
             $medication_reference = $this->resource_medication_reference($row->rxl_ndcid);
-            if (count($medication_reference) > 0) {
+            if (! empty($medication_reference)) {
                 $response['medicationReference'] = $medication_reference;
             }
             $reason_snomed = $this->snomed($row->rxl_reason, true);
-            if (count($reason_snomed) > 0) {
+            if (! empty($reason_snomed)) {
                 $response['reasonCodeableConcept'] = [
                     'coding' => [
                         '0' => [
@@ -15544,25 +15545,25 @@ class Controller extends BaseController
                             $orders_referrals_array[] = 'Referral sent to ' . $orders_displayname . ': '. nl2br($ordersInfo->orders_referrals) . '<br />';
                         }
                     }
-                    if (count($orders_lab_array) > 0) {
+                    if (! empty($orders_lab_array)) {
                         $return['encounters_preview'] .= '<strong>Labs: </strong><br>';
                         foreach ($orders_lab_array as $lab_item) {
                             $return['encounters_preview'] .= $lab_item;
                         }
                     }
-                    if (count($orders_radiology_array) > 0) {
+                    if (! empty($orders_radiology_array)) {
                         $return['encounters_preview'] .= '<strong>Imaging: </strong><br>';
                         foreach ($orders_radiology_array as $radiology_item) {
                             $return['encounters_preview'] .= $radiology_item;
                         }
                     }
-                    if (count($orders_cp_array) > 0) {
+                    if (! empty($orders_cp_array)) {
                         $return['encounters_preview'] .= '<strong>Cardiopulmonary: </strong><br>';
                         foreach ($orders_cp_array as $cp_item) {
                             $return['encounters_preview'] .= $cp_item;
                         }
                     }
-                    if (count($orders_referrals_array) > 0) {
+                    if (! empty($orders_referrals_array)) {
                         $return['encounters_preview'] .= '<strong>Referrals: </strong><br>';
                         foreach ($orders_referrals_array as $referrals_item) {
                             $return['encounters_preview'] .= $referrals_item;
@@ -15937,7 +15938,7 @@ class Controller extends BaseController
             }
         }
         if ($single == true) {
-            if (count($return) > 0) {
+            if (! empty($return)) {
                 return $return[0];
             } else {
                 return $return;
@@ -16230,7 +16231,7 @@ class Controller extends BaseController
                 $date_arr[] = $this->human_to_unix($row6->allergies_date_active);
             }
         }
-        if (count($json) > 0) {
+        if (! empty($json)) {
             foreach ($json as $key => $value) {
                 $item[$key]  = $value['startDate'];
             }
@@ -16410,7 +16411,7 @@ class Controller extends BaseController
                 $return[] = $node;
             }
         }
-        if (count($nodes_partners) > 0) {
+        if (! empty($nodes_partners)) {
             $a = 1;
             foreach ($nodes_partners as $node1) {
                 $node1['x'] = 8 * $a;
@@ -16418,7 +16419,7 @@ class Controller extends BaseController
                 $a++;
             }
         }
-        if (count($nodes_sibling) > 0) {
+        if (! empty($nodes_sibling)) {
             $a1 = -1;
             foreach ($nodes_sibling as $node1a) {
                 $node1a['x'] = 8 * $a1;
@@ -16426,7 +16427,7 @@ class Controller extends BaseController
                 $a1--;
             }
         }
-        if (count($nodes_children) > 0) {
+        if (! empty($nodes_children)) {
             $bf = 1;
             $bm = -1;
             foreach ($nodes_children as $node2) {
@@ -16441,7 +16442,7 @@ class Controller extends BaseController
                 }
             }
         }
-        if (count($nodes_paternal) > 0) {
+        if (! empty($nodes_paternal)) {
             $c = -1;
             foreach ($nodes_paternal as $node3) {
                 $node3['x'] = 8 * $c;
@@ -16449,7 +16450,7 @@ class Controller extends BaseController
                 $c--;
             }
         }
-        if (count($nodes_maternal) > 0) {
+        if (! empty($nodes_maternal)) {
             $d = 1;
             foreach ($nodes_maternal as $node4) {
                 $node4['x'] = 8 * $d;
@@ -16457,7 +16458,7 @@ class Controller extends BaseController
                 $d++;
             }
         }
-        if (count($nodes_placeholder) > 0) {
+        if (! empty($nodes_placeholder)) {
             foreach ($nodes_placeholder as $node5) {
                 $orig_x = 0;
                 foreach ($return as $k => $v) {
@@ -16507,7 +16508,7 @@ class Controller extends BaseController
         $patient = DB::table('demographics')->where('pid', '=', Session::get('pid'))->first();
         $parents_arr = [];
         $parents1_arr = [];
-        if (count($arr) > 0 && $key !== 'patient') {
+        if (! empty($arr) && $key !== 'patient') {
             $color = 'rgb(125,125,255)';
             if ($arr[$key]['Gender'] == 'Female') {
                 $color = 'rgb(255,125,125)';
@@ -16585,7 +16586,7 @@ class Controller extends BaseController
             $orig_x = 'patient';
         }
         // Build mother and father (all people do) - find them if they exist in YAML
-        if (count($parents_arr) > 0) {
+        if (! empty($parents_arr)) {
             $father = array_search($parents_arr[0], array_column($arr, 'Relationship'));
             $mother = array_search($parents_arr[1], array_column($arr, 'Relationship'));
             if ($father) {
@@ -16672,7 +16673,7 @@ class Controller extends BaseController
                 ];
             }
         }
-        if (count($parents1_arr) > 0) {
+        if (! empty($parents1_arr)) {
             if ($parents1_arr[0] == 'Patient') {
                 $edges_arr[] = [
                     'id' => $this->gen_uuid(),
