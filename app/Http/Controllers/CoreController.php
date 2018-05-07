@@ -3395,7 +3395,8 @@ class CoreController extends Controller
                         }
                     }
                     $totalbalance = $balance + $balance1;
-                    if ($totalbalance >= 0.01 || $notes->billing_notes != '') {
+                    // if ($totalbalance >= 0.01 || $notes->billing_notes != '') {
+                    if ($totalbalance >= 0.01) {
                         $count++;
                         $result[] = [
                             'pid' => $row->pid,
@@ -3413,7 +3414,7 @@ class CoreController extends Controller
                 'Last Name' => 'lastname',
                 'First Name' => 'firstname',
                 'Balance' => 'balance',
-                'Notes' => 'billing_notes'
+                // 'Notes' => 'billing_notes'
             ];
         }
         if ($type == 'era') {
