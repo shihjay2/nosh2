@@ -4339,15 +4339,16 @@ class Controller extends BaseController
     protected function form_billing_core($result, $table, $id, $subtype)
     {
         if ($id == '0') {
-            if (Session::has('eid')) {
-                $encounter = DB::table('encounters')->where('eid', '=', Session::get('eid'))->first();
-                $eid = Session::get('eid');
-            }
-            if (Session::has('eid_billing')) {
-            // if (Session::has('eid_billing') && Session::get('eid_billing') !== Session::get('eid')) {
-                $encounter = DB::table('encounters')->where('eid', '=', Session::get('eid_billing'))->first();
-                $eid = Session::get('eid_billing');
-            }
+            $encounter = DB::table('encounters')->where('eid', '=', Session::get('eid_billing'))->first();
+            $eid = Session::get('eid_billing');
+            // if (Session::has('eid')) {
+            //     $encounter = DB::table('encounters')->where('eid', '=', Session::get('eid'))->first();
+            //     $eid = Session::get('eid');
+            // }
+            // if (Session::has('eid_billing')) {
+            //     $encounter = DB::table('encounters')->where('eid', '=', Session::get('eid_billing'))->first();
+            //     $eid = Session::get('eid_billing');
+            // }
             $default_date = date('Y-m-d', $this->human_to_unix($encounter->encounter_DOS));
             $cpt = [
                 'cpt' => null,
@@ -12192,13 +12193,17 @@ class Controller extends BaseController
         if (isset($html)) {
             // Get pages_data
             $pagination = $html->find('ul.pagination', 0);
-            $i = 1;
-            foreach ($pagination->find('li') as $page_icd) {
-                // Limit searh to 3 pages or less
-                if ($i < 3) {
-                    $data = $this->icd10data_get($i, $data, $icd10q);
+            if ($pagination) {
+                $i = 1;
+                foreach ($pagination->find('li') as $page_icd) {
+                    // Limit searh to 3 pages or less
+                    if ($i < 3) {
+                        $data = $this->icd10data_get($i, $data, $icd10q);
+                    }
+                    $i++;
                 }
-                $i++;
+            } else {
+                $data = $this->icd10data_get('1', $data, $icd10q);
             }
         }
         return $data;

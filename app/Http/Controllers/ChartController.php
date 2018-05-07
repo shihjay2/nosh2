@@ -4226,13 +4226,14 @@ class ChartController extends Controller {
             $data['panel_header'] = 'Encounter - ' .  date('Y-m-d', $this->human_to_unix($encounter->encounter_DOS));
             $data = array_merge($data, $this->sidebar_build('chart'));
             Session::put('billing_last_page', $request->fullUrl());
-            if (!Session::has('eid')) {
-                Session::put('eid_billing', $eid);
-            } else {
-                if (Session::get('eid') !== $eid) {
-                    Session::put('eid_billing', $eid);
-                }
-            }
+            Session::put('eid_billing', $eid);
+            // if (!Session::has('eid')) {
+            //     Session::put('eid_billing', $eid);
+            // } else {
+            //     if (Session::get('eid') !== $eid) {
+            //         Session::put('eid_billing', $eid);
+            //     }
+            // }
             $data['assets_js'] = $this->assets_js('chart');
             $data['assets_css'] = $this->assets_css('chart');
             return view('chart', $data);
