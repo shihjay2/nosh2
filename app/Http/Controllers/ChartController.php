@@ -884,10 +884,13 @@ class ChartController extends Controller {
         $oidc->addScope('profile');
         $oidc->authenticate();
         $access_token = $oidc->getAccessToken();
+        $refresh_token = $oidc->getRefreshToken();
+        $result_token = json_decode($oidc->getResultToken(), true);
+        $cms_pid = $result_token['patient'];
         $connected1 = DB::table('refresh_tokens')->where('practice_id', '=', '1')->where('endpoint_uri', '=', $base_url)->first();
         if (!$connected1) {
             $refresh = [
-                'refresh_token' => $access_token,
+                'refresh_token' => $refresh_token,
                 'pid' => Session::get('pid'),
                 'practice_id' => Session::get('practice_id'),
                 'user_id' => Session::get('user_id'),
@@ -899,7 +902,7 @@ class ChartController extends Controller {
             DB::table('refresh_tokens')->insert($refresh);
             $this->audit('Add');
         } else {
-            $refresh['refresh_token'] = $access_token;
+            $refresh['refresh_token'] = $refresh_token;
             DB::table('refresh_tokens')->where('id', '=', $connected1->id)->update($refresh);
             $this->audit('Update');
         }
@@ -913,7 +916,7 @@ class ChartController extends Controller {
         $token = Session::get('cms_access_token');
         $base_url = 'https://sandbox.bluebutton.cms.gov';
         $title_array = [
-            'Summary' => ['Patient Summary', 'fa-address-card', '/connect/userinfo'],
+            'Summary' => ['Patient Summary', 'fa-address-card', '/v1/connect/userinfo'],
             'EOB' => ['Explaination of Benefits', 'fa-money', '/v1/fhir/ExplanationOfBenefit/?patient=' . Session::get('cms_pid')],
             'Coverage' => ['Coverage Information', 'fa-address-book', '/v1/fhir/Coverage/?patient=' . Session::get('cms_pid')]
         ];
@@ -979,71 +982,74 @@ class ChartController extends Controller {
             $data['content'] = '';
             $list_array = [];
             if (isset($result)) {
-                // return json_encode($result);
                 // $data['content'] .= json_encode($result);
                 if ($type == 'Coverage') {
-                    if ($result['total'] > 0) {
-                        foreach ($result['entry'] as $row1) {
-                            if (isset($row1['resource']['status'])) {
-                                if ($row1['resource']['status'] == 'active') {
-                                    $arr = [];
-                                    $arr['label'] = (string) $row1['resource']['type']['coding'][0]['system'] . ' ' . $row1['resource']['type']['coding'][0]['code'] . ', ID: ' . $row1['resource']['id'];
-                                    $list_array[] = $arr;
+                    if (!isset($result['detail'])) {
+                        if ($result['total'] > 0) {
+                            foreach ($result['entry'] as $row1) {
+                                if (isset($row1['resource']['status'])) {
+                                    if ($row1['resource']['status'] == 'active') {
+                                        $arr = [];
+                                        $arr['label'] = (string) $row1['resource']['type']['coding'][0]['system'] . ' ' . $row1['resource']['type']['coding'][0]['code'] . ', ID: ' . $row1['resource']['id'];
+                                        $list_array[] = $arr;
+                                    }
                                 }
                             }
                         }
                     }
                 }
                 if ($type == 'EOB') {
-                    if ($result['total'] > 0) {
-                        $sub_session = [];
-                        $i=0;
-                        foreach ($result['entry'] as $row2) {
-                            if (isset($row2['resource']['status'])) {
-                                if ($row2['resource']['status'] == 'active') {
-                                    if (isset($row2['resource']['billablePeriod']['start'])) {
-                                        $arr = [];
-                                        $arr['label'] = (string) $row2['resource']['billablePeriod']['start'] . ' - Payment Amount: ' . $row2['resource']['payment']['amount']['value'] . ' ' . $row2['resource']['payment']['amount']['code'];
-                                        $dx_session = [];
-                                        foreach ($row2['resource']['diagnosis'] as $dx_row) {
-                                            $dx_session[$dx_row['sequence']] = $dx_row['diagnosisCodeableConcept']['coding'][0]['code'];
-                                        }
-                                        $sub_session_arr = [];
-                                        foreach ($row2['resource']['item'] as $sub_row) {
-                                            $adj_session = [];
-                                            foreach ($sub_row['adjudication'] as $adj_row) {
-                                                $adj_session_text = $adj_row['category']['coding'][0]['code'];
-                                                if (isset($adj_row['amount'])) {
-                                                    $adj_session_text .= ', ' . $adj_row['amount']['value'] . ' ' . $adj_row['amount']['code'];
-                                                }
-                                                $adj_session[] = $adj_session_text;
-                                            }
-                                            $diagnosis = '';
-                                            if (isset($sub_row['diagnosisLinkId'][0])) {
-                                                $diagnosis = $dx_session[$sub_row['diagnosisLinkId'][0]];
-                                            }
-                                            $sub_session_arr[] = [
-                                                'date' => $row2['resource']['billablePeriod']['start'],
-                                                'quantity' => $sub_row['quantity']['value'],
-                                                'diagnosis' => $diagnosis,
-                                                'adjudications' => $adj_session
-                                            ];
-                                        }
-                                        $sub_session[$i] = $sub_session_arr;
-                                        $arr['view'] = route('cms_bluebutton_eob', [$i]);
-                                        $list_array[] = $arr;
-                                        $i++;
-                                    } else {
-                                        if (isset($row2['resource']['item'][0]['servicedDate'])) {
+                    if (!isset($result['detail'])) {
+                        if ($result['total'] > 0) {
+                            $sub_session = [];
+                            $i=0;
+                            foreach ($result['entry'] as $row2) {
+                                if (isset($row2['resource']['status'])) {
+                                    if ($row2['resource']['status'] == 'active') {
+                                        if (isset($row2['resource']['billablePeriod']['start'])) {
                                             $arr = [];
-                                            $arr['label'] = (string) $row2['resource']['item'][0]['servicedDate'];
+                                            $arr['label'] = (string) $row2['resource']['billablePeriod']['start'] . ' - Payment Amount: ' . $row2['resource']['payment']['amount']['value'] . ' ' . $row2['resource']['payment']['amount']['code'];
+                                            $dx_session = [];
+                                            foreach ($row2['resource']['diagnosis'] as $dx_row) {
+                                                $dx_session[$dx_row['sequence']] = $dx_row['diagnosisCodeableConcept']['coding'][0]['code'];
+                                            }
+                                            $sub_session_arr = [];
+                                            foreach ($row2['resource']['item'] as $sub_row) {
+                                                $adj_session = [];
+                                                foreach ($sub_row['adjudication'] as $adj_row) {
+                                                    $adj_session_text = $adj_row['category']['coding'][0]['code'];
+                                                    if (isset($adj_row['amount'])) {
+                                                        $adj_session_text .= ', ' . $adj_row['amount']['value'] . ' ' . $adj_row['amount']['code'];
+                                                    }
+                                                    $adj_session[] = $adj_session_text;
+                                                }
+                                                $diagnosis = '';
+                                                if (isset($sub_row['diagnosisLinkId'][0])) {
+                                                    $diagnosis = $dx_session[$sub_row['diagnosisLinkId'][0]];
+                                                }
+                                                $sub_session_arr[] = [
+                                                    'date' => $row2['resource']['billablePeriod']['start'],
+                                                    'quantity' => $sub_row['quantity']['value'],
+                                                    'diagnosis' => $diagnosis,
+                                                    'adjudications' => $adj_session
+                                                ];
+                                            }
+                                            $sub_session[$i] = $sub_session_arr;
+                                            $arr['view'] = route('cms_bluebutton_eob', [$i]);
                                             $list_array[] = $arr;
+                                            $i++;
+                                        } else {
+                                            if (isset($row2['resource']['item'][0]['servicedDate'])) {
+                                                $arr = [];
+                                                $arr['label'] = (string) $row2['resource']['item'][0]['servicedDate'];
+                                                $list_array[] = $arr;
+                                            }
                                         }
                                     }
                                 }
                             }
+                            Session::put('sub_session', $sub_session);
                         }
-                        Session::put('sub_session', $sub_session);
                     }
                 }
                 if (! empty($list_array)) {

@@ -171,6 +171,7 @@ class OpenIDConnectClient
 	 */
 	private $authParams = array();
 
+	private $result_token;
 	/**
 	 * @param $provider_url string optional
 	 *
@@ -206,7 +207,7 @@ class OpenIDConnectClient
 		if (isset($_REQUEST["code"]) && isset($_SESSION['openid_connect_state'])) {
 			$code = $_REQUEST["code"];
 			$token_json = $this->requestTokens($code, $uma);
-
+			$this->result_token = json_encode($token_json);
 			// Throw an error if the server returns one
 			if (isset($token_json->error)) {
 				throw new OpenIDConnectClientException($token_json->error_description);
@@ -965,6 +966,10 @@ class OpenIDConnectClient
 	 */
 	public function getPatientToken() {
 		return $this->patientToken;
+	}
+
+	public function getResultToken() {
+		return $this->result_token;
 	}
 
 	/**
