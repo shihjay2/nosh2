@@ -643,7 +643,7 @@ public function install_fix(Request $request)
                 $check_exec = curl_exec($ch);
                 $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
                 curl_close ($ch);
-                if ($httpCode == 404) {
+                if ($httpCode == 404 || $httpCode == 0) {
                     return redirect()->route('uma_patient_centric_designate');
                 }
                 $data['uma_uri'] = str_replace('/nosh', '', URL::to('/'));
@@ -822,7 +822,7 @@ public function install_fix(Request $request)
             $domain_name = curl_exec($ch);
             $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
             curl_close ($ch);
-            if ($httpCode !== 404) {
+            if ($httpCode !== 404  && $httpCode !== 0) {
                 $uma_data['uma_uri'] = $pre_url;
                 DB::table('practiceinfo')->where('practice_id', '=', '1')->update($uma_data);
                 $this->audit('Update');
