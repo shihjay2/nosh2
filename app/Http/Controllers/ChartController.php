@@ -299,7 +299,9 @@ class ChartController extends Controller {
                     } else {
                         $arr['reactivate'] = route('chart_action', ['table' => 'allergies', 'action' => 'reactivate', 'index' => $row_index, 'id' => $row->$row_index]);
                     }
-                    $arr['delete'] = route('chart_action', ['table' => 'allergies', 'action' => 'delete', 'index' => $row_index, 'id' => $row->$row_index]);
+                    if (Session::get('group_id') == '2') {
+                        $arr['delete'] = route('chart_action', ['table' => 'allergies', 'action' => 'delete', 'index' => $row_index, 'id' => $row->$row_index]);
+                    }
                 }
                 if ($row->reconcile !== null && $row->reconcile !== 'y') {
                     $arr['danger'] = true;
@@ -2509,7 +2511,9 @@ class ChartController extends Controller {
                         }
                         $pl_arr['move_mh'] = route('chart_action', ['table' => 'issues', 'action' => 'move_mh', 'index' => $row_index, 'id' => $row->$row_index]);
                         $pl_arr['move_sh'] = route('chart_action', ['table' => 'issues', 'action' => 'move_sh', 'index' => $row_index, 'id' => $row->$row_index]);
-                        $pl_arr['delete'] = route('chart_action', ['table' => 'issues', 'action' => 'delete', 'index' => $row_index, 'id' => $row->$row_index]);
+                        if (Session::get('group_id') == '2') {
+                            $pl_arr['delete'] = route('chart_action', ['table' => 'issues', 'action' => 'delete', 'index' => $row_index, 'id' => $row->$row_index]);
+                        }
                         if (Session::has('eid')) {
                             $pl_arr['encounter'] = route('encounter_assessment_add', ['issue', $row->$row_index]);
                         }
@@ -2530,7 +2534,9 @@ class ChartController extends Controller {
                             $mh_arr['reactivate'] = route('chart_action', ['table' => 'issues', 'action' => 'reactivate', 'index' => $row_index, 'id' => $row->$row_index]);
                         }
                         $mh_arr['move_pl'] = route('chart_action', ['table' => 'issues', 'action' => 'move_pl', 'index' => $row_index, 'id' => $row->$row_index]);
-                        $mh_arr['delete'] = route('chart_action', ['table' => 'issues', 'action' => 'delete', 'index' => $row_index, 'id' => $row->$row_index]);
+                        if (Session::get('group_id') == '2') {
+                            $mh_arr['delete'] = route('chart_action', ['table' => 'issues', 'action' => 'delete', 'index' => $row_index, 'id' => $row->$row_index]);
+                        }
                         if (Session::has('eid')) {
                             $mh_arr['encounter'] = route('encounter_assessment_add', ['issue', $row->$row_index]);
                         }
@@ -2551,7 +2557,9 @@ class ChartController extends Controller {
                             $sh_arr['reactivate'] = route('chart_action', ['table' => 'issues', 'action' => 'reactivate', 'index' => $row_index, 'id' => $row->$row_index]);
                         }
                         $sh_arr['move_pl'] = route('chart_action', ['table' => 'issues', 'action' => 'move_pl', 'index' => $row_index, 'id' => $row->$row_index]);
-                        $sh_arr['delete'] = route('chart_action', ['table' => 'issues', 'action' => 'delete', 'index' => $row_index, 'id' => $row->$row_index]);
+                        if (Session::get('group_id') == '2') {
+                            $sh_arr['delete'] = route('chart_action', ['table' => 'issues', 'action' => 'delete', 'index' => $row_index, 'id' => $row->$row_index]);
+                        }
                         if (Session::has('eid')) {
                             $sh_arr['encounter'] = route('encounter_assessment_add', ['issue', $row->$row_index]);
                         }
@@ -6353,7 +6361,9 @@ class ChartController extends Controller {
                 }
                 if ($edit == true) {
                     $arr['edit'] = route('chart_form', ['immunizations', $row_index, $row->$row_index]);
-                    $arr['delete'] = route('chart_action', ['table' => 'immunizations', 'action' => 'delete', 'index' => $row_index, 'id' => $row->$row_index]);
+                    if (Session::get('group_id') == '2') {
+                        $arr['delete'] = route('chart_action', ['table' => 'immunizations', 'action' => 'delete', 'index' => $row_index, 'id' => $row->$row_index]);
+                    }
                 }
                 if ($row->reconcile !== null && $row->reconcile !== 'y') {
                     $arr['danger'] = true;
@@ -6734,7 +6744,9 @@ class ChartController extends Controller {
                     } else {
                         $arr['reactivate'] = route('chart_action', ['table' => 'rx_list', 'action' => 'reactivate', 'index' => $row_index, 'id' => $row->$row_index]);
                     }
-                    $arr['delete'] = route('chart_action', ['table' => 'rx_list', 'action' => 'delete', 'index' => $row_index, 'id' => $row->$row_index]);
+                    if (Session::get('group_id') == '2') {
+                        $arr['delete'] = route('chart_action', ['table' => 'rx_list', 'action' => 'delete', 'index' => $row_index, 'id' => $row->$row_index]);
+                    }
                 }
                 if ($row->reconcile !== null && $row->reconcile !== 'y') {
                     $arr['danger'] = true;
