@@ -4219,8 +4219,10 @@ class ChartController extends Controller {
                 'default_button_text_url' => Session::get('last_page')
             ];
             if (Session::has('last_page_encounter')) {
-                $url_ex = explode('/', Session::get('last_page_encounter'));
-                if ($url_ex[5] == $eid) {
+                $url = parse_url(Session::get('last_page_encounter'));
+                $path_components = explode('/', $url['path']);
+                $last_eid = end($path_components);
+                if ($last_eid == $eid) {
                     $dropdown_array['default_button_text_url'] = Session::get('last_page_encounter');
                     $data['encounters_active'] = true;
                 } else {
