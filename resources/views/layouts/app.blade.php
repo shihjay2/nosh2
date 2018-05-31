@@ -155,6 +155,7 @@
                                 @endif
                                 @if (Session::get('patient_centric') == 'y')
                                     <li><a href="{{ route('fhir_connect') }}"><i class="fa fa-btn fa-plug"></i>{{ trans('nosh.fhir_connect') }}</a></li>
+                                    <li><a href="{{ route('cms_bluebutton') }}"><i class="fa fa-btn fa-plug"></i>{{ trans('nosh.medicare_connect') }}</a></li>
                                     <li><a href="{{ str_replace('/nosh', '', route('dashboard')) }}"><i class="fa fa-btn fa-openid"></i>{{ trans('nosh.hieofone') }}</a></li>
                                 @endif
                                 <li><a href="{{ route('password_change') }}"><i class="fa fa-btn fa-cog"></i>{{ trans('nosh.password_change') }}</a></li>

@@ -95,6 +95,7 @@ return [
     "practice_setup" => "Practice Setup",
     "uma_invite" => "Share your Chart",
     "fhir_connect" => "Connect to a Patient Portal",
+    "medicare_connect" => "Connect to Medicare",
     "hieofone" => "Authorization Server",
     "my_information" => "My Information",
     "user_signature" => "Change Signature",
