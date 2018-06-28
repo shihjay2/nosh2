@@ -1697,14 +1697,14 @@ class OpenIDConnectClient
 	 * @param $uma
 	 */
 	public function setUMA($uma) {
-		$this->UMA = $uma;
+		$this->uma = $uma;
 	}
 
 	/**
 	 * @return string
 	 */
 	public function getUMA() {
-		return $this->UMA;
+		return $this->uma;
 	}
 
 	/**
