@@ -1324,6 +1324,7 @@ class LoginController extends Controller {
         $url = route('uma_auth');
         $oidc = new OpenIDConnectClient($open_id_url, $client_id, $client_secret);
         $oidc->setRedirectURL($url);
+        $oidc->setSessionName('pnosh');
         if ($practice->uma_refresh_token == '') {
             $oidc->addScope('openid');
             $oidc->addScope('email');
