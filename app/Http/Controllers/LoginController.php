@@ -1335,7 +1335,8 @@ class LoginController extends Controller {
             $oidc->addScope('email');
             $oidc->addScope('profile');
         }
-        $oidc->authenticate(true);
+        $oidc->setUMA(true);
+        $oidc->authenticate();
         $firstname = $oidc->requestUserInfo('given_name');
         $lastname = $oidc->requestUserInfo('family_name');
         $email = $oidc->requestUserInfo('email');
