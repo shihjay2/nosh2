@@ -579,7 +579,7 @@ class OpenIDConnectClient
 	 */
 	public function setRedirectURL ($url) {
 		if (parse_url($url,PHP_URL_HOST) !== false) {
-			$this->redirectURL = array_merge($this->redirectURL, (array)$url);
+			$this->redirectURL = $url;
 		}
 	}
 
