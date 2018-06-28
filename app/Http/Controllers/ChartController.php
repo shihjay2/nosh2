@@ -4208,8 +4208,7 @@ class ChartController extends Controller {
             if ($insurance_id_1 !== null) {
                 $return .= '<a href="' . route('print_invoice1', [$eid, $insurance_id_1, $insurance_id_2]) . '" class="btn btn-default btn-block nosh-no-load" role="button"><i class="fa fa-btn fa-print"></i>Print Invoice</a>';
                 if ($insurance_id_1 !== '0') {
-                    $return .= '<a href="' . route('generate_hcfa1', ['n', $eid, $insurance_id_1, $insurance_id_2]) . '" class="btn btn-default btn-block nosh-no-load" role="button"><i class="fa fa-btn fa-print"></i>Print Editable HCFA-1500</a>';
-                    $return .= '<a href="' . route('generate_hcfa1', ['y', $eid, $insurance_id_1, $insurance_id_2]) . '" class="btn btn-default btn-block nosh-no-load" role="button"><i class="fa fa-btn fa-print"></i>Print HCFA-1500</a>';
+                    $return .= '<a href="' . route('generate_hcfa1', [$eid, $insurance_id_1, $insurance_id_2]) . '" class="btn btn-default btn-block nosh-no-load" role="button"><i class="fa fa-btn fa-print"></i>Print HCFA-1500</a>';
                 }
             }
             $return .= '</div>';
@@ -5354,7 +5353,7 @@ class ChartController extends Controller {
     public function fhir_aat(Request $request)
     {
         // Check if call comes from rqp_claims redirect
-        if (Session::has('uma_aat') && Session::has('uma_permission_ticket')) {
+        if (Session::has('uma_permission_ticket')) {
             if (isset($_REQUEST["authorization_state"])) {
                 if ($_REQUEST["authorization_state"] != 'claims_submitted') {
                     if ($_REQUEST["authorization_state"] == 'not_authorized') {
@@ -5372,19 +5371,9 @@ class ChartController extends Controller {
                     return redirect()->route('fhir_api');
                 }
             } else {
-                Session::forget('uma_aat');
                 Session::forget('uma_permission_ticket');
             }
         }
-        // Get AAT
-        $url_array = ['/nosh/oidc','/nosh/fhir/oidc'];
-        $as_uri = Session::get('uma_uri');
-        $client_id = Session::get('uma_client_id');
-        $client_secret = Session::get('uma_client_secret');
-        $oidc = new OpenIDConnectClient($as_uri, $client_id, $client_secret);
-        $oidc->requestAAT();
-        Session::put('uma_aat', $oidc->getAccessToken());
-        // Get permission ticket
         $urlinit = $as_uri . '/nosh/fhir/' . Session::get('type') . '?subject:Patient=1';
         $result = $this->fhir_request($urlinit,true);
         if (isset($result['error'])) {
@@ -5411,6 +5400,7 @@ class ChartController extends Controller {
             $client_secret = Session::get('uma_client_secret');
             $url = route('fhir_api');
             $oidc = new OpenIDConnectClient($as_uri, $client_id, $client_secret);
+            $oidc->setSessionName('nosh');
             $oidc->setAccessToken(Session::get('uma_aat'));
             $oidc->setRedirectURL($url);
             $result1 = $oidc->rpt_request($permission_ticket);
@@ -5902,6 +5892,7 @@ class ChartController extends Controller {
         }
         $client_secret = '';
         $oidc = new OpenIDConnectClient(Session::get('fhir_auth_url'), $client_id, $client_secret);
+        $oidc->setSessionName('nosh');
         $oidc->setRedirectURL(route('fhir_connect_response'));
         $oidc->providerConfigParam(['authorization_endpoint' => Session::get('fhir_auth_url')]);
         $oidc->providerConfigParam(['token_endpoint' => Session::get('fhir_token_url')]);
@@ -6228,10 +6219,10 @@ class ChartController extends Controller {
         return view('chart', $data);
     }
 
-    public function generate_hcfa1($flatten, $eid, $insurance_id_1, $insurance_id_2='')
+    public function generate_hcfa1($eid, $insurance_id_1, $insurance_id_2='')
     {
         $result = $this->billing_save_common($insurance_id_1, $insurance_id_2, $eid);
-        $file_path = $this->hcfa($eid, $flatten);
+        $file_path = $this->hcfa($eid);
         if ($file_path) {
             return response()->download($file_path);
         } else {
@@ -8791,7 +8782,15 @@ class ChartController extends Controller {
                 $url1 = route('uma_auth');
                 $oidc = new OpenIDConnectClient($as_uri);
                 $oidc->setClientName($client_name);
-                $oidc->setRedirectURL($url1);
+                $oidc->setSessionName('pnosh');
+                $oidc->addRedirectURLs($url1);
+                $oidc->addRedirectURLs(route('uma_api'));
+                $oidc->addRedirectURLs(route('uma_logout'));
+                $oidc->addRedirectURLs(route('uma_patient_centric'));
+                $oidc->addRedirectURLs(route('uma_register_auth'));
+                $oidc->addRedirectURLs(route('oidc'));
+                $oidc->addRedirectURLs(route('oidc_api'));
+                $oidc->addRedirectURLs(str_replace('uma_auth', 'fhir', $url1));
                 $oidc->addScope('openid');
                 $oidc->addScope('email');
                 $oidc->addScope('profile');
@@ -8800,7 +8799,11 @@ class ChartController extends Controller {
                 $oidc->addScope('offline_access');
                 $oidc->addScope('uma_authorization');
                 $oidc->addScope('uma_protection');
-                $oidc->register(true);
+                $oidc->setLogo('https://cloud.noshchartingsystem.com/SAAS-Logo.jpg');
+                $oidc->setClientURI(str_replace('/uma_auth', '', $url1));
+                $oidc->setUMA(true);
+                $oidc->setResourceServer(true);
+                $oidc->register();
                 $client_id = $oidc->getClientID();
                 $client_secret = $oidc->getClientSecret();
                 $data1 = [
@@ -8834,13 +8837,15 @@ class ChartController extends Controller {
         $client_secret = Session::get('pnosh_client_secret');
         $oidc = new OpenIDConnectClient($open_id_url, $client_id, $client_secret);
         $oidc->setRedirectURL($url);
+        $oidc->setSessionName('pnosh');
         $oidc->addScope('openid');
         $oidc->addScope('email');
         $oidc->addScope('profile');
         $oidc->addScope('offline_access');
         $oidc->addScope('uma_authorization');
         $oidc->addScope('uma_protection');
-        $oidc->authenticate(true);
+        $oidc->setUMA(true);
+        $oidc->authenticate();
         $name = $oidc->requestUserInfo('name');
         $birthday = $oidc->requestUserInfo('birthday');
         $access_token = $oidc->getAccessToken();

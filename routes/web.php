@@ -49,7 +49,7 @@ Route::get('uma_patient_centric', ['as' => 'uma_patient_centric', 'uses' => 'Ins
 Route::any('uma_patient_centric_designate', ['as' => 'uma_patient_centric_designate', 'uses' => 'InstallController@uma_patient_centric_designate']);
 Route::get('update', ['as' => 'update', 'uses' => 'InstallController@update']);
 Route::get('update_env', ['as' => 'update_env', 'uses' => 'InstallController@update_env']);
-Route::get('update_system', ['as' => 'update_system', 'uses' => 'InstallController@update_system']);
+Route::get('update_system/{type?}', ['as' => 'update_system', 'uses' => 'InstallController@update_system']);
 
 // Core routes
 Route::get('/', ['as' => 'dashboard', 'uses' => 'CoreController@dashboard']);
@@ -88,11 +88,11 @@ Route::get('financial_era/{era_id}', ['as' => 'financial_era', 'uses' => 'CoreCo
 Route::any('financial_era_form', ['as' => 'financial_era_form', 'uses' => 'CoreController@financial_era_form']);
 Route::get('financial_insurance/{id}', ['as' => 'financial_insurance', 'uses' => 'CoreController@financial_insurance']);
 Route::get('financial_patient/{action}/{pid}/{eid}', ['as' => 'financial_patient', 'uses' => 'CoreController@financial_patient']);
-Route::get('financial_queue/{type}', ['as' => 'financial_queue', 'uses' => 'CoreController@financial_queue']);
+Route::get('financial_queue/{type}/{eid}', ['as' => 'financial_queue', 'uses' => 'CoreController@financial_queue']);
 Route::post('financial_query', ['as' => 'financial_query', 'uses' => 'CoreController@financial_query']);
 Route::get('financial_resubmit/{eid}', ['as' => 'financial_resubmit', 'uses' => 'CoreController@financial_resubmit']);
 Route::any('financial_upload_era', ['as' => 'financial_upload_era', 'uses' => 'CoreController@financial_upload_era']);
-Route::get('generate_hcfa/{flatten}/{eid}', ['as' => 'generate_hcfa', 'uses' => 'CoreController@generate_hcfa']);
+Route::get('generate_hcfa/{eid}', ['as' => 'generate_hcfa', 'uses' => 'CoreController@generate_hcfa']);
 Route::get('messaging/{type}', ['as' => 'messaging', 'uses' => 'CoreController@messaging']);
 Route::any('messaging_editdoc/{id}/{type}', ['as' => 'messaging_editdoc', 'uses' => 'CoreController@messaging_editdoc']);
 Route::get('messaging_editdoc_cancel/{id}/{type}', ['as' => 'messaging_editdoc_cancel', 'uses' => 'CoreController@messaging_editdoc_cancel']);
@@ -108,7 +108,7 @@ Route::get('pnosh_provider_redirect', ['as' => 'pnosh_provider_redirect', 'uses'
 Route::any('practice_cancel', ['as' => 'practice_cancel', 'uses' => 'CoreController@practice_cancel']);
 Route::any('practice_logo_upload', ['as' => 'practice_logo_upload', 'uses' => 'CoreController@practice_logo_upload']);
 Route::get('prescription_view/{id?}', ['as' => 'prescription_view', 'uses' => 'CoreController@prescription_view']);
-Route::get('print_batch/{type}/{flatten}', ['as' => 'print_batch', 'uses' => 'CoreController@print_batch']);
+Route::get('print_batch/{type}', ['as' => 'print_batch', 'uses' => 'CoreController@print_batch']);
 Route::get('print_chart_admin/{id}', ['as' => 'print_chart_admin', 'uses' => 'CoreController@print_chart_admin']);
 Route::get('print_chart_request/{id}/{type}/{download?}', ['as' => 'print_chart_request', 'uses' => 'CoreController@print_chart_request']);
 Route::get('printimage_single/{eid}', ['as' => 'printimage_single', 'uses' => 'CoreController@printimage_single']);
@@ -208,7 +208,7 @@ Route::any('fhir_connect_response', ['as' => 'fhir_connect_response', 'uses' => 
 Route::get('form_list/{type}', ['as' => 'form_list', 'uses' => 'ChartController@form_list']);
 Route::any('form_show/{id}/{type}/{origin?}', ['as' => 'form_show', 'uses' => 'ChartController@form_show']);
 Route::get('form_view/{id}', ['as' => 'form_view', 'uses' => 'ChartController@form_view']);
-Route::get('generate_hcfa1/{flatten}/{eid}/{insurance_id_1}/{insurance_id_2}', ['as' => 'generate_hcfa1', 'uses' => 'ChartController@generate_hcfa1']);
+Route::get('generate_hcfa1/{eid}/{insurance_id_1}/{insurance_id_2}', ['as' => 'generate_hcfa1', 'uses' => 'ChartController@generate_hcfa1']);
 Route::post('get_appointments', ['as' => 'get_appointments', 'uses' => 'AjaxChartController@get_appointments']);
 Route::get('growth_chart/{type}', ['as' => 'growth_chart', 'uses' => 'ChartController@growth_chart']);
 Route::get('medications_list/{type}', ['as' => 'medications_list', 'uses' => 'ChartController@medications_list']);

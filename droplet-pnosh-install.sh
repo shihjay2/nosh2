@@ -12,13 +12,10 @@ NOSH_DIR=/noshdocuments
 WEB_GROUP=www-data
 WEB_USER=www-data
 WEB_CONF=/etc/apache2/conf-enabled
-FTPIMPORT=/srv/ftp/shared/import
-FTPEXPORT=/srv/ftp/shared/export
 NEWNOSH=$NOSH_DIR/nosh2
 ENV=$NEWNOSH/.env
 APACHE="/etc/init.d/apache2 restart"
-SSH="/etc/init.d/ssh stop"
-SSH1="/etc/init.d/ssh start"
+MYSQL_USERNAME=hieofone
 
 log_only () {
 	echo "$1"
@@ -52,17 +49,10 @@ if [ ! -d $LOGDIR ]; then
 	mkdir -p $LOGDIR
 fi
 
-read -e -p "Enter your MySQL username: " -i "" MYSQL_USERNAME
-read -e -p "Enter your MySQL password: " -i "" MYSQL_PASSWORD
-USERNAME=$MYSQL_USERNAME
+read -e -p "Enter your registered URL: " -i "" URL
 
-# Install PHP and MariaDB
-apt-get -y install software-properties-common build-essential binutils-doc git subversion bc apache2
-apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8
-add-apt-repository ppa:ondrej/php -y
-add-apt-repository 'deb [arch=amd64,i386,ppc64el] http://ftp.osuosl.org/pub/mariadb/repo/10.1/ubuntu xenial main'
-apt update
-apt-get -y install php7.2 php7.2-zip php7.2-curl php7.2-mysql php-pear php7.2-imap libapache2-mod-php7.2 php7.2-gd php-imagick php7.2-cli php7.2-mbstring php7.2-xml php7.2-common libdbi-perl libdbd-mysql-perl libssh2-1-dev php-ssh2 php7.2-soap imagemagick pdftk openssh-server
+# Install dependencies
+apt-get -y install software-properties-common build-essential binutils-doc git subversion bc apache2 php php-cli php-common php-curl php-gd php-imagick php-imap php-mbstring php-mysql php-pear php-soap php-ssh2 php-xml php-zip libapache2-mod-php libdbi-perl libdbd-mysql-perl libssh2-1-dev imagemagick openssh-server pwgen
 export DEBIAN_FRONTEND=noninteractive
 debconf-set-selections <<< "mariadb-server-10.1 mysql-server/data-dir select ''"
 debconf-set-selections <<< "mariadb-server-10.1 mysql-server/root_password password $MYSQL_PASSWORD"
@@ -75,20 +65,11 @@ collation_server = 'utf8_general_ci'" >> /etc/mysql/my.cnf
 # Configure Maria Remote Access
 sed -i '/^bind-address/s/bind-address.*=.*/bind-address = 0.0.0.0/' /etc/mysql/my.cnf
 mysql --user="root" --password="$MYSQL_PASSWORD" -e "GRANT ALL ON *.* TO root@'0.0.0.0' IDENTIFIED BY '$MYSQL_PASSWORD' WITH GRANT OPTION;"
+mysql --user="root" --password="$MYSQL_PASSWORD" -e "CREATE USER '$MYSQL_USERNAME'@'0.0.0.0' IDENTIFIED BY '$MYSQL_PASSWORD';"
+mysql --user="root" --password="$MYSQL_PASSWORD" -e "GRANT ALL ON *.* TO '$MYSQL_USERNAME'@'0.0.0.0' IDENTIFIED BY '$MYSQL_PASSWORD' WITH GRANT OPTION;"
+mysql --user="root" --password="$MYSQL_PASSWORD" -e "GRANT ALL ON *.* TO '$MYSQL_USERNAME'@'%' IDENTIFIED BY '$MYSQL_PASSWORD' WITH GRANT OPTION;"
+mysql --user="root" --password="$MYSQL_PASSWORD" -e "FLUSH PRIVILEGES;"
 systemctl restart mysql
-if [ $MYSQL_USERNAME != "root"]; then
-	mysql --user="root" --password="$MYSQL_PASSWORD" -e "CREATE USER '$USERNAME'@'0.0.0.0' IDENTIFIED BY '$MYSQL_PASSWORD';"
-	mysql --user="root" --password="$MYSQL_PASSWORD" -e "GRANT ALL ON *.* TO '$USERNAME'@'0.0.0.0' IDENTIFIED BY '$MYSQL_PASSWORD' WITH GRANT OPTION;"
-	mysql --user="root" --password="$MYSQL_PASSWORD" -e "GRANT ALL ON *.* TO '$USERNAME'@'%' IDENTIFIED BY '$MYSQL_PASSWORD' WITH GRANT OPTION;"
-	mysql --user="root" --password="$MYSQL_PASSWORD" -e "FLUSH PRIVILEGES;"
-	systemctl restart mysql
-fi
-echo "phpmyadmin phpmyadmin/dbconfig-install boolean true" | debconf-set-selections
-echo "phpmyadmin phpmyadmin/app-password-confirm password $MYSQL_PASSWORD" | debconf-set-selections
-echo "phpmyadmin phpmyadmin/mysql/admin-pass password $MYSQL_PASSWORD" | debconf-set-selections
-echo "phpmyadmin phpmyadmin/mysql/app-pass password $MYSQL_PASSWORD" | debconf-set-selections
-echo "phpmyadmin phpmyadmin/reconfigure-webserver multiselect none" | debconf-set-selections
-apt-get -y install phpmyadmin
 
 # Check prerequisites
 type apache2 >/dev/null 2>&1 || { echo >&2 "Apache Web Server is required, but it's not installed.  Aborting."; exit 1; }
@@ -112,37 +93,11 @@ touch $NOSHCRON
 echo "*/10 *  * * *   root    $NEWNOSH/noshfax" >> $NOSHCRON
 echo "*/1 *   * * *   root    $NEWNOSH/noshreminder" >> $NOSHCRON
 echo "0 0     * * *   root    $NEWNOSH/noshbackup" >> $NOSHCRON
+echo "30 0    * * 1   root    /usr/local/bin/certbot-auto renew >>  /var/log/le-renew.log" >> $NOSHCRON
 chown root.root $NOSHCRON
 chmod 644 $NOSHCRON
 log_only "Created NOSH ChartingSystem cron scripts."
 
-# Set up SFTP
-groupadd ftpshared
-log_only "Group ftpshared does not exist.  Making group."
-mkdir -p $FTPIMPORT
-mkdir -p $FTPEXPORT
-chown -R root:ftpshared /srv/ftp/shared
-chmod 755 /srv/ftp/shared
-chmod -R 775 $FTPIMPORT
-chmod -R 775 $FTPEXPORT
-chmod g+s $FTPIMPORT
-chmod g+s $FTPEXPORT
-log_only "The NOSH ChartingSystem SFTP directories have been created."
-/usr/bin/gpasswd -a www-data ftpshared
-cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
-log_only "Backup of SSH config file created."
-sed -i '/Subsystem/s/^/#/' /etc/ssh/sshd_config
-echo '
-Subsystem sftp internal-sftp' >> /etc/ssh/sshd_config
-echo 'Match Group ftpshared' >> /etc/ssh/sshd_config
-echo 'ChrootDirectory /srv/ftp/shared' >> /etc/ssh/sshd_config
-echo 'X11Forwarding no' >> /etc/ssh/sshd_config
-echo 'AllowTCPForwarding no' >> /etc/ssh/sshd_config
-echo 'ForceCommand internal-sftp' >> /etc/ssh/sshd_config
-log_only "SSH config file updated."
-log_only "Restarting SSH server service"
-$SSH >> $LOG 2>&1
-$SSH1 >> $LOG 2>&1
 phpenmod imap
 if [ ! -f /usr/local/bin/composer ]; then
 	curl -sS https://getcomposer.org/installer | php
@@ -177,6 +132,7 @@ fi
 log_only "The NOSH ChartingSystem scan and fax directories are secured."
 log_only "The NOSH ChartingSystem documents directory is secured."
 log_only "This installation will create pNOSH (patient NOSH)."
+
 # Build
 cd $NOSH_DIR
 composer create-project nosh2/nosh2 --prefer-dist --stability dev
@@ -195,7 +151,7 @@ chmod 777 $NEWNOSH/noshfax
 chmod 777 $NEWNOSH/noshreminder
 chmod 777 $NEWNOSH/noshbackup
 log_only "Installed NOSH ChartingSystem core files."
-echo "create database $MYSQL_DATABASE" | mysql -u $MYSQL_USERNAME -p$MYSQL_PASSWORD
+echo "create database $MYSQL_DATABASE" | sudo mysql -u $MYSQL_USERNAME -p$MYSQL_PASSWORD
 php artisan migrate:install
 php artisan migrate
 log_only "Installed NOSH ChartingSystem database schema."
@@ -240,7 +196,15 @@ echo "$APACHE_CONF" >> "$WEB_CONF"/nosh2.conf
 log_only "NOSH ChartingSystem Apache configuration file set."
 log_only "Restarting Apache service."
 $APACHE >> $LOG 2>&1
+
+# Install LetsEncrypt
+cd /usr/local/bin
+wget https://dl.eff.org/certbot-auto
+chmod a+x /usr/local/bin/certbot-auto
+./certbot-auto --apache -d $URL
+log_only "Let's Encrypt SSL certificate is set."
+
 # Installation completed
 log_only "You can now complete your new installation of NOSH ChartingSystem by browsing to:"
-log_only "https://localhost/nosh"
+log_only "https://$URL/nosh"
 exit 0

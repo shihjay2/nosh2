@@ -219,7 +219,7 @@ return [
         'Htmldom' => Yangqi\Htmldom\Htmldom::class,
         'Minify' => Devfactory\Minify\Facades\MinifyFacade::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
-        'PDF' => Elibyy\TCPDF\Facades\TCPDF::class
+        'PDF' => Elibyy\TCPDF\Facades\TCPDF::class,
     ],
 
 ];

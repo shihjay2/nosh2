@@ -17,8 +17,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\MessageBag;
 use Imagick;
 use Minify;
-use rcamposp\tcpdi_merger\MyTCPDI;
-use rcamposp\tcpdi_merger\Merger;
+use shihjay2\tcpdi_merger\MyTCPDI;
+use shihjay2\tcpdi_merger\Merger;
 use QrCode;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -3079,9 +3079,9 @@ class CoreController extends Controller
             foreach ($group_arr as $address_id => $row) {
                 // Merge pdfs into 1
                 $need_address = false;
-                $pdf = new Merger();
+                $pdf = new Merger(true);
                 foreach ($row['pdf_arr'] as $pdf_item) {
-                    $pdf->addFromFile($pdf_item);
+                    $pdf->addFromFile($pdf_item, 'all');
                 }
                 $file_path = public_path() . '/temp/' . time() . '_fax_queue.pdf';
                 $pdf->merge();
@@ -3229,11 +3229,10 @@ class CoreController extends Controller
                 ->get();
             if ($query->count()) {
                 foreach ($query as $row) {
-                    $action = '<a href="' . route('financial_queue', ['Pend']) . '" class="btn fa-btn" role="button" data-toggle="tooltip" title="Add to Print Image Queue"><i class="fa fa-plus-square fa-lg"></i></a>';
-                    $action .= '<a href="' . route('financial_queue', ['HCFA']) . '" class="btn fa-btn" role="button" data-toggle="tooltip" title="Add to HCFA-1500 Queue"><i class="fa fa-plus-circle fa-lg"></i></a>';
-                    $action .= '<a href="' . route('printimage_single', [$row->eid]) . '" class="btn fa-btn" role="button" data-toggle="tooltip" title="Print Image"><i class="fa fa-file-image-o fa-lg"></i></a>';
-                    $action .= '<a href="' . route('generate_hcfa', ['n', $row->eid]) . '" class="btn fa-btn" role="button" data-toggle="tooltip" title="Print Editable HCFA-1500"><i class="fa fa-pencil fa-lg"></i></a>';
-                    $action .= '<a href="' . route('generate_hcfa', ['y', $row->eid]) . '" class="btn fa-btn" role="button" data-toggle="tooltip" title="Print HCFA-1500"><i class="fa fa-file-text-o fa-lg"></i></a>';
+                    $action = '<a href="' . route('financial_queue', ['Pend', $row->eid]) . '" class="btn fa-btn" role="button" data-toggle="tooltip" title="Add to Print Image Queue"><i class="fa fa-plus-square fa-lg"></i></a>';
+                    $action .= '<a href="' . route('financial_queue', ['HCFA', $row->eid]) . '" class="btn fa-btn" role="button" data-toggle="tooltip" title="Add to HCFA-1500 Queue"><i class="fa fa-plus-circle fa-lg"></i></a>';
+                    $action .= '<a href="' . route('printimage_single', [$row->eid]) . '" class="btn fa-btn nosh-no-load" role="button" data-toggle="tooltip" title="Print Image"><i class="fa fa-file-image-o fa-lg"></i></a>';
+                    $action .= '<a href="' . route('generate_hcfa', [$row->eid]) . '" class="btn fa-btn nosh-no-load" role="button" data-toggle="tooltip" title="Print HCFA-1500"><i class="fa fa-file-text-o fa-lg"></i></a>';
                     $result[] = [
                         'date' => date('Y-m-d', $this->human_to_unix($row->encounter_DOS)),
                         'signed' => $signed_arr[$row->encounter_signed],
@@ -3273,7 +3272,7 @@ class CoreController extends Controller
                 $batch++;
             }
             if ($batch > 0) {
-                if ($type == 'misc') {
+                // if ($type == 'misc') {
                     $dropdown_array1 = [
                         'items_button_icon' => 'fa-print'
                     ];
@@ -3283,26 +3282,20 @@ class CoreController extends Controller
                             'type' => 'item',
                             'label' => 'Print Print Image from Queue',
                             'icon' => 'fa-file-image-o',
-                            'url' => route('print_batch', ['Pend', 'n'])
+                            'url' => route('print_batch', ['Pend'])
                         ];
                     }
                     if ($batch_query2->count()) {
                         $items1[] = [
                             'type' => 'item',
-                            'label' => 'Print Editable HCFA-1500 from Queue',
-                            'icon' => 'fa-pencil',
-                            'url' => route('print_batch', ['HCFA', 'n'])
-                        ];
-                        $items1[] = [
-                            'type' => 'item',
                             'label' => 'Print HCFA-1500 from Queue',
                             'icon' => 'fa-file-text-o',
-                            'url' => route('print_batch', ['HCFA', 'y'])
+                            'url' => route('print_batch', ['HCFA'])
                         ];
                     }
                     $dropdown_array1['items'] = $items1;
                     $data['panel_dropdown'] .= '<span class="fa-btn"></span>' . $this->dropdown_build($dropdown_array1);
-                }
+                // }
             }
         }
         if ($type == 'processed') {
@@ -4038,10 +4031,10 @@ class CoreController extends Controller
         }
     }
 
-    public function financial_queue(Request $request, $type)
+    public function financial_queue(Request $request, $type, $eid)
     {
         $data['bill_submitted'] = $type;
-        DB::table('encounters')->where('eid', '=', $request->input('eid'))->update($data);
+        DB::table('encounters')->where('eid', '=', $eid)->update($data);
         $this->audit('Update');
         if ($type == 'Pend') {
             $message = "Billed encounter added to the print image queue";
@@ -4184,11 +4177,11 @@ class CoreController extends Controller
         }
     }
 
-    public function generate_hcfa($flatten, $eid)
+    public function generate_hcfa($eid)
     {
-        $file_path = $this->hcfa($eid, $flatten);
+        $file_path = $this->hcfa($eid);
         if ($file_path) {
-            return response()->download($file_path);
+            return response()->download($file_path)->deleteFileAfterSend(true);
         } else {
             Session::put('message_action', 'Error - No HCFA to print.');
             return redirect(Session::get('last_page'));
@@ -5330,7 +5323,7 @@ class CoreController extends Controller
         }
     }
 
-    public function print_batch($type, $flatten)
+    public function print_batch($type)
     {
         $query = DB::table('encounters')
             ->where('bill_submitted', '=', $type)
@@ -5343,30 +5336,27 @@ class CoreController extends Controller
                 foreach ($query as $row) {
                     $printimage .= $this->printimage($row->eid);
                 }
-                $file_path = public_path() . '/temp/' . time() . '_' . Session::get('user_id') . '_printimage_batch.pdf';
+                $file_path = public_path() . '/temp/' . time() . '_' . Session::get('user_id') . '_printimage_batch.txt';
                 File::put($file_path, $printimage);
             } else {
-                $entire = '';
+                $pdf_item_arr = [];
+                $pdf = new Merger(true);
                 foreach ($query as $row) {
-                    if ($entire === '') {
-                        $entire .= $this->hcfa($row->eid, $flatten);
-                    } else {
-                        $entire .= ' ' . $this->hcfa($row->eid, $flatten);
-                    }
+                    $pdf_item = $this->hcfa($row->eid);
+                    $pdf->addPDF($pdf_item, 'all');
+                    $pdf_item_arr[] = $pdf_item;
                 }
                 $file_path = public_path() . '/temp/' . time() . '_' . Session::get('user_id') . '_printhcfa_batch.pdf';
-                $commandpdf2 = "pdftk " . $entire . " cat output " . $file_path;
-                $commandpdf3 = escapeshellcmd($commandpdf2);
-                exec($commandpdf3);
-                $files = explode(" ", $entire);
-                foreach ($files as $row1) {
+                $pdf->merge();
+                $pdf->save($file_path);
+                foreach ($pdf_item_arr as $row1) {
                     unlink($row1);
                 }
             }
             while(!file_exists($file_path)) {
                 sleep(2);
             }
-            return response()->download($file_path);
+            return response()->download($file_path)->deleteFileAfterSend(true);
         } else {
             Session::put('message_action', 'Error - Nothing in print queue');
             return redirect(Session::get('last_page'));
@@ -5398,7 +5388,7 @@ class CoreController extends Controller
     public function printimage_single($eid)
     {
         $new_template = $this->printimage($eid);
-        $file_path = public_path() . '/temp/' . time() . '_printimage.pdf';
+        $file_path = public_path() . '/temp/' . time() . '_printimage.txt';
         File::put($file_path, $new_template);
         while(!file_exists($file_path)) {
             sleep(2);
@@ -5488,9 +5478,9 @@ class CoreController extends Controller
                 return back();
             }
             // Merge pdfs into 1
-            $pdf = new Merger();
+            $pdf = new Merger(true);
             foreach ($pdf_arr as $pdf_item) {
-                $pdf->addFromFile($pdf_item);
+                $pdf->addFromFile($pdf_item, 'all');
             }
             $file_path = public_path() . '/temp/' . time() . '_print_queue.pdf';
             $pdf->merge();
@@ -7479,7 +7469,7 @@ class CoreController extends Controller
     public function uma_aat(Request $request)
     {
         // Check if call comes from rqp_claims redirect
-        if (Session::has('uma_aat') && Session::has('uma_permission_ticket')) {
+        if (Session::has('uma_permission_ticket')) {
             if (isset($_REQUEST["authorization_state"])) {
                 if ($_REQUEST["authorization_state"] != 'claims_submitted') {
                     if ($_REQUEST["authorization_state"] == 'not_authorized') {
@@ -7497,19 +7487,9 @@ class CoreController extends Controller
                     return redirect()->route('uma_api');
                 }
             } else {
-                Session::forget('uma_aat');
                 Session::forget('uma_permission_ticket');
             }
         }
-        // Get AAT
-        $url_array = array('/nosh/oidc','/nosh/fhir/oidc');
-        $as_uri = Session::get('uma_uri');
-        $client_id = Session::get('uma_client_id');
-        $client_secret = Session::get('uma_client_secret');
-        $oidc = new OpenIDConnectClient($as_uri, $client_id, $client_secret);
-        $oidc->requestAAT();
-        Session::put('uma_aat', $oidc->getAccessToken());
-        // Get permission ticket
         $urlinit = $as_uri . '/nosh/fhir/' . Session::get('type') . '?subject:Patient=1';
         $result = $this->fhir_request($urlinit,true);
         if (isset($result['error'])) {
@@ -7567,13 +7547,14 @@ class CoreController extends Controller
             $client_secret = Session::get('uma_client_secret');
             $url = route('uma_api');
             $oidc = new OpenIDConnectClient($as_uri, $client_id, $client_secret);
+            $oidc->setSessionName('pnosh');
             $oidc->setAccessToken(Session::get('uma_aat'));
             $oidc->setRedirectURL($url);
             $result1 = $oidc->rpt_request($permission_ticket);
             if (isset($result1['error'])) {
                 // error - return something
                 if ($result1['error'] == 'expired_ticket') {
-                    Session::forget('uma_aat');
+                    // Session::forget('uma_aat');
                     Session::forget('uma_permission_ticket');
                     return redirect()->route('uma_aat');
                 } else {
@@ -7594,7 +7575,7 @@ class CoreController extends Controller
                     return view('core', $data);
                 }
             }
-            $rpt = $result1['rpt'];
+            $rpt = $result1['access_token'];
             // Save RPT in session in case for future calls in same session
             Session::put('rpt', $rpt);
             Session::save();
@@ -7732,7 +7713,11 @@ class CoreController extends Controller
             $url1 = route('uma_auth');
             $oidc = new OpenIDConnectClient($as_uri);
             $oidc->setClientName($client_name);
-            $oidc->setRedirectURL($url1);
+            $oidc->setSessionName('nosh');
+            $oidc->addRedirectURLs($url1);
+            $oidc->addRedirectURLs(route('uma_api'));
+            $oidc->addRedirectURLs(route('uma_aat'));
+            $oidc->addRedirectURLs(route('uma_register_auth'));
             $oidc->addScope('openid');
             $oidc->addScope('email');
             $oidc->addScope('profile');
@@ -7740,7 +7725,10 @@ class CoreController extends Controller
             $oidc->addScope('phone');
             $oidc->addScope('offline_access');
             $oidc->addScope('uma_authorization');
-            $oidc->register(true);
+            $oidc->setLogo('https://cloud.noshchartingsystem.com/SAAS-Logo.jpg');
+            $oidc->setClientURI(str_replace('/uma_auth', '', $url1));
+            $oidc->setUMA(true);
+            $oidc->register();
             $client_id = $oidc->getClientID();
             $client_secret = $oidc->getClientSecret();
             $data1 = [

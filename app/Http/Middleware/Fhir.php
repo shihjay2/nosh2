@@ -78,6 +78,9 @@ class Fhir
                             'error' => $permission_ticket['error'],
                             'error_description' => $permission_ticket['error_description']
                         ];
+                        $header = [
+                            'Warning' => '199 - "UMA Authorization Server Unreachable"'
+                        ];
                     } else {
                         $response = [
                             'ticket' => $permission_ticket['ticket']
