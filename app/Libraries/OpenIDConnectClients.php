@@ -824,7 +824,7 @@ class OpenIDConnectClient
 	 */
 	private function requestTokens($code, $uma = false) {
 		$token_endpoint = $this->getProviderConfigValue("token_endpoint", $uma);
-		$token_endpoint_auth_methods_supported = $this->getProviderConfigValue("token_endpoint_auth_methods_supported", false, ['client_secret_basic']);
+		// $token_endpoint_auth_methods_supported = $this->getProviderConfigValue("token_endpoint_auth_methods_supported", false, ['client_secret_basic']);
 
 		$headers = [];
 
@@ -839,10 +839,10 @@ class OpenIDConnectClient
 		);
 
 		// Consider Basic authentication if provider config is set this way
-		if (in_array('client_secret_basic', $token_endpoint_auth_methods_supported)) {
-			$headers = ['Authorization: Basic ' . base64_encode($this->clientID . ':' . $this->clientSecret)];
-			unset($token_params['client_secret']);
-		}
+		// if (in_array('client_secret_basic', $token_endpoint_auth_methods_supported)) {
+		// 	$headers = ['Authorization: Basic ' . base64_encode($this->clientID . ':' . $this->clientSecret)];
+		// 	unset($token_params['client_secret']);
+		// }
 
 		// Convert token params to string format
 		$token_params = http_build_query($token_params, null, '&');
