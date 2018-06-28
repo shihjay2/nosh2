@@ -731,8 +731,6 @@ class OpenIDConnectClient
 
 		// State essentially acts as a session key for OIDC
 		$state = $this->setState($this->generateRandString());
-		$state = $this->generateRandString();
-		$_SESSION['openid_connect_state'] = $state;
 		$auth_params = array_merge($this->authParams, array(
 			'response_type' => $response_type,
 			'redirect_uri' => $this->getRedirectURL(),
@@ -1768,13 +1766,10 @@ class OpenIDConnectClient
 
 		// Generate and store a nonce in the session
 		// The nonce is an arbitrary value
-		$nonce = $this->generateRandString();
-		$_SESSION['openid_connect_nonce'] = $nonce;
+		$nonce = $this->setNonce($this->generateRandString());
 
 		// State essentially acts as a session key for OIDC
-		$state = $this->generateRandString();
-		$_SESSION['openid_connect_state'] = $state;
-
+		$state = $this->setState($this->generateRandString());
 		if ($type == 'user1') {
 			$auth_params = array_merge($this->authParams, array(
 				'response_type' => $response_type,
