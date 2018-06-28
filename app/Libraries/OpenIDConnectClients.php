@@ -824,7 +824,7 @@ class OpenIDConnectClient
 	 */
 	private function requestTokens($code, $uma = false) {
 		$token_endpoint = $this->getProviderConfigValue("token_endpoint", $uma);
-		$token_endpoint_auth_methods_supported = $this->getProviderConfigValue("token_endpoint_auth_methods_supported", ['client_secret_basic']);
+		$token_endpoint_auth_methods_supported = $this->getProviderConfigValue("token_endpoint_auth_methods_supported", false, ['client_secret_basic']);
 
 		$headers = [];
 
