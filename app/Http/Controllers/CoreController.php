@@ -7548,7 +7548,6 @@ class CoreController extends Controller
             $url = route('uma_api');
             $oidc = new OpenIDConnectClient($as_uri, $client_id, $client_secret);
             $oidc->setSessionName('pnosh');
-            $oidc->setAccessToken(Session::get('uma_aat'));
             $oidc->setRedirectURL($url);
             $result1 = $oidc->rpt_request($permission_ticket);
             if (isset($result1['error'])) {

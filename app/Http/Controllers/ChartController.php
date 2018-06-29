@@ -5401,13 +5401,11 @@ class ChartController extends Controller {
             $url = route('fhir_api');
             $oidc = new OpenIDConnectClient($as_uri, $client_id, $client_secret);
             $oidc->setSessionName('nosh');
-            $oidc->setAccessToken(Session::get('uma_aat'));
             $oidc->setRedirectURL($url);
             $result1 = $oidc->rpt_request($permission_ticket);
             if (isset($result1['error'])) {
                 // error - return something
                 if ($result1['error'] == 'expired_ticket') {
-                    Session::forget('uma_aat');
                     Session::forget('uma_permission_ticket');
                     return redirect()->route('uma_aat');
                 } else {
