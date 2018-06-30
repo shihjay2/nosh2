@@ -54,6 +54,9 @@ read -e -p "Enter your registered URL: " -i "" URL
 # Install dependencies
 apt-get -y install software-properties-common build-essential binutils-doc git subversion bc apache2 php php-cli php-common php-curl php-gd php-imagick php-imap php-mbstring php-mysql php-pear php-soap php-ssh2 php-xml php-zip libapache2-mod-php libdbi-perl libdbd-mysql-perl libssh2-1-dev imagemagick openssh-server pwgen
 export DEBIAN_FRONTEND=noninteractive
+# Randomly generated password for MariaDB
+MYSQL_PASSWORD=`pwgen -s 40 1`
+log_only "Your MariaDB password is $MYSQL_PASSWORD"
 debconf-set-selections <<< "mariadb-server-10.1 mysql-server/data-dir select ''"
 debconf-set-selections <<< "mariadb-server-10.1 mysql-server/root_password password $MYSQL_PASSWORD"
 debconf-set-selections <<< "mariadb-server-10.1 mysql-server/root_password_again password $MYSQL_PASSWORD"

@@ -12230,7 +12230,7 @@ class Controller extends BaseController
             ->orderBy('eid', 'desc')
             ->get();
         if ($query_1) {
-            $count = count($query1);
+            $count = count($query_1);
             if ($dob >= $e) {
                 if ($count == 3) {
                     $score++;
