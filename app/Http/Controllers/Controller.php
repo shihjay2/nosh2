@@ -11050,7 +11050,10 @@ class Controller extends BaseController
                 }
             }
             $total = $controller_count + $rescue_count;
-            $ratio = round($controller_count/$total*100);
+            $ratio = 0;
+            if ($total > 0) {
+                $ratio = round($controller_count/$total*100);
+            }
             if ($ratio > 50) {
                 $score++;
             } else {
