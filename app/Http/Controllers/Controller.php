@@ -12231,12 +12231,15 @@ class Controller extends BaseController
             ->get();
         if ($query_1) {
             $count = count($query_1);
-            if ($dob >= $e) {
+            $row = DB::table('demographics')->where('pid', '=', $pid)->first();
+            $date = Date::parse($row->DOB);
+            $dob = $date->diffInYears(Date::now());
+            if ($dob >= 13) {
                 if ($count == 3) {
                     $score++;
                 }
             }
-            if ($dob >= $a && $dob < $b) {
+            if ($dob >= 9 && $dob < 13) {
                 if ($count > 0) {
                     $score++;
                 }
