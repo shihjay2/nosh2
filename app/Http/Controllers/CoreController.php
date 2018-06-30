@@ -6877,7 +6877,7 @@ class CoreController extends Controller
                     $patient = DB::table('demographics')->where('pid', '=', $pid)->first();
                     $dob = date('m/d/Y', strtotime($patient->DOB));
                     $name = $patient->lastname . ', ' . $patient->firstname . ' (DOB: ' . $dob . ') (ID: ' . $patient->pid . ')';
-                    $rectify = '<a href="' . route('superquery_patient', ['care_opportunities', $pid, 'hedis']) . '" class="btn fa-btn" role="button" data-toggle="tooltip" title="Open Chart"><i class="fa fa-arrow-right fa-lg"></i> ' . $name . '</a>';
+                    $rectify = '<a href="' . route('superquery_patient', ['care_opportunities', $pid, 'hedis']) . '" class="btn fa-btn" role="button" data-toggle="tooltip" title="Open Chart"><i class="fa fa-arrow-right fa-lg"></i> ' . $name . '</a><br>';
                     foreach ($audit as $item => $row) {
                         $counter[$item]['count']++;
                         if ($item != 'cwp' && $item != 'uri' && $item != 'aab' && $item != 'pce' && $item != 'lbp') {
