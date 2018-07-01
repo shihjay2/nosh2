@@ -21,11 +21,14 @@ class PostAuth
     public function handle($request, Closure $next)
     {
         $install = DB::table('practiceinfo')->first();
-        // Check if Google refresh token registered
-        if ($install->google_refresh_token == '') {
-            if (route('dashboard') != 'http://localhost/nosh') {
-                $google = File::get(base_path() . "/.google");
-                if ($google !== '') {
+        // Check if e-mail service is setup
+        if (env('MAIL_HOST') == 'mailtrap.io') {
+            return redirect()->route('setup_mail');
+        }
+        // Check if Google refresh token registered if Google is used as e-mail service
+        if (env('MAIL_HOST') == 'smtp.gmail.com') {
+            if ($install->google_refresh_token == '') {
+                if (route('dashboard') != 'http://localhost/nosh') {
                     return redirect()->route('googleoauth');
                 }
             }

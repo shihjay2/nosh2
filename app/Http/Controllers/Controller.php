@@ -16049,26 +16049,30 @@ class Controller extends BaseController
     protected function send_mail($template, $data_message, $subject, $to, $practice_id)
     {
         $practice = DB::table('practiceinfo')->where('practice_id', '=', $practice_id)->first();
-        $file = File::get(base_path() . "/.google");
-        if ($file !== '') {
-            $file_arr = json_decode($file, true);
+        if (env('MAIL_HOST') == 'smtp.gmail.com') {
+            // $file = File::get(base_path() . "/.google");
+            // if ($file !== '') {
+                // $file_arr = json_decode($file, true);
             $google = new Google_Client();
-            $google->setClientID($file_arr['web']['client_id']);
-            $google->setClientSecret($file_arr['web']['client_secret']);
+            $google->setClientID(env('GOOGLE_KEY'));
+            $google->setClientSecret(env('GOOGLE_SECRET'));
+            // $google->setClientID($file_arr['web']['client_id']);
+            // $google->setClientSecret($file_arr['web']['client_secret']);
             $google->refreshToken($practice->google_refresh_token);
             $credentials = $google->getAccessToken();
             $data1['smtp_pass'] = $credentials['access_token'];
             DB::table('practiceinfo')->where('practice_id', '=', $practice_id)->update($data1);
-            $config = [
-                'mail.driver' => 'smtp',
-                'mail.host' => 'smtp.gmail.com',
-                'mail.port' => 465,
-                'mail.from' => ['address' => null, 'name' => null],
-                'mail.encryption' => 'ssl',
-                'mail.username' => $practice->smtp_user,
-                'mail.password' =>  $credentials['access_token'],
-                'mail.sendmail' => '/usr/sbin/sendmail -bs'
-            ];
+            $config['mail.password'] =  $credentials['access_token'];
+            // $config = [
+                // 'mail.driver' => 'smtp',
+                // 'mail.host' => 'smtp.gmail.com',
+                // 'mail.port' => 465,
+                // 'mail.from' => ['address' => null, 'name' => null],
+                // 'mail.encryption' => 'ssl',
+                // 'mail.username' => $practice->smtp_user,
+                // 'mail.password' =>  $credentials['access_token'],
+                // 'mail.sendmail' => '/usr/sbin/sendmail -bs'
+            // ];
             config($config);
             extract(Config::get('mail'));
             $transport = Swift_SmtpTransport::newInstance($host, $port, 'ssl');
@@ -16081,12 +16085,19 @@ class Controller extends BaseController
                 $transport->setPassword($password);
             }
             Mail::setSwiftMailer(new Swift_Mailer($transport));
-            Mail::send($template, $data_message, function ($message) use ($to, $subject, $practice) {
-                $message->to($to)
-                    ->from($practice->email, $practice->practice_name)
-                    ->subject($subject);
-            });
+            // Mail::send($template, $data_message, function ($message) use ($to, $subject, $practice) {
+            //     $message->to($to)
+            //         ->from($practice->email, $practice->practice_name)
+            //         ->subject($subject);
+            // });
+            // }
         }
+        Mail::send($template, $data_message, function ($message) use ($to, $subject, $practice) {
+			$message->to($to)
+				->from($practice->email, $practice->practice_name)
+				->subject($subject);
+		});
+		return "E-mail sent.";
         return true;
     }
 

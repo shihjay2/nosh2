@@ -298,13 +298,11 @@ class LoginController extends Controller {
     public function googleoauth(Request $request)
     {
         $url = route('googleoauth');
-        $file = File::get(base_path() . "/.google");
-        $file_arr = json_decode($file, true);
         $google = new Google_Client();
         $google->setRedirectUri($url);
         $google->setApplicationName('NOSH ChartingSystem');
-        $google->setClientID($file_arr['web']['client_id']);
-        $google->setClientSecret($file_arr['web']['client_secret']);
+        $google->setClientID(env('GOOGLE_KEY'));
+        $google->setClientSecret('GOOGLE_SECRET');
         $google->setAccessType('offline');
         $google->setApprovalPrompt('force');
         $google->setScopes(array('https://mail.google.com/'));
@@ -312,7 +310,7 @@ class LoginController extends Controller {
             $credentials = $google->authenticate($_GET['code']);
             $data['google_refresh_token'] = $credentials['refresh_token'];
             DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->update($data);
-            return redirect()->route('dashboard');
+            return redirect()->route('setup_mail_test');
         } else {
             $authUrl = $google->createAuthUrl();
             header('Location: ' . filter_var($authUrl, FILTER_SANITIZE_URL));

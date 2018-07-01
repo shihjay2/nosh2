@@ -48,6 +48,7 @@
                         <li><a href="{{ route('dashboard') }}">{{ trans('nosh.tasks') }}</a></li>
                         @if (Session::get('group_id') == '1')
                             <li><a href="{{ route('setup') }}">{{ trans('nosh.setup') }}</a></li>
+                            <li><a href="{{ route('setup_mail') }}">{{ trans('nosh.setup_mail') }}</a></li>
                             <li><a href="{{ route('users', ['2', '1']) }}">{{ trans('nosh.users') }}</a></li>
                             <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{ trans('nosh.schedule') }} <span class="caret"></span></a>
                                 <ul class="dropdown-menu" role="menu" style="width:250px;">

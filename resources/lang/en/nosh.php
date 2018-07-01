@@ -61,6 +61,7 @@ return [
     // Menu
     "tasks" => "Tasks",
     "setup" => "Setup",
+    "setup_mail" => "E-mail Service",
     "users" => "Users",
     "schedule" => "Schedule",
     "schedule_setup" => "Schedule Setup",

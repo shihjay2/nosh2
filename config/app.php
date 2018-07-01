@@ -165,8 +165,7 @@ return [
         Yangqi\Htmldom\HtmldomServiceProvider::class,
         Devfactory\Minify\MinifyServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
-        Elibyy\TCPDF\ServiceProvider::class,
-        Fideloper\Proxy\TrustedProxyServiceProvider::class,
+        Elibyy\TCPDF\ServiceProvider::class
     ],
 
     /*

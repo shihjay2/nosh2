@@ -58,48 +58,70 @@ class InstallController extends Controller {
 
     public function google_start(Request $request)
     {
-        $query = DB::table('practiceinfo')->first();
-        if ($request->isMethod('post')) {
-            $file = $request->file('file_input');
-            $json = file_get_contents($file->getRealPath());
-            if (json_decode($json) == NULL) {
-                Session::put('message_action', 'Error - This is not a json file.  Try again');
-                return redirect()->route('google_start');
-            }
-            $config_file = base_path() . '/.google';
-            if (file_exists($config_file)) {
-                unlink($config_file);
-            }
-            $directory = base_path();
-            $new_name = ".google";
-            $file->move($directory, $new_name);
-            Session::put('message_action', 'Google JSON file uploaded successfully');
-            if (! $query) {
-                if (file_exists(base_path() . '/.patientcentric')) {
-                    return redirect()->route('install', ['patient']);
-                } else {
-                    return redirect()->route('install', ['practice']);
-                }
-            } else {
-                return redirect()->route('dashboard');
-            }
-        } else {
-            $data['panel_header'] = 'Upload Google JSON File for GMail Integration';
-            $data['document_upload'] = route('google_start');
-            $type_arr = ['json'];
-            $data['document_type'] = json_encode($type_arr);
-            $text = "<p>You're' here because you have not installed a Google OAuth2 Client ID file.  You'll need to set this up first before configuring NOSH Charting System.'</p>";
-            if ($query) {
-                $dropdown_array['default_button_text'] = '<i class="fa fa-chevron-left fa-fw fa-btn"></i>Back';
-                $dropdown_array['default_button_text_url'] = route('dashboard');
-                $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
-                $text = "<p>A Google OAuth2 Client ID file is already installed.  Uploading a new file will overwrite the existing file!</p>";
-            }
-            $data['content'] = '<div class="alert alert-success">' . $text . '<ul><li>Instructions are on ' . HTML::link('https://github.com/shihjay2/nosh-in-a-box/wiki/How-to-get-Gmail-to-work-with-NOSH', 'this Wiki page.', ['target'=>'_blank']) . ' Please refer to it carefully.</li><li>Once you have you JSON file, upload it here.</li></ul></div>';
-            $data['assets_js'] = $this->assets_js('document_upload');
-            $data['assets_css'] = $this->assets_css('document_upload');
-            return view('document_upload', $data);
+        $google_file = base_path() . '/.google';
+        $file = File::get($google_file);
+        if ($file !== '') {
+            $file_arr = json_decode($file, true);
+            $practice = DB::table('practiceinfo')->first();
+            $mail_arr = [
+                'MAIL_DRIVER' => 'smtp',
+                'MAIL_HOST' => 'smtp.gmail.com',
+                'MAIL_PORT' => 465,
+                'MAIL_ENCRYPTION' => 'ssl',
+                'MAIL_USERNAME' => $practice->smtp_user,
+                'MAIL_PASSWORD' => '',
+                'GOOGLE_KEY' => $file_arr['web']['client_id'],
+                'GOOGLE_SECRET' => $file_arr['web']['client_secret'],
+                'GOOGLE_REDIRECT_URI' => route('googleoauth'),
+                'MAILGUN_DOMAIN' => '',
+                'MAILGUN_SECRET' => ''
+            ];
+            $this->changeEnv($mail_arr);
         }
+        unlink($google_file);
+        return redirect()->route('dashboard');
+        // $query = DB::table('practiceinfo')->first();
+        // if ($request->isMethod('post')) {
+        //     $file = $request->file('file_input');
+        //     $json = file_get_contents($file->getRealPath());
+        //     if (json_decode($json) == NULL) {
+        //         Session::put('message_action', 'Error - This is not a json file.  Try again');
+        //         return redirect()->route('google_start');
+        //     }
+        //     $config_file = base_path() . '/.google';
+        //     if (file_exists($config_file)) {
+        //         unlink($config_file);
+        //     }
+        //     $directory = base_path();
+        //     $new_name = ".google";
+        //     $file->move($directory, $new_name);
+        //     Session::put('message_action', 'Google JSON file uploaded successfully');
+        //     if (! $query) {
+        //         if (file_exists(base_path() . '/.patientcentric')) {
+        //             return redirect()->route('install', ['patient']);
+        //         } else {
+        //             return redirect()->route('install', ['practice']);
+        //         }
+        //     } else {
+        //         return redirect()->route('dashboard');
+        //     }
+        // } else {
+        //     $data['panel_header'] = 'Upload Google JSON File for GMail Integration';
+        //     $data['document_upload'] = route('google_start');
+        //     $type_arr = ['json'];
+        //     $data['document_type'] = json_encode($type_arr);
+        //     $text = "<p>You're' here because you have not installed a Google OAuth2 Client ID file.  You'll need to set this up first before configuring NOSH Charting System.'</p>";
+        //     if ($query) {
+        //         $dropdown_array['default_button_text'] = '<i class="fa fa-chevron-left fa-fw fa-btn"></i>Back';
+        //         $dropdown_array['default_button_text_url'] = route('dashboard');
+        //         $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
+        //         $text = "<p>A Google OAuth2 Client ID file is already installed.  Uploading a new file will overwrite the existing file!</p>";
+        //     }
+        //     $data['content'] = '<div class="alert alert-success">' . $text . '<ul><li>Instructions are on ' . HTML::link('https://github.com/shihjay2/nosh-in-a-box/wiki/How-to-get-Gmail-to-work-with-NOSH', 'this Wiki page.', ['target'=>'_blank']) . ' Please refer to it carefully.</li><li>Once you have you JSON file, upload it here.</li></ul></div>';
+        //     $data['assets_js'] = $this->assets_js('document_upload');
+        //     $data['assets_css'] = $this->assets_css('document_upload');
+        //     return view('document_upload', $data);
+        // }
     }
 
     public function install(Request $request, $type)
@@ -232,6 +254,55 @@ class InstallController extends Controller {
                 $this->audit('Add');
                 $directory = $documents_dir . $pid;
                 mkdir($directory, 0775);
+                $pnosh_url = $request->root();
+                $pnosh_url = str_replace(array('http://','https://'), '', $pnosh_url);
+                $root_url = explode('/', $pnosh_url);
+                $root_url1 = explode('.', $root_url[2]);
+                $final_root_url = $root_url1[1] . '.' . $root_url1[2];
+                if ($final_root_url == 'hieofone.org') {
+                    $mailgun_url = 'https://dir.' . $final_root_url . '/mailgun';
+                    $params = ['uri' => $pnosh_url];
+                    $post_body = json_encode($params);
+                    $content_type = 'application/json';
+                    $ch = curl_init();
+                    curl_setopt($ch,CURLOPT_URL, $mailgun_url);
+                    curl_setopt($ch, CURLOPT_POST, 1);
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, $post_body);
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                        "Content-Type: {$content_type}",
+                        'Content-Length: ' . strlen($post_body)
+                    ]);
+                    curl_setopt($ch, CURLOPT_HEADER, 0);
+                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+                    curl_setopt($ch,CURLOPT_FAILONERROR,1);
+                    curl_setopt($ch,CURLOPT_FOLLOWLOCATION,1);
+                    curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+                    curl_setopt($ch,CURLOPT_TIMEOUT, 60);
+                    curl_setopt($ch,CURLOPT_CONNECTTIMEOUT ,0);
+                    $mailgun_secret = curl_exec($ch);
+                    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                    curl_close ($ch);
+                    if ($httpCode !== 404 && $httpCode !== 0) {
+                        if ($mailgun_secret !== 'Not authorized.' && $mailgun_secret !== 'Try again.') {
+                            $mail_arr = [
+                                'MAIL_DRIVER' => 'mailgun',
+                                'MAILGUN_DOMAIN' => 'mg.hieofone.org',
+                                'MAILGUN_SECRET' => $mailgun_secret,
+                                'MAIL_HOST' => '',
+                                'MAIL_PORT' => '',
+                                'MAIL_ENCRYPTION' => '',
+                                'MAIL_USERNAME' => '',
+                                'MAIL_PASSWORD' => '',
+                                'GOOGLE_KEY' => '',
+                                'GOOGLE_SECRET' => '',
+                                'GOOGLE_REDIRECT_URI' => ''
+                            ];
+                            $this->changeEnv($mail_arr);
+                        } else {
+
+                        }
+                    }
+                }
             } else {
                 $displayname = 'Administrator';
             }

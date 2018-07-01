@@ -145,6 +145,17 @@ cd $NEWNOSH
 sed -i '/^DB_DATABASE=/s/=.*/='"$MYSQL_DATABASE"'/' $ENV
 sed -i '/^DB_USERNAME=/s/=.*/='"$MYSQL_USERNAME"'/' $ENV
 sed -i '/^DB_PASSWORD=/s/=.*/='"$MYSQL_PASSWORD"'/' $ENV
+echo "TRUSTED_PROXIES=
+URI=localhost
+
+TWITTER_KEY=yourkeyfortheservice
+TWITTER_SECRET=yoursecretfortheservice
+TWITTER_REDIRECT_URI=https://example.com/login
+
+GOOGLE_KEY=yourkeyfortheservice
+GOOGLE_SECRET=yoursecretfortheservice
+GOOGLE_REDIRECT_URI=https://example.com/login
+" >> $ENV
 
 chown -R $WEB_GROUP.$WEB_USER $NEWNOSH
 chmod -R 755 $NEWNOSH

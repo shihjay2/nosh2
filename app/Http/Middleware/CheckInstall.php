@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Artisan;
 use Closure;
 use DB;
+use Symfony\Component\Process\Process;
 use Response;
 use Schema;
 use URL;
@@ -41,12 +42,6 @@ class CheckInstall
             return redirect()->route('set_version');
         }
 
-        // Check if Google file for sending email via Gmail exists
-        $google_file = base_path() . '/.google';
-        if (!file_exists($google_file)) {
-            return redirect()->route('google_start');
-        }
-
         // Chcek if needing installation
         $install = DB::table('practiceinfo')->first();
         if (!$install) {
@@ -60,12 +55,20 @@ class CheckInstall
         // Check for updates
         define('STDIN',fopen("php://stdin","r"));
         if (!Schema::hasTable('migrations')) {
-            Artisan::call('migrate:install', ['--force' => true]);
+            $migrate = new Process("php artisan migrate:install --force");
+            $migrate->setWorkingDirectory(base_path());
+            $migrate->setTimeout(null);
+            $migrate->run();
+            // Artisan::call('migrate:install', ['--force' => true]);
         }
-        Artisan::call('migrate', ['--force' => true]);
-        $current_version = "1.8.4";
+        $migrate1 = new Process("php artisan migrate --force");
+        $migrate1->setWorkingDirectory(base_path());
+        $migrate1->setTimeout(null);
+        $migrate1->run();
+        // Artisan::call('migrate', ['--force' => true]);
+        $current_version = "2.0.0";
         if ($install->version < $current_version) {
-            return redirect()->route('update');
+            return redirect()->route('update_install');
         }
 
         // Check if OpenID Connect beta testing and register if not yet
@@ -74,6 +77,12 @@ class CheckInstall
                 // return redirect()->route('oidc_register_client');
             // }
         // }
+
+        // Check if Google file for sending email via Gmail exists and transion to new e-mail
+        $google_file = base_path() . '/.google';
+        if (file_exists($google_file)) {
+            return redirect()->route('google_start');
+        }
 
         // Check if pNOSH instance
         if ($install->patient_centric == 'y') {
