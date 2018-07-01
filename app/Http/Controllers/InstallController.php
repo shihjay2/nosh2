@@ -1075,11 +1075,10 @@ public function install_fix(Request $request)
 
     public function test1(Request $request)
     {
-        $response = ['test' => '1'];
-        $statusCode = 403;
-        $header = [
-            'Warning' => '199 - "UMA Authorization Server Unreachable"'
-        ];
-        return Response::json($response, $statusCode, $header);
+         if (getenv('TRUSTED_PROXIES')) {
+             return 'yes';
+         } else {
+             return 'no';
+         }
     }
 }
