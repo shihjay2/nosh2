@@ -21,40 +21,20 @@ class TrustProxies extends Middleware
      */
     protected $headers = Request::HEADER_X_FORWARDED_ALL;
 
-    // public function __construct()
-    // {
-    //     if (getenv('TRUSTED_PROXIES')) {
-    //         if (env('TRUSTED_PROXIES') !== null) {
-    //             if (env('TRUSTED_PROXIES') == '*') {
-    //                 $this->proxies = '*';
-    //             } else {
-    //                 $this->proxies = explode(',', env('TRUSTED_PROXIES'));
-    //             }
-    //         } else {
-    //             throw new NotFoundException();
-    //         }
-    //     } else {
-    //         $data = ['TRUSTED_PROXIES' => ''];
-    //         $env = file_get_contents(base_path() . '/.env');
-	// 		$env = preg_split('/\s+/', $env);;
-	// 		foreach((array)$data as $key => $value){
-    //             $new = true;
-	// 			foreach($env as $env_key => $env_value){
-	// 				$entry = explode("=", $env_value, 2);
-	// 				if($entry[0] == $key){
-	// 					$env[$env_key] = $key . "=" . $value;
-    //                     $new = false;
-	// 				} else {
-	// 					$env[$env_key] = $env_value;
-	// 				}
-	// 			}
-    //             if ($new == true) {
-	// 				$env[$key] = $key . "=" . $value;
-	// 			}
-	// 		}
-	// 		$env = implode("\n", $env);
-	// 		file_put_contents(base_path() . '/.env', $env);
-    //         throw new NotFoundException();
-    //     }
-    // }
+    public function handle($request, \Closure $next) {
+        if (env('TRUSTED_PROXIES') == null) {
+            return $next($request);
+        }
+
+        return parent::handle($request, $next);
+    }
+
+    public function __construct()
+    {
+        if (env('TRUSTED_PROXIES') == '*') {
+            $this->proxies = '*';
+        } else {
+            $this->proxies = explode(',', env('TRUSTED_PROXIES'));
+        }
+    }
 }
