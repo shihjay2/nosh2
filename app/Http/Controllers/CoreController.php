@@ -3031,10 +3031,29 @@ class CoreController extends Controller
             // Generate individual pdfs
             $group_arr = [];
             $fix = [];
+            $med_count = 0;
             if ($arr) {
                 foreach ($arr as $item) {
                     if (isset($item['type'])) {
-                        $group_arr[$item['address_id']]['pdf_arr'][] = $this->{$item['function']}($item['id'], $item['pid'], $item['type']);
+                        if ($item['function'] == 'print_medication') {
+                            if ($item['type'] == 'single') {
+                                $group_arr[$item['address_id']]['pdf_arr'][] = $this->{$item['function']}($item['id'], $item['pid'], $item['type'], false);
+                            } else {
+                                if (Session::has('print_medication_combined')) {
+                                    $print_medication_combined_arr = Session::get('print_medication_combined');
+                                } else {
+                                    $print_medication_combined_arr = [];
+                                }
+                                $print_medication_combined_arr[] = [
+                                    'id' => $item['id'],
+                                    'pid' => $item['pid']
+                                ];
+                                Session::put('print_medication_combined', $print_medication_combined_arr);
+                                $med_count++;
+                            }
+                        } else {
+                            $group_arr[$item['address_id']]['pdf_arr'][] = $this->{$item['function']}($item['id'], $item['pid'], $item['type']);
+                        }
                     } else {
                         $group_arr[$item['address_id']]['pdf_arr'][] = $this->{$item['function']}($item['id'], $item['pid'], false);
                     }
@@ -3071,6 +3090,9 @@ class CoreController extends Controller
                         $group_arr[$item['address_id']]['title'] = "Record Request";
                         $group_arr[$item['address_id']]['message'] = 'Record request faxed';
                     }
+                }
+                if ($med_count > 0) {
+                    $group_arr[$item['address_id']]['pdf_arr'][] = $this->print_medication_combined(false);
                 }
             } else {
                 return back();
@@ -3129,7 +3151,8 @@ class CoreController extends Controller
                     'url' => [
                         'function' => 'print_medication',
                         'id' => $id,
-                        'pid' => $pid
+                        'pid' => $pid,
+                        'type' => $subtype
                     ],
                     'index' => 'rxl_id',
                     'message' => 'Prescription sent to fax queue'
@@ -5439,6 +5462,40 @@ class CoreController extends Controller
         }
     }
 
+    public function print_medication_combined($download=true)
+    {
+        $arr = Session::get('print_medication_combined');
+        Session::forget('print_medication_combined');
+        $new_arr = [];
+        $pdf = new Merger(true);
+        foreach ($arr as $k => $v) {
+            $rx = DB::table('rx_list')->where('rxl_id', '=', $v['id'])->first();
+            $new_arr[$v['pid']][$rx->id][] = $v['id'];
+        }
+        foreach ($new_arr as $pid => $provider_ids) {
+            foreach ($provider_ids as $provider_id => $rxl_arr) {
+                $rxl_chuck_arr = array_chunk($rxl_arr, 3);
+                foreach ($rxl_chuck_arr as $rxl_arr1) {
+                    $html = $this->page_medication_combined($pid, $rxl_arr1, $provider_id);
+                    $temp_file_path = public_path() . "/temp/" . time() . "_rx_" . Session::get('user_id') . ".pdf";
+                    $this->generate_pdf($html, $temp_file_path, 'footerpdf', '', '2');
+                    $pdf->addFromFile($temp_file_path, 'all');
+                }
+            }
+        }
+        $file_path = public_path() . "/temp/" . time() . "_rx_" . Session::get('user_id') . ".pdf";
+        $pdf->merge();
+        $pdf->save($file_path);
+        while(!file_exists($file_path)) {
+            sleep(2);
+        }
+        if ($download == true) {
+            return response()->download($file_path);
+        } else {
+            return $file_path;
+        }
+    }
+
     public function print_orders($id, $pid, $download=true)
     {
         ini_set('memory_limit','196M');
@@ -5466,13 +5523,35 @@ class CoreController extends Controller
             Session::forget('print_queue');
             Session::forget('print_queue_count');
             // Generate individual pdfs
+            $med_count = 0;
             if ($arr) {
                 foreach ($arr as $item) {
                     if (isset($item['type'])) {
-                        $pdf_arr[] = $this->{$item['function']}($item['id'], $item['pid'], $item['type']);
+                        if ($item['function'] == 'print_medication') {
+                            if ($item['type'] == 'single') {
+                                $pdf_arr[] = $this->{$item['function']}($item['id'], $item['pid'], false);
+                            } else {
+                                if (Session::has('print_medication_combined')) {
+                                    $print_medication_combined_arr = Session::get('print_medication_combined');
+                                } else {
+                                    $print_medication_combined_arr = [];
+                                }
+                                $print_medication_combined_arr[] = [
+                                    'id' => $item['id'],
+                                    'pid' => $item['pid']
+                                ];
+                                Session::put('print_medication_combined', $print_medication_combined_arr);
+                                $med_count++;
+                            }
+                        } else {
+                            $pdf_arr[] = $this->{$item['function']}($item['id'], $item['pid'], $item['type']);
+                        }
                     } else {
                         $pdf_arr[] = $this->{$item['function']}($item['id'], $item['pid'], false);
                     }
+                }
+                if ($med_count > 0) {
+                    $pdf_arr[] = $this->print_medication_combined(false);
                 }
             } else {
                 return back();
@@ -5492,7 +5571,8 @@ class CoreController extends Controller
                     'url' => [
                         'function' => 'print_medication',
                         'id' => $id,
-                        'pid' => $pid
+                        'pid' => $pid,
+                        'type' => $subtype
                     ],
                     'message' => 'Prescription sent to print queue'
                 ],

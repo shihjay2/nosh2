@@ -1867,7 +1867,16 @@ class ChartController extends Controller {
                 $this->plan_build('rx', 'prescribe', $encounter_text);
             }
             if ($next_action !== '') {
-                $next_action = route($next_action, [$table, $row_id1, Session::get('pid')]);
+                // $next_action = route($next_action, [$table, $row_id1, Session::get('pid')]);
+                if (filter_var($next_action, FILTER_VALIDATE_URL) == false) {
+                    $type = '';
+                    $next_action_arr = explode(',', $next_action);
+                    if (count($next_action_arr) > 1) {
+                        $type = $next_action_arr[1];
+                        $next_action = $next_action_arr[0];
+                    }
+                    $next_action = route($next_action, [$table, $row_id1, Session::get('pid'), $type]);
+                }
             }
         }
         if ($action == 'complete') {

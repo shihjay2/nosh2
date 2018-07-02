@@ -7,6 +7,7 @@
 			}
 			p {
 				text-align: center;
+				font-size: 0.8em;
 			}
 			b.smallcaps {
 				font-variant: small-caps;
@@ -68,46 +69,17 @@
 				</tr>
 			</tbody>
 		</table><br>
+		<?php echo $rx_item;?>
 		<table style="width:100%">
 			<thead>
 				<tr>
-					<th style="width:78%">MEDICATION</th>
-					<th style="width:22%">DATE</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td style="width:78%"><?php echo $rx->rxl_medication. ' ' . $rx->rxl_dosage . ' ' . $rx->rxl_dosage_unit;?></td>
-					<td style="width:22%"><?php echo $rx_date;?></td>
-				</tr>
-			</tbody>
-		</table><br>
-		<table style="width:100%">
-			<thead>
-				<tr>
-					<th style="width:56%">INSTRUCTIONS</th>
-					<th style="width:22%">QUANTITY</th>
-					<th style="width:22%">REFILLS</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td style="width:56%"><?php if ($rx->rxl_instructions != '') {echo $rx->rxl_instructions . ' for ' . $rx->rxl_reason;} else {echo $rx->rxl_sig . ' ' . $rx->rxl_route . ' ' . $rx->rxl_frequency . ' for ' . $rx->rxl_reason;}?></td>
-					<td style="width:22%">***<?php echo $rx->rxl_quantity;?>*** <?php echo $quantity_words;?></td>
-					<td style="width:22%">***<?php echo $rx->rxl_refill;?>*** <?php echo $refill_words;?></td>
-				</tr>
-			</tbody>
-		</table>
-		<table style="width:100%">
-			<thead>
-				<tr>
-					<th style="width:50%">SPECIAL INSTRUCTIONS</th>
+					<th style="width:50%"></th>
 					<th style="width:50%">SIGNATURE</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
-					<td><?php if ($rx->rxl_daw != '') {echo $rx->rxl_daw . '<br>';}?></td>
+					<td></td>
 					<td>
 						<?php echo $signature;?>
 						<p style="font-size:2pt;text-align:left;">THIS IS AN ORIGINAL PRESCRIPTION-THIS IS AN ORIGINAL PRESCRIPTION-THIS IS AN ORIGINAL PRESCRIPTION-THIS IS AN ORIGINAL PRESCRIPTION-THIS IS AN ORIGINAL PRESCRIPTION-THIS IS AN ORIGINAL PRESCRIPTION</p>

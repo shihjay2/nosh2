@@ -115,6 +115,7 @@ Route::get('printimage_single/{eid}', ['as' => 'printimage_single', 'uses' => 'C
 Route::get('print_invoice1/{eid}/{insurance_id_1}/{insurance_id_2}', ['as' => 'print_invoice1', 'uses' => 'CoreController@print_invoice1']);
 Route::get('print_invoice2/{id}/{pid}', ['as' => 'print_invoice2', 'uses' => 'CoreController@print_invoice2']);
 Route::get('print_medication/{id}/{pid}/{download?}', ['as' => 'print_medication', 'uses' => 'CoreController@print_medication']);
+Route::get('print_medication_combined/{download?}', ['as' => 'print_medication_combined', 'uses' => 'CoreController@print_medication_combined']);
 Route::get('print_orders/{id}/{pid}/{download?}', ['as' => 'print_orders', 'uses' => 'CoreController@print_orders']);
 Route::get('print_queue/{action}/{id}/{pid}/{subtype?}', ['as' => 'print_queue', 'uses' => 'CoreController@print_queue']);
 Route::any('restore_backup', ['as' => 'restore_backup', 'uses' => 'CoreController@restore_backup']);

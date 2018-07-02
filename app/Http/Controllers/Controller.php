@@ -7699,11 +7699,13 @@ class Controller extends BaseController
         $nosh_action_arr = [
             'electronic_sign' => 'Electronically Sign',
             'print_action' => 'Print',
-            'print_queue' => 'Add to Print Queue'
+            'print_queue,single' => 'Add to Print Queue',
+            'print_queue,combined' => 'Add to Print Queue, Combined In One Page'
         ];
         if ($practice->fax_type !== '') {
             $nosh_action_arr['fax_action'] = 'Fax';
-            $nosh_action_arr['fax_queue'] = 'Add to Fax Queue';
+            $nosh_action_arr['fax_queue,single'] = 'Add to Fax Queue';
+            $nosh_action_arr['fax_queue,combined'] = 'Add to Fax Queue, Combined In One Page';
         }
         $edit = $this->access_level('3');
         $rxl_provider = null;
@@ -13295,14 +13297,28 @@ class Controller extends BaseController
 
     protected function page_medication($rxl_id, $pid)
     {
-        $data['rx'] = DB::table('rx_list')->where('rxl_id', '=', $rxl_id)->first();
-        $quantity = $data['rx']->rxl_quantity;
-        $refill = $data['rx']->rxl_refill;
-        $data['quantity_words'] = $this->convert_number($quantity);
-        $data['refill_words'] = $this->convert_number($refill);
-        $data['quantity_words'] = strtoupper($data['quantity_words']);
-        $data['refill_words'] = strtoupper($data['refill_words']);
-        $provider = DB::table('providers')->where('id', '=', $data['rx']->id)->first();
+        $rx = DB::table('rx_list')->where('rxl_id', '=', $rxl_id)->first();
+        $data['rx'] = $rx;
+        $quantity = $rx->rxl_quantity;
+        $refill = $rx->rxl_refill;
+        $quantity_words = strtoupper($this->convert_number($quantity));
+        $refill_words = strtoupper($this->convert_number($refill));
+        $data['rx_item'] = '<table style="width:100%"><thead><tr><th style="width:78%">MEDICATION</th><th style="width:22%">DATE</th></tr></thead><tbody>';
+		$data['rx_item'] .= '<tr><td style="width:78%">' . $rx->rxl_medication. ' ' . $rx->rxl_dosage . ' ' . $rx->rxl_dosage_unit . '</td><td style="width:22%">' . date('m/d/Y', $this->human_to_unix($rx->rxl_date_prescribed)) . '</td></tr></tbody></table><br>';
+		$data['rx_item'] .= '<table style="width:100%"><thead><tr><th style="width:56%">INSTRUCTIONS</th><th style="width:22%">QUANTITY</th><th style="width:22%">REFILLS</th></tr></thead><tbody>';
+		$data['rx_item'] .= '<tr><td style="width:56%">';
+        if ($rx->rxl_instructions != '') {
+            $data['rx_item'] .= $rx->rxl_instructions . ' for ' . $rx->rxl_reason;
+        } else {
+            $data['rx_item'] .= $rx->rxl_sig . ' ' . $rx->rxl_route . ' ' . $rx->rxl_frequency . ' for ' . $rx->rxl_reason;
+        }
+        $data['rx_item'] .= '</td><td style="width:22%">***' . $rx->rxl_quantity . '*** ' . $quantity_words . '</td><td style="width:22%">***' . $rx->rxl_refill . '*** ' . $refill_words . '</td></tr></tbody></table>';
+		$data['rx_item'] .= '<table style="width:100%"><thead><tr><th style="width:100%">SPECIAL INSTRUCTIONS</th></tr></thead><tbody><tr><td>';
+        if ($rx->rxl_daw != '') {
+            $data['rx_item'] .= $rx->rxl_daw . '<br>';
+        }
+        $data['rx_item'] .= '</td></tr></tbody></table>';
+        $provider = DB::table('providers')->where('id', '=', $rx->id)->first();
         $practice = DB::table('practiceinfo')->where('practice_id', '=', $provider->practice_id)->first();
         $data['practiceName'] = $practice->practice_name;
         $data['website'] = $practice->website;
@@ -13318,7 +13334,6 @@ class Controller extends BaseController
         $rxicon = HTML::image(asset('assets/images/rxicon.png'), 'Practice Logo', array('border' => '0', 'height' => '30', 'width' => '30'));
         $data['rxicon'] = str_replace('https', 'http', $rxicon);
         $data['dob'] = date('m/d/Y', $this->human_to_unix($data['patientInfo']->DOB));
-        $data['rx_date'] = date('m/d/Y', $this->human_to_unix($data['rx']->rxl_date_prescribed));
         $query1 = DB::table('insurance')->where('pid', '=', $pid)->where('insurance_plan_active', '=', 'Yes')->get();
         $data['insuranceInfo'] = '';
         if ($query1->count()) {
@@ -13337,7 +13352,72 @@ class Controller extends BaseController
         } else {
             $data['allergyInfo'] .= 'No known allergies.';
         }
-        $data['signature'] = $this->signature($data['rx']->id);
+        $data['signature'] = $this->signature($rx->id);
+        return view('pdf.prescription_page', $data);
+    }
+
+    protected function page_medication_combined($pid, $arr, $provider_id)
+    {
+        $data['rx_item'] = '';
+        foreach ($arr as $rxl_id) {
+            $rx = DB::table('rx_list')->where('rxl_id', '=', $rxl_id)->first();
+            $data['rx'] = $rx;
+            $quantity = $rx->rxl_quantity;
+            $refill = $rx->rxl_refill;
+            $quantity_words = strtoupper($this->convert_number($quantity));
+            $refill_words = strtoupper($this->convert_number($refill));
+            $data['rx_item'] .= '<table style="width:100%"><thead><tr><th style="width:78%">MEDICATION</th><th style="width:22%">DATE</th></tr></thead><tbody>';
+    		$data['rx_item'] .= '<tr><td style="width:78%">' . $rx->rxl_medication. ' ' . $rx->rxl_dosage . ' ' . $rx->rxl_dosage_unit . '</td><td style="width:22%">' . date('m/d/Y', $this->human_to_unix($rx->rxl_date_prescribed)) . '</td></tr></tbody></table><br>';
+    		$data['rx_item'] .= '<table style="width:100%"><thead><tr><th style="width:56%">INSTRUCTIONS</th><th style="width:22%">QUANTITY</th><th style="width:22%">REFILLS</th></tr></thead><tbody>';
+    		$data['rx_item'] .= '<tr><td style="width:56%">';
+            if ($rx->rxl_instructions != '') {
+                $data['rx_item'] .= $rx->rxl_instructions . ' for ' . $rx->rxl_reason;
+            } else {
+                $data['rx_item'] .= $rx->rxl_sig . ' ' . $rx->rxl_route . ' ' . $rx->rxl_frequency . ' for ' . $rx->rxl_reason;
+            }
+            $data['rx_item'] .= '</td><td style="width:22%">***' . $rx->rxl_quantity . '*** ' . $quantity_words . '</td><td style="width:22%">***' . $rx->rxl_refill . '*** ' . $refill_words . '</td></tr></tbody></table>';
+    		$data['rx_item'] .= '<table style="width:100%"><thead><tr><th style="width:100%">SPECIAL INSTRUCTIONS</th></tr></thead><tbody><tr><td>';
+            if ($rx->rxl_daw != '') {
+                $data['rx_item'] .= $rx->rxl_daw . '<br>';
+            }
+            $data['rx_item'] .= '</td></tr></tbody></table><br><br><br>';
+
+        }
+        $provider = DB::table('providers')->where('id', '=', $provider_id)->first();
+        $practice = DB::table('practiceinfo')->where('practice_id', '=', $provider->practice_id)->first();
+        $data['practiceName'] = $practice->practice_name;
+        $data['website'] = $practice->website;
+        $data['practiceInfo'] = $practice->street_address1;
+        if ($practice->street_address2 != '') {
+            $data['practiceInfo'] .= ', ' . $practice->street_address2;
+        }
+        $data['practiceInfo'] .= '<br />';
+        $data['practiceInfo'] .= $practice->city . ', ' . $practice->state . ' ' . $practice->zip . '<br />';
+        $data['practiceInfo'] .= 'Phone: ' . $practice->phone . ', Fax: ' . $practice->fax . '<br />';
+        $data['patientInfo'] = DB::table('demographics')->where('pid', '=', $pid)->first();
+        $data['practiceLogo'] = $this->practice_logo($provider->practice_id);
+        $rxicon = HTML::image(asset('assets/images/rxicon.png'), 'Practice Logo', array('border' => '0', 'height' => '30', 'width' => '30'));
+        $data['rxicon'] = str_replace('https', 'http', $rxicon);
+        $data['dob'] = date('m/d/Y', $this->human_to_unix($data['patientInfo']->DOB));
+        $query1 = DB::table('insurance')->where('pid', '=', $pid)->where('insurance_plan_active', '=', 'Yes')->get();
+        $data['insuranceInfo'] = '';
+        if ($query1->count()) {
+            foreach ($query1 as $row) {
+                $data['insuranceInfo'] .= $row->insurance_plan_name . '; ID: ' . $row->insurance_id_num . '; Group: ' . $row->insurance_group . '; ' . $row->insurance_insu_lastname . ', ' . $row->insurance_insu_firstname . '<br><br>';
+            }
+        }
+        $query2 = DB::table('allergies')->where('pid', '=', $pid)->where('allergies_date_inactive', '=', '0000-00-00 00:00:00')->get();
+        $data['allergyInfo'] = '';
+        if ($query2->count()) {
+            $data['allergyInfo'] .= '<ul>';
+            foreach ($query2 as $row1) {
+                $data['allergyInfo'] .= '<li>' . $row1->allergies_med . '</li>';
+            }
+            $data['allergyInfo'] .= '</ul>';
+        } else {
+            $data['allergyInfo'] .= 'No known allergies.';
+        }
+        $data['signature'] = $this->signature($provider_id);
         return view('pdf.prescription_page', $data);
     }
 
@@ -16075,16 +16155,16 @@ class Controller extends BaseController
             // ];
             config($config);
             extract(Config::get('mail'));
-            $transport = Swift_SmtpTransport::newInstance($host, $port, 'ssl');
-            $transport->setAuthMode('XOAUTH2');
-            if (isset($encryption)) {
-                $transport->setEncryption($encryption);
-            }
-            if (isset($username)) {
-                $transport->setUsername($username);
-                $transport->setPassword($password);
-            }
-            Mail::setSwiftMailer(new Swift_Mailer($transport));
+            // $transport = Swift_SmtpTransport::newInstance($host, $port, 'ssl');
+            // $transport->setAuthMode('XOAUTH2');
+            // if (isset($encryption)) {
+            //     $transport->setEncryption($encryption);
+            // }
+            // if (isset($username)) {
+            //     $transport->setUsername($username);
+            //     $transport->setPassword($password);
+            // }
+            // Mail::setSwiftMailer(new Swift_Mailer($transport));
             // Mail::send($template, $data_message, function ($message) use ($to, $subject, $practice) {
             //     $message->to($to)
             //         ->from($practice->email, $practice->practice_name)
