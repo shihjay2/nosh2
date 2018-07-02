@@ -141,7 +141,6 @@ class InstallController extends Controller {
                 'password' => 'min:4',
                 'confirm_password' => 'min:4|same:password',
             ]);
-            $smtp_user = $request->input('smtp_user');
             $username = $request->input('username');
             $password = substr_replace(Hash::make($request->input('password')),"$2a",0,3);
             $email = $request->input('email');
@@ -194,7 +193,6 @@ class InstallController extends Controller {
                 'email' => $email,
                 'documents_dir' => $documents_dir,
                 'fax_type' => '',
-                'smtp_user' => $smtp_user,
                 'vivacare' => '',
                 'version' => '2.0.0',
                 'active' => 'Y',
@@ -501,13 +499,6 @@ class InstallController extends Controller {
                 'type' => 'text',
                 'required' => true,
                 'default_value' => $documents_dir
-            ];
-            $items[] = [
-                'name' => 'smtp_user',
-                'label' => 'Gmail Username for Sending Email',
-                'type' => 'text',
-                'required' => true,
-                'default_value' => null
             ];
             $form_array = [
                 'form_id' => 'install_form',
@@ -1075,10 +1066,5 @@ public function install_fix(Request $request)
 
     public function test1(Request $request)
     {
-         if (getenv('TRUSTED_PROXIES')) {
-             return 'yes';
-         } else {
-             return 'no';
-         }
     }
 }
