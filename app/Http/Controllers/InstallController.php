@@ -1019,7 +1019,7 @@ public function install_fix(Request $request)
             $pre_url = rtrim($request->input('uri'), '/');
             $open_id_url = $pre_url . '/.well-known/webfinger';
             $ch = curl_init();
-            curl_setopt($ch,CURLOPT_URL, $url);
+            curl_setopt($ch,CURLOPT_URL, $open_id_url);
             curl_setopt($ch,CURLOPT_FAILONERROR,1);
             curl_setopt($ch,CURLOPT_FOLLOWLOCATION,1);
             curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
