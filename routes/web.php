@@ -45,6 +45,8 @@ Route::any('install/{type}', ['as' => 'install', 'uses' => 'InstallController@in
 Route::any('install_fix', ['as' => 'install_fix', 'uses' => 'InstallController@install_fix']);
 Route::any('prescription_pharmacy_view/{id}/{ret?}', ['as' => 'prescription_pharmacy_view', 'uses' => 'InstallController@prescription_pharmacy_view']);
 Route::get('set_version', ['as' => 'set_version', 'uses' => 'InstallController@set_version']);
+Route::any('setup_mail', ['as' => 'setup_mail', 'uses' => 'InstallController@setup_mail']);
+Route::get('setup_mail_test', ['as' => 'setup_mail_test', 'uses' => 'InstallController@setup_mail_test']);
 Route::get('uma_patient_centric', ['as' => 'uma_patient_centric', 'uses' => 'InstallController@uma_patient_centric']);
 Route::any('uma_patient_centric_designate', ['as' => 'uma_patient_centric_designate', 'uses' => 'InstallController@uma_patient_centric_designate']);
 Route::get('update', ['as' => 'update_install', 'uses' => 'InstallController@update']);
@@ -123,8 +125,6 @@ Route::get('set_patient/{pid}', ['as' => 'set_patient', 'uses' => 'CoreControlle
 Route::get('schedule_provider_exceptions/{type}', ['as' => 'schedule_provider_exceptions', 'uses' => 'CoreController@schedule_provider_exceptions']);
 Route::get('schedule_visit_types/{type}', ['as' => 'schedule_visit_types', 'uses' => 'CoreController@schedule_visit_types']);
 Route::get('setup', ['as' => 'setup', 'uses' => 'CoreController@setup']);
-Route::any('setup_mail', ['as' => 'setup_mail', 'uses' => 'CoreController@setup_mail']);
-Route::get('setup_mail_test', ['as' => 'setup_mail_test', 'uses' => 'CoreController@setup_mail_test']);
 Route::any('superquery/{type}', ['as' => 'superquery', 'uses' => 'CoreController@superquery']);
 Route::get('superquery_delete/{type}', ['as' => 'superquery_delete', 'uses' => 'CoreController@superquery_delete']);
 Route::any('superquery_hedis/{type}', ['as' => 'superquery_hedis', 'uses' => 'CoreController@superquery_hedis']);
