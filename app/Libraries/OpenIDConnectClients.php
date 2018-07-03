@@ -704,7 +704,7 @@ class OpenIDConnectClient
 	 * @return string
 	 */
 	public function getClientURI() {
-		return $this->$client_uri;
+		return $this->client_uri;
 	}
 
 	/**
