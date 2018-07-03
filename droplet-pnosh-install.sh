@@ -127,10 +127,6 @@ if ! [ -d "$NOSH_DIR"/sentfax ]; then
 	mkdir "$NOSH_DIR"/sentfax
 	chown -R $WEB_GROUP.$WEB_USER "$NOSH_DIR"/sentfax
 fi
-# pNOSH designation
-if ! [ -f "$NOSH_DIR"/.patientcentric ]; then
-	touch "$NOSH_DIR"/.patientcentric
-fi
 log_only "The NOSH ChartingSystem scan and fax directories are secured."
 log_only "The NOSH ChartingSystem documents directory is secured."
 log_only "This installation will create pNOSH (patient NOSH)."
@@ -139,7 +135,10 @@ log_only "This installation will create pNOSH (patient NOSH)."
 cd $NOSH_DIR
 composer create-project nosh2/nosh2 --prefer-dist --stability dev
 cd $NEWNOSH
-
+# pNOSH designation
+if ! [ -f "$NEWNOSH"/.patientcentric ]; then
+	touch "$NEWNOSH"/.patientcentric
+fi
 # Edit .env file
 sed -i '/^DB_DATABASE=/s/=.*/='"$MYSQL_DATABASE"'/' $ENV
 sed -i '/^DB_USERNAME=/s/=.*/='"$MYSQL_USERNAME"'/' $ENV
