@@ -822,22 +822,27 @@ public function install_fix(Request $request)
         $query = DB::table('practiceinfo')->where('practice_id', '=', '1')->first();
         if ($query->patient_centric == 'y') {
             if ($query->uma_client_id == '') {
-                // Check if AS is on the same $domain_name
-                $check_open_id_url = str_replace('/nosh', '/.well-known/uma2-configuration', URL::to('/'));
-                $ch = curl_init();
-                curl_setopt($ch,CURLOPT_URL, $check_open_id_url);
-                curl_setopt($ch,CURLOPT_FAILONERROR,1);
-                curl_setopt($ch,CURLOPT_FOLLOWLOCATION,1);
-                curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
-                curl_setopt($ch,CURLOPT_TIMEOUT, 60);
-                curl_setopt($ch,CURLOPT_CONNECTTIMEOUT ,0);
-                $check_exec = curl_exec($ch);
-                $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-                curl_close ($ch);
-                if ($httpCode == 404 || $httpCode == 0) {
-                    return redirect()->route('uma_patient_centric_designate');
+                // Chcek if AS set previously in uma_patient_centric_designate
+                if ($query->uma_uri == '' || $query->uma_uri == null) {
+                    // Check if AS is on the same $domain_name
+                    $check_open_id_url = str_replace('/nosh', '/.well-known/uma2-configuration', URL::to('/'));
+                    $ch = curl_init();
+                    curl_setopt($ch,CURLOPT_URL, $check_open_id_url);
+                    curl_setopt($ch,CURLOPT_FAILONERROR,1);
+                    curl_setopt($ch,CURLOPT_FOLLOWLOCATION,1);
+                    curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+                    curl_setopt($ch,CURLOPT_TIMEOUT, 60);
+                    curl_setopt($ch,CURLOPT_CONNECTTIMEOUT ,0);
+                    $check_exec = curl_exec($ch);
+                    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                    curl_close ($ch);
+                    if ($httpCode == 404 || $httpCode == 0) {
+                        return redirect()->route('uma_patient_centric_designate');
+                    }
+                    $data['uma_uri'] = str_replace('/nosh', '', URL::to('/'));
+                } else {
+                    $data['uma_uri'] = $query->uma_uri;
                 }
-                $data['uma_uri'] = str_replace('/nosh', '', URL::to('/'));
                 // Register as resource server
                 $patient = DB::table('demographics')->where('pid', '=', '1')->first();
                 $client_name = 'Patient NOSH for ' .  $patient->firstname . ' ' . $patient->lastname . ', DOB: ' . date('Y-m-d', strtotime($patient->DOB));
@@ -1034,7 +1039,8 @@ public function install_fix(Request $request)
                 $this->audit('Update');
                 return redirect()->route('uma_patient_centric');
             } else {
-                return redirect()->back()->withErrors(['uri' => 'The URL you entered is not valid.']);
+                Session::put('message_action', 'Error - The URL you entered is not valid.');
+                return redirect()->back();
             }
         } else {
             $data['panel_header'] = 'HIE of One Authorization Server Registration';
@@ -1056,6 +1062,8 @@ public function install_fix(Request $request)
             $data['content'] .= $this->form_build($form_array);
             $data['assets_js'] = $this->assets_js();
             $data['assets_css'] = $this->assets_css();
+            $data['message_action'] = Session::get('message_action');
+            Session::forget('message_action');
             return view('core', $data);
         }
     }
