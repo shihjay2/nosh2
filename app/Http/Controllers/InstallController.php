@@ -1035,6 +1035,8 @@ public function install_fix(Request $request)
             curl_close ($ch);
             if ($httpCode !== 404  && $httpCode !== 0) {
                 $uma_data['uma_uri'] = $pre_url;
+                $uma_data['uma_client_id'] = '';
+                $uma_data['uma_client_secret'] = '';
                 DB::table('practiceinfo')->where('practice_id', '=', '1')->update($uma_data);
                 $this->audit('Update');
                 return redirect()->route('uma_patient_centric');
