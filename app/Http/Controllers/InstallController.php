@@ -823,7 +823,7 @@ public function install_fix(Request $request)
         if ($query->patient_centric == 'y') {
             if ($query->uma_client_id == '') {
                 // Check if AS is on the same $domain_name
-                $check_open_id_url = str_replace('/nosh', '/.well-known/webfinger', URL::to('/'));
+                $check_open_id_url = str_replace('/nosh', '/.well-known/uma2-configuration', URL::to('/'));
                 $ch = curl_init();
                 curl_setopt($ch,CURLOPT_URL, $check_open_id_url);
                 curl_setopt($ch,CURLOPT_FAILONERROR,1);
@@ -1017,7 +1017,7 @@ public function install_fix(Request $request)
                 'uri' => 'required'
             ]);
             $pre_url = rtrim($request->input('uri'), '/');
-            $open_id_url = $pre_url . '/.well-known/webfinger';
+            $open_id_url = $pre_url . '/.well-known/uma2-configuration';
             $ch = curl_init();
             curl_setopt($ch,CURLOPT_URL, $open_id_url);
             curl_setopt($ch,CURLOPT_FAILONERROR,1);
@@ -1042,7 +1042,8 @@ public function install_fix(Request $request)
                 'name' => 'uri',
                 'label' => 'URL of your HIE of One Authorization Server',
                 'type' => 'text',
-                'required' => true
+                'required' => true,
+                'value' => 'https://'
             ];
             $form_array = [
                 'form_id' => 'uma_form',
