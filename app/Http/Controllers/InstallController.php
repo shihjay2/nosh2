@@ -1043,7 +1043,8 @@ public function install_fix(Request $request)
                 'label' => 'URL of your HIE of One Authorization Server',
                 'type' => 'text',
                 'required' => true,
-                'value' => 'https://'
+                'value' => 'https://',
+                'default_value' => 'https://'
             ];
             $form_array = [
                 'form_id' => 'uma_form',
