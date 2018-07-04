@@ -7982,11 +7982,8 @@ class CoreController extends Controller
             foreach ($result as $row) {
                 $arr = [];
                 $arr['label'] = '<b>' . $row->displayname . '</b> - ' . $row->username;
-                $google = File::get(base_path() . "/.google");
-                if ($google == '') {
-                    if ($row->secret_question == null) {
-                        $arr['label'] .= '<br><a href="' . route('accept_invitation', [$row->password]) . '" target="_blank">' . route('accept_invitation', [$row->password]) . '</a>';
-                    }
+                if ($row->secret_question == null) {
+                    $arr['label'] .= '<br><a href="' . route('accept_invitation', [$row->password]) . '" target="_blank">' . route('accept_invitation', [$row->password]) . '</a>';
                 }
                 $arr['edit'] = route('core_form', ['users', $row_index, $row->$row_index, $type]);
                 if ($active == '1') {

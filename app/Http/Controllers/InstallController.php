@@ -343,15 +343,17 @@ class InstallController extends Controller {
             ];
             DB::table('calendar')->insert($calendar);
             $this->audit('Add');
-            Auth::attempt(['username' => $username, 'password' => $request->input('password'), 'active' => '1', 'practice_id' => '1']);
-            Session::put('user_id', $user_id);
-            Session::put('group_id', '1');
-            Session::put('practice_id', '1');
-            Session::put('version', $data2['version']);
-            Session::put('practice_active', $data2['active']);
-            Session::put('displayname', $displayname);
-            Session::put('documents_dir', $data2['documents_dir']);
-            Session::put('patient_centric', $data2['patient_centric']);
+            if ($type == 'practice') {
+                Auth::attempt(['username' => $username, 'password' => $request->input('password'), 'active' => '1', 'practice_id' => '1']);
+                Session::put('user_id', $user_id);
+                Session::put('group_id', '1');
+                Session::put('practice_id', '1');
+                Session::put('version', $data2['version']);
+                Session::put('practice_active', $data2['active']);
+                Session::put('displayname', $displayname);
+                Session::put('documents_dir', $data2['documents_dir']);
+                Session::put('patient_centric', $data2['patient_centric']);
+            }
             return redirect()->route('dashboard');
         } else {
             $data['panel_header'] = 'NOSH ChartingSystem Installation';
@@ -911,6 +913,7 @@ public function install_fix(Request $request)
                     // Register resource sets
                     $uma = DB::table('uma')->first();
                     if (!$uma) {
+                        // First time
                         $resource_set_array[] = [
                             'name' => 'Patient',
                             'icon' => 'https://cloud.noshchartingsystem.com/i-patient.png',
@@ -1009,6 +1012,25 @@ public function install_fix(Request $request)
                             }
                         }
                     }
+                    // Login as owner
+                    $user = DB::table('users')->where('id', '=', '2')->first();
+                    Auth::loginUsingId($user->id);
+                    $practice1 = DB::table('practiceinfo')->where('practice_id', '=', $user->practice_id)->first();
+                    Session::put('user_id', $user->id);
+                    Session::put('group_id', $user->group_id);
+                    Session::put('practice_id', $user->practice_id);
+                    Session::put('version', $practice1->version);
+                    Session::put('practice_active', $practice1->active);
+                    Session::put('displayname', $user->displayname);
+                    Session::put('documents_dir', $practice->documents_dir);
+                    Session::put('rcopia', $practice1->rcopia_extension);
+                    Session::put('mtm_extension', $practice1->mtm_extension);
+                    Session::put('patient_centric', $practice1->patient_centric);
+                    Session::put('uma_auth_access_token', $access_token);
+                    Session::put('uport_id', $uport_id);
+                    $url_hieofoneas = str_replace('/nosh', '/resources/' . $practice1->uma_client_id, URL::to('/'));
+                    Session::put('url_hieofoneas', $url_hieofoneas);
+                    setcookie("login_attempts", 0, time()+900, '/');
                 }
             }
         }
