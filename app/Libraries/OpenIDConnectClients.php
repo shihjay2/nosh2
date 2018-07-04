@@ -522,7 +522,7 @@ class OpenIDConnectClient
 		// If the configuration value is not available, attempt to fetch it from a well known config endpoint
 		// This is also known as auto "discovery"
 		if (!isset($this->providerConfig[$param])) {
-			$this->providerConfig[$param] = $this->getWellKnownConfigValue($param, $default. $uma);
+			$this->providerConfig[$param] = $this->getWellKnownConfigValue($param, $uma, $default);
 		}
 
 		return $this->providerConfig[$param];
@@ -537,7 +537,7 @@ class OpenIDConnectClient
 	 * @return string
 	 *
 	 */
-	private function getWellKnownConfigValue($param, $default = null, $uma = false) {
+	private function getWellKnownConfigValue($param, $uma = false, $default = null) {
 
 		// If the configuration value is not available, attempt to fetch it from a well known config endpoint
 		// This is also known as auto "discovery"
