@@ -7613,6 +7613,7 @@ class CoreController extends Controller
         $as_uri = $result['as_uri'];
         $url = route('uma_aat');
         // Requesting party claims
+        $oidc = new OpenIDConnectClient(Session::get('uma_uri'), Session::get('uma_client_id'), Session::get('uma_client_secret'));
         $oidc->setRedirectURL($url);
         $oidc->rqp_claims($permission_ticket);
     }
