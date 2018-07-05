@@ -7837,7 +7837,7 @@ class CoreController extends Controller
             $oidc->addRedirectURLs(route('uma_api'));
             $oidc->addRedirectURLs(route('uma_aat'));
             $oidc->addRedirectURLs(route('uma_register_auth'));
-            $oidc->addRedirectURLs(route('uma_resources'));
+            // $oidc->addRedirectURLs(route('uma_resources'));
             $oidc->addRedirectURLs(route('uma_resource_view'));
             $oidc->addScope('openid');
             $oidc->addScope('email');
@@ -7937,7 +7937,7 @@ class CoreController extends Controller
         $patient = DB::table('demographics')->where('id', '=', $id)->first();
         $oidc = new OpenIDConnectClient($patient->hieofone_as_url, $patient->hieofone_as_client_id, $patient->hieofone_as_client_secret);
         $oidc->setSessionName('nosh');
-        $oidc->setRedirectURL(route('uma_resources'));
+        $oidc->setRedirectURL(route('uma_resources', [$id]));
         $oidc->setSessionName('pnosh');
         $oidc->addScope('openid');
         $oidc->addScope('email');
