@@ -7729,17 +7729,13 @@ class CoreController extends Controller
         // Format the result into a nice display
         $data['message_action'] = Session::get('message_action');
         Session::forget('message_action');
-        $id = Session::get('current_client_id');
-        $client = DB::table('oauth_rp')->where('id', '=', Session::get('current_client_id'))->first();
         $title_array = [
             'Condition' => 'Conditions',
             'MedicationStatement' => 'Medications',
             'AllergyIntolerance' => 'Allergies',
             'Immunization' => 'Immunizations',
-            'Patient' => 'Patient Information'
+            'Patient' => 'Patient Information',
         ];
-        $query = DB::table('resource_set')->where('resource_set_id', '=', $id)->first();
-        $data['panel_header'] = $title_array[Session::get('type')] . ' for ' . $client->as_name;
         $dropdown_array = [];
         $items = [];
         if (Session::has('uma_add_patient')) {
@@ -7765,6 +7761,7 @@ class CoreController extends Controller
                 $data['content'] = '<ul class="list-group">';
                 foreach ($result3['entry'] as $entry) {
                     if (Session::has('uma_add_patient')) {
+                        $as_name = $entry['resource']['name'][0]['given'][0] . ' ' . $entry['resource']['name'][0]['family'][0] . ' (DOB: ' . date('Y-m-d', strtotime($entry['resource']['birthDate'])) . ')';
                         $data1 = Session::get('uma_add_patient');
                         $add_data1 = [
                             'lastname' => $entry['resource']['name'][0]['family'][0],
@@ -7775,7 +7772,7 @@ class CoreController extends Controller
                             'sexuallyactive' => 'no',
                             'tobacco' => 'no',
                             'pregnant' => 'no',
-                            'hieofone_as_name' => $entry['resource']['name'][0]['given'][0] . ' ' . $entry['resource']['name'][0]['family'][0] . ' (DOB: ' . date('Y-m-d', strtotime($entry['resource']['birthDate'])) . ')'
+                            'hieofone_as_name' => $as_name
                         ];
                         $data1 = $data1 + $add_data1;
                         Session::put('uma_add_patient', $data1);
@@ -7807,12 +7804,14 @@ class CoreController extends Controller
                         }
                         $data['content'] .= '</li>';
                     } else  {
+                        $as_name = Session::get('uma_as_name');
                         $data['content'] .= '<li class="list-group-item">' . $entry['resource']['text']['div'] . '</li>';
                     }
                 }
                 $data['content'] .= '</ul>';
             }
         }
+        $data['panel_header'] = $title_array[Session::get('type')] . ' for ' . $as_name;
         $data['assets_js'] = $this->assets_js();
         $data['assets_css'] = $this->assets_css();
         return view('core', $data);
@@ -8060,16 +8059,21 @@ class CoreController extends Controller
             Session::put('uma_uri', $data['hieofone_as_url']);
             Session::put('uma_client_id', $data['hieofone_as_client_id']);
             Session::put('uma_client_secret', $data['hieofone_as_client_secret']);
+            Session::put('type', 'Patient');
         } else {
             $patient = DB::table('demographics')->where('id', '=', Session::get('uma_pid'))->first();
             Session::put('uma_uri', $patient->hieofone_as_url);
-            Session::put('uma_client_id', $patient->client_id);
-            Session::put('uma_client_secret', $patient->client_secret);
+            Session::put('uma_client_id', $patient->hieofone_as_client_id);
+            Session::put('uma_client_secret', $patient->hieofone_as_client_secret);
+            Session::put('uma_as_name', $patient->hieofone_as_name);
             $resources = Session::get('uma_auth_resources');
             $key = array_search($type, array_column($resources, '_id'));
             foreach ($resources[$key]['resource_scopes'] as $scope) {
                 if (parse_url($scope, PHP_URL_HOST) !== null) {
                     Session::put('uma_resource_uri', $scope);
+                    $fhir_arr = explode('/', $scope);
+                    $resource_type = array_pop($fhir_arr);
+                    Session::put('type', $resource_type);
                     break;
                 }
             }
