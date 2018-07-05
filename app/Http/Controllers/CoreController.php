@@ -7660,6 +7660,7 @@ class CoreController extends Controller
             $url = route('uma_api');
             $oidc = new OpenIDConnectClient($as_uri, $client_id, $client_secret);
             $oidc->setSessionName('nosh');
+            $oidc->setAccessToken(Session::get('uma_auth_access_token_nosh'));
             $oidc->setRedirectURL($url);
             $result1 = $oidc->rpt_request($permission_ticket);
             if (isset($result1['error'])) {
@@ -7685,6 +7686,23 @@ class CoreController extends Controller
                     $data['assets_css'] = $this->assets_css();
                     return view('core', $data);
                 }
+            }
+            if (isset($result1['errors'])) {
+                $data['panel_header'] = 'Error getting data';
+                $data['content'] = 'Description:<br>' . $result1['errors'];
+                $dropdown_array = [];
+                $items = [];
+                $items[] = [
+                    'type' => 'item',
+                    'label' => 'Back',
+                    'icon' => 'fa-chevron-left',
+                    'url' => Session::get('last_page')
+                ];
+                $dropdown_array['items'] = $items;
+                $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
+                $data['assets_js'] = $this->assets_js();
+                $data['assets_css'] = $this->assets_css();
+                return view('core', $data);
             }
             $rpt = $result1['access_token'];
             // Save RPT in session in case for future calls in same session
@@ -7913,8 +7931,15 @@ class CoreController extends Controller
         $oidc->setUMAType('');
         $oidc->authenticate();
         $resources = $oidc->get_resources(true);
+        if ($oidc->getRefreshToken() != '') {
+            $data = Session::get('uma_add_patient');
+            $data['hieofone_as_refresh_token'] = $oidc->getRefreshToken();
+            Session::put('uma_add_patient', $data);
+        }
+        $oidc->getRefreshToken();
         if (count($resources) > 0) {
-            Session::put('uma_register_auth_access_token', $oidc->getAccessToken());
+            // Get the access token from the AS in anticipation for the RPT
+            Session::put('uma_auth_access_token_nosh', $oidc->getAccessToken());
             Session::put('uma_auth_resources', $resources);
             $patient_urls = [];
             foreach ($resources as $resource) {
@@ -7942,18 +7967,29 @@ class CoreController extends Controller
     public function uma_resources(Request $request, $id)
     {
         $patient = DB::table('demographics')->where('id', '=', $id)->first();
+        // Get access token from AS in anticipation for geting the RPT; if no refresh token before, get it too.
         $oidc = new OpenIDConnectClient($patient->hieofone_as_url, $patient->hieofone_as_client_id, $patient->hieofone_as_client_secret);
         $oidc->setSessionName('nosh');
-        $oidc->setRedirectURL(route('uma_resources', [$id]));
-        $oidc->setSessionName('pnosh');
-        $oidc->addScope('openid');
-        $oidc->addScope('email');
-        $oidc->addScope('profile');
-        $oidc->addScope('offline_access');
-        $oidc->addScope('uma_authorization');
         $oidc->setUMA(true);
-        $oidc->setUMAType('');
-        $oidc->authenticate();
+        if ($patient->hieofone_as_refresh_token == '' || $patient->hieofone_as_refresh_token == null) {
+            $oidc->setRedirectURL(route('uma_resources', [$id]));
+            $oidc->addScope('openid');
+            $oidc->addScope('email');
+            $oidc->addScope('profile');
+            $oidc->addScope('offline_access');
+            $oidc->addScope('uma_authorization');
+            $oidc->setUMAType('');
+            $oidc->authenticate();
+            if ($oidc->getRefreshToken() != '') {
+                $refresh_data['hieofone_as_refresh_token'] = $oidc->getRefreshToken();
+                DB::table('demographics')->where('id', '=', $id)->update($refresh_data);
+                $this->audit('Update');
+            }
+        } else {
+            $oidc = new OpenIDConnectClient($open_id_url, $client_id, $client_secret);
+            $oidc->refreshToken($patient->hieofone_as_refresh_token);
+        }
+        Session::put('uma_auth_access_token_nosh', $oidc->getAccessToken());
         $resources = $oidc->get_resources(true);
         Session::put('uma_auth_resources', $resources);
         $resources_array = [
