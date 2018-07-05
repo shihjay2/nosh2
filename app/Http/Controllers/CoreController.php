@@ -7561,7 +7561,21 @@ class CoreController extends Controller
                     if ($_REQUEST["authorization_state"] == 'need_info') {
                         $text = 'The authorization server requires intervention by the patient to determine whether authorization data can be added. Try again later after receiving any information from the patient regarding updates on your access status.';
                     }
-                    return $text;
+                    $data['panel_header'] = 'Error getting data';
+                    $data['content'] = 'Description:<br>' . $text;
+                    $dropdown_array = [];
+                    $items = [];
+                    $items[] = [
+                        'type' => 'item',
+                        'label' => 'Back',
+                        'icon' => 'fa-chevron-left',
+                        'url' => Session::get('last_page')
+                    ];
+                    $dropdown_array['items'] = $items;
+                    $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
+                    $data['assets_js'] = $this->assets_js();
+                    $data['assets_css'] = $this->assets_css();
+                    return view('core', $data);
                 } else {
                     // Great - move on!
                     return redirect()->route('uma_api');
@@ -7570,11 +7584,28 @@ class CoreController extends Controller
                 Session::forget('uma_permission_ticket');
             }
         }
-        $urlinit = $as_uri . '/nosh/fhir/' . Session::get('type') . '?subject:Patient=1';
+        if (Session::has('uma_add_patient')) {
+            $urlinit = Session::get('patient_uri');
+        } else {
+            $urlinit = Session::get('uma_resource_uri');
+        }
         $result = $this->fhir_request($urlinit,true);
         if (isset($result['error'])) {
-            // error - return something
-            return $result;
+            $data['panel_header'] = 'Error getting data';
+            $data['content'] = 'Description:<br>' . $result;
+            $dropdown_array = [];
+            $items = [];
+            $items[] = [
+                'type' => 'item',
+                'label' => 'Back',
+                'icon' => 'fa-chevron-left',
+                'url' => Session::get('last_page')
+            ];
+            $dropdown_array['items'] = $items;
+            $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
+            $data['assets_js'] = $this->assets_js();
+            $data['assets_css'] = $this->assets_css();
+            return view('core', $data);
         }
         $permission_ticket = $result['ticket'];
         Session::put('uma_permission_ticket', $permission_ticket);
@@ -7627,7 +7658,7 @@ class CoreController extends Controller
             $client_secret = Session::get('uma_client_secret');
             $url = route('uma_api');
             $oidc = new OpenIDConnectClient($as_uri, $client_id, $client_secret);
-            $oidc->setSessionName('pnosh');
+            $oidc->setSessionName('nosh');
             $oidc->setRedirectURL($url);
             $result1 = $oidc->rpt_request($permission_ticket);
             if (isset($result1['error'])) {
@@ -7661,8 +7692,12 @@ class CoreController extends Controller
         } else {
             $rpt = Session::get('rpt');
         }
-        // Contact pNOSH again, now with RPT
-        $urlinit = $as_uri . '/nosh/fhir/' . Session::get('type') . '?subject:Patient=1';
+        // Contact resource again, now with RPT
+        if (Session::has('uma_add_patient')) {
+            $urlinit = Session::get('patient_uri');
+        } else {
+            $urlinit = Session::get('uma_resource_uri');
+        }
         $result3 = $this->fhir_request($urlinit,false,$rpt);
         if (isset($result3['ticket'])) {
             // New permission ticket issued, expire rpt session
@@ -7679,8 +7714,8 @@ class CoreController extends Controller
         $client = DB::table('oauth_rp')->where('id', '=', Session::get('current_client_id'))->first();
         $title_array = [
             'Condition' => 'Conditions',
-            'MedicationStatement' => 'Medication List',
-            'AllergyIntolerance' => 'Allergy List',
+            'MedicationStatement' => 'Medications',
+            'AllergyIntolerance' => 'Allergies',
             'Immunization' => 'Immunizations',
             'Patient' => 'Patient Information'
         ];
@@ -7740,7 +7775,7 @@ class CoreController extends Controller
                         $data['panel_header'] = 'Add Patient';
                         $data['content'] .= '<li class="list-group-item">' . $entry['resource']['text']['div'];
                         // Preview medication list
-                        $urlinit1 = $as_uri . '/nosh/fhir/MedicationStatement?subject:Patient=1';
+                        $urlinit1 = Session::get('medicationstatement_uri');
                         $result4 = $this->fhir_request($urlinit1,false,$rpt);
                         if (isset($result4['total'])) {
                             if ($result4['total'] != '0') {
@@ -7770,11 +7805,16 @@ class CoreController extends Controller
             $this->validate($request, [
                 'url' => 'required|url'
             ]);
-            // Register to HIE of One AS
+            // Register to HIE of One AS - confirm it
             Session::forget('type');
             Session::forget('client_id');
             Session::forget('url');
-            $ch = curl_init($request->input('url'));
+            $test_uri = rtrim($request->input('url'), '/') . "/.well-known/uma2-configuration";
+            $url_arr = parse_url($test_uri);
+            if (!isset($url_arr['scheme'])) {
+                $test_uri = 'https://' . $test_uri;
+            }
+            $ch = curl_init($test_uri);
             curl_setopt($ch, CURLOPT_TIMEOUT, 10);
             curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -7782,7 +7822,7 @@ class CoreController extends Controller
             $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
             curl_close($ch);
             if($httpcode>=200 && $httpcode<302){
-                $url_arr = parse_url($request->input('url'));
+                $url_arr = parse_url($test_uri);
                 $as_uri = $url_arr['scheme'] . '://' . $url_arr['host'];
             } else {
                 return redirect()->back()->withErrors(['url' => 'Try again, URL is invalid, httpcode: ' . $httpcode . ', URL: ' . $request->input('url')]);
@@ -7797,6 +7837,8 @@ class CoreController extends Controller
             $oidc->addRedirectURLs(route('uma_api'));
             $oidc->addRedirectURLs(route('uma_aat'));
             $oidc->addRedirectURLs(route('uma_register_auth'));
+            $oidc->addRedirectURLs(route('uma_resources'));
+            $oidc->addRedirectURLs(route('uma_resource_view'));
             $oidc->addScope('openid');
             $oidc->addScope('email');
             $oidc->addScope('profile');
@@ -7817,11 +7859,11 @@ class CoreController extends Controller
             ];
             Session::put('uma_add_patient', $data1);
             Session::save();
-            return redirect()->route('uma_resource_view', ['type' => 'Patient']);
+            return redirect()->route('uma_resource_view', ['new']);
         } else {
             $items[] = [
                 'name' => 'url',
-                'label' => 'URL of Patient Chart (pNOSH)',
+                'label' => "URL of Patient's Authorization Server",
                 'type' => 'text',
                 'required' => true,
                 'default_value' => null
@@ -7855,9 +7897,80 @@ class CoreController extends Controller
         }
     }
 
+    public function uma_register_auth(Request $request)
+    {
+        $oidc = new OpenIDConnectClient(Session::get('uma_uri'), Session::get('uma_client_id'), Session::get('uma_client_secret'));
+        $oidc->setSessionName('nosh');
+        $oidc->setRedirectURL(route('uma_register_auth'));
+        $oidc->setSessionName('pnosh');
+        $oidc->addScope('openid');
+        $oidc->addScope('email');
+        $oidc->addScope('profile');
+        $oidc->addScope('offline_access');
+        $oidc->addScope('uma_authorization');
+        $oidc->setUMA(true);
+        $oidc->setUMAType('');
+        $oidc->authenticate();
+        $resources = $oidc->get_resources(true);
+        Session::put('uma_auth_access_token', $oidc->getAccessToken());
+        Session::put('uma_auth_resources', $resources);
+        $patient_urls = [];
+        foreach ($resources as $resource) {
+            // Assume there is always a Trustee pNOSH resource and save it
+            if (strpos($resource['name'], 'from Trustee')) {
+                foreach ($resource['resource_scopes'] as $scope) {
+                    $scope_arr = explode('/', $scope);
+                    if (in_array('Patient', $scope_arr)) {
+                        Session::put('patient_uri', $scope);
+                    }
+                    if (in_array('MedicationStatement', $scope_arr)) {
+                        Session::put('medicationstatement_uri', $scope);
+                    }
+                }
+            }
+        }
+        return redirect()->route('uma_aat');
+    }
+
     public function uma_resources(Request $request, $id)
     {
         $patient = DB::table('demographics')->where('id', '=', $id)->first();
+        $oidc = new OpenIDConnectClient($patient->hieofone_as_url, $patient->hieofone_as_client_id, $patient->hieofone_as_client_secret);
+        $oidc->setSessionName('nosh');
+        $oidc->setRedirectURL(route('uma_resources'));
+        $oidc->setSessionName('pnosh');
+        $oidc->addScope('openid');
+        $oidc->addScope('email');
+        $oidc->addScope('profile');
+        $oidc->addScope('offline_access');
+        $oidc->addScope('uma_authorization');
+        $oidc->setUMA(true);
+        $oidc->setUMAType('');
+        $oidc->authenticate();
+        $resources = $oidc->get_resources(true);
+        Session::put('uma_auth_resources', $resources);
+        $resources_array = [
+            'Condition' => [
+                'icon' => 'fa-bars',
+                'name' => 'Conditions'
+            ],
+            'MedicationStatement' => [
+                'icon' => 'fa-eyedropper',
+                'name' => 'Medications'
+            ],
+            'AllergyIntolerance' => [
+                'icon' => 'fa-exclamation-triangle',
+                'name' => 'Allergies'
+            ],
+            'Immunization' => [
+                'icon' => 'fa-magic',
+                'name' => 'Immunizations'
+            ],
+            'Patient' => [
+                'icon' => 'fa-user',
+                'name' => 'Patient Information'
+            ],
+        ];
         $data['panel_header'] = $patient->firstname . ' ' . $patient->lastname . "'s Patient Summary";
         $data['content'] = 'No resources available yet.';
         $data['message_action'] = Session::get('message_action');
@@ -7874,11 +7987,22 @@ class CoreController extends Controller
         $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
         // Look for pNOSH link through registered client to mdNOSH Gateway
         $data['content'] = '<div class="list-group">';
-        $data['content'] .= '<a href="' . $patient->hieofone_as_url . '/nosh/uma_auth" target="_blank" class="list-group-item"><span style="margin:10px;">Patient Centered Health Record (pNOSH) for ' . $client->hieofone_as_name . '</span><span class="label label-success">Patient Centered Health Record</span></a>';
-        $data['content'] .= '<a href="' . route('uma_resource_view', ['Condition']) . '" class="list-group-item"><i class="fa fa-bars fa-fw"></i><span style="margin:10px;">Conditions</span></a>';
-        $data['content'] .= '<a href="' . route('uma_resource_view', ['MedicationStatement']) . '" class="list-group-item"><i class="fa fa-eyedropper fa-fw"></i><span style="margin:10px;">Medication List</span></a>';
-        $data['content'] .= '<a href="' . route('uma_resource_view', ['AllergyIntolerance']) . '" class="list-group-item"><i class="fa fa-exclamation-triangle fa-fw"></i><span style="margin:10px;">Allergy List</span></a>';
-        $data['content'] .= '<a href="' . route('uma_resource_view', ['Immunization']) . '" class="list-group-item"><i class="fa fa-magic fa-fw"></i><span style="margin:10px;">Immunizations</span></a>';
+        $i = 0;
+        foreach($resources as $resource) {
+            foreach ($resource['resource_scopes'] as $scope) {
+                if (parse_url($scope, PHP_URL_HOST) !== null) {
+                    $fhir_arr = explode('/', $scope);
+                    $resource_type = array_pop($fhir_arr);
+                    if (strpos($resource['name'], 'from Trustee') && $i == 0) {
+                        array_pop($fhir_arr);
+                        $data['content'] .= '<a href="' . implode('/', $fhir_arr) . '/uma_auth" target="_blank" class="list-group-item"><span style="margin:10px;">Patient Centered Health Record (pNOSH) for ' . $patient->hieofone_as_name . '</span><span class="label label-success">Patient Centered Health Record</span></a>';
+                        $i++;
+                    }
+                    break;
+                }
+            }
+            $data['content'] .= '<a href="' . route('uma_resource_view', [$resource['_id']]) . '" class="list-group-item"><i class="fa ' . $resources_array[$resource_type]['icon'] . ' fa-fw"></i><span style="margin:10px;">' . $resources_array[$resource_type]['name'] . '</span></a>';
+        }
         $data['content'] .= '</div>';
         Session::put('uma_pid', $id);
         $data['assets_js'] = $this->assets_js();
@@ -7895,16 +8019,27 @@ class CoreController extends Controller
             Session::put('uma_client_secret', $data['hieofone_as_client_secret']);
         } else {
             $patient = DB::table('demographics')->where('id', '=', Session::get('uma_pid'))->first();
-            Session::put('uma_uri', $patient->as_uri);
+            Session::put('uma_uri', $patient->hieofone_as_url);
             Session::put('uma_client_id', $patient->client_id);
             Session::put('uma_client_secret', $patient->client_secret);
+            $resources = Session::get('uma_auth_resources');
+            $key = array_search($type, array_column($resources, '_id'));
+            foreach ($resources[$key]['resource_scopes'] as $scope) {
+                if (parse_url($scope, PHP_URL_HOST) !== null) {
+                    Session::put('uma_resource_uri', $scope);
+                    break;
+                }
+            }
         }
-        Session::put('type', $type);
         Session::save();
         if (Session::has('rpt')) {
             return redirect()->route('uma_api');
         } else {
-            return redirect()->route('uma_aat');
+            if (Session::has('uma_add_patient')) {
+                return redirect()->route('uma_register_auth');
+            } else {
+                return redirect()->route('uma_aat');
+            }
         }
     }
 

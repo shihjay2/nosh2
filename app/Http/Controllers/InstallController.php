@@ -915,7 +915,7 @@ public function install_fix(Request $request)
                     if (!$uma) {
                         // First time
                         $resource_set_array[] = [
-                            'name' => 'Patient',
+                            'name' => 'Patient from Trustee',
                             'icon' => 'https://cloud.noshchartingsystem.com/i-patient.png',
                             'scopes' => [
                                 URL::to('/') . '/fhir/Patient',
@@ -926,7 +926,7 @@ public function install_fix(Request $request)
                             ]
                         ];
                         $resource_set_array[] = [
-                            'name' => 'My Conditions',
+                            'name' => 'Conditions from Trustee',
                             'icon' => 'https://cloud.noshchartingsystem.com/i-condition.png',
                             'scopes' => [
                                 URL::to('/') . '/fhir/Condition',
@@ -935,7 +935,7 @@ public function install_fix(Request $request)
                             ]
                         ];
                         $resource_set_array[] = [
-                            'name' => 'Medication List',
+                            'name' => 'Medications from Trustee',
                             'icon' => 'https://cloud.noshchartingsystem.com/i-pharmacy.png',
                             'scopes' => [
                                 URL::to('/') . '/fhir/MedicationStatement',
@@ -944,7 +944,7 @@ public function install_fix(Request $request)
                             ]
                         ];
                         $resource_set_array[] = [
-                            'name' => 'Allergy List',
+                            'name' => 'Allergies from Trustee',
                             'icon' => 'https://cloud.noshchartingsystem.com/i-allergy.png',
                             'scopes' => [
                                 URL::to('/') . '/fhir/AllergyIntolerance',
@@ -953,7 +953,7 @@ public function install_fix(Request $request)
                             ]
                         ];
                         $resource_set_array[] = [
-                            'name' => 'Immunization List',
+                            'name' => 'Immunizations from Trustee',
                             'icon' => 'https://cloud.noshchartingsystem.com/i-immunizations.png',
                             'scopes' => [
                                 URL::to('/') . '/fhir/Immunization',
@@ -962,7 +962,7 @@ public function install_fix(Request $request)
                             ]
                         ];
                         $resource_set_array[] = [
-                            'name' => 'My Encounters',
+                            'name' => 'Encounters from Trustee',
                             'icon' => 'https://cloud.noshchartingsystem.com/i-medical-records.png',
                             'scopes' => [
                                 URL::to('/') . '/fhir/Encounter',
@@ -971,7 +971,7 @@ public function install_fix(Request $request)
                             ]
                         ];
                         $resource_set_array[] = [
-                            'name' => 'Family History',
+                            'name' => 'Family History from Trustee',
                             'icon' => 'https://cloud.noshchartingsystem.com/i-family-practice.png',
                             'scopes' => [
                                 URL::to('/') . '/fhir/FamilyHistory',
@@ -980,7 +980,7 @@ public function install_fix(Request $request)
                             ]
                         ];
                         $resource_set_array[] = [
-                            'name' => 'My Documents',
+                            'name' => 'Documents from Trustee',
                             'icon' => 'https://cloud.noshchartingsystem.com/i-file.png',
                             'scopes' => [
                                 URL::to('/') . '/fhir/Binary',
@@ -989,7 +989,7 @@ public function install_fix(Request $request)
                             ]
                         ];
                         $resource_set_array[] = [
-                            'name' => 'Observations',
+                            'name' => 'Observations from Trustee',
                             'icon' => 'https://cloud.noshchartingsystem.com/i-cardiology.png',
                             'scopes' => [
                                 URL::to('/') . '/fhir/Observation',

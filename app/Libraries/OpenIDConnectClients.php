@@ -578,7 +578,7 @@ class OpenIDConnectClient
 	 * @param $url Sets redirect URL for auth flow
 	 */
 	public function setRedirectURL ($url) {
-		if (parse_url($url,PHP_URL_HOST) !== false) {
+		if (parse_url($url,PHP_URL_HOST) !== null) {
 			$this->redirectURL = $url;
 		}
 	}
@@ -632,7 +632,7 @@ class OpenIDConnectClient
 	 * @param $url Sets multiple redirect URL for dynamic registration
 	 */
 	public function addRedirectURLs ($url) {
-		if (parse_url($url,PHP_URL_HOST) !== false) {
+		if (parse_url($url,PHP_URL_HOST) !== null) {
 			$this->redirectURLs = array_merge($this->redirectURLs, (array)$url);
 		}
 	}
@@ -679,7 +679,7 @@ class OpenIDConnectClient
 	 * @param $url Sets URL for logo
 	 */
 	public function setLogo($url) {
-		if (parse_url($url,PHP_URL_HOST) !== false) {
+		if (parse_url($url,PHP_URL_HOST) !== null) {
 			$this->logo = $url;
 		}
 	}
@@ -695,7 +695,7 @@ class OpenIDConnectClient
 	 * @param $url Sets URL for logo
 	 */
 	public function setClientURI($url) {
-		if (parse_url($url,PHP_URL_HOST) !== false) {
+		if (parse_url($url,PHP_URL_HOST) !== null) {
 			$this->client_uri = $url;
 		}
 	}
@@ -1741,7 +1741,7 @@ class OpenIDConnectClient
 	}
 
 	public function setAud ($url) {
-		if (parse_url($url,PHP_URL_HOST) !== false) {
+		if (parse_url($url,PHP_URL_HOST) !== null) {
 			$this->aud = $url;
 		}
 	}
@@ -1760,7 +1760,7 @@ class OpenIDConnectClient
 	/**
 	 * @param $resourceID
 	 */
-	private function requestUmaAuthorization($type) {
+	private function requestUmaAuthorization($type='') {
 		$auth_endpoint = $this->getProviderConfigValue("authorization_endpoint", true);
 		$response_type = "code";
 
@@ -1795,7 +1795,7 @@ class OpenIDConnectClient
 				'client_id' => $this->clientID,
 				'nonce' => $nonce,
 				'state' => $state,
-				'scope' => 'uma_authorization email profile'
+				'scope' => 'openid offline_access uma_authorization email profile'
 			));
 		}
 
@@ -1813,11 +1813,11 @@ class OpenIDConnectClient
 	 * @throws OpenIDConnectClientException
 	 */
 	public function resource_set($name, $icon, $scopes) {
-		$resource_set_endpoint = $this->getProviderConfigValue('resource_set_registration_endpoint',true);
+		$resource_set_endpoint = $this->getProviderConfigValue('resource_registration_endpoint',true);
 		$send_object = (object)array(
 			'name' => $name,
 			'icon_uri' => $icon,
-			'scopes' => $scopes
+			'resource_scopes' => $scopes
 		);
 		$headers = array("Authorization: Bearer {$this->accessToken}");
 		$response = $this->fetchURL($resource_set_endpoint, json_encode($send_object), $headers);
@@ -1837,7 +1837,7 @@ class OpenIDConnectClient
 	}
 
 	public function delete_resource_set($id) {
-		$resource_set_endpoint = $this->getProviderConfigValue('resource_set_registration_endpoint',true);
+		$resource_set_endpoint = $this->getProviderConfigValue('resource_registration_endpoint',true);
 		$send_object = (object)array(
 			'resource_set_id' => $id
 		);
@@ -1857,7 +1857,7 @@ class OpenIDConnectClient
 	}
 
 	public function update_resource_set($id, $name, $icon, $scopes) {
-		$resource_set_endpoint = $this->getProviderConfigValue('resource_set_registration_endpoint',true);
+		$resource_set_endpoint = $this->getProviderConfigValue('resource_registration_endpoint',true);
 		$send_object = (object)array(
 			'name' => $name,
 			'icon_uri' => $icon,
@@ -1878,10 +1878,25 @@ class OpenIDConnectClient
 		return $return;
 	}
 
-	public function get_resources($client_id) {
-		$resource_set_endpoint = $this->getProviderConfigValue('resource_set_registration_endpoint',true);
+	public function get_resources($all=false) {
+		$resource_set_endpoint = $this->getProviderConfigValue('resource_registration_endpoint',true);
 		$headers = array("Authorization: Bearer {$this->accessToken}");
-		$return = json_decode($this->fetchURL($resource_set_endpoint, null, $headers, null), true);
+		if ($all == false) {
+			$return = json_decode($this->fetchURL($resource_set_endpoint, null, $headers, null), true);
+		} else {
+			$resources = json_decode($this->fetchURL($resource_set_endpoint, null, $headers, null), true);
+			$return = [];
+			foreach ($resources as $resource) {
+				$return[] = json_decode($this->fetchURL($resource_set_endpoint. '/' . $resource, null, $headers, null), true);
+			}
+		}
+		return $return;
+	}
+
+	public function get_resource($id) {
+		$resource_set_endpoint = $this->getProviderConfigValue('resource_registration_endpoint',true);
+		$headers = array("Authorization: Bearer {$this->accessToken}");
+		$return = json_decode($this->fetchURL($resource_set_endpoint. '/' . $id, null, $headers, null), true);
 		return $return;
 	}
 
@@ -1970,7 +1985,7 @@ class OpenIDConnectClient
 	 * @throws OpenIDConnectClientException
 	 */
 	public function permission_request($resource_set_id, $scopes) {
-		$permission_request_endpoint = $this->getProviderConfigValue('permission_registration_endpoint',true);
+		$permission_request_endpoint = $this->getProviderConfigValue('permission_endpoint',true);
 		$send_object = (object)array(
 			'resource_set_id' => $resource_set_id,
 			'resource_scopes' => array($this->getRedirectURL(), str_replace('oidc', 'fhir/oidc', $this->getRedirectURL()))
