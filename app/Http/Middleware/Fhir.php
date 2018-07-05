@@ -28,7 +28,8 @@ class Fhir
             // RPT, Perform Token Introspection
             $rpt = str_replace('Bearer ', '', $payload);
             $oidc = new OpenIDConnectClient($open_id_url, $client_id, $client_secret);
-            $oidc->refresh($practice->uma_refresh_token,true);
+            $oidc->setUMA(true);
+            $oidc->refreshToken($practice->uma_refresh_token);
             if ($oidc->getRefreshToken() != '') {
                 $refresh_data['uma_refresh_token'] = $oidc->getRefreshToken();
                 DB::table('practiceinfo')->where('practice_id', '=', '1')->update($refresh_data);
@@ -66,7 +67,8 @@ class Fhir
                         $scopes[] = $row1->scope;
                     }
                     $oidc = new OpenIDConnectClient($open_id_url, $client_id, $client_secret);
-                    $oidc->refresh($practice->uma_refresh_token,true);
+                    $oidc->setUMA(true);
+                    $oidc->refreshToken($practice->uma_refresh_token,true);
                     if ($oidc->getRefreshToken() != '') {
                         $refresh_data['uma_refresh_token'] = $oidc->getRefreshToken();
                         DB::table('practiceinfo')->where('practice_id', '=', '1')->update($refresh_data);
@@ -127,7 +129,8 @@ class Fhir
                     $scopes[] = $row1->scope;
                 }
                 $oidc = new OpenIDConnectClient($open_id_url, $client_id, $client_secret);
-                $oidc->refresh($practice->uma_refresh_token,true);
+                $oidc->setUMA(true);
+                $oidc->refreshToken($practice->uma_refresh_token,true);
                 if ($oidc->getRefreshToken() != '') {
                     $refresh_data['uma_refresh_token'] = $oidc->getRefreshToken();
                     DB::table('practiceinfo')->where('practice_id', '=', '1')->update($refresh_data);

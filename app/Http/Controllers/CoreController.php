@@ -7913,24 +7913,30 @@ class CoreController extends Controller
         $oidc->setUMAType('');
         $oidc->authenticate();
         $resources = $oidc->get_resources(true);
-        Session::put('uma_register_auth_access_token', $oidc->getAccessToken());
-        Session::put('uma_auth_resources', $resources);
-        $patient_urls = [];
-        foreach ($resources as $resource) {
-            // Assume there is always a Trustee pNOSH resource and save it
-            if (strpos($resource['name'], 'from Trustee')) {
-                foreach ($resource['resource_scopes'] as $scope) {
-                    $scope_arr = explode('/', $scope);
-                    if (in_array('Patient', $scope_arr)) {
-                        Session::put('patient_uri', $scope);
-                    }
-                    if (in_array('MedicationStatement', $scope_arr)) {
-                        Session::put('medicationstatement_uri', $scope);
+        if (count($resources) > 0) {
+            Session::put('uma_register_auth_access_token', $oidc->getAccessToken());
+            Session::put('uma_auth_resources', $resources);
+            $patient_urls = [];
+            foreach ($resources as $resource) {
+                // Assume there is always a Trustee pNOSH resource and save it
+                if (strpos($resource['name'], 'from Trustee')) {
+                    foreach ($resource['resource_scopes'] as $scope) {
+                        $scope_arr = explode('/', $scope);
+                        if (in_array('Patient', $scope_arr)) {
+                            Session::put('patient_uri', $scope);
+                        }
+                        if (in_array('MedicationStatement', $scope_arr)) {
+                            Session::put('medicationstatement_uri', $scope);
+                        }
                     }
                 }
             }
+            return redirect()->route('uma_aat');
+        } else {
+            Session::put('message_action', 'Error - the authorization you were trying to connect to has no resources.');
+            Session::forget('uma_add_patient');
+            return redirect()->route('uma_list');
         }
-        return redirect()->route('uma_aat');
     }
 
     public function uma_resources(Request $request, $id)
