@@ -1988,7 +1988,8 @@ class OpenIDConnectClient
 		$permission_request_endpoint = $this->getProviderConfigValue('permission_endpoint',true);
 		$send_object = (object)array(
 			'resource_set_id' => $resource_set_id,
-			'resource_scopes' => array($this->getRedirectURL(), str_replace('oidc', 'fhir/oidc', $this->getRedirectURL()))
+			'resource_scopes' => $scopes
+			// 'resource_scopes' => array($this->getRedirectURL(), str_replace('oidc', 'fhir/oidc', $this->getRedirectURL()))
 		);
 		$headers = array("Authorization: Bearer {$this->accessToken}");
 		$response = $this->fetchURL($permission_request_endpoint, json_encode($send_object), $headers);
