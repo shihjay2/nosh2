@@ -1022,7 +1022,7 @@ public function install_fix(Request $request)
                     Session::put('version', $practice1->version);
                     Session::put('practice_active', $practice1->active);
                     Session::put('displayname', $user->displayname);
-                    Session::put('documents_dir', $practice->documents_dir);
+                    Session::put('documents_dir', $practice1->documents_dir);
                     Session::put('rcopia', $practice1->rcopia_extension);
                     Session::put('mtm_extension', $practice1->mtm_extension);
                     Session::put('patient_centric', $practice1->patient_centric);
