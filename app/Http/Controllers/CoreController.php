@@ -7913,7 +7913,7 @@ class CoreController extends Controller
         $oidc->setUMAType('');
         $oidc->authenticate();
         $resources = $oidc->get_resources(true);
-        Session::put('uma_auth_access_token', $oidc->getAccessToken());
+        Session::put('uma_register_auth_access_token', $oidc->getAccessToken());
         Session::put('uma_auth_resources', $resources);
         $patient_urls = [];
         foreach ($resources as $resource) {
