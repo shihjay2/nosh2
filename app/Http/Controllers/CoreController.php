@@ -7838,7 +7838,7 @@ class CoreController extends Controller
             $oidc->addRedirectURLs(route('uma_aat'));
             $oidc->addRedirectURLs(route('uma_register_auth'));
             // $oidc->addRedirectURLs(route('uma_resources'));
-            $oidc->addRedirectURLs(route('uma_resource_view'));
+            // $oidc->addRedirectURLs(route('uma_resource_view'));
             $oidc->addScope('openid');
             $oidc->addScope('email');
             $oidc->addScope('profile');
