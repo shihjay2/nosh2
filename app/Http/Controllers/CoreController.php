@@ -7750,6 +7750,7 @@ class CoreController extends Controller
         $dropdown_array['items'] = $items;
         $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
         $data['content'] = 'None.';
+        $data['panel_header'] = $title_array[Session::get('type')]['name'] . ' for ' . Session::get('uma_as_name');
         if (isset($result3['total'])) {
             if ($result3['total'] != '0') {
                 $data['content'] = '<ul class="list-group">';
@@ -7799,7 +7800,6 @@ class CoreController extends Controller
                         $data['content'] .= '</li>';
                         $data['panel_header'] = $title_array[Session::get('type')]['name'] . ' for ' . $as_name;
                     } else  {
-                        $data['panel_header'] = $title_array[Session::get('type')]['name'] . ' for ' . Session::get('uma_as_name');
                         $data['content'] .= '<li class="list-group-item">' . $entry['resource']['text']['div'] . '</li>';
                     }
                 }
