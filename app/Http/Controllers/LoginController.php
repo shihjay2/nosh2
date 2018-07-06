@@ -532,6 +532,7 @@ class LoginController extends Controller {
             $open_id_url .= '/remote_logout?' . http_build_query($params, null, '&');
             return redirect($open_id_url);
         }
+        $this->clean_uma_sessions();
         Auth::logout();
         Session::forget('group_id');
         Session::forget('notifications');

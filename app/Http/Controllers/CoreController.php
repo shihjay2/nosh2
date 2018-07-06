@@ -7644,7 +7644,7 @@ class CoreController extends Controller
             mkdir($directory, 0775);
             $message = $data['lastname'] . ' ' . $data['firstname'] . ' added';
         }
-        Session::forget('uma_add_patient');
+        $this->clean_uma_sessions();
         Session::put('message_action', $message);
         return redirect()->route('uma_list');
     }
@@ -7824,9 +7824,15 @@ class CoreController extends Controller
                 'url' => 'required|url'
             ]);
             // Register to HIE of One AS - confirm it
+            Session::forget('uma_add_patient');
+            Session::forget('uma_permission_ticket');
+            Session::forget('uma_client_id');
+            Session::forget('uma_client_secret');
+            Session::forget('uma_auth_access_token_nosh');
+            Session::forget('uma_uri');
+            Session::forget('patient_uri');
+            Session::forget('medicationstatement_uri');
             Session::forget('type');
-            Session::forget('client_id');
-            Session::forget('url');
             $test_uri = rtrim($request->input('url'), '/') . "/.well-known/uma2-configuration";
             $url_arr = parse_url($test_uri);
             if (!isset($url_arr['scheme'])) {

@@ -3252,6 +3252,24 @@ class Controller extends BaseController
         return $count;
     }
 
+    protected function clean_uma_sessions()
+    {
+        Session::forget('medicationstatement_uri');
+        Session::forget('patient_uri');
+        Session::forget('rpt');
+        Session::forget('uma_add_patient');
+        Session::forget('uma_as_name');
+        Session::forget('uma_auth_access_token_nosh');
+        Session::forget('uma_auth_resources');
+        Session::forget('uma_client_id');
+        Session::forget('uma_client_secret');
+        Session::forget('uma_pid');
+        Session::forget('uma_permission_ticket');
+        Session::forget('uma_resource_uri');
+        Session::forget('uma_resources_start');
+        Session::forget('uma_uri');
+    }
+
     protected function claim_reason_code($code)
     {
         $url = 'http://www.wpc-edi.com/reference/codelists/healthcare/claim-adjustment-reason-codes/';
