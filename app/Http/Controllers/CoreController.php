@@ -7803,15 +7803,15 @@ class CoreController extends Controller
                             }
                         }
                         $data['content'] .= '</li>';
+                        $data['panel_header'] = $title_array[Session::get('type')] . ' for ' . $as_name;
                     } else  {
-                        $as_name = Session::get('uma_as_name');
+                        $data['panel_header'] = $title_array[Session::get('type')] . ' for ' . Session::get('uma_as_name');
                         $data['content'] .= '<li class="list-group-item">' . $entry['resource']['text']['div'] . '</li>';
                     }
                 }
                 $data['content'] .= '</ul>';
             }
         }
-        $data['panel_header'] = $title_array[Session::get('type')] . ' for ' . $as_name;
         $data['assets_js'] = $this->assets_js();
         $data['assets_css'] = $this->assets_css();
         return view('core', $data);
@@ -7947,7 +7947,7 @@ class CoreController extends Controller
                     foreach ($resource['resource_scopes'] as $scope) {
                         $scope_arr = explode('/', $scope);
                         if (in_array('Patient', $scope_arr)) {
-                            Session::put('patient_uri', $scope);
+                            Session::put('patient_uri', $scope . '?subject:Patient=1');
                         }
                         if (in_array('MedicationStatement', $scope_arr)) {
                             Session::put('medicationstatement_uri', $scope);
