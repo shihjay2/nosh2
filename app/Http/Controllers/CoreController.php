@@ -8011,6 +8011,7 @@ class CoreController extends Controller
         }
         $data['content'] .= '</div>';
         Session::put('uma_pid', $id);
+        Session::put('last_page', $request->fullUrl());
         $data['assets_js'] = $this->assets_js();
         $data['assets_css'] = $this->assets_css();
         return view('core', $data);
