@@ -101,6 +101,7 @@ return [
     "my_information" => "My Information",
     "user_signature" => "Change Signature",
     "password_change" => "Change Password",
+    "update_system" => "Update System",
     "report_bug" => "Report a Bug",
     "make_suggestion" => "Make a Suggestion",
     "logout" => "Logout",

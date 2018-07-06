@@ -2683,11 +2683,13 @@ class ChartController extends Controller {
         Session::forget('message_action');
         $result = DB::table('demographics')->where('pid', '=', Session::get('pid'))->first();
         $return = '';
-        $dropdown_array = [
-            'default_button_text' => 'Register to Portal',
-            'default_button_text_url' => route('register_patient')
-        ];
-        $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
+        if (Session::get('patient_centric') !== 'yp') {
+            $dropdown_array = [
+                'default_button_text' => 'Register to Portal',
+                'default_button_text_url' => route('register_patient')
+            ];
+            $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
+        }
         $active_arr = [
             '0' => 'Inactive',
             '1' => 'Active'
