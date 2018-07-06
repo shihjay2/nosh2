@@ -7929,37 +7929,43 @@ class CoreController extends Controller
         $oidc->setUMA(true);
         $oidc->setUMAType('');
         $oidc->authenticate();
-        $resources = $oidc->get_resources(true);
-        if ($oidc->getRefreshToken() != '') {
+        if (Session::has('uma_add_patient')) {
             $data = Session::get('uma_add_patient');
             $data['hieofone_as_refresh_token'] = $oidc->getRefreshToken();
             Session::put('uma_add_patient', $data);
-        }
-        $oidc->getRefreshToken();
-        if (count($resources) > 0) {
-            // Get the access token from the AS in anticipation for the RPT
-            Session::put('uma_auth_access_token_nosh', $oidc->getAccessToken());
-            Session::put('uma_auth_resources', $resources);
-            $patient_urls = [];
-            foreach ($resources as $resource) {
-                // Assume there is always a Trustee pNOSH resource and save it
-                if (strpos($resource['name'], 'from Trustee')) {
-                    foreach ($resource['resource_scopes'] as $scope) {
-                        $scope_arr = explode('/', $scope);
-                        if (in_array('Patient', $scope_arr)) {
-                            Session::put('patient_uri', $scope . '?subject:Patient=1');
-                        }
-                        if (in_array('MedicationStatement', $scope_arr)) {
-                            Session::put('medicationstatement_uri', $scope);
+            $resources = $oidc->get_resources(true);
+            if (count($resources) > 0) {
+                // Get the access token from the AS in anticipation for the RPT
+                Session::put('uma_auth_access_token_nosh', $oidc->getAccessToken());
+                Session::put('uma_auth_resources', $resources);
+                $patient_urls = [];
+                foreach ($resources as $resource) {
+                    // Assume there is always a Trustee pNOSH resource and save it
+                    if (strpos($resource['name'], 'from Trustee')) {
+                        foreach ($resource['resource_scopes'] as $scope) {
+                            $scope_arr = explode('/', $scope);
+                            if (in_array('Patient', $scope_arr)) {
+                                Session::put('patient_uri', $scope . '?subject:Patient=1');
+                            }
+                            if (in_array('MedicationStatement', $scope_arr)) {
+                                Session::put('medicationstatement_uri', $scope);
+                            }
                         }
                     }
                 }
+                return redirect()->route('uma_aat');
+            } else {
+                Session::put('message_action', 'Error - the authorization you were trying to connect to has no resources.');
+                Session::forget('uma_add_patient');
+                return redirect()->route('uma_list');
             }
-            return redirect()->route('uma_aat');
         } else {
-            Session::put('message_action', 'Error - the authorization you were trying to connect to has no resources.');
-            Session::forget('uma_add_patient');
-            return redirect()->route('uma_list');
+            $pid = Session::get('uma_resources_start');
+            Session::forget('uma_resources_start');
+            $update_data['hieofone_as_refresh_token'] = $oidc->getRefreshToken();
+            DB::table('demographics')->where('pid', '=', $pid)->update($update_data);
+            $this->audit('Update');
+            return redirect()->route('uma_resources', [$pid]);
         }
     }
 
@@ -7967,27 +7973,14 @@ class CoreController extends Controller
     {
         $patient = DB::table('demographics')->where('pid', '=', $id)->first();
         // Get access token from AS in anticipation for geting the RPT; if no refresh token before, get it too.
+        if ($patient->hieofone_as_refresh_token == '' || $patient->hieofone_as_refresh_token == null) {
+            Session::put('uma_resources_start', $id);
+            return redirect()->route('uma_register_auth');
+        }
         $oidc = new OpenIDConnectClient($patient->hieofone_as_url, $patient->hieofone_as_client_id, $patient->hieofone_as_client_secret);
         $oidc->setSessionName('nosh');
         $oidc->setUMA(true);
-        if ($patient->hieofone_as_refresh_token == '' || $patient->hieofone_as_refresh_token == null) {
-            $oidc->setRedirectURL(route('uma_resources', [$id]));
-            $oidc->addScope('openid');
-            $oidc->addScope('email');
-            $oidc->addScope('profile');
-            $oidc->addScope('offline_access');
-            $oidc->addScope('uma_authorization');
-            $oidc->setUMAType('');
-            $oidc->authenticate();
-            if ($oidc->getRefreshToken() != '') {
-                $refresh_data['hieofone_as_refresh_token'] = $oidc->getRefreshToken();
-                DB::table('demographics')->where('id', '=', $id)->update($refresh_data);
-                $this->audit('Update');
-            }
-        } else {
-            $oidc = new OpenIDConnectClient($open_id_url, $client_id, $client_secret);
-            $oidc->refreshToken($patient->hieofone_as_refresh_token);
-        }
+        $oidc->refreshToken($patient->hieofone_as_refresh_token);
         Session::put('uma_auth_access_token_nosh', $oidc->getAccessToken());
         $resources = $oidc->get_resources(true);
         Session::put('uma_auth_resources', $resources);
