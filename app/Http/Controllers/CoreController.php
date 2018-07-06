@@ -7965,7 +7965,7 @@ class CoreController extends Controller
 
     public function uma_resources(Request $request, $id)
     {
-        $patient = DB::table('demographics')->where('id', '=', $id)->first();
+        $patient = DB::table('demographics')->where('pid', '=', $id)->first();
         // Get access token from AS in anticipation for geting the RPT; if no refresh token before, get it too.
         $oidc = new OpenIDConnectClient($patient->hieofone_as_url, $patient->hieofone_as_client_id, $patient->hieofone_as_client_secret);
         $oidc->setSessionName('nosh');
