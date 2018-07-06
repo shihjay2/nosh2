@@ -8001,7 +8001,7 @@ class CoreController extends Controller
                     $resource_type = array_pop($fhir_arr);
                     if (strpos($resource['name'], 'from Trustee') && $i == 0) {
                         array_pop($fhir_arr);
-                        $data['content'] .= '<a href="' . implode('/', $fhir_arr) . '/uma_auth" target="_blank" class="list-group-item"><span style="margin:10px;">Patient Centered Health Record (pNOSH) for ' . $patient->hieofone_as_name . '</span><span class="label label-success">Patient Centered Health Record</span></a>';
+                        $data['content'] .= '<a href="' . implode('/', $fhir_arr) . '/uma_auth" target="_blank" class="list-group-item nosh-no-load"><span style="margin:10px;">Patient Centered Health Record (pNOSH) for ' . $patient->hieofone_as_name . '</span><span class="label label-success">Patient Centered Health Record</span></a>';
                         $i++;
                     }
                     break;
@@ -8035,11 +8035,18 @@ class CoreController extends Controller
             $key = array_search($type, array_column($resources, '_id'));
             foreach ($resources[$key]['resource_scopes'] as $scope) {
                 if (parse_url($scope, PHP_URL_HOST) !== null) {
-                    Session::put('uma_resource_uri', $scope);
                     $fhir_arr = explode('/', $scope);
                     $resource_type = array_pop($fhir_arr);
                     Session::put('type', $resource_type);
-                    break;
+                    if (strpos($resources[$key]['name'], 'from Trustee')) {
+                        if ($resource_type == 'Patient') {
+                            $scope .= '?subject:Patient=1';
+                        }
+                        Session::put('uma_resource_uri', $scope);
+                        break;
+                    } else {
+                        Session::put('uma_resource_uri', $scope);
+                    }
                 }
             }
         }
