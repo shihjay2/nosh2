@@ -7729,13 +7729,7 @@ class CoreController extends Controller
         // Format the result into a nice display
         $data['message_action'] = Session::get('message_action');
         Session::forget('message_action');
-        $title_array = [
-            'Condition' => 'Conditions',
-            'MedicationStatement' => 'Medications',
-            'AllergyIntolerance' => 'Allergies',
-            'Immunization' => 'Immunizations',
-            'Patient' => 'Patient Information',
-        ];
+        $title_array = $this->fhir_resources();
         $dropdown_array = [];
         $items = [];
         if (Session::has('uma_add_patient')) {
@@ -7803,9 +7797,9 @@ class CoreController extends Controller
                             }
                         }
                         $data['content'] .= '</li>';
-                        $data['panel_header'] = $title_array[Session::get('type')] . ' for ' . $as_name;
+                        $data['panel_header'] = $title_array[Session::get('type')]['name'] . ' for ' . $as_name;
                     } else  {
-                        $data['panel_header'] = $title_array[Session::get('type')] . ' for ' . Session::get('uma_as_name');
+                        $data['panel_header'] = $title_array[Session::get('type')]['name'] . ' for ' . Session::get('uma_as_name');
                         $data['content'] .= '<li class="list-group-item">' . $entry['resource']['text']['div'] . '</li>';
                     }
                 }
@@ -7824,15 +7818,7 @@ class CoreController extends Controller
                 'url' => 'required|url'
             ]);
             // Register to HIE of One AS - confirm it
-            Session::forget('uma_add_patient');
-            Session::forget('uma_permission_ticket');
-            Session::forget('uma_client_id');
-            Session::forget('uma_client_secret');
-            Session::forget('uma_auth_access_token_nosh');
-            Session::forget('uma_uri');
-            Session::forget('patient_uri');
-            Session::forget('medicationstatement_uri');
-            Session::forget('type');
+            $this->clean_uma_sessions();
             $test_uri = rtrim($request->input('url'), '/') . "/.well-known/uma2-configuration";
             $url_arr = parse_url($test_uri);
             if (!isset($url_arr['scheme'])) {
@@ -7990,28 +7976,7 @@ class CoreController extends Controller
         Session::put('uma_auth_access_token_nosh', $oidc->getAccessToken());
         $resources = $oidc->get_resources(true);
         Session::put('uma_auth_resources', $resources);
-        $resources_array = [
-            'Condition' => [
-                'icon' => 'fa-bars',
-                'name' => 'Conditions'
-            ],
-            'MedicationStatement' => [
-                'icon' => 'fa-eyedropper',
-                'name' => 'Medications'
-            ],
-            'AllergyIntolerance' => [
-                'icon' => 'fa-exclamation-triangle',
-                'name' => 'Allergies'
-            ],
-            'Immunization' => [
-                'icon' => 'fa-magic',
-                'name' => 'Immunizations'
-            ],
-            'Patient' => [
-                'icon' => 'fa-user',
-                'name' => 'Patient Information'
-            ],
-        ];
+        $resources_array = $this->fhir_resources();
         $data['panel_header'] = $patient->firstname . ' ' . $patient->lastname . "'s Patient Summary";
         $data['content'] = 'No resources available yet.';
         $data['message_action'] = Session::get('message_action');

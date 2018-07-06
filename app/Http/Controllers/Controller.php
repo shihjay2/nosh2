@@ -4272,6 +4272,48 @@ class Controller extends BaseController
         return $result;
     }
 
+    protected function fhir_resources()
+    {
+        $return = [
+            'Condition' => [
+                'icon' => 'fa-bars',
+                'name' => 'Conditions'
+            ],
+            'MedicationStatement' => [
+                'icon' => 'fa-eyedropper',
+                'name' => 'Medications'
+            ],
+            'AllergyIntolerance' => [
+                'icon' => 'fa-exclamation-triangle',
+                'name' => 'Allergies'
+            ],
+            'Immunization' => [
+                'icon' => 'fa-magic',
+                'name' => 'Immunizations'
+            ],
+            'Patient' => [
+                'icon' => 'fa-user',
+                'name' => 'Patient Information'
+            ],
+            'Encounter' => [
+                'icon' => 'fa-stethoscope',
+                'name' => 'Encounters'
+            ],
+            'FamilyHistory' => [
+                'icon' => 'fa-sitemap',
+                'name' => 'Family History'
+            ],
+            'Binary' => [
+                'icon' => 'fa-file-text',
+                'name' => 'Documents'
+            ],
+            'Observation' => [
+                'icon' => 'fa-flask',
+                'name' => 'Observations'
+            ]
+        ];
+    }
+
     protected function fhir_response($data)
     {
         $code_arr = [
