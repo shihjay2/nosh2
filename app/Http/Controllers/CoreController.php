@@ -7767,7 +7767,7 @@ class CoreController extends Controller
                             'lastname' => $entry['resource']['name'][0]['family'][0],
                             'firstname' => $entry['resource']['name'][0]['given'][0],
                             'DOB' => date('Y-m-d', strtotime($entry['resource']['birthDate'])),
-                            'sex' => array_search($entry['gender']['coding'][0]['code'], $this->array_gender()),
+                            'sex' => array_search($entry['resource']['gender']['coding'][0]['code'], $this->array_gender()),
                             'active' => '1',
                             'sexuallyactive' => 'no',
                             'tobacco' => 'no',
