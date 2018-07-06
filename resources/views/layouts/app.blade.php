@@ -653,7 +653,7 @@
             'graph_y_title': '<?php if (isset($graph_y_title)) { echo $graph_y_title; }?>',
             'height_unit': '<?php if (isset($height_unit)) { echo $height_unit; }?>',
             'maxTime': '<?php if (isset($maxTime)) { echo $maxTime; }?>',
-            'message_action': '<?php if (isset($message_action)) { echo $message_action; }?>',
+            'message_action': <?php if (isset($message_action)) { echo json_encode($message_action); } else { echo "''";}?>,
             'minTime': '<?php if (isset($minTime)) { echo $minTime; }?>',
             'pid': '<?php if (isset($pid)) { echo $pid; }?>',
             'print_now': '<?php if (isset($print_now)) { echo $print_now; }?>',
