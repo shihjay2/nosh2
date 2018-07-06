@@ -4312,6 +4312,7 @@ class Controller extends BaseController
                 'name' => 'Observations'
             ]
         ];
+        return $return;
     }
 
     protected function fhir_response($data)
