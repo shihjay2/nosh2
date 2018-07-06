@@ -8025,7 +8025,7 @@ class CoreController extends Controller
             Session::put('uma_client_secret', $data['hieofone_as_client_secret']);
             Session::put('type', 'Patient');
         } else {
-            $patient = DB::table('demographics')->where('id', '=', Session::get('uma_pid'))->first();
+            $patient = DB::table('demographics')->where('pid', '=', Session::get('uma_pid'))->first();
             Session::put('uma_uri', $patient->hieofone_as_url);
             Session::put('uma_client_id', $patient->hieofone_as_client_id);
             Session::put('uma_client_secret', $patient->hieofone_as_client_secret);
