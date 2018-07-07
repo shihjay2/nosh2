@@ -7753,9 +7753,9 @@ class CoreController extends Controller
         $data['panel_header'] = $title_array[Session::get('type')]['name'] . ' for ' . Session::get('uma_as_name');
         if (isset($result3['total'])) {
             if ($result3['total'] != '0') {
-                $data['content'] = '<ul class="list-group">';
                 foreach ($result3['entry'] as $entry) {
                     if (Session::has('uma_add_patient')) {
+                        $data['content'] = '<ul class="list-group">';
                         $as_name = $entry['resource']['name'][0]['given'][0] . ' ' . $entry['resource']['name'][0]['family'][0] . ' (DOB: ' . date('Y-m-d', strtotime($entry['resource']['birthDate'])) . ')';
                         $data1 = Session::get('uma_add_patient');
                         $add_data1 = [
@@ -7798,12 +7798,13 @@ class CoreController extends Controller
                             }
                         }
                         $data['content'] .= '</li>';
+                        $data['content'] .= '</ul>';
                         $data['panel_header'] = $title_array[Session::get('type')]['name'] . ' for ' . $as_name;
                     } else  {
-                        $data['content'] .= '<li class="list-group-item">' . $entry['resource']['text']['div'] . '</li>';
+                        $data = $this->fhir_display($result, $type, $data);
+                        // $data['content'] .= '<li class="list-group-item">' . $entry['resource']['text']['div'] . '</li>';
                     }
                 }
-                $data['content'] .= '</ul>';
             }
         }
         $data['assets_js'] = $this->assets_js();
