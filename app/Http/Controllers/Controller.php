@@ -15160,7 +15160,8 @@ class Controller extends BaseController
             }
             $med_prn_array = ["as needed", "PRN"];
             if ($row->rxl_sig == '') {
-                $response['text']['div'] = '<div>' . $row->rxl_medication . ' ' . $row->rxl_dosage . ' ' . $row->rxl_dosage_unit . ', ' . $row->rxl_instructions . ' for ' . $row->rxl_reason;
+                $rx_text = $row->rxl_medication . ' ' . $row->rxl_dosage . ' ' . $row->rxl_dosage_unit . ', ' . $row->rxl_instructions . ' for ' . $row->rxl_reason;
+                $response['text']['div'] = '<div>' . $rx_text;
                 $response['text']['div'] .= ', Date Active: ' . date("Y-m-d", $this->human_to_unix($row->rxl_date_active)) . '</div>';
                 $dosage_text = $row->rxl_instructions . ' for ' . $row->rxl_reason;
                 $asNeededBoolean = false;
@@ -15175,8 +15176,9 @@ class Controller extends BaseController
                     ]
                 ];
             } else {
-                $response['text']['div'] = '<div>' . $row->rxl_medication . ' ' . $row->rxl_dosage . ' ' . $row->rxl_dosage_unit . ', ' . $row->rxl_sig . ', ' . $row->rxl_route . ', ' . $row->rxl_frequency;
-                $response['text']['div'] .= ' for ' . $row->rxl_reason . ', Date Active: ' . date("Y-m-d", $this->human_to_unix($row->rxl_date_active)) . '</div>';
+                $rx_text = $row->rxl_medication . ' ' . $row->rxl_dosage . ' ' . $row->rxl_dosage_unit . ', ' . $row->rxl_sig . ', ' . $row->rxl_route . ', ' . $row->rxl_frequency . ' for ' . $row->rxl_reason;
+                $response['text']['div'] = '<div>' . $rx_text;
+                $response['text']['div'] .= ', Date Active: ' . date("Y-m-d", $this->human_to_unix($row->rxl_date_active)) . '</div>';
                 $dosage_text = $row->rxl_sig . ', ' . $row->rxl_route . ', ' . $row->rxl_frequency . ' for ' . $row->rxl_reason;
                 $med_dosage_parts = explode(" ", $row->rxl_sig);
                 $med_dosage = $med_dosage_parts[0];
@@ -15244,6 +15246,7 @@ class Controller extends BaseController
                     ];
                 }
             }
+            $response['medicationCodeableConcept']['text'] = $rx_text;
             if ($row->rxl_date_inactive == '0000-00-00 00:00:00' && $row->rxl_date_old == '0000-00-00 00:00:00') {
                 $response['status'] = 'active';
                 $response['wasNotTaken'] = false;
