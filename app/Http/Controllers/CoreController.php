@@ -7801,7 +7801,7 @@ class CoreController extends Controller
                         $data['content'] .= '</ul>';
                         $data['panel_header'] = $title_array[Session::get('type')]['name'] . ' for ' . $as_name;
                     } else  {
-                        $data = $this->fhir_display($result, $type, $data);
+                        $data = $this->fhir_display($result3, $type, $data);
                         // $data['content'] .= '<li class="list-group-item">' . $entry['resource']['text']['div'] . '</li>';
                     }
                 }
