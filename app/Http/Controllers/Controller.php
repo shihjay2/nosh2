@@ -3254,6 +3254,7 @@ class Controller extends BaseController
 
     protected function clean_uma_sessions()
     {
+        Session::forget('fhir_name');
         Session::forget('medicationstatement_uri');
         Session::forget('patient_uri');
         Session::forget('rpt');

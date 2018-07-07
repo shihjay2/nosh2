@@ -8048,6 +8048,8 @@ class CoreController extends Controller
                     } else {
                         Session::put('uma_resource_uri', $scope);
                     }
+                    $name_arr = explode(' from ', $resources[$key]['name']);
+                    Session::put('fhir_name', $name_arr[1]);
                 }
             }
         }
