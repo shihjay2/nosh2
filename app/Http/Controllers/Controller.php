@@ -4416,16 +4416,6 @@ class Controller extends BaseController
                     }
                 }
             }
-            $dropdown_array = [];
-            $items = [];
-            $items[] = [
-                'type' => 'item',
-                'label' => 'Back',
-                'icon' => 'fa-chevron-left',
-                'url' => route('fhir_connect_display', ['Patient'])
-            ];
-            $dropdown_array['items'] = $items;
-            $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
             $data['content'] = '<div class="alert alert-success">';
             $data['content'] .= '<h5>Rows in red come from the patient portal and need to be reconciled.  Click on the row to accept.</h5>';
             $data['content'] .= '</div>';

@@ -5632,6 +5632,16 @@ class ChartController extends Controller {
         $data['message_action'] = Session::get('message_action');
         Session::forget('message_action');
         $data = $this->fhir_display($result, $type, $data);
+        $dropdown_array = [];
+        $items = [];
+        $items[] = [
+            'type' => 'item',
+            'label' => 'Back',
+            'icon' => 'fa-chevron-left',
+            'url' => route('fhir_connect_display', ['Patient'])
+        ];
+        $dropdown_array['items'] = $items;
+        $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
         // $gender_arr = $this->array_gender();
         // if ($type == 'Patient') {
         //     $data['content'] = '<div class="alert alert-success">';

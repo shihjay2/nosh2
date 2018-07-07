@@ -1044,46 +1044,6 @@
             });
         }
 
-        $(document).on('click', '.nosh-ccda-list', function(event){
-            var query = 'name=' + $(this).attr('data-nosh-name');
-            query += '&type=' + $(this).attr('data-nosh-type');
-            query += '&date=' + $(this).attr('data-nosh-date');
-            if ($(this).attr('data-nosh-code') !== undefined) {
-                query += '&code=' + $(this).attr('data-nosh-code');
-            }
-            if ($(this).attr('data-nosh-dosage') !== undefined) {
-                query += '&dosage=' + $(this).attr('data-nosh-dosage');
-            }
-            if ($(this).attr('data-nosh-dosage-unit') !== undefined) {
-                query += '&dosage-unit=' + $(this).attr('data-nosh-dosage-unit');
-            }
-            if ($(this).attr('data-nosh-route') !== undefined) {
-                query += '&route=' + $(this).attr('data-nosh-route');
-            }
-            if ($(this).attr('data-nosh-reason') !== undefined) {
-                query += '&reason=' + $(this).attr('data-nosh-reason');
-            }
-            if ($(this).attr('data-nosh-administration') !== undefined) {
-                query += '&administration=' + $(this).attr('data-nosh-administration');
-            }
-            if ($(this).attr('data-nosh-reaction') !== undefined) {
-                query += '&reaction=' + $(this).attr('data-nosh-reaction');
-            }
-            if ($(this).attr('data-nosh-sequence') !== undefined) {
-                query += '&sequence=' + $(this).attr('data-nosh-sequence');
-            }
-            if ($(this).attr('data-nosh-from') !== undefined) {
-                query += '&from=' + $(this).attr('data-nosh-from');
-            }
-            $.ajax({
-                type: 'POST',
-                url: noshdata.set_ccda_data,
-                data: query,
-                success: function(data){
-                    window.location = data;
-                }
-            });
-        });
         if (noshdata.ccda !== '') {
             var bb = BlueButton(noshdata.ccda);
             if ($('#issues_reconcile_list').length) {
