@@ -7807,8 +7807,14 @@ class CoreController extends Controller
                 }
             }
         }
-        $data['assets_js'] = $this->assets_js();
-        $data['assets_css'] = $this->assets_css();
+        if (Session::get('uma_pid') == Session::get('pid')) {
+            $data = array_merge($data, $this->sidebar_build('chart'));
+            $data['assets_js'] = $this->assets_js('chart');
+            $data['assets_css'] = $this->assets_css('chart');
+        } else {
+            $data['assets_js'] = $this->assets_js();
+            $data['assets_css'] = $this->assets_css();
+        }
         return view('core', $data);
     }
 
@@ -8013,8 +8019,14 @@ class CoreController extends Controller
         $data['content'] .= '</div>';
         Session::put('uma_pid', $id);
         Session::put('last_page', $request->fullUrl());
-        $data['assets_js'] = $this->assets_js();
-        $data['assets_css'] = $this->assets_css();
+        if ($id == Session::get('pid')) {
+            $data = array_merge($data, $this->sidebar_build('chart'));
+            $data['assets_js'] = $this->assets_js('chart');
+            $data['assets_css'] = $this->assets_css('chart');
+        } else {
+            $data['assets_js'] = $this->assets_js();
+            $data['assets_css'] = $this->assets_css();
+        }
         return view('core', $data);
     }
 
