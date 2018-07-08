@@ -362,7 +362,10 @@ class ChartController extends Controller {
 
     public function api_patient(Request $request)
     {
-
+        $query = DB::table('practiceinfo')->where('practice_id', '=', '1')->first();
+        $url = rtrim($query->uma_uri, '/') . '/get_mdnosh';
+        $result = json_decode($this->fhir_request($url, true, Session::get('uma_auth_access_token')), true);
+        return $result;
     }
 
     public function billing_delete_invoice(Request $request, $id)
