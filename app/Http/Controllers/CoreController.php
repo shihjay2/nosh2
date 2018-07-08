@@ -3101,7 +3101,7 @@ class CoreController extends Controller
             foreach ($group_arr as $address_id => $row) {
                 // Merge pdfs into 1
                 $need_address = false;
-                $pdf = new Merger(true);
+                $pdf = new Merger(false);
                 foreach ($row['pdf_arr'] as $pdf_item) {
                     $pdf->addFromFile($pdf_item, 'all');
                 }
@@ -5363,7 +5363,7 @@ class CoreController extends Controller
                 File::put($file_path, $printimage);
             } else {
                 $pdf_item_arr = [];
-                $pdf = new Merger(true);
+                $pdf = new Merger(false);
                 foreach ($query as $row) {
                     $pdf_item = $this->hcfa($row->eid);
                     $pdf->addPDF($pdf_item, 'all');
@@ -5451,7 +5451,7 @@ class CoreController extends Controller
         ini_set('memory_limit','196M');
         $html = $this->page_medication($id, $pid);
         $file_path = public_path() . "/temp/" . time() . "_rx_" . Session::get('user_id') . ".pdf";
-        $this->generate_pdf($html, $file_path, 'footerpdf', '', '2');
+        $this->generate_pdf($html, $file_path, 'footerpdf', '', '3');
         while(!file_exists($file_path)) {
             sleep(2);
         }
@@ -5467,18 +5467,18 @@ class CoreController extends Controller
         $arr = Session::get('print_medication_combined');
         Session::forget('print_medication_combined');
         $new_arr = [];
-        $pdf = new Merger(true);
+        $pdf = new Merger(false);
         foreach ($arr as $k => $v) {
             $rx = DB::table('rx_list')->where('rxl_id', '=', $v['id'])->first();
             $new_arr[$v['pid']][$rx->id][] = $v['id'];
         }
         foreach ($new_arr as $pid => $provider_ids) {
             foreach ($provider_ids as $provider_id => $rxl_arr) {
-                $rxl_chuck_arr = array_chunk($rxl_arr, 3);
+                $rxl_chuck_arr = array_chunk($rxl_arr, 5);
                 foreach ($rxl_chuck_arr as $rxl_arr1) {
                     $html = $this->page_medication_combined($pid, $rxl_arr1, $provider_id);
                     $temp_file_path = public_path() . "/temp/" . time() . "_rx_" . Session::get('user_id') . ".pdf";
-                    $this->generate_pdf($html, $temp_file_path, 'footerpdf', '', '2');
+                    $this->generate_pdf($html, $temp_file_path, 'footerpdf', '', '3');
                     $pdf->addFromFile($temp_file_path, 'all');
                 }
             }
@@ -5557,7 +5557,7 @@ class CoreController extends Controller
                 return back();
             }
             // Merge pdfs into 1
-            $pdf = new Merger(true);
+            $pdf = new Merger(false);
             foreach ($pdf_arr as $pdf_item) {
                 $pdf->addFromFile($pdf_item, 'all');
             }

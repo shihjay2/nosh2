@@ -44,7 +44,7 @@
 		</table>
 		<div style="float:left;width:100%;">
 			<div style="border-bottom: 1px solid #000000; text-align: center; padding-bottom: 3mm;">
-				<?php echo $rxicon;?><b class="smallcaps">Prescription</b>
+				<b class="smallcaps">Prescription</b>
 			</div>
 		</div>
 		<table style="width:100%">
@@ -73,13 +73,13 @@
 		<table style="width:100%">
 			<thead>
 				<tr>
-					<th style="width:50%"></th>
+					<th style="width:50%">ALLERGIES</th>
 					<th style="width:50%">SIGNATURE</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
-					<td></td>
+					<td><?php echo $allergyInfo;?></td>
 					<td>
 						<?php echo $signature;?>
 						<p style="font-size:2pt;text-align:left;">THIS IS AN ORIGINAL PRESCRIPTION-THIS IS AN ORIGINAL PRESCRIPTION-THIS IS AN ORIGINAL PRESCRIPTION-THIS IS AN ORIGINAL PRESCRIPTION-THIS IS AN ORIGINAL PRESCRIPTION-THIS IS AN ORIGINAL PRESCRIPTION</p>
@@ -90,6 +90,5 @@
 			</tbody>
 		</table>
 		<p>Security features: (*) bordered and spelled quantities, microprint signature line visible at 5x or > magnification that must show "THIS IS AN ORIGINAL PRESCRIPTION", and this description of features.</p>
-		<p><b>Allergies:</b><br><?php echo $allergyInfo;?></p>
 	</body>
 </html>

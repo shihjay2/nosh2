@@ -10667,6 +10667,9 @@ class Controller extends BaseController
         if ($type == '2') {
             PDF::SetMargins('16', '26' ,'16', true);
         }
+        if ($type == '3') {
+            PDF::SetMargins('16', '16' ,'16', true);
+        }
         PDF::SetFooterMargin('40');
         PDF::AddPage();
         PDF::SetAutoPageBreak(TRUE, '40');
@@ -13649,7 +13652,7 @@ class Controller extends BaseController
         $data['practiceInfo'] .= $practice->city . ', ' . $practice->state . ' ' . $practice->zip . '<br />';
         $data['practiceInfo'] .= 'Phone: ' . $practice->phone . ', Fax: ' . $practice->fax . '<br />';
         $data['patientInfo'] = DB::table('demographics')->where('pid', '=', $pid)->first();
-        $data['practiceLogo'] = $this->practice_logo($provider->practice_id);
+        $data['practiceLogo'] = $this->practice_logo($provider->practice_id, '40px');
         $rxicon = HTML::image(asset('assets/images/rxicon.png'), 'Practice Logo', array('border' => '0', 'height' => '30', 'width' => '30'));
         $data['rxicon'] = str_replace('https', 'http', $rxicon);
         $data['dob'] = date('m/d/Y', $this->human_to_unix($data['patientInfo']->DOB));
@@ -13714,7 +13717,7 @@ class Controller extends BaseController
         $data['practiceInfo'] .= $practice->city . ', ' . $practice->state . ' ' . $practice->zip . '<br />';
         $data['practiceInfo'] .= 'Phone: ' . $practice->phone . ', Fax: ' . $practice->fax . '<br />';
         $data['patientInfo'] = DB::table('demographics')->where('pid', '=', $pid)->first();
-        $data['practiceLogo'] = $this->practice_logo($provider->practice_id);
+        $data['practiceLogo'] = $this->practice_logo($provider->practice_id, '40px');
         $rxicon = HTML::image(asset('assets/images/rxicon.png'), 'Practice Logo', array('border' => '0', 'height' => '30', 'width' => '30'));
         $data['rxicon'] = str_replace('https', 'http', $rxicon);
         $data['dob'] = date('m/d/Y', $this->human_to_unix($data['patientInfo']->DOB));
@@ -14557,13 +14560,13 @@ class Controller extends BaseController
         return $result;
     }
 
-    protected function practice_logo($practice_id)
+    protected function practice_logo($practice_id, $size='80px')
     {
         $logo = '<br><br><br><br><br>';
         $practice = DB::table('practiceinfo')->where('practice_id', '=', $practice_id)->first();
         if ($practice->practice_logo !== '' && $practice->practice_logo !== null) {
             if (file_exists(public_path() . '/' . $practice->practice_logo)) {
-                $link = HTML::image($practice->practice_logo, 'Practice Logo', array('border' => '0', 'height' => '80px'));
+                $link = HTML::image($practice->practice_logo, 'Practice Logo', array('border' => '0', 'height' => $size));
                 $logo = str_replace('https', 'http', $link);
             }
         }
