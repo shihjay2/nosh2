@@ -15423,6 +15423,7 @@ class Controller extends BaseController
                 ];
             }
             $response['recordedDate'] = date('Y-m-d', $this->human_to_unix($row->allergies_date_active));
+            $response['substance']['text'] = $row->allergies_med;
             if ($row->meds_ndcid !== '' && $row->meds_ndcid !== null) {
                 $response['substance']['coding'][] = [
                     'system' => 'http://www.nlm.nih.gov/research/umls/rxnorm',
@@ -15437,8 +15438,6 @@ class Controller extends BaseController
                         'code' => $rxnorm,
                         'display' => $row->allergies_med
                     ];
-                } else {
-                    $response['substance']['text'] = $row->allergies_med;
                 }
             }
             $response['text']['div'] = '<div>' . $row->allergies_med . ', Reaction: ' . $row->allergies_reaction . ', Severeity ' . $row->allergies_severity . ', Date Active: ' . date('Y-m-d', $this->human_to_unix($row->allergies_date_active)) . '</div>';
@@ -15451,7 +15450,8 @@ class Controller extends BaseController
                                 'code' => '', //need code
                                 'display' => '' //need definition
                             ]
-                        ]
+                        ],
+                        'text' => $row->allergies_reaction
                     ]
                 ]
             ];
@@ -15471,14 +15471,13 @@ class Controller extends BaseController
                     'display' => $row->imm_provider
                 ];
             }
+            $response['vaccineCode']['text'] = $row->imm_immunization;
             if ($row->imm_cvxcode != '') {
                 $response['vaccineCode']['coding'][] = [
                     'system' => 'http://hl7.org/fhir/sid/cvx',
                     'code' => $row->imm_cvxcode,
                     'display' => $row->imm_immunization
                 ];
-            } else {
-                $response['vaccineCode']['text'] = $row->imm_immunization;
             }
             $response['date'] = date('Y-m-d', $this->human_to_unix($row->imm_date));
             $response['status'] = 'completed';
