@@ -364,7 +364,7 @@ class ChartController extends Controller {
     {
         $query = DB::table('practiceinfo')->where('practice_id', '=', '1')->first();
         $url = rtrim($query->uma_uri, '/') . '/get_mdnosh';
-        $result = json_decode($this->fhir_request($url, true, Session::get('uma_auth_access_token')), true);
+        $result = json_decode($this->fhir_request($url, false, Session::get('uma_auth_access_token')), true);
         return $result;
     }
 
