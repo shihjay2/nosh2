@@ -7665,7 +7665,7 @@ class CoreController extends Controller
             $result1 = $oidc->rpt_request($permission_ticket);
             if (isset($result1['error'])) {
                 // error - return something
-                if ($result1['error'] == 'expired_ticket') {
+                if ($result1['error'] == 'expired_ticket' || $result1['error'] == 'invalid_grant') {
                     // Session::forget('uma_aat');
                     Session::forget('uma_permission_ticket');
                     return redirect()->route('uma_aat');
