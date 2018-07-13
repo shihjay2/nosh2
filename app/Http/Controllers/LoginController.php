@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App;
 use App\Http\Controllers\Controller;
-use App\Libraries\OpenIDConnectClient;
+// use App\Libraries\OpenIDConnectUMAClient;
 use App\User;
 use Artisan;
 use Auth;
@@ -22,6 +22,7 @@ use Storage;
 use URL;
 use phpseclib\Crypt\RSA;
 use SimpleXMLElement;
+use Shihjay2\OpenIDConnectUMAClient;
 use GuzzleHttp;
 
 class LoginController extends Controller {
@@ -220,7 +221,7 @@ class LoginController extends Controller {
         $open_id_url = 'https://accounts.google.com';
         $practice = DB::table('practiceinfo')->where('practice_id', '=', '1')->first();
         $url = route('google_auth');
-        $oidc = new OpenIDConnectClient($open_id_url, $client_id, $client_secret);
+        $oidc = new OpenIDConnectUMAClient($open_id_url, $client_id, $client_secret);
         $oidc->setRedirectURL($url);
         $oidc->addScope('openid');
         $oidc->addScope('email');
@@ -504,7 +505,7 @@ class LoginController extends Controller {
             $client_secret = $practice->uma_client_secret;
             $open_id_url = $practice->uma_uri;
             $url = route('uma_logout');
-            $oidc = new OpenIDConnectClient($open_id_url, $client_id, $client_secret);
+            $oidc = new OpenIDConnectUMAClient($open_id_url, $client_id, $client_secret);
             $oidc->setRedirectURL($url);
             $oidc->setAccessToken(Session::get('uma_auth_access_token'));
             $oidc->revoke();
@@ -521,7 +522,7 @@ class LoginController extends Controller {
             $client_id = $practice->uma_client_id;
             $client_secret = $practice->uma_client_secret;
             $url = route('oidc_logout');
-            $oidc = new OpenIDConnectClient($open_id_url, $client_id, $client_secret);
+            $oidc = new OpenIDConnectUMAClient($open_id_url, $client_id, $client_secret);
             $oidc->setRedirectURL($url);
             $oidc->setAccessToken(Session::get('oidc_auth_access_token'));
             $oidc->revoke();
@@ -557,7 +558,7 @@ class LoginController extends Controller {
                 }
                 $open_id_url = 'http://noshchartingsystem.com/oidc';
                 $url = route('oidc');
-                $oidc = new OpenIDConnectClient($open_id_url);
+                $oidc = new OpenIDConnectUMAClient($open_id_url);
                 $oidc->setClientName($client_name);
                 $oidc->setRedirectURL($url);
                 $oidc->register();
@@ -577,7 +578,7 @@ class LoginController extends Controller {
             return redirect()->route('login');
         }
         $url = route('oidc');
-        $oidc = new OpenIDConnectClient($open_id_url, $client_id, $client_secret);
+        $oidc = new OpenIDConnectUMAClient($open_id_url, $client_id, $client_secret);
         $oidc->setRedirectURL($url);
         $oidc->addScope('openid');
         $oidc->addScope('email');
@@ -772,7 +773,7 @@ class LoginController extends Controller {
         $client_id = $practice->uma_client_id;
         $client_secret = $practice->uma_client_secret;
         $url = route('oidc_logout');
-        $oidc = new OpenIDConnectClient($open_id_url, $client_id, $client_secret);
+        $oidc = new OpenIDConnectUMAClient($open_id_url, $client_id, $client_secret);
         $oidc->setRedirectURL($url);
         $oidc->setAccessToken(Session::get('oidc_auth_access_token'));
         $oidc->revoke();
@@ -792,7 +793,7 @@ class LoginController extends Controller {
         }
         $open_id_url = 'http://noshchartingsystem.com/oidc';
         $url = route('oidc');
-        $oidc = new OpenIDConnectClient($open_id_url);
+        $oidc = new OpenIDConnectUMAClient($open_id_url);
         $oidc->setClientName($client_name);
         $oidc->setRedirectURL($url);
         $oidc->register();
@@ -814,7 +815,7 @@ class LoginController extends Controller {
         $client_id = $practice->openidconnect_client_id;
         $client_secret = $practice->openidconnect_client_secret;
         $url = route('oidc_api');
-        $oidc = new OpenIDConnectClient($open_id_url, $client_id, $client_secret);
+        $oidc = new OpenIDConnectUMAClient($open_id_url, $client_id, $client_secret);
         $oidc->setRedirectURL($url);
         $oidc->authenticate();
         $firstname = $oidc->requestUserInfo('given_name');
@@ -1321,7 +1322,7 @@ class LoginController extends Controller {
         $client_secret = $practice->uma_client_secret;
         $open_id_url = $practice->uma_uri;
         $url = route('uma_auth');
-        $oidc = new OpenIDConnectClient($open_id_url, $client_id, $client_secret);
+        $oidc = new OpenIDConnectUMAClient($open_id_url, $client_id, $client_secret);
         $oidc->setRedirectURL($url);
         $oidc->setSessionName('pnosh');
         if ($practice->uma_refresh_token == '') {
@@ -1499,7 +1500,7 @@ class LoginController extends Controller {
         $client_secret = $practice->uma_client_secret;
         $open_id_url = $practice->uma_uri;
         $url = route('uma_logout');
-        $oidc = new OpenIDConnectClient($open_id_url, $client_id, $client_secret);
+        $oidc = new OpenIDConnectUMAClient($open_id_url, $client_id, $client_secret);
         $oidc->setRedirectURL($url);
         $oidc->setAccessToken(Session::get('uma_auth_access_token'));
         $oidc->revoke();

@@ -8,7 +8,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesResources;
 
-use App\Libraries\OpenIDConnectClient;
+// use App\Libraries\OpenIDConnectUMAClient;
 use App\Libraries\Phaxio;
 use Cezpdf;
 use Config;
@@ -28,6 +28,7 @@ use PDF;
 use Request;
 use shihjay2\tcpdi_merger\MyTCPDI;
 use shihjay2\tcpdi_merger\Merger;
+use Shihjay2\OpenIDConnectUMAClient;
 use Swift_Mailer;
 use Swift_SmtpTransport;
 use Session;
@@ -17489,7 +17490,7 @@ class Controller extends BaseController
         $client_secret = $practice->uma_client_secret;
         $open_id_url = $practice->uma_uri;
         $refresh_token = $practice->uma_refresh_token;
-        $oidc1 = new OpenIDConnectClient($open_id_url, $client_id, $client_secret);
+        $oidc1 = new OpenIDConnectUMAClient($open_id_url, $client_id, $client_secret);
         $oidc->setSessionName('pnosh');
         $oidc1->setUMA(true);
         $oidc1->refreshToken($refresh_token);

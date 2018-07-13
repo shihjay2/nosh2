@@ -197,6 +197,11 @@ class OpenIDConnectClient
 	protected $timeOut = 60;
 
 	/**
+	 * @var int leeway (seconds)
+	 */
+	private $leeway = 300;
+
+	/**
 	 * @var array holds response types
 	 */
 	private $additionalJwks = array();
@@ -310,7 +315,7 @@ class OpenIDConnectClient
 	 */
 	public function authenticate() {
 		$uma = $this->getUMA();
-		$type = $this->getUMAType();
+		// $type = $this->getUMAType();
 		// Do a preemptive check to see if the provider has thrown an error from a previous redirect
 		if (isset($_REQUEST['error'])) {
 			$desc = isset($_REQUEST['error_description']) ? " Description: " . $_REQUEST['error_description'] : "";
@@ -457,7 +462,7 @@ class OpenIDConnectClient
 			if ($uma == false) {
 				$this->requestAuthorization();
 			} else {
-				$this->requestUmaAuthorization($type);
+				$this->requestUmaAuthorization();
 			}
 			return false;
 		}
@@ -971,7 +976,7 @@ class OpenIDConnectClient
 	 * @throws OpenIDConnectClientException
 	 * @return bool
 	 */
-	private function verifyJWTsignature($jwt, $uma) {
+	public function verifyJWTsignature($jwt, $uma) {
 		$parts = explode(".", $jwt);
 		$signature = base64url_decode(array_pop($parts));
 		$header = json_decode(base64url_decode($parts[0]));
@@ -1018,8 +1023,8 @@ class OpenIDConnectClient
 		return (($claims->iss == $this->getIssuer() || $claims->iss == $this->getWellKnownIssuer() || $claims->iss == $this->getWellKnownIssuer(true))
 			&& (($claims->aud == $this->clientID) || (in_array($this->clientID, $claims->aud)))
 			&& ($claims->nonce == $this->getNonce())
-			&& ( !isset($claims->exp) || $claims->exp >= time())
-			&& ( !isset($claims->nbf) || $claims->nbf <= time())
+			&& ( !isset($claims->exp) || $claims->exp >= time() - $this->leeway)
+			&& ( !isset($claims->nbf) || $claims->nbf <= time() + $this->leeway)
 			&& ( !isset($claims->at_hash) || $claims->at_hash == $expecte_at_hash )
 		);
 	}
@@ -1363,7 +1368,6 @@ class OpenIDConnectClient
 	 */
 	public function register() {
 		$uma = $this->getUMA();
-		$rs = $this->getResouceServer();
 		if ($uma == false) {
 			$registration_endpoint = $this->getProviderConfigValue('registration_endpoint');
 			$send_array = (object)array(
@@ -1382,23 +1386,13 @@ class OpenIDConnectClient
 			if ($registration_endpoint == false) {
 				throw new OpenIDConnectClientException("The provider {$param} has not been set. Make sure your provider has a well known configuration available.");
 			}
-			if ($rs == true) {
-				$send_array = array(
-					'redirect_uris' => $this->getRedirectURLs(),
-					'client_name' => $this->getClientName(),
-					'logo_uri' => $this->getLogo(),
-					'claims_redirect_uris' => $this->getRedirectURLs(),
-					'client_uri' => $this->getClientURI()
-				);
-			} else {
-				$send_array = array(
-					'redirect_uris' => $this->getRedirectURLs(),
-					'client_name' => $this->getClientName(),
-					'logo_uri' => $this->getLogo(),
-					'client_uri' => $this->getClientURI(),
-					'claims_redirect_uris' => $this->getRedirectURLs()
-				);
-			}
+			$send_array = array(
+				'redirect_uris' => $this->getRedirectURLs(),
+				'client_name' => $this->getClientName(),
+				'logo_uri' => $this->getLogo(),
+				'claims_redirect_uris' => $this->getRedirectURLs(),
+				'client_uri' => $this->getClientURI()
+			);
 		}
 		// If the client has been registered with additional scopes
 		if (sizeof($this->grant_types) > 0) {
@@ -1580,8 +1574,8 @@ class OpenIDConnectClient
 	 */
 	protected function setState($state) {
 		if (property_exists($this, 'session_pretext') && $this->session_pretext) {
-            $_SESSION[$this->session_pretext]['openid_connect_state'] = $state;
-        } else {
+			$_SESSION[$this->session_pretext]['openid_connect_state'] = $state;
+		} else {
 			$_SESSION['openid_connect_state'] = $state;
 		}
 		return $state;
@@ -1594,8 +1588,8 @@ class OpenIDConnectClient
 	 */
 	protected function getState() {
 		if (property_exists($this, 'session_pretext') && $this->session_pretext) {
-            return $_SESSION[$this->session_pretext]['openid_connect_state'];
-        } else {
+			return $_SESSION[$this->session_pretext]['openid_connect_state'];
+		} else {
 			return $_SESSION['openid_connect_state'];
 		}
 	}
@@ -1720,20 +1714,6 @@ class OpenIDConnectClient
 	}
 
 	/**
-	 * @param $rs
-	 */
-	public function setResourceServer($rs) {
-		$this->rs = $rs;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getResouceServer() {
-		return $this->rs;
-	}
-
-	/**
 	 * @param $grant_type - example: authorization_code, implicit, password, client_credentials, refresh_token, urn:ietf:params:oauth:grant-type:jwt-bearer, urn:ietf:params:oauth:grant-type:saml2-bearer
 	 */
 	public function addGrantType($grant_type) {
@@ -1763,6 +1743,15 @@ class OpenIDConnectClient
 	private function requestUmaAuthorization($type='') {
 		$auth_endpoint = $this->getProviderConfigValue("authorization_endpoint", true);
 		$response_type = "code";
+		$this->addScope('email');
+		$this->addScope('profile');
+		$this->addScope('offline_access');
+		if ($type == 'resource_server') {
+			$this->addScope('uma_protection');
+		}
+		if ($type == 'client') {
+			$this->addScope('uma_authorization');
+		}
 
 		// Generate and store a nonce in the session
 		// The nonce is an arbitrary value
@@ -1770,34 +1759,44 @@ class OpenIDConnectClient
 
 		// State essentially acts as a session key for OIDC
 		$state = $this->setState($this->generateRandString());
-		if ($type == 'user1') {
-			$auth_params = array_merge($this->authParams, array(
-				'response_type' => $response_type,
-				'redirect_uri' => $this->getRedirectURL(),
-				'client_id' => $this->clientID,
-				'nonce' => $nonce,
-				'state' => $state,
-				'scope' => 'openid offline_access uma_protection email profile'
-			));
-		} elseif ($type == 'user') {
-			$auth_params = array_merge($this->authParams, array(
-				'response_type' => $response_type,
-				'redirect_uri' => $this->getRedirectURL(),
-				'client_id' => $this->clientID,
-				'nonce' => $nonce,
-				'state' => $state,
-				'scope' => 'openid email profile'
-			));
-		} else {
-			$auth_params = array_merge($this->authParams, array(
-				'response_type' => $response_type,
-				'redirect_uri' => $this->getRedirectURL(),
-				'client_id' => $this->clientID,
-				'nonce' => $nonce,
-				'state' => $state,
-				'scope' => 'openid offline_access uma_authorization email profile'
-			));
-		}
+
+		$auth_params = array_merge($this->authParams, array(
+			'response_type' => $response_type,
+			'redirect_uri' => $this->getRedirectURL(),
+			'client_id' => $this->clientID,
+			'nonce' => $nonce,
+			'state' => $state,
+			'scope' => 'openid'
+		));
+
+		// if ($type == 'user1') {
+		// 	$auth_params = array_merge($this->authParams, array(
+		// 		'response_type' => $response_type,
+		// 		'redirect_uri' => $this->getRedirectURL(),
+		// 		'client_id' => $this->clientID,
+		// 		'nonce' => $nonce,
+		// 		'state' => $state,
+		// 		'scope' => 'openid offline_access uma_protection email profile'
+		// 	));
+		// } elseif ($type == 'user') {
+		// 	$auth_params = array_merge($this->authParams, array(
+		// 		'response_type' => $response_type,
+		// 		'redirect_uri' => $this->getRedirectURL(),
+		// 		'client_id' => $this->clientID,
+		// 		'nonce' => $nonce,
+		// 		'state' => $state,
+		// 		'scope' => 'openid email profile'
+		// 	));
+		// } else {
+		// 	$auth_params = array_merge($this->authParams, array(
+		// 		'response_type' => $response_type,
+		// 		'redirect_uri' => $this->getRedirectURL(),
+		// 		'client_id' => $this->clientID,
+		// 		'nonce' => $nonce,
+		// 		'state' => $state,
+		// 		'scope' => 'openid offline_access uma_authorization email profile'
+		// 	));
+		// }
 
 		// If the client has been registered with additional scopes
 		if (sizeof($this->scopes) > 0) {

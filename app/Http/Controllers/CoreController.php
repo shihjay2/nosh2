@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App;
 use App\Events\ProcessEvent;
 use App\Http\Requests;
-use App\Libraries\OpenIDConnectClient;
+// use App\Libraries\OpenIDConnectUMAClient;
 use Date;
 use DB;
 use Event;
@@ -17,6 +17,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\MessageBag;
 use Imagick;
 use Minify;
+use Shihjay2\OpenIDConnectUMAClient;
 use shihjay2\tcpdi_merger\MyTCPDI;
 use shihjay2\tcpdi_merger\Merger;
 use QrCode;
@@ -7613,7 +7614,7 @@ class CoreController extends Controller
         $as_uri = $result['as_uri'];
         $url = route('uma_aat');
         // Requesting party claims
-        $oidc = new OpenIDConnectClient(Session::get('uma_uri'), Session::get('uma_client_id'), Session::get('uma_client_secret'));
+        $oidc = new OpenIDConnectUMAClient(Session::get('uma_uri'), Session::get('uma_client_id'), Session::get('uma_client_secret'));
         $oidc->setRedirectURL($url);
         $oidc->rqp_claims($permission_ticket);
     }
@@ -7658,7 +7659,7 @@ class CoreController extends Controller
             $client_id = Session::get('uma_client_id');
             $client_secret = Session::get('uma_client_secret');
             $url = route('uma_api');
-            $oidc = new OpenIDConnectClient($as_uri, $client_id, $client_secret);
+            $oidc = new OpenIDConnectUMAClient($as_uri, $client_id, $client_secret);
             $oidc->setSessionName('nosh');
             $oidc->setAccessToken(Session::get('uma_auth_access_token_nosh'));
             $oidc->setRedirectURL($url);
@@ -7847,7 +7848,7 @@ class CoreController extends Controller
             $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
             $client_name = 'mdNOSH - ' . $practice->practice_name;
             $url1 = route('uma_auth');
-            $oidc = new OpenIDConnectClient($as_uri);
+            $oidc = new OpenIDConnectUMAClient($as_uri);
             $oidc->setClientName($client_name);
             $oidc->setSessionName('nosh');
             $oidc->addRedirectURLs($url1);
@@ -7916,17 +7917,12 @@ class CoreController extends Controller
 
     public function uma_register_auth(Request $request)
     {
-        $oidc = new OpenIDConnectClient(Session::get('uma_uri'), Session::get('uma_client_id'), Session::get('uma_client_secret'));
+        $oidc = new OpenIDConnectUMAClient(Session::get('uma_uri'), Session::get('uma_client_id'), Session::get('uma_client_secret'));
         $oidc->setSessionName('nosh');
         $oidc->setRedirectURL(route('uma_register_auth'));
         $oidc->setSessionName('pnosh');
-        $oidc->addScope('openid');
-        $oidc->addScope('email');
-        $oidc->addScope('profile');
-        $oidc->addScope('offline_access');
-        $oidc->addScope('uma_authorization');
         $oidc->setUMA(true);
-        $oidc->setUMAType('');
+        $oidc->setUMAType('client');
         $oidc->authenticate();
         if (Session::has('uma_add_patient')) {
             $data = Session::get('uma_add_patient');
@@ -7976,7 +7972,7 @@ class CoreController extends Controller
             Session::put('uma_resources_start', $id);
             return redirect()->route('uma_register_auth');
         }
-        $oidc = new OpenIDConnectClient($patient->hieofone_as_url, $patient->hieofone_as_client_id, $patient->hieofone_as_client_secret);
+        $oidc = new OpenIDConnectUMAClient($patient->hieofone_as_url, $patient->hieofone_as_client_id, $patient->hieofone_as_client_secret);
         $oidc->setSessionName('nosh');
         $oidc->setUMA(true);
         $oidc->refreshToken($patient->hieofone_as_refresh_token);

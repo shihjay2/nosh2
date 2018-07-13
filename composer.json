@@ -34,7 +34,8 @@
         "rospdf/pdf-php": "^0.12.46",
         "simplesoftwareio/simple-qrcode": "~1.4",
         "soapbox/laravel-formatter": "2.x",
-        "yangqi/htmldom": "dev-master"
+        "yangqi/htmldom": "dev-master",
+        "shihjay2/openid-connect-uma-php": "dev-master"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

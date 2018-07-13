@@ -4,15 +4,18 @@ namespace App\Http\Controllers;
 
 use App;
 use App\Http\Requests;
-use App\Libraries\OpenIDConnectClient;
+// use App\Libraries\OpenIDConnectUMAClient;
 use Artisan;
 use Auth;
 use Config;
 use Crypt;
 use Date;
+use DateTime;
+use DateTimeZone;
 use DB;
 use File;
 use Form;
+use Google_Client;
 use Hash;
 use HTML;
 use Htmldom;
@@ -24,14 +27,11 @@ use QrCode;
 use Response;
 use Schema;
 use Session;
-use URL;
-use DateTime;
-use DateTimeZone;
+use Shihjay2\OpenIDConnectUMAClient;
 use SoapBox\Formatter\Formatter;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
-use Google_Client;
-
+use URL;
 
 class InstallController extends Controller {
 
@@ -356,6 +356,26 @@ class InstallController extends Controller {
             }
             return redirect()->route('dashboard');
         } else {
+            $pt_username = null;
+            if (array_key_exists('pnosh_username', $_COOKIE)) {
+                $pt_username = $_COOKIE['pnosh_username'];
+            }
+            $lastname = null;
+            if (array_key_exists('pnosh_lastname', $_COOKIE)) {
+                $lastname = $_COOKIE['pnosh_lastname'];
+            }
+            $firstname = null;
+            if (array_key_exists('pnosh_firstname', $_COOKIE)) {
+                $firstname = $_COOKIE['pnosh_firstname'];
+            }
+            $dob = null;
+            if (array_key_exists('pnosh_dob', $_COOKIE)) {
+                $dob = $_COOKIE['pnosh_dob'];
+            }
+            $email = null;
+            if (array_key_exists('pnosh_email', $_COOKIE)) {
+                $email = $_COOKIE['pnosh_email'];
+            }
             $data['panel_header'] = 'NOSH ChartingSystem Installation';
             $items[] = [
                 'name' => 'username',
@@ -383,7 +403,7 @@ class InstallController extends Controller {
                 'label' => 'Email',
                 'type' => 'email',
                 'required' => true,
-                'default_value' => null
+                'default_value' => $email
             ];
             if ($type == 'patient') {
                 $items[] = [
@@ -391,28 +411,28 @@ class InstallController extends Controller {
                     'label' => 'Portal Username',
                     'type' => 'text',
                     'required' => true,
-                    'default_value' => null
+                    'default_value' => $pt_username
                 ];
                 $items[] = [
                     'name' => 'lastname',
                     'label' => 'Last Name',
                     'type' => 'text',
                     'required' => true,
-                    'default_value' => null
+                    'default_value' => $lastname
                 ];
                 $items[] = [
                     'name' => 'firstname',
                     'label' => 'First Name',
                     'type' => 'text',
                     'required' => true,
-                    'default_value' => null
+                    'default_value' => $firstname
                 ];
                 $items[] = [
                     'name' => 'DOB',
                     'label' => 'Date of Birth',
                     'type' => 'date',
                     'required' => true,
-                    'default_value' => null
+                    'default_value' => $dob
                 ];
                 $items[] = [
                     'name' => 'gender',
@@ -849,7 +869,7 @@ public function install_fix(Request $request)
                 $patient = DB::table('demographics')->where('pid', '=', '1')->first();
                 $client_name = 'Patient NOSH for ' .  $patient->firstname . ' ' . $patient->lastname . ', DOB: ' . date('Y-m-d', strtotime($patient->DOB));
                 $url = route('uma_auth');
-                $oidc = new OpenIDConnectClient($data['uma_uri']);
+                $oidc = new OpenIDConnectUMAClient($data['uma_uri']);
                 $oidc->setClientName($client_name);
                 $oidc->setSessionName('pnosh');
                 $oidc->addRedirectURLs($url);
@@ -877,7 +897,6 @@ public function install_fix(Request $request)
                 $oidc->setLogo('https://cloud.noshchartingsystem.com/SAAS-Logo.jpg');
                 $oidc->setClientURI(str_replace('/uma_auth', '', $url));
                 $oidc->setUMA(true);
-                $oidc->setResourceServer(true);
                 $oidc->register();
                 $data['uma_client_id']  = $oidc->getClientID();
                 $data['uma_client_secret'] = $oidc->getClientSecret();
@@ -891,16 +910,11 @@ public function install_fix(Request $request)
                     $client_secret = $query->uma_client_secret;
                     $open_id_url = $query->uma_uri;
                     $url = route('uma_patient_centric');
-                    $oidc = new OpenIDConnectClient($open_id_url, $client_id, $client_secret);
+                    $oidc = new OpenIDConnectUMAClient($open_id_url, $client_id, $client_secret);
                     $oidc->setRedirectURL($url);
                     $oidc->setSessionName('pnosh');
-                    $oidc->addScope('openid');
-                    $oidc->addScope('email');
-                    $oidc->addScope('profile');
-                    $oidc->addScope('offline_access');
-                    $oidc->addScope('uma_protection');
                     $oidc->setUMA(true);
-                    $oidc->setUMAType('user1');
+                    $oidc->setUMAType('resource_server');
                     $oidc->authenticate();
                     $user_data['uid']  = $oidc->requestUserInfo('sub');
                     DB::table('users')->where('id', '=', '2')->update($user_data);

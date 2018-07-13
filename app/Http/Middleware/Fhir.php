@@ -2,10 +2,11 @@
 
 namespace App\Http\Middleware;
 
-use App\Libraries\OpenIDConnectClient;
+// use App\Libraries\OpenIDConnectUMAClient;
 use Closure;
 use DB;
 use Response;
+use Shihjay2\OpenIDConnectUMAClient;
 use URL;
 
 class Fhir
@@ -27,7 +28,7 @@ class Fhir
         if ($payload) {
             // RPT, Perform Token Introspection
             $rpt = str_replace('Bearer ', '', $payload);
-            $oidc = new OpenIDConnectClient($open_id_url, $client_id, $client_secret);
+            $oidc = new OpenIDConnectUMAClient($open_id_url, $client_id, $client_secret);
             $oidc->setUMA(true);
             $oidc->refreshToken($practice->uma_refresh_token);
             if ($oidc->getRefreshToken() != '') {
@@ -66,7 +67,7 @@ class Fhir
                     foreach ($query1 as $row1) {
                         $scopes[] = $row1->scope;
                     }
-                    $oidc = new OpenIDConnectClient($open_id_url, $client_id, $client_secret);
+                    $oidc = new OpenIDConnectUMAClient($open_id_url, $client_id, $client_secret);
                     $oidc->setUMA(true);
                     $oidc->refreshToken($practice->uma_refresh_token,true);
                     if ($oidc->getRefreshToken() != '') {
@@ -128,7 +129,7 @@ class Fhir
                 foreach ($query1 as $row1) {
                     $scopes[] = $row1->scope;
                 }
-                $oidc = new OpenIDConnectClient($open_id_url, $client_id, $client_secret);
+                $oidc = new OpenIDConnectUMAClient($open_id_url, $client_id, $client_secret);
                 $oidc->setUMA(true);
                 $oidc->refreshToken($practice->uma_refresh_token,true);
                 if ($oidc->getRefreshToken() != '') {

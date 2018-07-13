@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App;
 use App\Http\Requests;
-use App\Libraries\OpenIDConnectClient;
+// use App\Libraries\OpenIDConnectUMAClient;
 use Config;
 use Crypt;
 use Date;
@@ -21,6 +21,7 @@ use QrCode;
 use Response;
 use Schema;
 use Session;
+use Shihjay2\OpenIDConnectUMAClient;
 use SoapBox\Formatter\Formatter;
 use URL;
 
@@ -879,7 +880,7 @@ class ChartController extends Controller {
         $token_endpoint = $base_url . '/v1/o/token/';
         $client_id = 'g64gaSFq972Jpk88Ql8ZoO307jsbZyaSXtrVnfql';
         $client_secret = 'EiyTnDZnBR1p2OhLWBFpr0qV4SNXDw10IGwtEGf2B8sgJploBJ2NhmaQSqdcSO7eNi4xIxbP5Bk8wPvHnqdlaMLLImYCJF2EzKW5ie7snbNm5Joyphf87RvzDl7r6cO0';
-        $oidc = new OpenIDConnectClient($token_url, $client_id, $client_secret);
+        $oidc = new OpenIDConnectUMAClient($token_url, $client_id, $client_secret);
         $oidc->setRedirectURL(route('cms_bluebutton'));
         $oidc->providerConfigParam(['authorization_endpoint' => $authorization_endpoint]);
         $oidc->providerConfigParam(['token_endpoint' => $token_endpoint]);
@@ -5413,7 +5414,7 @@ class ChartController extends Controller {
             $client_id = Session::get('uma_client_id');
             $client_secret = Session::get('uma_client_secret');
             $url = route('fhir_api');
-            $oidc = new OpenIDConnectClient($as_uri, $client_id, $client_secret);
+            $oidc = new OpenIDConnectUMAClient($as_uri, $client_id, $client_secret);
             $oidc->setSessionName('nosh');
             $oidc->setRedirectURL($url);
             $result1 = $oidc->rpt_request($permission_ticket);
@@ -5665,7 +5666,7 @@ class ChartController extends Controller {
             // $client_id = 'c735b021-bf59-4d29-9fcc-4415626153c5';
         }
         $client_secret = '';
-        $oidc = new OpenIDConnectClient(Session::get('fhir_auth_url'), $client_id, $client_secret);
+        $oidc = new OpenIDConnectUMAClient(Session::get('fhir_auth_url'), $client_id, $client_secret);
         $oidc->setSessionName('nosh');
         $oidc->setRedirectURL(route('fhir_connect_response'));
         $oidc->providerConfigParam(['authorization_endpoint' => Session::get('fhir_auth_url')]);
@@ -8557,7 +8558,7 @@ class ChartController extends Controller {
                 $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
                 $client_name = 'mdNOSH - ' . $practice->practice_name;
                 $url1 = route('uma_auth');
-                $oidc = new OpenIDConnectClient($as_uri);
+                $oidc = new OpenIDConnectUMAClient($as_uri);
                 $oidc->setClientName($client_name);
                 $oidc->setSessionName('pnosh');
                 $oidc->addRedirectURLs($url1);
@@ -8612,7 +8613,7 @@ class ChartController extends Controller {
         $open_id_url = Session::get('pnosh_url');
         $client_id = Session::get('pnosh_client_id');
         $client_secret = Session::get('pnosh_client_secret');
-        $oidc = new OpenIDConnectClient($open_id_url, $client_id, $client_secret);
+        $oidc = new OpenIDConnectUMAClient($open_id_url, $client_id, $client_secret);
         $oidc->setRedirectURL($url);
         $oidc->setSessionName('pnosh');
         $oidc->addScope('openid');
