@@ -1164,7 +1164,7 @@ public function install_fix(Request $request)
                 $install->run();
                 $return = nl2br($install->getOutput());
             }
-            if ($type = 'migrate') {
+            if ($type == 'migrate') {
                 $migrate = new Process("php artisan migrate --force");
                 $migrate->setWorkingDirectory(base_path());
                 $migrate->setTimeout(null);

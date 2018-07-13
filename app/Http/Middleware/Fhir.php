@@ -2,7 +2,6 @@
 
 namespace App\Http\Middleware;
 
-// use App\Libraries\OpenIDConnectUMAClient;
 use Closure;
 use DB;
 use Response;

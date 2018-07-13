@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App;
 use App\Events\ProcessEvent;
 use App\Http\Requests;
-// use App\Libraries\OpenIDConnectUMAClient;
 use Date;
 use DB;
 use Event;

@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App;
 use App\Http\Requests;
-// use App\Libraries\OpenIDConnectUMAClient;
 use Config;
 use Crypt;
 use Date;
