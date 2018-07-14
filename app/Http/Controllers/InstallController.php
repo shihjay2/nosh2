@@ -919,6 +919,7 @@ public function install_fix(Request $request)
                     $user_data['uid']  = $oidc->requestUserInfo('sub');
                     DB::table('users')->where('id', '=', '2')->update($user_data);
                     $access_token = $oidc->getAccessToken();
+                    $uport_id = $oidc->requestUserInfo('uport_id');
                     if ($oidc->getRefreshToken() != '') {
                         $refresh_data['uma_refresh_token'] = $oidc->getRefreshToken();
                         DB::table('practiceinfo')->where('practice_id', '=', '1')->update($refresh_data);
