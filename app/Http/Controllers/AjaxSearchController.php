@@ -44,17 +44,22 @@ class AjaxSearchController extends Controller {
 
     public function rx_json(Request $request)
     {
-        $url = 'http://rxnav.nlm.nih.gov/REST/displaynames.json';
-        $ch = curl_init();
-        curl_setopt($ch,CURLOPT_URL, $url);
-        curl_setopt($ch,CURLOPT_FAILONERROR,1);
-        curl_setopt($ch,CURLOPT_FOLLOWLOCATION,1);
-        curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
-        curl_setopt($ch,CURLOPT_TIMEOUT, 15);
-        $json = curl_exec($ch);
-        curl_close($ch);
-        $rxnorm = json_decode($json, true);
-        return $rxnorm['displayTermsList']['term'];
+        if (Session::has('rx_json')) {
+            return Session::get('rx_json');
+        } else {
+            $url = 'http://rxnav.nlm.nih.gov/REST/displaynames.json';
+            $ch = curl_init();
+            curl_setopt($ch,CURLOPT_URL, $url);
+            curl_setopt($ch,CURLOPT_FAILONERROR,1);
+            curl_setopt($ch,CURLOPT_FOLLOWLOCATION,1);
+            curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+            curl_setopt($ch,CURLOPT_TIMEOUT, 15);
+            $json = curl_exec($ch);
+            curl_close($ch);
+            $rxnorm = json_decode($json, true);
+            Session::put('rx_json', $rxnorm['displayTermsList']['term']);
+            return $rxnorm['displayTermsList']['term'];
+        }
     }
 
     public function rxnorm(Request $request)
@@ -1610,6 +1615,55 @@ class AjaxSearchController extends Controller {
         $data['template'] = $formatter1->toYaml();
         DB::table('users')->where('id', '=', Session::get('user_id'))->update($data);
         return $message;
+    }
+
+    public function template_restore(Request $request, $action='')
+    {
+        if ($action == '') {
+            $data1['template'] = File::get(resource_path() . '/template.yaml');
+            DB::table('users')->where('id', '=', Session::get('user_id'))->update($data1);
+            $message = 'Template restored to default';
+        }
+        if ($action == 'backup') {
+            $user = DB::table('users')->where('id', '=', Session::get('user_id'))->first();
+            if ($user->template == null || $user->template == '') {
+                $yaml = File::get(resource_path() . '/template.yaml');
+            } else {
+                $yaml = $user->template;
+            }
+            $file_name = time() . '_template_' . Session::get('user_id') . ".yaml";
+            $file_path = public_path() . '/temp/' . $file_name;
+            File::put($file_path, $yaml);
+            return response()->download($file_path)->deleteFileAfterSend(true);
+        }
+        if ($action == 'upload') {
+            if ($request->isMethod('post')) {
+                $file = $request->file('file_input');
+                $directory = public_path() . '/temp/';
+                $file_name = time() . '_template_' . Session::get('user_id') . ".yaml";
+                $file_path = $directory . $file_name;
+                $file->move($directory, $file_name);
+                while(!file_exists($file_path)) {
+                    sleep(2);
+                }
+                $data2['template'] = File::get($file_path);
+                DB::table('users')->where('id', '=', Session::get('user_id'))->update($data2);
+                $message = 'Template uploaded and set';
+            } else {
+                $data['panel_header'] = 'Upload your templates';
+                $data['document_upload'] = route('template_restore', ['upload']);
+                $type_arr = ['yaml'];
+                $data['document_type'] = json_encode($type_arr);
+                $dropdown_array['default_button_text'] = '<i class="fa fa-chevron-left fa-fw fa-btn"></i>Back';
+                $dropdown_array['default_button_text_url'] = Session::get('last_page');
+                $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
+                $data['assets_js'] = $this->assets_js('document_upload');
+                $data['assets_css'] = $this->assets_css('document_upload');
+                return view('document_upload', $data);
+            }
+        }
+        Session::get('message_action', $message);
+        return redirect(Session::get('last_page'));
     }
 
     // Typeahead functions

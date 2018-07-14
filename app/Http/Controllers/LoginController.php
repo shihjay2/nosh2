@@ -538,6 +538,7 @@ class LoginController extends Controller {
         Session::forget('notifications');
         Session::forget('notification_run');
         Session::forget('uport_id');
+        Session::forget('rx_json');
         // Session::flush();
         return redirect()->route('login');
     }

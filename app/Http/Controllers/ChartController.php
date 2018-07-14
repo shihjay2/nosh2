@@ -6595,7 +6595,7 @@ class ChartController extends Controller {
         Session::forget('message_action');
         $data['content'] = '';
         $demographics = DB::table('demographics')->where('pid', '=', Session::get('pid'))->first();
-        if ($demographics->hieofone_as_url !== '' || $demographics->hieofone_as_url !== null) {
+        if ($demographics->hieofone_as_url !== '' && $demographics->hieofone_as_url !== null) {
             $data['content'] .= '<div class="alert alert-danger"><span style="margin-right:15px;"><i class="fa fa-download fa-lg"></i></span><strong><a href="' . route('uma_resources', [Session::get('pid')]) . '">Reconcile chart from outside resources</a></strong></div>';
         }
         if (Session::get('patient_centric') !== 'y') {

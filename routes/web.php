@@ -287,6 +287,7 @@ Route::post('template_edit', ['as' => 'template_edit', 'uses' => 'AjaxSearchCont
 Route::post('template_normal', ['as' => 'template_normal', 'uses' => 'AjaxSearchController@template_normal']);
 Route::post('template_normal_change', ['as' => 'template_normal_change', 'uses' => 'AjaxSearchController@template_normal_change']);
 Route::post('template_remove', ['as' => 'template_remove', 'uses' => 'AjaxSearchController@template_remove']);
+Route::any('template_restore/{action?}', ['as' => 'template_restore', 'uses' => 'AjaxSearchController@template_restore']);
 Route::post('tags', ['as' => 'tags', 'uses' => 'AjaxSearchController@tags']);
 Route::post('tag_save/{type}/{id}', ['as' => 'tag_save', 'uses' => 'AjaxSearchController@tag_save']);
 Route::post('tag_remove/{type}/{id}', ['as' => 'tag_remove', 'uses' => 'AjaxSearchController@tag_remove']);

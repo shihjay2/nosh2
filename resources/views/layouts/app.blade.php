@@ -149,21 +149,26 @@
                             </a>
                             <ul class="dropdown-menu" role="menu">
                                 @if (Session::get('group_id') !== 1)
-                                    <li><a href="{{ route('core_form', ['users', 'id', Session::get('user_id'), Session::get('group_id')]) }}"><i class="fa fa-btn fa-cogs"></i>{{ trans('nosh.my_information') }}</a></li>
+                                    <li><a href="{{ route('core_form', ['users', 'id', Session::get('user_id'), Session::get('group_id')]) }}"><i class="fa fa-fw fa-btn fa-cogs"></i>{{ trans('nosh.my_information') }}</a></li>
                                 @endif
                                 @if (Session::get('group_id') == '2')
-                                    <li><a href="{{ route('user_signature') }}"><i class="fa fa-btn fa-pencil"></i>{{ trans('nosh.user_signature') }}</a></li>
+                                    <li><a href="{{ route('user_signature') }}"><i class="fa fa-fw fa-btn fa-pencil"></i>{{ trans('nosh.user_signature') }}</a></li>
                                 @endif
                                 @if (Session::get('patient_centric') == 'y')
-                                    <li><a href="{{ route('fhir_connect') }}"><i class="fa fa-btn fa-plug"></i>{{ trans('nosh.fhir_connect') }}</a></li>
-                                    <li><a href="{{ route('cms_bluebutton') }}"><i class="fa fa-btn fa-plug"></i>{{ trans('nosh.medicare_connect') }}</a></li>
-                                    <li><a href="{{ str_replace('/nosh', '', route('dashboard')) }}"><i class="fa fa-btn fa-openid"></i>{{ trans('nosh.hieofone') }}</a></li>
+                                    <li><a href="{{ route('fhir_connect') }}"><i class="fa fa-fw fa-btn fa-plug"></i>{{ trans('nosh.fhir_connect') }}</a></li>
+                                    <li><a href="{{ route('cms_bluebutton') }}"><i class="fa fa-fw fa-btn fa-plug"></i>{{ trans('nosh.medicare_connect') }}</a></li>
+                                    <li><a href="{{ str_replace('/nosh', '', route('dashboard')) }}"><i class="fa fa-fw fa-btn fa-openid"></i>{{ trans('nosh.hieofone') }}</a></li>
                                 @endif
-                                <li><a href="{{ route('password_change') }}"><i class="fa fa-btn fa-cog"></i>{{ trans('nosh.password_change') }}</a></li>
-                                <li><a href="{{ route('update_system') }}"><i class="fa fa-btn fa-download"></i>{{ trans('nosh.update_system') }}</a></li>
-                                <li><a href="https://github.com/shihjay2/nosh2/issues/new" target="_blank" class="nosh-no-load"><i class="fa fa-btn fa-github-alt"></i>{{ trans('nosh.report_bug') }}</a></li>
-                                <li><a href="https://github.com/shihjay2/nosh2/issues/new" target="_blank" class="nosh-no-load"><i class="fa fa-btn fa-heart"></i>{{ trans('nosh.make_suggestion') }}</a></li>
-                                <li><a href="{{ route('logout') }}"><i class="fa fa-btn fa-sign-out"></i>{{ trans('nosh.logout') }}</a></li>
+                                @if (Session::get('group_id') == '2' || Session::get('group_id') == '3')
+                                    <li><a href="{{ route('template_restore', ['backup']) }}" class="nosh-no-load"><i class="fa fa-fw fa-btn fa-cloud-download"></i>{{ trans('nosh.template_restore_backup') }}</a></li>
+                                    <li><a href="{{ route('template_restore', ['upload']) }}"><i class="fa fa-fw fa-btn fa-cloud-upload"></i>{{ trans('nosh.template_restore_upload') }}</a></li>
+                                    <li><a href="{{ route('template_restore') }}" class="nosh-confirm" data-nosh-confirm-message="{{ trans('nosh.template_restore_confirm') }}"><i class="fa fa-fw fa-btn fa-refresh"></i>{{ trans('nosh.template_restore') }}</a></li>
+                                @endif
+                                <li><a href="{{ route('password_change') }}"><i class="fa fa-fw fa-btn fa-cog"></i>{{ trans('nosh.password_change') }}</a></li>
+                                <li><a href="{{ route('update_system') }}"><i class="fa fa-fw fa-btn fa-download"></i>{{ trans('nosh.update_system') }}</a></li>
+                                <li><a href="https://github.com/shihjay2/nosh2/issues/new" target="_blank" class="nosh-no-load"><i class="fa fa-fw fa-btn fa-github-alt"></i>{{ trans('nosh.report_bug') }}</a></li>
+                                <li><a href="https://github.com/shihjay2/nosh2/issues/new" target="_blank" class="nosh-no-load"><i class="fa fa-fw fa-btn fa-heart"></i>{{ trans('nosh.make_suggestion') }}</a></li>
+                                <li><a href="{{ route('logout') }}"><i class="fa fa-fw fa-btn fa-sign-out"></i>{{ trans('nosh.logout') }}</a></li>
                             </ul>
                         </li>
                     @endif
@@ -1091,6 +1096,15 @@
             setInterval(chart_notification, 10000);
             $('body').tooltip({
                 selector: '[data-toggle=tooltip]'
+            });
+            $('.nosh-confirm').css('cursor', 'pointer').click(function() {
+                var r = confirm($(this).attr('data-nosh-confirm-message'));
+                if (r === true) {
+                    return true;
+                } else {
+                    $(this).addClass('nosh-no-load');
+                    return false;
+                }
             });
             $('.nosh-dash').css('cursor', 'pointer').click(function() {
                 var href = $(this).find('a').first().attr('href');
@@ -2200,7 +2214,7 @@
                 }
             });
         });
-        
+
         $(document).on('click', '.nosh-ccda-list', function(event){
             var query = 'name=' + $(this).attr('data-nosh-name');
             query += '&type=' + $(this).attr('data-nosh-type');
