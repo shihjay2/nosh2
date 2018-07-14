@@ -259,7 +259,7 @@ class InstallController extends Controller {
                 $final_root_url = $root_url1[1] . '.' . $root_url1[2];
                 if ($final_root_url == 'hieofone.org') {
                     $mailgun_url = 'https://dir.' . $final_root_url . '/mailgun';
-                    $params = ['uri' => $pnosh_url];
+                    $params = ['uri' => $root_url[0]];
                     $post_body = json_encode($params);
                     $content_type = 'application/json';
                     $ch = curl_init();
