@@ -300,3 +300,22 @@ div.list-category li.list-group-item:first-child {
         top: 0;
     }
 }
+
+.gallery {
+    display: inline-block;
+    margin-top: 20px;
+}
+.close-icon {
+	border-radius: 50%;
+    position: absolute;
+    right: 5px;
+    top: -10px;
+    padding: 5px 8px;
+}
+.edit-icon {
+	border-radius: 50%;
+    position: absolute;
+    right: 5px;
+    bottom: 10px;
+    padding: 5px 8px;
+}

@@ -687,8 +687,32 @@ class CoreController extends Controller
                         if (isset($data['cc'])) {
                             $send_data['cc'] = $data['cc'];
                         }
-                        DB::table('messaging')->insert($send_data);
+                        $send_id = DB::table('messaging')->insertGetId($send_data);
                         $this->audit('Add');
+                        if (Session::has('messaging_add_photo')) {
+                            $message_add_photo_arr = Session::get('messaging_add_photo');
+                            foreach ($message_add_photo_arr as $photo_file_path) {
+                                if ($data['pid'] !== '') {
+                                    $directory = Session::get('documents_dir') . $data['pid'] . '/';
+                                } else {
+                                    $directory = Session::get('documents_dir');
+                                }
+                                $new_name = str_replace(public_path() . '/temp/', '', $photo_file_path);
+                                $new_photo_file_path = $directory . $new_name;
+                                if (!file_exists($new_photo_file_path)) {
+                                    File::move($photo_file_path, $new_photo_file_path);
+                                }
+                                $image_data = [
+                                    'image_location' => $new_photo_file_path,
+                                    'pid' => $data['pid'],
+                                    'message_id' => $send_id,
+                                    'image_description' => 'Photo Uploaded ' . date('F jS, Y'),
+                                    'id' => Session::get('user_id')
+                                ];
+                                $image_id = DB::table('image')->insertGetId($image_data);
+                                $this->audit('Add');
+                            }
+                        }
                         $user_row = DB::table('users')->where('id', '=',$mailbox_row)->first();
                         if ($user_row->group_id === '100') {
                             $data_message['patient_portal'] = $practice->patient_portal;
@@ -797,6 +821,31 @@ class CoreController extends Controller
                     } else {
                         $arr['message'] = 'Message saved and sent';
                     }
+                    if (Session::has('messaging_add_photo')) {
+                        $message_add_photo_arr = Session::get('messaging_add_photo');
+                        Session::forget('messaging_add_photo');
+                        foreach ($message_add_photo_arr as $photo_file_path) {
+                            if ($data['pid'] !== '') {
+                                $directory = Session::get('documents_dir') . $data['pid'] . '/';
+                            } else {
+                                $directory = Session::get('documents_dir');
+                            }
+                            $new_name = str_replace(public_path() . '/temp/', '', $photo_file_path);
+                            $new_photo_file_path = $directory . $new_name;
+                            if (!file_exists($new_photo_file_path)) {
+                                File::move($photo_file_path, $new_photo_file_path);
+                            }
+                            $image_data = [
+                                'image_location' => $new_photo_file_path,
+                                'pid' => $data['pid'],
+                                'message_id' => $row_id1,
+                                'image_description' => 'Photo Uploaded ' . date('F jS, Y'),
+                                'id' => Session::get('user_id')
+                            ];
+                            $image_id = DB::table('image')->insertGetId($image_data);
+                            $this->audit('Add');
+                        }
+                    }
                 }
                 if ($subtype == '2') {
                     $provider_data['id'] = $row_id1;
@@ -867,6 +916,22 @@ class CoreController extends Controller
                 $file = DB::table($table)->where($index, '=', $id)->first();
                 if (file_exists($file->filePath)) {
                     unlink($file->filePath);
+                }
+            }
+            if ($table == 'messaging') {
+                $images = DB::table('image')->where('message_id', '=', $id)->get();
+                if ($images->count()) {
+                    foreach ($images as $image) {
+                        DB::table('image')->where('image_id', '=', $image->image_id)->delete();
+                        $this->audit('Delete');
+                        $images1 = DB::table('image')->where('image_location', '=', $image->image_location)->first();
+                        if (!$images1) {
+                            // Clean up any unlinked images
+                            if (file_exists($image->image_location)) {
+                                unlink($image->image_location);
+                            }
+                        }
+                    }
                 }
             }
             DB::table($table)->where($index, '=', $id)->delete();
@@ -1007,6 +1072,20 @@ class CoreController extends Controller
             } else {
                 $data['panel_header'] = 'Edit Message';
             }
+            $dropdown_array = [
+               'items_button_icon' => 'fa-plus'
+            ];
+            $items1 = [];
+            $items1[] = [
+               'type' => 'item',
+               'label' => 'Add Photo/Image',
+               'icon' => 'fa-camera',
+               'url' => route('messaging_add_photo', [$id]),
+               'id' => 'nosh_messaging_add_photo'
+            ];
+            $dropdown_array['items'] = $items1;
+            $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
+            Session::put('message_photo_last_page', $request->fullUrl());
         }
         // Recipients
         if ($table == 'recipients') {
@@ -1092,6 +1171,37 @@ class CoreController extends Controller
             $form_array['action'] = route('core_action', ['table' => $table, 'action' => 'save', 'index' => $index, 'id' => $id, 'subtype' => $subtype]);
         }
         $data['content'] = $this->form_build($form_array);
+        if ($table == 'messaging') {
+            $images = DB::table('image')->where('message_id', '=', $id)->get();
+            $images1 = [];
+            if (Session::has('messaging_add_photo')) {
+                $images1 = Session::get('messaging_add_photo');
+            }
+            if ($images->count() || count($images1) > 0) {
+                $data['content'] .= '<br><h5>Images:</h5><div class="list-group gallery">';
+                if ($images->count()) {
+                    foreach ($images as $image) {
+                        $file_path1 = '/temp/' . time() . '_' . basename($image->image_location);
+                        $file_path = public_path() . $file_path1;
+                        copy($image->image_location, $file_path);
+                        $data['content'] .= '<div class="col-sm-4 col-xs-6 col-md-3 col-lg-3"><a class="thumbnail fancybox nosh-no-load" rel="ligthbox" href="' . url('/') . $file_path1 . '">';
+                        $data['content'] .= '<img class="img-responsive" alt="" src="' . url('/') . $file_path1 . '" />';
+                        $data['content'] .= '<div class="text-center"><small class="text-muted">' . basename($image->image_location) . '</small></div></a>';
+                        $data['content'] .= '<a href="' . route('messaging_delete_photo', [$image->image_id]) . '" class="nosh-photo-delete close-icon btn btn-danger"><i class="glyphicon glyphicon-remove"></i></a></div>';
+                    }
+                }
+                if (count($images1) > 0) {
+                    foreach ($images1 as $image1) {
+                        $file_path1 = str_replace(public_path(), '', $image1);
+                        $data['content'] .= '<div class="col-sm-4 col-xs-6 col-md-3 col-lg-3"><a class="thumbnail fancybox nosh-no-load" rel="ligthbox" href="' . url('/') . $file_path1 . '">';
+                        $data['content'] .= '<img class="img-responsive" alt="" src="' . url('/') . $file_path1 . '" />';
+                        $data['content'] .= '<div class="text-center"><small class="text-muted">' . $image1 . '</small></div></a>';
+                        $data['content'] .= '<a href="' . route('messaging_delete_photo', [$image1, 'session']) . '" class="nosh-photo-delete close-icon btn btn-danger"><i class="glyphicon glyphicon-remove"></i></a></div>';
+                    }
+                }
+                $data['content'] .= '</div>';
+            }
+        }
         $data['message_action'] = Session::get('message_action');
         Session::forget('message_action');
         if (Session::has('pid')) {
@@ -4408,6 +4518,73 @@ class CoreController extends Controller
         return view('core', $data);
     }
 
+    public function messaging_add_photo(Request $request, $message_id)
+    {
+        if ($request->isMethod('post')) {
+            $file = $request->file('file_input');
+            if ($message_id == '0') {
+                $directory = public_path() . '/temp/';
+                $new_name = time() . '_photo_' . Session::get('user_id') . "." . $file->getClientOriginalExtension();
+                if (Session::has('messaging_add_photo')) {
+                    $message_add_photo_arr = Session::get('messaging_add_photo');
+                } else {
+                    $message_add_photo_arr = [];
+                }
+                $file_path = $directory . $new_name;
+                $message_add_photo_arr[] = $file_path;
+                Session::put('messaging_add_photo', $message_add_photo_arr);
+            } else {
+                if (Session::has('pid')) {
+                    $pid = Session::get('pid');
+                    $directory = Session::get('documents_dir') . $pid . '/';
+                } else {
+                    $pid = '';
+                    $directory = Session::get('documents_dir');
+                }
+                $new_name = str_replace('.' . $file->getClientOriginalExtension(), '', $file->getClientOriginalName()) . '_' . time() . '.' . $file->getClientOriginalExtension();
+                $file_path = $directory . $new_name;
+                $data = [
+                    'image_location' => $file_path,
+                    'pid' => $pid,
+                    'message_id' => $message_id,
+                    'image_description' => 'Photo Uploaded ' . date('F jS, Y'),
+                    'id' => Session::get('user_id')
+                ];
+                $image_id = DB::table('image')->insertGetId($data);
+                $this->audit('Add');
+            }
+            $file->move($directory, $new_name);
+            return redirect(Session::get('message_photo_last_page'));
+        } else {
+            $data['panel_header'] = 'Upload A Photo/Image';
+            $data['document_upload'] = route('messaging_add_photo', [$message_id]);
+            $type_arr = ['png', 'jpg'];
+            $data['document_type'] = json_encode($type_arr);
+            $dropdown_array['default_button_text'] = '<i class="fa fa-chevron-left fa-fw fa-btn"></i>Back';
+            $dropdown_array['default_button_text_url'] = Session::get('message_photo_last_page');
+            $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
+            $data = array_merge($data, $this->sidebar_build('chart'));
+            $data['assets_js'] = $this->assets_js('document_upload');
+            $data['assets_css'] = $this->assets_css('document_upload');
+            return view('document_upload', $data);
+        }
+    }
+
+    public function messaging_delete_photo(Request $request, $id, $type='')
+    {
+        if ($type == 'session') {
+            $arr = Session::get('messaging_add_photo');
+            if (($key = array_search($id, $arr)) !== false) {
+                unset($arr[$key]);
+            }
+            Session::put('messaging_add_photo', $arr);
+        } else {
+            DB::table('image')->where('image_id', '=', $id)->delete();
+            $this->audit('Delete');
+        }
+        return redirect(Session::get('message_photo_last_page'));
+    }
+
     public function messaging_editdoc(Request $request, $id, $type)
     {
         ini_set('memory_limit','196M');
@@ -4757,8 +4934,22 @@ class CoreController extends Controller
             'pid' => $query->pid,
             'practice_id' => Session::get('practice_id')
         ];
-        DB::table('t_messages')->insert($data);
+        $t_messages_id = DB::table('t_messages')->insertGetId($data);
         $this->audit('Add');
+        $images = DB::table('image')->where('message_id', '=', $id)->get();
+        if ($images->count()) {
+            foreach ($images as $image) {
+                $image_data = [
+                    'image_location' => $image->image_location,
+                    'pid' => $query->pid,
+                    't_messages_id' => $t_messages_id,
+                    'image_description' => $image->image_description,
+                    'id' => $image->id
+                ];
+                DB::table('image')->insert($image_data);
+                $this->audit('Add');
+            }
+        }
         Session::put('message_action', 'Message exported to the chart as a telephone message');
         return redirect(Session::get('last_page'));
     }
@@ -4989,6 +5180,19 @@ class CoreController extends Controller
         $return .= '<div class="row"><div class="col-md-2" style="margin:10px"><b>From</b></div><div class="col-md-8" style="margin:10px">' . $user->displayname . '</div></div>';
         $return .= '<div class="row"><div class="col-md-2" style="margin:10px"><b>Message</b></div><div class="col-md-8" style="margin:10px">' . nl2br($query->body) . '</div></div>';
         $return .='</div>';
+        $images = DB::table('image')->where('message_id', '=', $id)->get();
+        if ($images->count()) {
+            $return .= '<br><h5>Images:</h5><div class="list-group gallery">';
+            foreach ($images as $image) {
+                $file_path1 = '/temp/' . time() . '_' . basename($image->image_location);
+                $file_path = public_path() . $file_path1;
+                copy($image->image_location, $file_path);
+                $return .= '<div class="col-sm-4 col-xs-6 col-md-3 col-lg-3"><a class="thumbnail fancybox nosh-no-load" rel="ligthbox" href="' . url('/') . $file_path1 . '">';
+                $return .= '<img class="img-responsive" alt="" src="' . url('/') . $file_path1 . '" />';
+                $return .= '<div class="text-center"><small class="text-muted">' . basename($image->image_location) . '</small></div></a>';
+            }
+            $return .= '</div>';
+        }
         $dropdown_array = [
             'default_button_text' => '<i class="fa fa-chevron-left fa-fw fa-btn"></i>Back',
             'default_button_text_url' => Session::get('last_page')
@@ -8074,7 +8278,7 @@ class CoreController extends Controller
 
     public function users(Request $request, $type='2', $active='1')
     {
-        if (Session::get('group_id') !== 1) {
+        if (Session::get('group_id') != '1') {
             Session::put('message_action', 'Error - You are not allowed to manage users');
             return redirect()->route('dashboard');
         }

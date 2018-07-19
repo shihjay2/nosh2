@@ -131,7 +131,7 @@ class InstallController extends Controller {
             return redirect()->route('dashboard');
         }
         // Tag version number for baseline prior to updating system in the future
-        if (file_exists(base_path() . '/.version')) {
+        if (!File::exists(base_path() . "/.version")) {
             // First time after install
             $result = $this->github_all();
             File::put(base_path() . '/.version', $result[0]['sha']);
@@ -536,7 +536,7 @@ class InstallController extends Controller {
         }
     }
 
-public function install_fix(Request $request)
+    public function install_fix(Request $request)
     {
         if ($request->isMethod('post')) {
             $this->validate($request, [
@@ -597,6 +597,177 @@ public function install_fix(Request $request)
             $data['assets_css'] = $this->assets_css();
             return view('core', $data);
         }
+    }
+
+    public function pnosh_install(Request $request)
+    {
+        $query = DB::table('practiceinfo')->first();
+        if ($query) {
+            return 'Error - Already installed';
+        }
+        if (!File::exists(base_path() . '/.patientcentric')) {
+            return 'Error - Not pNOSH';
+        }
+        // Tag version number for baseline prior to updating system in the future
+        if (!File::exists(base_path() . "/.version")) {
+            // First time after install
+            $result = $this->github_all();
+            File::put(base_path() . '/.version', $result[0]['sha']);
+        }
+        // $this->validate($request, [
+        //     'password' => 'min:4',
+        //     'confirm_password' => 'min:4|same:password',
+        // ]);
+        $username = $request->input('username');
+        $password = substr_replace(Hash::make($request->input('password')),"$2a",0,3);
+        $email = $request->input('email');
+        $practice_name = "NOSH for Patient: " . $request->input('firstname') . ' ' . $request->input('lastname');
+        $street_address1 = $request->input('address');
+        $street_address2 = '';
+        $phone = '';
+        $fax = '';
+        $patient_centric = 'y';
+        $city = $request->input('city');
+        $state = $request->input('state');
+        $zip = $request->input('zip');
+        $documents_dir = '/noshdocuments/';
+        // Insert Administrator
+        $data1 = [
+            'username' => $username,
+            'password' => $password,
+            'email' => $email,
+            'group_id' => '1',
+            'displayname' => 'Administrator',
+            'active' => '1',
+            'practice_id' => '1'
+        ];
+        $user_id = DB::table('users')->insertGetId($data1);
+        $this->audit('Add');
+        // Insert practice
+        $data2 = [
+            'practice_name' => $practice_name,
+            'street_address1' => $street_address1,
+            'street_address2' => $street_address2,
+            'city' => $city,
+            'state' => $state,
+            'zip' => $zip,
+            'phone' => $phone,
+            'fax' => $fax,
+            'email' => $email,
+            'documents_dir' => $documents_dir,
+            'fax_type' => '',
+            'vivacare' => '',
+            'version' => '2.0.0',
+            'active' => 'Y',
+            'patient_centric' => $patient_centric
+        ];
+        DB::table('practiceinfo')->insert($data2);
+        $this->audit('Add');
+        // Insert patient
+        $dob = date('Y-m-d', strtotime($request->input('DOB')));
+        $displayname = $request->input('firstname') . " " . $request->input('lastname');
+        $patient_data = [
+            'lastname' => $request->input('lastname'),
+            'firstname' => $request->input('firstname'),
+            'DOB' => $dob,
+            'sex' => $request->input('gender'),
+            'active' => '1',
+            'sexuallyactive' => 'no',
+            'tobacco' => 'no',
+            'pregnant' => 'no',
+            'address' => $street_address1,
+            'city' => $city,
+            'state' => $state,
+            'zip' => $zip
+        ];
+        $pid = DB::table('demographics')->insertGetId($patient_data);
+        $this->audit('Add');
+        $patient_data1 = [
+            'billing_notes' => '',
+            'imm_notes' => '',
+            'pid' => $pid,
+            'practice_id' => '1'
+        ];
+        DB::table('demographics_notes')->insert($patient_data1);
+        $this->audit('Add');
+        $patient_data2 = [
+            'username' => $request->input('pt_username'),
+            'firstname' => $request->input('firstname'),
+            'middle' => '',
+            'lastname' => $request->input('lastname'),
+            'title' => '',
+            'displayname' => $displayname,
+            'email' => $request->input('email'),
+            'group_id' => '100',
+            'active'=> '1',
+            'practice_id' => '1',
+            'password' => $this->gen_uuid()
+        ];
+        $patient_user_id = DB::table('users')->insertGetId($patient_data2);
+        $this->audit('Add');
+        $patient_data3 = [
+            'pid' => $pid,
+            'practice_id' => '1',
+            'id' => $patient_user_id
+        ];
+        DB::table('demographics_relate')->insert($patient_data3);
+        $this->audit('Add');
+        $directory = $documents_dir . $pid;
+        mkdir($directory, 0775);
+        $mail_arr = [
+            'MAIL_DRIVER' => 'mailgun',
+            'MAILGUN_DOMAIN' => 'mg.hieofone.org',
+            'MAILGUN_SECRET' => $request->input('mailgun_secret'),
+            'MAIL_HOST' => '',
+            'MAIL_PORT' => '',
+            'MAIL_ENCRYPTION' => '',
+            'MAIL_USERNAME' => '',
+            'MAIL_PASSWORD' => '',
+            'GOOGLE_KEY' => '',
+            'GOOGLE_SECRET' => '',
+            'GOOGLE_REDIRECT_URI' => ''
+        ];
+        $this->changeEnv($mail_arr);
+        // Insert groups
+        $groups_data[] = [
+            'id' => '1',
+            'title' => 'admin',
+            'description' => 'Administrator'
+        ];
+        $groups_data[] = [
+            'id' => '2',
+            'title' => 'provider',
+            'description' => 'Provider'
+        ];
+        $groups_data[] = [
+            'id' => '3',
+            'title' => 'assistant',
+            'description' => 'Assistant'
+        ];
+        $groups_data[] = [
+            'id' => '4',
+            'title' => 'billing',
+            'description' => 'Billing'
+        ];
+        $groups_data[] = [
+            'id' => '100',
+            'title' => 'patient',
+            'description' => 'Patient'
+        ];
+        foreach ($groups_data as $group) {
+            DB::table('groups')->insert($group);
+            $this->audit('Add');
+        }
+        // Insert default calendar class
+        $calendar = [
+            'visit_type' => 'Closed',
+            'classname' => 'colorblack',
+            'active' => 'y',
+            'practice_id' => '1'
+        ];
+        DB::table('calendar')->insert($calendar);
+        $this->audit('Add');
+        return 'Success';
     }
 
     public function prescription_pharmacy_view(Request $request, $id, $ret='')
@@ -1248,5 +1419,124 @@ public function install_fix(Request $request)
 
     public function test1(Request $request)
     {
+        $data['panel_header'] = 'NOSH ChartingSystem Installation';
+        $items[] = [
+            'name' => 'username',
+            'label' => 'Administrator Username',
+            'type' => 'text',
+            'required' => true,
+            'default_value' => 'admin'
+        ];
+        $items[] = [
+            'name' => 'password',
+            'label' => 'Administrator Password',
+            'type' => 'password',
+            'required' => true,
+            'default_value' => null
+        ];
+        $items[] = [
+            'name' => 'confirm_password',
+            'label' => 'Confirm Password',
+            'type' => 'password',
+            'required' => true,
+            'default_value' => null
+        ];
+        $items[] = [
+            'name' => 'email',
+            'label' => 'Email',
+            'type' => 'email',
+            'required' => true,
+            'default_value' => null
+        ];
+        // if ($type == 'patient') {
+            $items[] = [
+                'name' => 'pt_username',
+                'label' => 'Portal Username',
+                'type' => 'text',
+                'required' => true,
+                'default_value' => null
+            ];
+            $items[] = [
+                'name' => 'lastname',
+                'label' => 'Last Name',
+                'type' => 'text',
+                'required' => true,
+                'default_value' => null
+            ];
+            $items[] = [
+                'name' => 'firstname',
+                'label' => 'First Name',
+                'type' => 'text',
+                'required' => true,
+                'default_value' => null
+            ];
+            $items[] = [
+                'name' => 'DOB',
+                'label' => 'Date of Birth',
+                'type' => 'date',
+                'required' => true,
+                'default_value' => null
+            ];
+            $items[] = [
+                'name' => 'gender',
+                'label' => 'Gender',
+                'type' => 'select',
+                'select_items' => $this->array_gender(),
+                'required' => true,
+                'default_value' => null
+            ];
+            $items[] = [
+                'name' => 'address',
+                'label' => 'Street Address',
+                'type' => 'text',
+                'required' => true,
+                'default_value' => null
+            ];
+
+        $items[] = [
+            'name' => 'city',
+            'label' => 'City',
+            'type' => 'text',
+            'required' => true,
+            'default_value' => null
+        ];
+        $items[] = [
+            'name' => 'state',
+            'label' => 'State',
+            'type' => 'select',
+            'select_items' => $this->array_states(),
+            'required' => true,
+            'default_value' => null
+        ];
+        $items[] = [
+            'name' => 'zip',
+            'label' => 'Zip',
+            'type' => 'text',
+            'required' => true,
+            'default_value' => null
+        ];
+        
+        $documents_dir = '/noshdocuments/';
+        if (file_exists(base_path() . '/.noshdir')) {
+            $documents_dir = trim(File::get(base_path() . '/.noshdir'));
+        }
+        $items[] = [
+            'name' => 'documents_dir',
+            'label' => 'Documents Directory',
+            'type' => 'text',
+            'required' => true,
+            'default_value' => $documents_dir
+        ];
+        $form_array = [
+            'form_id' => 'install_form',
+            'action' => route('install', ['patient']),
+            'items' => $items,
+            'save_button_label' => 'Install'
+        ];
+        $data['content'] = '<p>Please fill out the entries to complete the installation of NOSH ChartingSystem.</p><p>You will need to establish a Google Gmail account to be able to send e-mail from the system for patient appointment reminders, non-Protected Health Information messages, and faxes.</p>';
+        $data['content'] .= $this->form_build($form_array);
+        $data['assets_js'] = $this->assets_js();
+        $data['assets_css'] = $this->assets_css();
+        return view('core', $data);
     }
 }

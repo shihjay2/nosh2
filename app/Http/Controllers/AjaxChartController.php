@@ -174,6 +174,24 @@ class AjaxChartController extends Controller
         return $message;
     }
 
+    public function t_messaging_session(Request $request)
+    {
+        $arr = [
+            't_messages_subject' => $request->input('t_messages_subject'),
+            't_messages_message' => $request->input('t_messages_message'),
+            't_messages_dos' => $request->input('t_messages_dos'),
+            't_messages_provider' => $request->input('t_messages_provider'),
+            't_messages_signed' => $request->input('t_messages_signed'),
+            't_messages_to' => $request->input('t_messages_to'),
+            't_messages_from' => $request->input('t_messages_from'),
+            'pid' => $request->input('pid'),
+            'practice_id' => $request->input('practice_id'),
+            't_messages_id' => $request->input('t_messages_id')
+        ];
+        Session::put('session_t_message', $arr);
+        return 'OK T-message' . $arr['t_messages_id'];
+    }
+
     public function test_reminder()
     {
         $row = DB::table('demographics')->where('pid', '=', Session::get('pid'))->first();

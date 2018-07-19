@@ -730,12 +730,6 @@
             }
         });
 
-        // Images
-        $('.nosh-image').css('cursor', 'pointer').click(function(){
-            var id = $(this).attr('nosh-data-src');
-            window.location = noshdata.edit_image + '/' + id;
-        });
-
         // Vital Signs
         $('.nosh-graph').css('cursor', 'pointer').click(function(){
             var type = $(this).attr('data-nosh-vitals-type');

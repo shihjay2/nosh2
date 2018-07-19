@@ -105,6 +105,24 @@ class AjaxCoreController extends Controller
         return 'OK';
     }
 
+    public function messaging_session(Request $request)
+    {
+        $arr = [
+            'pid' => $request->input('pid'),
+            'patient_name' => $request->input('patient_name'),
+            'message_to' => $request->input('message_to'),
+            'cc' => $request->input('cc'),
+            'message_from' => $request->input('message_from'),
+            'subject' => $request->input('subject'),
+            'body' => $request->input('body'),
+            't_messages_id' => $request->input('t_messages_id'),
+            'practice_id' => $request->input('practice_id'),
+            'message_id' => $request->input('message_id')
+        ];
+        Session::put('session_message', $arr);
+        return 'OK';
+    }
+
     public function notification(Request $request)
     {
         if (Session::has('notifications')) {

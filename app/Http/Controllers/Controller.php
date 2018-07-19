@@ -2614,7 +2614,8 @@ class Controller extends BaseController
             '/assets/css/nosh-timeline.css',
             '/assets/css/bootstrap-select.min.css',
             '/assets/css/bootstrap-tagsinput.css',
-            '/assets/css/bootstrap-datetimepicker.css'
+            '/assets/css/bootstrap-datetimepicker.css',
+            '/assets/css/jquery.fancybox.css'
         ];
         if ($type == 'chart') {
         }
@@ -2651,7 +2652,8 @@ class Controller extends BaseController
             '/assets/js/bootstrap-select.min.js',
             '/assets/js/bootstrap-datetimepicker.min.js',
             '/assets/js/jquery.fileDownload.js',
-            '/assets/js/jstz-1.0.4.min.js'
+            '/assets/js/jstz-1.0.4.min.js',
+            '/assets/js/jquery.fancybox.js'
         ];
         if ($type == 'chart') {
             $return[] = '/assets/js/bluebutton.js';
@@ -3745,6 +3747,7 @@ class Controller extends BaseController
     *            'type' => 'item', or separator or header or item
     *            'label' => 'Practice NPI', needed for item or header
     *            'icon' => 'fa-stethoscope',
+    *            'id' => 'id of element',
     *            'url' => 'URL'
     *        ],
     *       [
@@ -3764,7 +3767,11 @@ class Controller extends BaseController
                 if (isset($dropdown_array['default_button_text'])) {
                     $return .= '<a href="' . $dropdown_array['default_button_text_url'] . '" class="btn btn-primary btn-sm">' . $dropdown_array['default_button_text'] . '</a><a href="' . $dropdown_array['items'][0]['url'] . '" class="btn btn-primary btn-sm"><i class="fa ' . $dropdown_array['items'][0]['icon'] . ' fa-fw fa-btn"></i>' . $dropdown_array['items'][0]['label'] . '</a></div>';
                 } else {
-                    $return .= '<a href="' . $dropdown_array['items'][0]['url'] . '" class="btn btn-primary btn-sm"><i class="fa ' . $dropdown_array['items'][0]['icon'] . ' fa-fw fa-btn"></i>' . $dropdown_array['items'][0]['label'] . '</a></div>';
+                    $return .= '<a href="' . $dropdown_array['items'][0]['url'] . '"';
+                    if (isset($dropdown_array['items'][0]['id'])) {
+                        $return .= ' id="' . $dropdown_array['items'][0]['id'] . '"';
+                    }
+                    $return .= ' class="btn btn-primary btn-sm"><i class="fa ' . $dropdown_array['items'][0]['icon'] . ' fa-fw fa-btn"></i>' . $dropdown_array['items'][0]['label'] . '</a></div>';
                 }
             } else {
                 if (isset($dropdown_array['default_button_text'])) {
@@ -3785,7 +3792,11 @@ class Controller extends BaseController
                         $return .= '<li class="dropdown-header">' . $row['label'] . '</li>';
                     }
                     if ($row['type'] == 'item') {
-                        $return .= '<li><a href="' . $row['url'] . '"><i class="fa ' . $row['icon'] . ' fa-fw fa-btn"></i>' . $row['label'] . '</a></li>';
+                        $return .= '<li><a href="' . $row['url'] . '"';
+                        if (isset($row['id'])) {
+                            $return .= ' id="' . $row['id'] . '"';
+                        }
+                        $return .= '><i class="fa ' . $row['icon'] . ' fa-fw fa-btn"></i>' . $row['label'] . '</a></li>';
                     }
                 }
                 $return .= '</ul></div>';
@@ -6857,62 +6868,84 @@ class Controller extends BaseController
                 $messaging['message_to'] = $new_arr['message_to'];
                 $messaging['patient_name'] = $new_arr['patient_name'];
             }
+            if (Session::has('session_message')) {
+                $new_arr = Session::get('session_message');
+                Session::forget('session_message');
+                unset($new_arr['message_id']);
+                $messaging = $new_arr;
+            }
         } else {
-            $message_to = null;
-            $cc = null;
-            $subject = $result->subject;
-            $body = $result->body;
-            $from = $result->message_from;
-            if ($result->message_to !== '' || $result->message_to !== null)  {
-                $message_to = explode(";", $result->message_to);
-            }
-            if ($result->cc !== '' || $result->cc !== null)  {
-                $cc = explode(";", $result->cc);
-            }
-            if ($subtype == 'reply') {
-                $user = DB::table('users')->where('id', '=', $result->message_from)->first();
-                $message_to[] = $user->displayname . ' (' . $user->id . ')';
-                $cc = null;
-                $from = Session::get('user_id');
-                $date = date('Y-m-d', $this->human_to_unix($result->date));
-                $subject = 'Re: ' . $result->subject;
-                $body = "\n\n" . 'On ' . $date . ', ' . $user->displayname . ' (' . $user->id . ')' . ' wrote:' . "\n---------------------------------\n" . $body;
-            }
-            if ($subtype == 'reply_all') {
-                $old_message_to = $message_to;
-                $curr_user = Session::get('displayname') . ' (' . Session::get('user_id') . ')';
-                foreach ($old_message_to as $old_message_k => $old_message_v) {
-                    if ($old_message_v ==  $curr_user) {
-                        unset($old_message_to[$old_message_k]);
+            $messaging = [];
+            if (Session::has('session_message')) {
+                $new_arr = Session::get('session_message');
+                Session::forget('session_message');
+                if ($subtype == '') {
+                    if ($new_arr['message_id'] == $id) {
+                        unset($new_arr['message_id']);
+                        $messaging = $new_arr;
                     }
+                } else {
+                    unset($new_arr['message_id']);
+                    $messaging = $new_arr;
                 }
-                $message_to = [];
-                $user = DB::table('users')->where('id', '=', $result->message_from)->first();
-                $message_to[] = $user->displayname . ' (' . $user->id . ')';
-                $message_to = array_merge($message_to, $old_message_to);
-                $from = Session::get('user_id');
-                $date = date('Y-m-d', $this->human_to_unix($result->date));
-                $subject = 'Re: ' . $result->subject;
-                $body = "\n\n" . 'On ' . $date . ', ' . $user->displayname . ' (' . $user->id . ')' . ' wrote:' . "\n---------------------------------\n" . $body;
             }
-            if ($subtype == 'forward') {
-                $from = Session::get('user_id');
+            if (count($messaging) == 0) {
                 $message_to = null;
                 $cc = null;
-                $subject = 'Fwd: ' . $result->subject;
-                $body = "\n\n" . '--------Forwarded Message--------' . "\n" . $body;
+                $subject = $result->subject;
+                $body = $result->body;
+                $from = $result->message_from;
+                if ($result->message_to !== '' || $result->message_to !== null)  {
+                    $message_to = explode(";", $result->message_to);
+                }
+                if ($result->cc !== '' || $result->cc !== null)  {
+                    $cc = explode(";", $result->cc);
+                }
+                if ($subtype == 'reply') {
+                    $user = DB::table('users')->where('id', '=', $result->message_from)->first();
+                    $message_to[] = $user->displayname . ' (' . $user->id . ')';
+                    $cc = null;
+                    $from = Session::get('user_id');
+                    $date = date('Y-m-d', $this->human_to_unix($result->date));
+                    $subject = 'Re: ' . $result->subject;
+                    $body = "\n\n" . 'On ' . $date . ', ' . $user->displayname . ' (' . $user->id . ')' . ' wrote:' . "\n---------------------------------\n" . $body;
+                }
+                if ($subtype == 'reply_all') {
+                    $old_message_to = $message_to;
+                    $curr_user = Session::get('displayname') . ' (' . Session::get('user_id') . ')';
+                    foreach ($old_message_to as $old_message_k => $old_message_v) {
+                        if ($old_message_v ==  $curr_user) {
+                            unset($old_message_to[$old_message_k]);
+                        }
+                    }
+                    $message_to = [];
+                    $user = DB::table('users')->where('id', '=', $result->message_from)->first();
+                    $message_to[] = $user->displayname . ' (' . $user->id . ')';
+                    $message_to = array_merge($message_to, $old_message_to);
+                    $from = Session::get('user_id');
+                    $date = date('Y-m-d', $this->human_to_unix($result->date));
+                    $subject = 'Re: ' . $result->subject;
+                    $body = "\n\n" . 'On ' . $date . ', ' . $user->displayname . ' (' . $user->id . ')' . ' wrote:' . "\n---------------------------------\n" . $body;
+                }
+                if ($subtype == 'forward') {
+                    $from = Session::get('user_id');
+                    $message_to = null;
+                    $cc = null;
+                    $subject = 'Fwd: ' . $result->subject;
+                    $body = "\n\n" . '--------Forwarded Message--------' . "\n" . $body;
+                }
+                $messaging = [
+                    'pid' => $result->pid,
+                    'patient_name' => $result->patient_name,
+                    'message_to' => $message_to,
+                    'cc' => $cc,
+                    'message_from' => $from,
+                    'subject' => $subject,
+                    'body' => $body,
+                    't_messages_id' => $result->t_messages_id,
+                    'practice_id' => $result->practice_id
+                ];
             }
-            $messaging = [
-                'pid' => $result->pid,
-                'patient_name' => $result->patient_name,
-                'message_to' => $message_to,
-                'cc' => $cc,
-                'message_from' => $from,
-                'subject' => $subject,
-                'body' => $body,
-                't_messages_id' => $result->t_messages_id,
-                'practice_id' => $result->practice_id
-            ];
         }
         $items[] = [
             'name' => 'pid',
@@ -8695,18 +8728,35 @@ class Controller extends BaseController
                 'pid' => Session::get('pid'),
                 'practice_id' => Session::get('practice_id')
             ];
+            if (Session::has('session_t_message')) {
+                $new_arr = Session::get('session_t_message');
+                Session::forget('session_t_message');
+                unset($new_arr['t_messages_id']);
+                $message = $new_arr;
+            }
         } else {
-            $message = [
-                't_messages_subject' => $result->t_messages_subject,
-                't_messages_message' => $result->t_messages_message,
-                't_messages_dos' => date('Y-m-d', $this->human_to_unix($result->t_messages_dos)),
-                't_messages_provider' => $result->t_messages_provider,
-                't_messages_signed' => $result->t_messages_signed,
-                't_messages_to' => $result->t_messages_to,
-                't_messages_from' => $result->t_messages_from,
-                'pid' => $result->pid,
-                'practice_id' => $result->practice_id
-            ];
+            $message = [];
+            if (Session::has('session_t_message')) {
+                $new_arr = Session::get('session_t_message');
+                Session::forget('session_t_message');
+                if ($new_arr['t_messages_id'] == $id) {
+                    unset($new_arr['t_messages_id']);
+                    $message = $new_arr;
+                }
+            }
+            if (count($message) == 0) {
+                $message = [
+                    't_messages_subject' => $result->t_messages_subject,
+                    't_messages_message' => $result->t_messages_message,
+                    't_messages_dos' => date('Y-m-d', $this->human_to_unix($result->t_messages_dos)),
+                    't_messages_provider' => $result->t_messages_provider,
+                    't_messages_signed' => $result->t_messages_signed,
+                    't_messages_to' => $result->t_messages_to,
+                    't_messages_from' => $result->t_messages_from,
+                    'pid' => $result->pid,
+                    'practice_id' => $result->practice_id
+                ];
+            }
         }
         $items[] = [
             'name' => 't_messages_subject',

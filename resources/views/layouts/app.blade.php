@@ -606,7 +606,6 @@
             'delete_event': '<?php echo url("delete_event"); ?>',
             'document_delete': '<?php echo url("document_delete"); ?>',
             'drag_event': '<?php echo url("drag_event"); ?>',
-            'edit_image': '<?php echo url("encounter_edit_image"); ?>',
             'education': '<?php echo url("education"); ?>',
             'event_encounter': '<?php echo url("event_encounter"); ?>',
             'get_appointments': '<?php echo url("get_appointments"); ?>',
@@ -615,6 +614,7 @@
             'last_page': '<?php echo url("last_page"); ?>',
             'login_uport': '<?php echo route("login_uport"); ?>',
             'logout_url': '<?php echo url("logout"); ?>',
+            'messaging_session': '<?php echo url("messaging_session"); ?>',
             'notification': '<?php echo url("notification"); ?>',
             'patient_url': '<?php echo url("patient"); ?>',
             'practice_logo': '<?php echo url("practice_logo_login"); ?>',
@@ -640,6 +640,7 @@
             'template_normal_change': '<?php echo url("template_normal_change"); ?>',
             'template_remove': '<?php echo url("template_remove"); ?>',
             'test_reminder': '<?php echo url("test_reminder"); ?>',
+            't_messaging_session': '<?php echo url("t_messaging_session"); ?>',
             'treedata': '<?php echo url("treedata"); ?>',
             'update_cpt': '<?php echo url("update_cpt"); ?>',
             'vitals_graph': '<?php echo url("encounter_vitals_chart"); ?>',
@@ -1084,6 +1085,10 @@
         $(document).ready(function() {
             var tz = jstz.determine();
             $.cookie('nosh_tz', tz.name(), { path: '/' });
+            $(".fancybox").fancybox({
+                openEffect: "none",
+                closeEffect: "none"
+            });
             $('.nosh-result-list').css('cursor', 'pointer').click(function() {
                 var href = $(this).find('.pull-right').find('a').first().attr('href');
                 $('#modaltext').text('{{ trans('nosh.loading') }}...');
@@ -1144,6 +1149,26 @@
             });
             $('a').css('cursor', 'pointer').on('click', function(event) {
                 if ($(this).attr('href') !== undefined) {
+                    if ($(this).attr('id') == 'nosh_messaging_add_photo' || $(this).hasClass('nosh-photo-delete') || $(this).hasClass('nosh-photo-delete-t-message') || $(this).attr('id') == 'nosh_t_message_add_action' || $(this).attr('id') == 'nosh_t_message_add_photo') {
+                        event.preventDefault();
+                        var formData = $('#messaging_form').serialize();
+                        var formUrl = noshdata.messaging_session;
+                        if ($(this).hasClass('nosh-photo-delete-t-message') || $(this).attr('id') == 'nosh_t_message_add_action' || $(this).attr('id') == 'nosh_t_message_add_photo') {
+                            formData = $('#t_messages_form').serialize();
+                            formUrl = noshdata.t_messaging_session;
+                        }
+                        var action = $(this).attr('href');
+                        $('#loadingModal').modal('show');
+                        $.ajax({
+                            type: 'POST',
+                            url: formUrl,
+                            data: formData,
+                            encode: true,
+                            async: false
+                        }).done(function(response) {
+                            window.location = action;
+                        });
+                    }
                     if ($(this).attr('href').search('#') == -1 && $(this).hasClass('nosh-no-load') === false) {
                         $('#modaltext').text('{{ trans('nosh.loading') }}...');
                         $('#loadingModal').modal('show');

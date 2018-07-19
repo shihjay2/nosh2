@@ -2234,11 +2234,26 @@ class ChartController extends Controller {
             } else {
                 $data['panel_header'] = 'Edit Telephone Message';
                 $dropdown_array = [
-                    'default_button_text' => 'Add Action',
-                    'default_button_text_url' => route('action_edit', [$table, $index, $id, 'new']),
-                    'default_button_id' => 'add_action'
+                    'items_button_icon' => 'fa-bars'
                 ];
+                $items1 = [];
+                $items1[] = [
+                    'type' => 'item',
+                    'label' => 'Add Action',
+                    'icon' => 'fa-plus',
+                    'url' => route('action_edit', [$table, $index, $id, 'new']),
+                    'id' => 'nosh_t_message_add_action'
+                ];
+                $items1[] = [
+                    'type' => 'item',
+                    'label' => 'Add Photo/Image',
+                    'icon' => 'fa-camera',
+                    'url' => route('encounter_add_photo', [$id, 't_messages']),
+                    'id' => 'nosh_t_message_add_photo'
+                ];
+                $dropdown_array['items'] = $items1;
                 $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
+                Session::put('t_messages_photo_last_page', $request->fullUrl());
                 Session::put('action_redirect', $request->fullUrl());
             }
         }
@@ -2312,6 +2327,21 @@ class ChartController extends Controller {
         if ($table == 't_messages') {
             $data['content'] = $this->actions_build($table, $index, $id);
             $data['content'] .= $this->form_build($form_array);
+            $images = DB::table('image')->where('t_messages_id', '=', $id)->get();
+            if ($images->count()) {
+                $data['content'] .= '<br><h5>Images:</h5><div class="list-group gallery">';
+                foreach ($images as $image) {
+                    $file_path1 = '/temp/' . time() . '_' . basename($image->image_location);
+                    $file_path = public_path() . $file_path1;
+                    copy($image->image_location, $file_path);
+                    $data['content'] .= '<div class="col-sm-4 col-xs-6 col-md-3 col-lg-3"><a class="thumbnail fancybox nosh-no-load" rel="ligthbox" href="' . url('/') . $file_path1 . '">';
+                    $data['content'] .= '<img class="img-responsive" alt="" src="' . url('/') . $file_path1 . '" />';
+                    $data['content'] .= '<div class="text-center"><small class="text-muted">' . $image->image_description . '</small></div></a>';
+                    $data['content'] .= '<a href="' . route('encounter_edit_image', [$image->image_id, $id]) . '" class="nosh-photo-delete-t-message edit-icon btn btn-success"><i class="glyphicon glyphicon-pencil"></i></a>';
+                    $data['content'] .= '<a href="' . route('encounter_delete_photo', [$image->image_id]) . '" class="nosh-photo-delete-t-message close-icon btn btn-danger"><i class="glyphicon glyphicon-remove"></i></a></div>';
+                }
+                $data['content'] .= '</div>';
+            }
         } else {
             $data['content'] = $this->form_build($form_array);
         }
@@ -3326,41 +3356,19 @@ class ChartController extends Controller {
             }
             $images = DB::table('image')->where('eid', '=', Session::get('eid'))->get();
             if ($images->count()) {
-                $return .= '<div id="images_carousel" class="carousel slide" data-ride="carousel"><ol class="carousel-indicators">';
-                $i = 0;
-                $image_arr = [];
+                $return .= '<div class="list-group gallery">';
                 foreach ($images as $image) {
-                    $return .= '<li data-target="#images_carousel" data-slide-to="' . $i . '"';
-                    $item_active = 'item';
-                    if ($i == 0) {
-                        $return .= ' class="active"';
-                        $item_active = 'item active';
-                    }
-                    $return .= '></li>';
-                    $directory = $practice->documents_dir . Session::get('pid') . "/";
-                    $new_directory = public_path() . '/temp/' . time() . '_';
-                    $new_directory1 = '/temp/' . time() . '_';
-                    $file_path = str_replace($directory, $new_directory, $image->image_location);
-                    $file_path1 = str_replace($directory, $new_directory1, $image->image_location);
+                    $file_path1 = '/temp/' . time() . '_' . basename($image->image_location);
+                    $file_path = public_path() . $file_path1;
                     copy($image->image_location, $file_path);
-                    $image_arr[] = [
-                        'path' => HTML::image($file_path1, 'Image', array('class' => 'nosh-image', 'nosh-data-src' => $image->image_id, 'style' => 'min-width:100%;')),
-                        'description' => $image->image_description,
-                        'active' => $item_active,
-                        'src' => $image->image_id
-                    ];
-                    $i++;
+                    $return .= '<div class="col-sm-4 col-xs-6 col-md-3 col-lg-3"><a class="thumbnail fancybox nosh-no-load" rel="ligthbox" href="' . url('/') . $file_path1 . '">';
+                    $return .= '<img class="img-responsive" alt="" src="' . url('/') . $file_path1 . '" />';
+                    $return .= '<div class="text-center"><small class="text-muted">' . $image->image_description . '</small></div></a>';
+                    $return .= '<a href="' . route('encounter_edit_image', [$image->image_id]) . '" class="edit-icon btn btn-success"><i class="glyphicon glyphicon-pencil"></i></a>';
+                    $return .= '<a href="' . route('encounter_delete_photo', [$image->image_id]) . '" class="close-icon btn btn-danger"><i class="glyphicon glyphicon-remove"></i></a></div>';
                 }
-                $return .= '</ol><div class="carousel-inner" role="listbox">';
-                foreach ($image_arr as $image_item) {
-                    $return .= '<div class="' . $image_item['active'] .'" style="height:130px;overflow:hidden;">' . $image_item['path'];
-                    // $return .= '</div>';
-                    $return .= '<div class="carousel-caption nosh-image" nosh-data-src="' . $image_item['src'] . '"><p>' . $image_item['description'] . '</p></div></div>';
-                }
-                $return .= '</div><a class="left carousel-control" href="#images_carousel" role="button" data-slide="prev"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span><span class="sr-only">Previous</span></a>';
-                $return .= '<a class="right carousel-control" href="#images_carousel" role="button" data-slide="next"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span><span class="sr-only">Next</span></a></div><br>';
+                $return .= '</div>';
             }
-            // $return .= $this->result_build($images_list_array, 'images_list', true);
             $pe_val = null;
             $pe = DB::table('pe')->where('eid', '=', $eid)->first();
             if ($pe) {
@@ -3823,7 +3831,7 @@ class ChartController extends Controller {
         }
     }
 
-    public function encounter_add_photo(Request $request, $eid)
+    public function encounter_add_photo(Request $request, $eid, $type='')
     {
         if ($request->isMethod('post')) {
             $pid = Session::get('pid');
@@ -3835,22 +3843,38 @@ class ChartController extends Controller {
             $data = [
                 'image_location' => $file_path,
                 'pid' => $pid,
-                'eid' => $eid,
                 'image_description' => 'Photo Uploaded ' . date('F jS, Y'),
                 'id' => Session::get('user_id'),
                 'encounter_provider' => Session::get('displayname')
             ];
+            if ($type == '') {
+                $data['eid'] = $eid;
+            } else {
+                $data['t_messages_id'] = $eid;
+            }
             $image_id = DB::table('image')->insertGetId($data);
             $this->audit('Add');
-            return redirect()->route('encounter_edit_image', [$image_id]);
+            if ($type == '') {
+                return redirect()->route('encounter_edit_image', [$image_id]);
+            } else {
+                return redirect()->route('encounter_edit_image', [$image_id, $eid]);
+            }
         } else {
             $data['encounters_active'] = true;
             $data['panel_header'] = 'Upload A Photo';
-            $data['document_upload'] = route('encounter_add_photo', [$eid]);
+            if ($type == '') {
+                $data['document_upload'] = route('encounter_add_photo', [$eid]);
+            } else {
+                $data['document_upload'] = route('encounter_add_photo', [$eid, $type]);
+            }
             $type_arr = ['png', 'jpg'];
             $data['document_type'] = json_encode($type_arr);
             $dropdown_array['default_button_text'] = '<i class="fa fa-chevron-left fa-fw fa-btn"></i>Back';
-            $dropdown_array['default_button_text_url'] = Session::get('last_page');
+            if ($type == '') {
+                $dropdown_array['default_button_text_url'] = Session::get('last_page');
+            } else {
+                $dropdown_array['default_button_text_url'] = Session::get('t_messages_photo_last_page');
+            }
             $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
             $data = array_merge($data, $this->sidebar_build('chart'));
             $data['assets_js'] = $this->assets_js('document_upload');
@@ -4283,6 +4307,13 @@ class ChartController extends Controller {
         return redirect()->route('patient');
     }
 
+    public function encounter_delete_photo(Request $request, $id)
+    {
+        DB::table('image')->where('image_id', '=', $id)->delete();
+        $this->audit('Delete');
+        return redirect(Session::get('last_page'));
+    }
+
     public function encounter_details(Request $request, $eid)
     {
         $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
@@ -4640,7 +4671,7 @@ class ChartController extends Controller {
         }
     }
 
-    public function encounter_edit_image(Request $request, $id)
+    public function encounter_edit_image(Request $request, $id, $t_messages_id='')
     {
         $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
         $directory = $practice->documents_dir . Session::get('pid') . "/";
@@ -4660,11 +4691,15 @@ class ChartController extends Controller {
             $data = [
                 'image_location' => $file_path,
                 'pid' => Session::get('pid'),
-                'eid' => Session::get('eid'),
                 'image_description' => $request->input('image_description'),
                 'id' => Session::get('user_id'),
                 'encounter_provider' => Session::get('displayname')
             ];
+            if ($t_messages_id !== '') {
+                $data['t_messages_id'] = $t_messages_id;
+            } else {
+                $data['eid'] = Session::get('eid');
+            }
             if ($image_id == '') {
                 DB::table('image')->insert($data);
                 $this->audit('Add');
@@ -4674,7 +4709,11 @@ class ChartController extends Controller {
                 $this->audit('Update');
                 Session::put('message_action', 'Image updated');
             }
-            return redirect(Session::get('last_page'));
+            if ($t_messages_id !== '') {
+                return redirect(Session::get('t_messages_photo_last_page'));
+            } else {
+                return redirect(Session::get('last_page'));
+            }
         } else {
             if ($id == '0') {
                 $patient = DB::table('demographics')->where('pid', '=', Session::get('pid'))->first();
@@ -4770,17 +4809,30 @@ class ChartController extends Controller {
                 'items' => $items,
                 'save_button_label' => 'Save'
             ];
+            if ($t_messages_id !== '') {
+                $form_array['action'] = route('encounter_edit_image', [$id, $t_messages_id]);
+            }
             $data['content'] = $this->form_build($form_array);
             $data['encounters_active'] = true;
             $data['panel_header'] = 'Annotate Image';
             $dropdown_array = [];
             $items = [];
-            $items[] = [
-                'type' => 'item',
-                'label' => 'Back',
-                'icon' => 'fa-chevron-left',
-                'url' => Session::get('last_page')
-            ];
+            if ($t_messages_id !== '') {
+                $items[] = [
+                    'type' => 'item',
+                    'label' => 'Back',
+                    'icon' => 'fa-chevron-left',
+                    'url' => Session::get('t_messages_photo_last_page')
+                ];
+
+            } else {
+                $items[] = [
+                    'type' => 'item',
+                    'label' => 'Back',
+                    'icon' => 'fa-chevron-left',
+                    'url' => Session::get('last_page')
+                ];
+            }
             $dropdown_array['items'] = $items;
             $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
             $dropdown_array1 = [];
@@ -8383,6 +8435,19 @@ class ChartController extends Controller {
         $return = '';
         $return .= '<div style="margin-bottom:15px;"><input type="text" id="encounter_tags" class="nosh-tags" value="' . implode(',', $tags_val_arr) . '" data-nosh-add-url="' . route('tag_save', ['t_messages_id', $t_messages_id]) . '" data-nosh-remove-url="' . route('tag_remove', ['t_messages_id', $t_messages_id]) . '" placeholder="Add Tags"/></div>';
         $return .= $this->t_messages_view($t_messages_id);
+        $images = DB::table('image')->where('t_messages_id', '=', $t_messages_id)->get();
+        if ($images->count()) {
+            $return .= '<br><h5>Images:</h5><div class="list-group gallery">';
+            foreach ($images as $image) {
+                $file_path1 = '/temp/' . time() . '_' . basename($image->image_location);
+                $file_path = public_path() . $file_path1;
+                copy($image->image_location, $file_path);
+                $return .= '<div class="col-sm-4 col-xs-6 col-md-3 col-lg-3"><a class="thumbnail fancybox nosh-no-load" rel="ligthbox" href="' . url('/') . $file_path1 . '">';
+                $return .= '<img class="img-responsive" alt="" src="' . url('/') . $file_path1 . '" />';
+                $return .= '<div class="text-center"><small class="text-muted">' . $image->image_description . '</small></div></a>';
+            }
+            $return .= '</div>';
+        }
         $dropdown_array = [];
         $dropdown_array['default_button_text'] = '<i class="fa fa-chevron-left fa-fw fa-btn"></i>Back';
         $dropdown_array['default_button_text_url'] = Session::get('last_page');
