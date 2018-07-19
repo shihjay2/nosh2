@@ -1217,6 +1217,7 @@ class InstallController extends Controller {
                     $url_hieofoneas = str_replace('/nosh', '/resources/' . $practice1->uma_client_id, URL::to('/'));
                     Session::put('url_hieofoneas', $url_hieofoneas);
                     setcookie("login_attempts", 0, time()+900, '/');
+                    Session::put('message_action', 'Resources registered to your Trustee Authorization Server.<br><a href="' . $open_id_url . '" target="_blank">View your consent table.');
                 }
             }
         }
@@ -1515,7 +1516,7 @@ class InstallController extends Controller {
             'required' => true,
             'default_value' => null
         ];
-        
+
         $documents_dir = '/noshdocuments/';
         if (file_exists(base_path() . '/.noshdir')) {
             $documents_dir = trim(File::get(base_path() . '/.noshdir'));
