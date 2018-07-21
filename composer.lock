@@ -987,16 +987,16 @@
         },
         {
             "name": "google/auth",
-            "version": "v1.3.0",
+            "version": "v1.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/google/google-auth-library-php.git",
-                "reference": "8f7c96146b2c62d3f4c6bbc4b5bb8a8e396b0b71"
+                "reference": "1af6b99470d73d61eb51e5c5265f1b51970606cf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/google/google-auth-library-php/zipball/8f7c96146b2c62d3f4c6bbc4b5bb8a8e396b0b71",
-                "reference": "8f7c96146b2c62d3f4c6bbc4b5bb8a8e396b0b71",
+                "url": "https://api.github.com/repos/google/google-auth-library-php/zipball/1af6b99470d73d61eb51e5c5265f1b51970606cf",
+                "reference": "1af6b99470d73d61eb51e5c5265f1b51970606cf",
                 "shasum": ""
             },
             "require": {
@@ -1030,7 +1030,7 @@
                 "google",
                 "oauth2"
             ],
-            "time": "2018-04-06T19:26:30+00:00"
+            "time": "2018-07-20T20:51:16+00:00"
         },
         {
             "name": "guzzle/guzzle",
@@ -1580,16 +1580,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v5.6.27",
+            "version": "v5.6.28",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "2fe661f2444410a576aa40054ad9b7fe0bb5cee5"
+                "reference": "40ba2ee0e61cb4bc3c9f1dab04908e6acf06b86f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/2fe661f2444410a576aa40054ad9b7fe0bb5cee5",
-                "reference": "2fe661f2444410a576aa40054ad9b7fe0bb5cee5",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/40ba2ee0e61cb4bc3c9f1dab04908e6acf06b86f",
+                "reference": "40ba2ee0e61cb4bc3c9f1dab04908e6acf06b86f",
                 "shasum": ""
             },
             "require": {
@@ -1715,7 +1715,7 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2018-07-10T13:47:01+00:00"
+            "time": "2018-07-17T14:15:36+00:00"
         },
         {
             "name": "laravel/socialite",
@@ -2465,16 +2465,16 @@
         },
         {
             "name": "nikic/php-parser",
-            "version": "v4.0.2",
+            "version": "v4.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "35b8caf75e791ba1b2d24fec1552168d72692b12"
+                "reference": "bd088dc940a418f09cda079a9b5c7c478890fb8d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/35b8caf75e791ba1b2d24fec1552168d72692b12",
-                "reference": "35b8caf75e791ba1b2d24fec1552168d72692b12",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/bd088dc940a418f09cda079a9b5c7c478890fb8d",
+                "reference": "bd088dc940a418f09cda079a9b5c7c478890fb8d",
                 "shasum": ""
             },
             "require": {
@@ -2512,37 +2512,33 @@
                 "parser",
                 "php"
             ],
-            "time": "2018-06-03T11:33:10+00:00"
+            "time": "2018-07-15T17:25:16+00:00"
         },
         {
             "name": "paragonie/random_compat",
-            "version": "v2.0.17",
+            "version": "v9.99.99",
             "source": {
                 "type": "git",
                 "url": "https://github.com/paragonie/random_compat.git",
-                "reference": "29af24f25bab834fcbb38ad2a69fa93b867e070d"
+                "reference": "84b4dfb120c6f9b4ff7b3685f9b8f1aa365a0c95"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/paragonie/random_compat/zipball/29af24f25bab834fcbb38ad2a69fa93b867e070d",
-                "reference": "29af24f25bab834fcbb38ad2a69fa93b867e070d",
+                "url": "https://api.github.com/repos/paragonie/random_compat/zipball/84b4dfb120c6f9b4ff7b3685f9b8f1aa365a0c95",
+                "reference": "84b4dfb120c6f9b4ff7b3685f9b8f1aa365a0c95",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.2.0"
+                "php": "^7"
             },
             "require-dev": {
-                "phpunit/phpunit": "4.*|5.*"
+                "phpunit/phpunit": "4.*|5.*",
+                "vimeo/psalm": "^1"
             },
             "suggest": {
                 "ext-libsodium": "Provides a modern crypto API that can be used to generate random bytes."
             },
             "type": "library",
-            "autoload": {
-                "files": [
-                    "lib/random.php"
-                ]
-            },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
@@ -2561,7 +2557,7 @@
                 "pseudorandom",
                 "random"
             ],
-            "time": "2018-07-04T16:31:37+00:00"
+            "time": "2018-07-02T15:55:56+00:00"
         },
         {
             "name": "phpoffice/phpexcel",
@@ -3024,21 +3020,22 @@
         },
         {
             "name": "ramsey/uuid",
-            "version": "3.7.3",
+            "version": "3.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ramsey/uuid.git",
-                "reference": "44abcdad877d9a46685a3a4d221e3b2c4b87cb76"
+                "reference": "d09ea80159c1929d75b3f9c60504d613aeb4a1e3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ramsey/uuid/zipball/44abcdad877d9a46685a3a4d221e3b2c4b87cb76",
-                "reference": "44abcdad877d9a46685a3a4d221e3b2c4b87cb76",
+                "url": "https://api.github.com/repos/ramsey/uuid/zipball/d09ea80159c1929d75b3f9c60504d613aeb4a1e3",
+                "reference": "d09ea80159c1929d75b3f9c60504d613aeb4a1e3",
                 "shasum": ""
             },
             "require": {
-                "paragonie/random_compat": "^1.0|^2.0",
-                "php": "^5.4 || ^7.0"
+                "paragonie/random_compat": "^1.0|^2.0|9.99.99",
+                "php": "^5.4 || ^7.0",
+                "symfony/polyfill-ctype": "^1.8"
             },
             "replace": {
                 "rhumsaa/uuid": "self.version"
@@ -3046,16 +3043,17 @@
             "require-dev": {
                 "codeception/aspect-mock": "^1.0 | ~2.0.0",
                 "doctrine/annotations": "~1.2.0",
-                "goaop/framework": "1.0.0-alpha.2 | ^1.0 | ^2.1",
+                "goaop/framework": "1.0.0-alpha.2 | ^1.0 | ~2.1.0",
                 "ircmaxell/random-lib": "^1.1",
                 "jakub-onderka/php-parallel-lint": "^0.9.0",
                 "mockery/mockery": "^0.9.9",
                 "moontoast/math": "^1.1",
                 "php-mock/php-mock-phpunit": "^0.3|^1.1",
-                "phpunit/phpunit": "^4.7|^5.0",
+                "phpunit/phpunit": "^4.7|^5.0|^6.5",
                 "squizlabs/php_codesniffer": "^2.3"
             },
             "suggest": {
+                "ext-ctype": "Provides support for PHP Ctype functions",
                 "ext-libsodium": "Provides the PECL libsodium extension for use with the SodiumRandomGenerator",
                 "ext-uuid": "Provides the PECL UUID extension for use with the PeclUuidTimeGenerator and PeclUuidRandomGenerator",
                 "ircmaxell/random-lib": "Provides RandomLib for use with the RandomLibAdapter",
@@ -3100,20 +3098,20 @@
                 "identifier",
                 "uuid"
             ],
-            "time": "2018-01-20T00:28:24+00:00"
+            "time": "2018-07-19T23:38:55+00:00"
         },
         {
             "name": "rospdf/pdf-php",
-            "version": "0.12.46",
+            "version": "0.12.47",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rospdf/pdf-php.git",
-                "reference": "fbfe284b7c163f3e50da668e492d134534127af5"
+                "reference": "e2a16d32cbaf8300451f0d41ee7f3a89f9ac70f0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rospdf/pdf-php/zipball/fbfe284b7c163f3e50da668e492d134534127af5",
-                "reference": "fbfe284b7c163f3e50da668e492d134534127af5",
+                "url": "https://api.github.com/repos/rospdf/pdf-php/zipball/e2a16d32cbaf8300451f0d41ee7f3a89f9ac70f0",
+                "reference": "e2a16d32cbaf8300451f0d41ee7f3a89f9ac70f0",
                 "shasum": ""
             },
             "require": {
@@ -3169,7 +3167,7 @@
             ],
             "description": "The R&OS Pdf class supports the creation of PDF documents without any adiditional modules or extensions.",
             "homepage": "https://github.com/rospdf/pdf-php",
-            "time": "2018-06-06T21:04:16+00:00"
+            "time": "2018-07-19T19:09:35+00:00"
         },
         {
             "name": "shihjay2/openid-connect-uma-php",
@@ -3177,12 +3175,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/shihjay2/OpenID-Connect-UMA-PHP.git",
-                "reference": "c3932fadef9a9a463431e6318b2f99f50895e79c"
+                "reference": "af974d3b88871f49540f1b2dae2107bfa95e20ad"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/shihjay2/OpenID-Connect-UMA-PHP/zipball/c3932fadef9a9a463431e6318b2f99f50895e79c",
-                "reference": "c3932fadef9a9a463431e6318b2f99f50895e79c",
+                "url": "https://api.github.com/repos/shihjay2/OpenID-Connect-UMA-PHP/zipball/af974d3b88871f49540f1b2dae2107bfa95e20ad",
+                "reference": "af974d3b88871f49540f1b2dae2107bfa95e20ad",
                 "shasum": ""
             },
             "require": {
@@ -3219,7 +3217,7 @@
                 "php",
                 "uma"
             ],
-            "time": "2018-07-13T04:20:32+00:00"
+            "time": "2018-07-21T19:21:17+00:00"
         },
         {
             "name": "shihjay2/tcpdi-merger",
