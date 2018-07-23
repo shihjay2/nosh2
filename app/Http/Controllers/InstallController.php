@@ -1217,7 +1217,7 @@ class InstallController extends Controller {
                     $url_hieofoneas = str_replace('/nosh', '/resources/' . $practice1->uma_client_id, URL::to('/'));
                     Session::put('url_hieofoneas', $url_hieofoneas);
                     setcookie("login_attempts", 0, time()+900, '/');
-                    Session::put('message_action', 'Resources registered to your Trustee Authorization Server.<br><a href="' . $open_id_url . '" target="_blank">View your consent table.');
+                    return redirect($open_id_url);
                 }
             }
         }
