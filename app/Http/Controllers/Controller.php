@@ -4205,7 +4205,11 @@ class Controller extends BaseController
             $data['content'] = '<div class="alert alert-success">';
             $data['content'] .= '<strong>Name:</strong> ' . $result['name'][0]['given'][0] . ' ' . $result['name'][0]['family'][0];
             $data['content'] .= '<br><strong>Date of Birth:</strong> ' . date('Y-m-d', strtotime($result['birthDate']));
-            $data['content'] .= '<br><strong>Gender:</strong> ' . $gender_arr[strtolower(substr($result['gender'],0,1))];
+            if (in_array(strtolower(substr($result['gender'],0,1)), $gender_arr)) {
+                $data['content'] .= '<br><strong>Gender:</strong> ' . $gender_arr[strtolower(substr($result['gender'],0,1))];
+            } else {
+                $data['content'] .= '<br><strong>Gender:</strong> ' . $result['gender'];
+            }
             $data['content'] .= '</div>';
             $data['content'] .= '<div class="list-group">';
             foreach ($title_array as $title_k=>$title_v) {
