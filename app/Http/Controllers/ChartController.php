@@ -4931,7 +4931,6 @@ class ChartController extends Controller {
         $hpi = DB::table('hpi')->where('eid', '=',$eid)->first();
         $pe = DB::table('pe')->where('eid', '=', $eid)->first();
         $assessment = DB::table('assessment')->where('eid', '=', $eid)->first();
-        $billing = DB::table('billing')->where('eid', '=', $eid)->first();
         if (!$hpi) {
             $error_arr[] = "Subjective";
         }
@@ -4942,9 +4941,6 @@ class ChartController extends Controller {
         }
         if (!$assessment) {
             $error_arr[] = "Assessment";
-        }
-        if (!$billing) {
-            $error_arr[] = "Billing";
         }
         if (! empty($error_arr)) {
             $error = 'Error - Missing items: ' . implode(', ', $error_arr);
