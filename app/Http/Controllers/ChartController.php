@@ -1281,7 +1281,7 @@ class ChartController extends Controller {
         }
         // Convert NDC numbers
         foreach ($ndc_tables as $ndc_table) {
-            if ($ndc_table == $table) {
+            if ($ndc_table == $table && $action == 'save') {
                 if (strpos($data['allergies_med'], ', ') === false) {
                     $ndcid = '';
                 } else {
