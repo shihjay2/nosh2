@@ -6545,7 +6545,7 @@ class ChartController extends Controller {
                         $previous_date = new Date($this->human_to_unix($previous->rxl_date_prescribed));
                         $ago = $previous_date->diffInDays();
                         $arr['label'] .= '<br><strong>Last Prescribed:</strong> ' . date('Y-m-d', $this->human_to_unix($previous->rxl_date_prescribed)) . ', ' . $ago . ' days ago';
-                        $arr['label'] .= '<br><strong>Prescription Status:</strong> ' . ucfirst($previous->prescription);
+                        // $arr['label'] .= '<br><strong>Prescription Status:</strong> ' . ucfirst($previous->prescription);
                     }
                 }
                 if ($edit == true) {
