@@ -20,8 +20,8 @@ class Fhir
     public function handle($request, Closure $next)
     {
         $payload = $request->header('Authorization');
-        $open_id_url = str_replace('/nosh', '', URL::to('/'));
         $practice = DB::table('practiceinfo')->where('practice_id', '=', '1')->first();
+        $open_id_url = $practice->uma_uri;
         $client_id = $practice->uma_client_id;
         $client_secret = $practice->uma_client_secret;
         if ($payload) {
@@ -54,9 +54,8 @@ class Fhir
                     $url = implode('/', $sliced);
                 }
                 $query = DB::table('uma')->where('scope', '=', $url)->first();
-                $as_uri = str_replace('/nosh', '', URL::to('/'));
                 $header = [
-                    'WWW-Authenticate' => 'UMA realm="pNOSH_UMA", as_uri="' . $as_uri . '"'
+                    'WWW-Authenticate' => 'UMA realm="pNOSH_UMA", as_uri="' . $practice->uma_uri . '"'
                 ];
                 $statusCode = 403;
                 if ($query) {
@@ -116,15 +115,14 @@ class Fhir
                 $url = implode('/', $sliced);
             }
             $query = DB::table('uma')->where('scope', '=', $url)->first();
-            $as_uri = str_replace('/nosh', '', URL::to('/'));
             $header = [
-                'WWW-Authenticate' => 'UMA realm = "pNOSH_UMA", as_uri = "' . $as_uri . '"'
+                'WWW-Authenticate' => 'UMA realm = "pNOSH_UMA", as_uri = "' . $practice->uma_uri . '"'
             ];
             $statusCode = 403;
             if ($query) {
                 // Look for additional scopes for resource_set_id
                 $query1 = DB::table('uma')->where('resource_set_id', '=', $query->resource_set_id)->get();
-                $scopes = array();
+                $scopes = [];
                 foreach ($query1 as $row1) {
                     $scopes[] = $row1->scope;
                 }

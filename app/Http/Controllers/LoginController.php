@@ -302,7 +302,7 @@ class LoginController extends Controller {
         $google->setRedirectUri($url);
         $google->setApplicationName('NOSH ChartingSystem');
         $google->setClientID(env('GOOGLE_KEY'));
-        $google->setClientSecret('GOOGLE_SECRET');
+        $google->setClientSecret(env('GOOGLE_SECRET'));
         $google->setAccessType('offline');
         $google->setApprovalPrompt('force');
         $google->setScopes(array('https://mail.google.com/'));
