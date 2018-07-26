@@ -6668,12 +6668,17 @@ class ChartController extends Controller {
                 $data['content'] .= '<div class="alert alert-danger"><span style="margin-right:15px;"><i class="fa fa-ban fa-lg"></i></span><strong># Did not keep appointments: ' . $dnka->count() . '</strong></div>';
             }
         }
-        $data['content'] .= '<section id="cd-timeline" class="cd-container">';
         $arr = $this->timeline();
-        foreach ($arr['json'] as $item) {
-            $data['content'] .= $item['div'];
+        $data['content'] .= '<h4>Timeline View</h4>';
+        if (count($arr['json']) <1) {
+            $data['content'] .= '<div class="alert alert-success"><span style="margin-right:15px;"><i class="fa fa-star-o fa-lg"></i></span><strong>Account Created!</strong></div>';
+        } else {
+            $data['content'] .= '<section id="cd-timeline" class="cd-container">';
+            foreach ($arr['json'] as $item) {
+                $data['content'] .= $item['div'];
+            }
+            $data['content'] .= '</section>';
         }
-        $data['content'] .= '</section>';
         // $data['template_content'] = 'test';
         $data['title'] = Session::get('ptname');
         $data['panel_header'] = Session::get('ptname');

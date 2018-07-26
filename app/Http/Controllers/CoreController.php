@@ -1693,7 +1693,7 @@ class CoreController extends Controller
         if (Session::get('group_id') == '100') {
             $row = DB::table('demographics_relate')->where('id', '=', $user_id)->first();
             $this->setpatient($row->pid);
-            return redirect()->route('patient');
+            return redirect()->intended('patient');
         }
         if (Session::get('group_id') != '100' && Session::get('patient_centric') == 'yp') {
             return redirect()->route('pnosh_provider_redirect');

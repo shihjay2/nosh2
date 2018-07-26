@@ -1376,7 +1376,7 @@ class LoginController extends Controller {
             $url_hieofoneas = str_replace('/nosh', '/resources/' . $practice1->uma_client_id, URL::to('/'));
             Session::put('url_hieofoneas', $url_hieofoneas);
             setcookie("login_attempts", 0, time()+900, '/');
-            return redirect()->intended('/');
+            return redirect(Session::get('url.intended'));
         } else {
             $practice_npi = $npi;
             // $practice_id = false;
@@ -1480,7 +1480,7 @@ class LoginController extends Controller {
             Session::put('uma_auth_access_token', $access_token);
             Session::put('uport_id', $uport_id);
             setcookie("login_attempts", 0, time()+900, '/');
-            return redirect()->intended('/');
+            return redirect(Session::get('url.intended'));
         }
     }
 
