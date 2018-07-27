@@ -871,55 +871,77 @@ class ChartController extends Controller {
         $data['panel_header'] = 'Connect to CMS Bluebutton';
         $data['message_action'] = Session::get('message_action');
         Session::forget('message_action');
-        $base_url = 'https://sandbox.bluebutton.cms.gov';
-        // Generate sample token for synthetic patient 20140000008325
-        $cms_pid = '20140000008325';
-        $token_url = $base_url . '/v1/fhir/Patient/'. $cms_pid;
-        $authorization_endpoint = $base_url . '/v1/o/authorize/';
-        $token_endpoint = $base_url . '/v1/o/token/';
-        $client_id = 'g64gaSFq972Jpk88Ql8ZoO307jsbZyaSXtrVnfql';
-        $client_secret = 'EiyTnDZnBR1p2OhLWBFpr0qV4SNXDw10IGwtEGf2B8sgJploBJ2NhmaQSqdcSO7eNi4xIxbP5Bk8wPvHnqdlaMLLImYCJF2EzKW5ie7snbNm5Joyphf87RvzDl7r6cO0';
-        $oidc = new OpenIDConnectUMAClient($token_url, $client_id, $client_secret);
-        $oidc->setRedirectURL(route('cms_bluebutton'));
-        $oidc->providerConfigParam(['authorization_endpoint' => $authorization_endpoint]);
-        $oidc->providerConfigParam(['token_endpoint' => $token_endpoint]);
-        $oidc->addScope('patient/Patient.read');
-        $oidc->addScope('patient/ExplanationOfBenefit.read');
-        $oidc->addScope('patient/Coverage.read');
-        $oidc->addScope('profile');
-        $oidc->authenticate();
-        $access_token = $oidc->getAccessToken();
-        $refresh_token = $oidc->getRefreshToken();
-        $result_token = json_decode($oidc->getResultToken(), true);
-        $cms_pid = $result_token['patient'];
-        $connected1 = DB::table('refresh_tokens')->where('practice_id', '=', '1')->where('endpoint_uri', '=', $base_url)->first();
-        if (!$connected1) {
-            $refresh = [
-                'refresh_token' => $refresh_token,
-                'pid' => Session::get('pid'),
-                'practice_id' => Session::get('practice_id'),
-                'user_id' => Session::get('user_id'),
-                'endpoint_uri' => $base_url,
-                'pnosh' => 'CMS Bluebutton',
-                'client_id' => $client_id,
-                'client_secret' => $client_secret
+        if (! Session::has('oidc_relay')) {
+            $param = [
+                'origin_uri' => route('cms_bluebutton'),
+                'response_uri' => route('cms_bluebutton'),
+                'fhir_url' => '',
+                'fhir_auth_url' => '',
+                'fhir_token_url' => '',
+                'type' => 'cms_bluebutton_sandbox',
+                'cms_pid' => '',
+                'refresh_token' => ''
             ];
-            DB::table('refresh_tokens')->insert($refresh);
-            $this->audit('Add');
+            // $param = [
+            //     'origin_uri' => route('cms_bluebutton'),
+            //     'response_uri' => route('cms_bluebutton'),
+            //     'fhir_url' => '',
+            //     'fhir_auth_url' => '',
+            //     'fhir_token_url' => '',
+            //     'type' => 'cms_bluebutton',
+            //     'cms_pid' => '',
+            //     'refresh_token' => ''
+            // ];
+            $oidc_response = $this->oidc_relay($param);
+            if ($oidc_response['message'] == 'OK') {
+                Session::put('oidc_relay', $oidc_response['state']);
+                return redirect($oidc_response['url']);
+            } else {
+                Session::put('message_action', $oidc_response['message']);
+                return redirect(Session::get('last_page'));
+            }
         } else {
-            $refresh['refresh_token'] = $refresh_token;
-            DB::table('refresh_tokens')->where('id', '=', $connected1->id)->update($refresh);
-            $this->audit('Update');
+            $param1['state'] = Session::get('oidc_relay');
+            Session::forget('oidc_relay');
+            $oidc_response1 = $this->oidc_relay($param1, true);
+            if ($oidc_response1['message'] == 'Tokens received') {
+                $access_token = $oidc_response1['tokens']['access_token'];
+                $refresh_token = $oidc_response1['tokens']['refresh_token'];
+                $cms_pid = $oidc_response1['tokens']['patient'];
+                $base_url = 'https://sandbox.bluebutton.cms.gov';
+                // $base_url = 'https://api.bluebutton.cms.gov';
+                $connected1 = DB::table('refresh_tokens')->where('practice_id', '=', '1')->where('endpoint_uri', '=', $base_url)->first();
+                if (!$connected1) {
+                    $refresh = [
+                        'refresh_token' => $refresh_token,
+                        'pid' => Session::get('pid'),
+                        'practice_id' => Session::get('practice_id'),
+                        'user_id' => Session::get('user_id'),
+                        'endpoint_uri' => $base_url,
+                        'pnosh' => 'CMS Bluebutton'
+                    ];
+                    DB::table('refresh_tokens')->insert($refresh);
+                    $this->audit('Add');
+                } else {
+                    $refresh['refresh_token'] = $refresh_token;
+                    DB::table('refresh_tokens')->where('id', '=', $connected1->id)->update($refresh);
+                    $this->audit('Update');
+                }
+                Session::put('cms_access_token', $access_token);
+                Session::put('cms_pid', $cms_pid);
+                return redirect()->route('cms_bluebutton_display');
+            } else {
+                Session::put('message_action', $oidc_response1['message']);
+                return redirect(Session::get('last_page'));
+            }
         }
-        Session::put('cms_access_token', $access_token);
-        Session::put('cms_pid', $cms_pid);
-        return redirect()->route('cms_bluebutton_display');
     }
 
     public function cms_bluebutton_display(Request $request, $type='Summary')
     {
         $token = Session::get('cms_access_token');
         $base_url = 'https://sandbox.bluebutton.cms.gov';
+        // $base_url = 'https://api.bluebutton.cms.gov';
         $title_array = [
             'Summary' => ['Patient Summary', 'fa-address-card', '/v1/connect/userinfo'],
             'EOB' => ['Explaination of Benefits', 'fa-money', '/v1/fhir/ExplanationOfBenefit/?patient=' . Session::get('cms_pid')],
@@ -5570,40 +5592,40 @@ class ChartController extends Controller {
         $result_array = json_decode($result, true);
         if ($id == 'list') {
             if ($request->isMethod('post')) {
-                $data1['openepic_client_id'] = $request->input('openepic_client_id');
-                $data1['openepic_sandbox_client_id'] = $request->input('openepic_sandbox_client_id');
-                DB::table('practiceinfo')->where('practice_id', '=', '1')->update($data1);
-                $this->audit('Update');
-                Session::put('message_action', 'open.epic Client ID updated');
-                return redirect()->route('fhir_connect', ['list']);
+                // $data1['openepic_client_id'] = $request->input('openepic_client_id');
+                // $data1['openepic_sandbox_client_id'] = $request->input('openepic_sandbox_client_id');
+                // DB::table('practiceinfo')->where('practice_id', '=', '1')->update($data1);
+                // $this->audit('Update');
+                // Session::put('message_action', 'open.epic Client ID updated');
+                // return redirect()->route('fhir_connect', ['list']);
             } else {
                 $practice = DB::table('practiceinfo')->where('practice_id', '=', '1')->first();
                 $data['content'] = '';
-                if ($practice->openepic_client_id == null || $practice->openepic_client_id == '') {
-                    $data['content'] .= '<div class="alert alert-danger"><p>' . trans('nosh.openepic1') . '   Once you have the ';
-                    $data['content'] .= '<p><a href="https://github.com/shihjay2/hieofone-as/wiki/Client-registration-for-open.epic" target="_blank" class="nosh-no-load">' . trans('nosh.openepic2') . '</a></p>';
-                    $data['content'] .= '<p>' . trans('nosh.openepic3') . '</p></div>';
-                    $epic_items[] = [
-                        'name' => 'openepic_client_id',
-                        'label' => trans('nosh.openepic_client_id'),
-                        'type' => 'text',
-                        'default_value' => null,
-                        'required' => true
-                    ];
-                    $epic_items[] = [
-                        'name' => 'openepic_sandbox_client_id',
-                        'label' => trans('nosh.openepic_sandbox_client_id'),
-                        'type' => 'text',
-                        'default_value' => null,
-                        'required' => true
-                    ];
-                    $epic_form_array = [
-                        'form_id' => 'epic_form',
-                        'action' => route('fhir_connect', ['list']),
-                        'items' => $epic_items
-                    ];
-                    $data['content'] .= $this->form_build($epic_form_array);
-                } else {
+                // if ($practice->openepic_client_id == null || $practice->openepic_client_id == '') {
+                //     $data['content'] .= '<div class="alert alert-danger"><p>' . trans('nosh.openepic1') . '   Once you have the ';
+                //     $data['content'] .= '<p><a href="https://github.com/shihjay2/hieofone-as/wiki/Client-registration-for-open.epic" target="_blank" class="nosh-no-load">' . trans('nosh.openepic2') . '</a></p>';
+                //     $data['content'] .= '<p>' . trans('nosh.openepic3') . '</p></div>';
+                //     $epic_items[] = [
+                //         'name' => 'openepic_client_id',
+                //         'label' => trans('nosh.openepic_client_id'),
+                //         'type' => 'text',
+                //         'default_value' => null,
+                //         'required' => true
+                //     ];
+                //     $epic_items[] = [
+                //         'name' => 'openepic_sandbox_client_id',
+                //         'label' => trans('nosh.openepic_sandbox_client_id'),
+                //         'type' => 'text',
+                //         'default_value' => null,
+                //         'required' => true
+                //     ];
+                //     $epic_form_array = [
+                //         'form_id' => 'epic_form',
+                //         'action' => route('fhir_connect', ['list']),
+                //         'items' => $epic_items
+                //     ];
+                //     $data['content'] .= $this->form_build($epic_form_array);
+                // } else {
                     $data['content'] .= '<form role="form"><div class="form-group"><input class="form-control" id="searchinput" type="search" placeholder="Filter Results..." /></div>';
                     $data['content'] .= '<div class="list-group searchlist">';
                     $sandbox_link = '<a href="' . route('fhir_connect', ['sandbox']) . '" class="list-group-item">Open Epic Argonaut Profile</a>';
@@ -5629,7 +5651,7 @@ class ChartController extends Controller {
                     }
                     $data['content'] .= $conn_link . $sandbox_link . $oth_link;
                     $data['content'] .= '</div></form>';
-                }
+                // }
             }
         } else {
             if ($id == 'sandbox') {
@@ -5702,39 +5724,38 @@ class ChartController extends Controller {
 
     public function fhir_connect_response(Request $request)
     {
-        $practice = DB::table('practiceinfo')->where('practice_id', '=', '1')->first();
-        if ($practice->openepic_client_id == null || $practice->openepic_client_id == '' || $practice->openepic_sandbox_client_id == null || $practice->openepic_sandbox_client_id == '') {
-            return redirect()->route('fhir_connect', ['list']);
+        if (! Session::has('oidc_relay')) {
+            $param = [
+                'origin_uri' => route('fhir_connect_response'),
+                'response_uri' => route('fhir_connect_response'),
+                'fhir_url' => Session::get('fhir_url'),
+                'fhir_auth_url' => Session::get('fhir_auth_url'),
+                'fhir_token_url' => Session::get('fhir_token_url'),
+                'type' => 'epic',
+                'refresh_token' => ''
+            ];
+            $oidc_response = $this->oidc_relay($param);
+            if ($oidc_response['message'] == 'OK') {
+                Session::put('oidc_relay', $oidc_response['state']);
+                return redirect($oidc_response['url']);
+            } else {
+                Session::put('message_action', $oidc_response['message']);
+                return redirect(Session::get('last_page'));
+            }
+        } else {
+            $param1['state'] = Session::get('oidc_relay');
+            Session::forget('oidc_relay');
+            $oidc_response1 = $this->oidc_relay($param1, true);
+            if ($oidc_response1['message'] == 'Tokens received') {
+                Session::put('fhir_access_token', $oidc_response1['tokens']['access_token']);
+                Session::put('fhir_patient_token', $oidc_response1['tokens']['patient_token']);
+                // Session::put('fhir_refresh_token', $oidc_response1['tokens']['refresh_token']);
+                return redirect()->route('fhir_connect_display');
+            } else {
+                Session::put('message_action', $oidc_response1['message']);
+                return redirect(Session::get('last_page'));
+            }
         }
-        $client_id = $practice->openepic_client_id;
-        // $client_id = 'c72e25d5-8544-4583-bc11-fd1b37112607';
-        if (Session::get('fhir_url') == 'https://open-ic.epic.com/argonaut/api/FHIR/Argonaut/') {
-            $client_id = $practice->openepic_sandbox_client_id;
-            // $client_id = 'c735b021-bf59-4d29-9fcc-4415626153c5';
-        }
-        $client_secret = '';
-        $oidc = new OpenIDConnectUMAClient(Session::get('fhir_auth_url'), $client_id, $client_secret);
-        $oidc->setSessionName('nosh');
-        $oidc->setRedirectURL(route('fhir_connect_response'));
-        $oidc->providerConfigParam(['authorization_endpoint' => Session::get('fhir_auth_url')]);
-        $oidc->providerConfigParam(['token_endpoint' => Session::get('fhir_token_url')]);
-        $oidc->setAud(Session::get('fhir_url'));
-        $oidc->addScope('patient/*.read');
-        $oidc->addScope('user/*.*');
-        $oidc->addScope('openid');
-        $oidc->addScope('profile');
-        $oidc->addScope('launch');
-        $oidc->addScope('launch/patient');
-        $oidc->addScope('offline_access');
-        $oidc->addScope('online_access');
-        $oidc->authenticate();
-        $access_token = $oidc->getAccessToken();
-        $patient_token = $oidc->getPatientToken();
-        // $refresh_token = $oidc->getRefreshToken();
-        Session::put('fhir_access_token', $access_token);
-        Session::put('fhir_patient_token', $patient_token);
-        // Session::put('fhir_refresh_token', $refresh_token);
-        return redirect()->route('fhir_connect_display');
     }
 
     public function form_list(Request $request, $type)

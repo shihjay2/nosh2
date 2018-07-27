@@ -13254,6 +13254,78 @@ class Controller extends BaseController
         return $return;
     }
 
+    protected function oidc_relay($param, $status=false)
+    {
+        $pnosh_url = url('/');
+        $pnosh_url = str_replace(array('http://','https://'), '', $pnosh_url);
+        $root_url = explode('/', $pnosh_url);
+        $root_url1 = explode('.', $root_url[0]);
+        $final_root_url = $root_url1[1] . '.' . $root_url1[2];
+        if ($final_root_url == 'hieofone.org') {
+            $relay_url = 'https://dir.' . $final_root_url . '/oidc_relay';
+            if ($status == false) {
+                $state = md5(uniqid(rand(), TRUE));
+                $relay_url = 'https://dir.' . $final_root_url . '/oidc_relay';
+            } else {
+                $state = '';
+                $relay_url = 'https://dir.' . $final_root_url . '/oidc_relay/' . $param['state'];
+            }
+            $root_param = [
+                'root_uri' => $root_url[0],
+                'state' => $state,
+                'origin_uri' => '',
+                'response_uri' => '',
+                'fhir_url' => '',
+                'fhir_auth_url' => '',
+                'fhir_token_url' => '',
+                'type' => '',
+                'cms_pid' => '',
+                'refresh_token' => ''
+            ];
+            $params = array_merge($root_param, $param);
+            $post_body = json_encode($params);
+            $content_type = 'application/json';
+            $ch = curl_init();
+            curl_setopt($ch,CURLOPT_URL, $relay_url);
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $post_body);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                "Content-Type: {$content_type}",
+                'Content-Length: ' . strlen($post_body)
+            ]);
+            curl_setopt($ch, CURLOPT_HEADER, 0);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+            curl_setopt($ch,CURLOPT_FAILONERROR,1);
+            curl_setopt($ch,CURLOPT_FOLLOWLOCATION,1);
+            curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+            curl_setopt($ch,CURLOPT_TIMEOUT, 60);
+            curl_setopt($ch,CURLOPT_CONNECTTIMEOUT ,0);
+            $response = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close ($ch);
+            if ($httpCode !== 404 && $httpCode !== 0) {
+                if ($status == false) {
+                    $return['message'] = $response;
+                    $return['url'] = $relay_url . '_start/' . $state;
+                    $return['state'] = $state;
+                } else {
+                    $response1 = json_decode($response, true);
+                    if (isset($response1['error'])) {
+                        $return['message'] = $response1['error'];
+                    } else {
+                        $return['message'] = 'Tokens received';
+                        $return['tokens'] = $response1;
+                    }
+                }
+            } else {
+                $return['message'] = 'Error: unable to connect to the relay.';
+            }
+        } else {
+            $return['message'] = 'Not supported.';
+        }
+        return $return;
+    }
+
     protected function orders_info($text)
     {
         preg_match("/\[(.*?)\]/", $text, $match);
