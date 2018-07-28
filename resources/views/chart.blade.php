@@ -1025,6 +1025,7 @@
                     html += ' data-nosh-name="' + value.product.name + '"';
                     html += ' data-nosh-route="' + value.route.name + '"';
                     html += ' data-nosh-date="' + value.date + '"';
+                    html += ' data-nosh-code="' + value.product.code + '"';
                     label = value.product.name;
                 }
                 if (type == 'allergies') {

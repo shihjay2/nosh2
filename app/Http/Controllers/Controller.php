@@ -13099,7 +13099,8 @@ class Controller extends BaseController
     */
     protected function human_to_unix($datestr)
     {
-        $date = Date::parse($datestr);
+        $datestr_arr = explode(' (', $datestr);
+        $date = Date::parse($datestr_arr[0]);
         return $date->timestamp;
     }
 
