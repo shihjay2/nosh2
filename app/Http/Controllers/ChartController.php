@@ -6708,7 +6708,8 @@ class ChartController extends Controller {
                 $file_path = str_replace($directory, $new_directory, $demographics->photo);
                 $file_path1 = str_replace($directory, $new_directory1, $demographics->photo);
                 copy($demographics->photo, $file_path);
-                $data['content'] .= HTML::image($file_path1, 'Image', array('border' => '0', 'style' => 'display:block;margin:auto;'));
+                $data['content'] .= HTML::image($file_path1, 'Image', array('border' => '0', 'style' => 'display:block;margin:auto;max-height: 200px;width: auto;'));
+                $data['content'] .= '<br>';
             }
         }
         if ($demographics->hieofone_as_url !== '' && $demographics->hieofone_as_url !== null) {
@@ -6737,7 +6738,7 @@ class ChartController extends Controller {
             }
         }
         $arr = $this->timeline();
-        $data['content'] .= '<h4>Timeline View</h4>';
+        $data['content'] .= '<h4 style="text-align:center;">Timeline</h4>';
         if (count($arr['json']) <1) {
             $data['content'] .= '<div class="alert alert-success"><span style="margin-right:15px;"><i class="fa fa-star-o fa-lg"></i></span><strong>Account Created!</strong></div>';
         } else {
