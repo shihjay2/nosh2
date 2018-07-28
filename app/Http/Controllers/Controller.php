@@ -13287,12 +13287,14 @@ class Controller extends BaseController
             $content_type = 'application/json';
             $ch = curl_init();
             curl_setopt($ch,CURLOPT_URL, $relay_url);
-            curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $post_body);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, [
-                "Content-Type: {$content_type}",
-                'Content-Length: ' . strlen($post_body)
-            ]);
+            if ($status == false) {
+                curl_setopt($ch, CURLOPT_POST, 1);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $post_body);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                    "Content-Type: {$content_type}",
+                    'Content-Length: ' . strlen($post_body)
+                ]);
+            }
             curl_setopt($ch, CURLOPT_HEADER, 0);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
             curl_setopt($ch,CURLOPT_FAILONERROR,1);
