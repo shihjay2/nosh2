@@ -158,6 +158,7 @@
                                     <li><a href="{{ route('fhir_connect') }}"><i class="fa fa-fw fa-btn fa-plug"></i>{{ trans('nosh.fhir_connect') }}</a></li>
                                     <li><a href="{{ route('cms_bluebutton') }}"><i class="fa fa-fw fa-btn fa-plug"></i>{{ trans('nosh.medicare_connect') }}</a></li>
                                     <li><a href="{{ str_replace('/nosh', '', route('dashboard')) }}"><i class="fa fa-fw fa-btn fa-openid"></i>{{ trans('nosh.hieofone') }}</a></li>
+                                    <li><a href="{{ route('demographics_add_photo') }}"><i class="fa fa-fw fa-btn fa-camera"></i>{{ trans('nosh.add_photo') }}</a></li>
                                 @endif
                                 @if (Session::get('group_id') == '2' || Session::get('group_id') == '3')
                                     <li><a href="{{ route('template_restore', ['backup']) }}" class="nosh-no-load"><i class="fa fa-fw fa-btn fa-cloud-download"></i>{{ trans('nosh.template_restore_backup') }}</a></li>

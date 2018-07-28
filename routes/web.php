@@ -177,6 +177,7 @@ Route::get('chart_form/{table}/{index}/{id}/{subtype?}', ['as' => 'chart_form', 
 Route::get('chart_queue/{action}/{hippa_id}/{pid}/{type}', ['as' => 'chart_queue', 'uses' => 'ChartController@chart_queue']);
 Route::get('conditions_list/{type}', ['as' => 'conditions_list', 'uses' => 'ChartController@conditions_list']);
 Route::get('demographics', ['as' => 'demographics', 'uses' => 'ChartController@demographics']);
+Route::any('demographics_add_photo', ['as' => 'demographics_add_photo', 'uses' => 'ChartController@demographics_add_photo']);
 Route::any('document_letter', ['as' => 'document_letter', 'uses' => 'ChartController@document_letter']);
 Route::any('document_upload', ['as' => 'document_upload', 'uses' => 'ChartController@document_upload']);
 Route::get('document_view/{id}', ['as' => 'document_view', 'uses' => 'ChartController@document_view']);

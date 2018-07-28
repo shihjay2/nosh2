@@ -3948,8 +3948,8 @@ class Controller extends BaseController
                 $directory = $practiceInfo->documents_dir . $pid . "/";
                 $new_directory = public_path() . '/temp/';
                 $new_directory1 = '/temp/';
-                $file_path = str_replace($directory, $new_directory ,$imagesInfo_row->image_location);
-                $file_path1 = str_replace($directory, $new_directory1 ,$imagesInfo_row->image_location);
+                $file_path = str_replace($directory, $new_directory, $imagesInfo_row->image_location);
+                $file_path1 = str_replace($directory, $new_directory1, $imagesInfo_row->image_location);
                 copy($imagesInfo_row->image_location, $file_path);
                 if ($k != 0) {
                     $data['images'] .= '<br><br>';
@@ -4418,10 +4418,14 @@ class Controller extends BaseController
                                 $arr['label_class'] = 'nosh-ccda-list';
                                 $arr['danger'] = true;
                                 $allergy_date = explode('T', $row2['resource']['recordedDate']);
+                                $reaction = '';
+                                if (isset($row2['resource']['reaction'])) {
+                                    $reaction = (string) $row2['resource']['reaction'][0]['manifestation'][0]['text'];
+                                }
                                 $arr['label_data_arr'] = [
                                     'data-nosh-type' => 'allergies',
                                     'data-nosh-name' => (string) $row2['resource']['substance']['text'],
-                                    'data-nosh-reaction' => (string) $row2['resource']['reaction'][0]['manifestation'][0]['text'],
+                                    'data-nosh-reaction' => $reaction,
                                     'data-nosh-date' => $allergy_date[0],
                                     'data-nosh-from' => Session::get('fhir_name')
                                 ];

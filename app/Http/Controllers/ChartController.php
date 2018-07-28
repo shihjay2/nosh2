@@ -2856,6 +2856,35 @@ class ChartController extends Controller {
         return view('chart', $data);
     }
 
+    public function demographics_add_photo(Request $request)
+    {
+        if ($request->isMethod('post')) {
+            $pid = Session::get('pid');
+            $directory = Session::get('documents_dir') . $pid;
+            $file = $request->file('file_input');
+            $new_name = str_replace('.' . $file->getClientOriginalExtension(), '', $file->getClientOriginalName()) . '_' . time() . '.' . $file->getClientOriginalExtension();
+            $file->move($directory, $new_name);
+            $file_path = $directory . "/" . $new_name;
+            $data['photo'] = $file_path;
+            $image_id = DB::table('demographics')->where('pid', '=', $pid)->update($data);
+            $this->audit('Update');
+            Session::put('message_action', 'Photo added');
+            return redirect(Session::get('last_page'));
+        } else {
+            $data['panel_header'] = 'Upload Photo';
+            $data['document_upload'] = route('demographics_add_photo');
+            $type_arr = ['png', 'jpg'];
+            $data['document_type'] = json_encode($type_arr);
+            $dropdown_array['default_button_text'] = '<i class="fa fa-chevron-left fa-fw fa-btn"></i>Back';
+            $dropdown_array['default_button_text_url'] = Session::get('last_page');
+            $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
+            $data = array_merge($data, $this->sidebar_build('chart'));
+            $data['assets_js'] = $this->assets_js('document_upload');
+            $data['assets_css'] = $this->assets_css('document_upload');
+            return view('document_upload', $data);
+        }
+    }
+
     public function document_letter(Request $request)
     {
         $pid = Session::get('pid');
@@ -5747,6 +5776,9 @@ class ChartController extends Controller {
             Session::forget('oidc_relay');
             $oidc_response1 = $this->oidc_relay($param1, true);
             if ($oidc_response1['message'] == 'Tokens received') {
+                if ($oidc_response1['tokens']['access_token'] == '') {
+                    return redirect()->route('fhir_connect_response');
+                }
                 Session::put('fhir_access_token', $oidc_response1['tokens']['access_token']);
                 Session::put('fhir_patient_token', $oidc_response1['tokens']['patient_token']);
                 // Session::put('fhir_refresh_token', $oidc_response1['tokens']['refresh_token']);
@@ -6664,6 +6696,18 @@ class ChartController extends Controller {
         Session::forget('message_action');
         $data['content'] = '';
         $demographics = DB::table('demographics')->where('pid', '=', Session::get('pid'))->first();
+        if ($demographics->photo !== null) {
+            if (file_exists($demographics->photo)) {
+                $practiceInfo = DB::table('practiceinfo')->first();
+                $directory = $practiceInfo->documents_dir . Session::get('pid') . "/";
+                $new_directory = public_path() . '/temp/';
+                $new_directory1 = '/temp/';
+                $file_path = str_replace($directory, $new_directory, $demographics->photo);
+                $file_path1 = str_replace($directory, $new_directory1, $demographics->photo);
+                copy($demographics->photo, $file_path);
+                $data['content'] .= HTML::image($file_path1, 'Image', array('border' => '0', 'style' => 'display:block;margin:auto;'));
+            }
+        }
         if ($demographics->hieofone_as_url !== '' && $demographics->hieofone_as_url !== null) {
             $data['content'] .= '<div class="alert alert-danger"><span style="margin-right:15px;"><i class="fa fa-download fa-lg"></i></span><strong><a href="' . route('uma_resources', [Session::get('pid')]) . '">Reconcile chart from outside resources</a></strong></div>';
         }
@@ -6746,6 +6790,12 @@ class ChartController extends Controller {
             'label' => 'New Document',
             'icon' => 'fa-file-o',
             'url' => route('document_upload')
+        ];
+        $items[] = [
+            'type' => 'item',
+            'label' => 'Add Patient Photo',
+            'icon' => 'fa-camera',
+            'url' => route('demographics_add_photo')
         ];
         $items[] = [
             'type' => 'separator'

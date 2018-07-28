@@ -98,6 +98,7 @@ return [
     "fhir_connect" => "Connect to an EHR Account",
     "medicare_connect" => "Connect to Medicare",
     "hieofone" => "Authorization Server",
+    "add_photo" => "Add Photo",
     "my_information" => "My Information",
     "user_signature" => "Change Signature",
     "template_restore_backup" => 'Backup My Template',
