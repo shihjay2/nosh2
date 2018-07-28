@@ -905,6 +905,9 @@ class ChartController extends Controller {
             Session::forget('oidc_relay');
             $oidc_response1 = $this->oidc_relay($param1, true);
             if ($oidc_response1['message'] == 'Tokens received') {
+                if ($oidc_response1['tokens']['access_token'] == '') {
+                    return redirect()->route('cms_bluebutton');
+                }
                 $access_token = $oidc_response1['tokens']['access_token'];
                 $refresh_token = $oidc_response1['tokens']['refresh_token'];
                 $cms_pid = $oidc_response1['tokens']['patient'];
