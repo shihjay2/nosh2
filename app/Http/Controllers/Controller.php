@@ -3755,33 +3755,44 @@ class Controller extends BaseController
     *        ]
     *    ],
     *    'origin' => 'previous URL',
+    *    'class' => 'btn-success'
+    *    'new_window' => boolean
     * ];
     * @param int $id - Item key in database
     * @return Response
     */
     protected function dropdown_build($dropdown_array)
     {
+        $class = 'btn-primary';
+        if (isset($dropdown_array['class'])) {
+            $class = $dropdown_array['class'];
+        }
+        $new_window = '';
+        if (isset($dropdown_array['new_window'])) {
+            $new_window = ' target="_blank"';
+            $class .= ' nosh-no-load';
+        }
         if (isset($dropdown_array['items'])) {
             $return = '<div class="btn-group">';
             if (count($dropdown_array['items']) == 1 && isset($dropdown_array['items_button_text']) == false) {
                 if (isset($dropdown_array['default_button_text'])) {
-                    $return .= '<a href="' . $dropdown_array['default_button_text_url'] . '" class="btn btn-primary btn-sm">' . $dropdown_array['default_button_text'] . '</a><a href="' . $dropdown_array['items'][0]['url'] . '" class="btn btn-primary btn-sm"><i class="fa ' . $dropdown_array['items'][0]['icon'] . ' fa-fw fa-btn"></i>' . $dropdown_array['items'][0]['label'] . '</a></div>';
+                    $return .= '<a href="' . $dropdown_array['default_button_text_url'] . '" class="btn ' . $class . ' btn-sm">' . $dropdown_array['default_button_text'] . '</a><a href="' . $dropdown_array['items'][0]['url'] . '" class="btn ' . $class . ' btn-sm"><i class="fa ' . $dropdown_array['items'][0]['icon'] . ' fa-fw fa-btn"></i>' . $dropdown_array['items'][0]['label'] . '</a></div>';
                 } else {
                     $return .= '<a href="' . $dropdown_array['items'][0]['url'] . '"';
                     if (isset($dropdown_array['items'][0]['id'])) {
                         $return .= ' id="' . $dropdown_array['items'][0]['id'] . '"';
                     }
-                    $return .= ' class="btn btn-primary btn-sm"><i class="fa ' . $dropdown_array['items'][0]['icon'] . ' fa-fw fa-btn"></i>' . $dropdown_array['items'][0]['label'] . '</a></div>';
+                    $return .= ' class="btn ' . $class . ' btn-sm"><i class="fa ' . $dropdown_array['items'][0]['icon'] . ' fa-fw fa-btn"></i>' . $dropdown_array['items'][0]['label'] . '</a></div>';
                 }
             } else {
                 if (isset($dropdown_array['default_button_text'])) {
-                    $return .= '<a href="' . $dropdown_array['default_button_text_url'] . '" class="btn btn-primary btn-sm">' . $dropdown_array['default_button_text'] . '</a><button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span><span class="sr-only">Toggle Dropdown</span></button>';
+                    $return .= '<a href="' . $dropdown_array['default_button_text_url'] . '" class="btn ' . $class . ' btn-sm">' . $dropdown_array['default_button_text'] . '</a><button type="button" class="btn ' . $class . ' btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span><span class="sr-only">Toggle Dropdown</span></button>';
                 }
                 if (isset($dropdown_array['items_button_text'])) {
-                    $return .= '<button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown"><span class="fa-btn">' . $dropdown_array['items_button_text'] . '</span><span class="caret"></span></button>';
+                    $return .= '<button type="button" class="btn ' . $class . ' btn-sm dropdown-toggle" data-toggle="dropdown"><span class="fa-btn">' . $dropdown_array['items_button_text'] . '</span><span class="caret"></span></button>';
                 }
                 if (isset($dropdown_array['items_button_icon'])) {
-                    $return .= '<button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown"><i class="fa ' . $dropdown_array['items_button_icon'] . ' fa-fw fa-btn"></i><span class="caret"></span></button>';
+                    $return .= '<button type="button" class="btn ' . $class . ' btn-sm dropdown-toggle" data-toggle="dropdown"><i class="fa ' . $dropdown_array['items_button_icon'] . ' fa-fw fa-btn"></i><span class="caret"></span></button>';
                 }
                 $return .= '<ul class="dropdown-menu dropdown-menu-right">';
                 foreach ($dropdown_array['items'] as $row) {
@@ -3802,11 +3813,11 @@ class Controller extends BaseController
                 $return .= '</ul></div>';
             }
         } else {
-            $return = '<div class="btn-group"><a href="' . $dropdown_array['default_button_text_url'] . '"class="btn btn-primary btn-sm"';
+            $return = '<div class="btn-group"><a href="' . $dropdown_array['default_button_text_url'] . '"class="btn ' . $class . ' btn-sm"';
             if (isset($dropdown_array['default_button_id'])) {
                 $return .= ' id="' . $dropdown_array['default_button_id'] . '"';
             }
-            $return .= '>' . $dropdown_array['default_button_text'] . '</a></div>';
+            $return .= $new_window . '>' . $dropdown_array['default_button_text'] . '</a></div>';
         }
         return $return;
     }

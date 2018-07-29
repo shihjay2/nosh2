@@ -921,7 +921,7 @@ class ChartController extends Controller {
                         'practice_id' => Session::get('practice_id'),
                         'user_id' => Session::get('user_id'),
                         'endpoint_uri' => $base_url,
-                        'pnosh' => 'CMS Bluebutton'
+                        'pnosh' => 'Medicare Benefits'
                     ];
                     DB::table('refresh_tokens')->insert($refresh);
                     $this->audit('Add');
@@ -6699,9 +6699,9 @@ class ChartController extends Controller {
         Session::forget('message_action');
         $data['content'] = '';
         $demographics = DB::table('demographics')->where('pid', '=', Session::get('pid'))->first();
+        $practiceInfo = DB::table('practiceinfo')->first();
         if ($demographics->photo !== null) {
             if (file_exists($demographics->photo)) {
-                $practiceInfo = DB::table('practiceinfo')->first();
                 $directory = $practiceInfo->documents_dir . Session::get('pid') . "/";
                 $new_directory = public_path() . '/temp/';
                 $new_directory1 = '/temp/';
@@ -6827,6 +6827,14 @@ class ChartController extends Controller {
             'items' => $items
         ];
         $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
+        if (Session::has('uma_uri') == 'y') {
+            $dropdown_array1 = [];
+            $dropdown_array1['default_button_text'] = '<i class="fa fa-table fa-fw fa-btn"></i>Consent Table';
+            $dropdown_array1['default_button_text_url'] = Session::get('uma_uri');
+            $dropdown_array1['class'] = 'btn-success';
+            $dropdown_array1['new_window'] = true;
+            $data['panel_dropdown'] .= '<span class="fa-btn"></span>' . $this->dropdown_build($dropdown_array1);
+        }
         $data = array_merge($data, $this->sidebar_build('chart'));
         Session::put('last_page', $request->fullUrl());
         $data['assets_js'] = $this->assets_js('chart');

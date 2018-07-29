@@ -1038,7 +1038,8 @@ class InstallController extends Controller {
                 }
                 // Register as resource server
                 $patient = DB::table('demographics')->where('pid', '=', '1')->first();
-                $client_name = 'Patient NOSH for ' .  $patient->firstname . ' ' . $patient->lastname . ', DOB: ' . date('Y-m-d', strtotime($patient->DOB));
+                // $client_name = 'Patient NOSH for ' .  $patient->firstname . ' ' . $patient->lastname . ', DOB: ' . date('Y-m-d', strtotime($patient->DOB));
+                $client_name = 'Patient NOSH for ' .  $patient->firstname . ' ' . $patient->lastname;
                 $url = route('uma_auth');
                 $oidc = new OpenIDConnectUMAClient($data['uma_uri']);
                 $oidc->setClientName($client_name);
