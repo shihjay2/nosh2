@@ -1239,7 +1239,7 @@ class LoginController extends Controller {
         if ($connected->count()) {
             foreach ($connected as $connect_row) {
                 if ($connect_row->pnosh !== null && $connect_row->pnosh !== '') {
-                    if ($connect_row->pnosh == 'CMS Bluebutton') {
+                    if ($connect_row->pnosh == 'Medicare Benefits') {
                         $connected_arr[] = [
                             'org_name' => $connect_row->pnosh,
                             'endpoint_uri' => route('cms_bluebutton'),
