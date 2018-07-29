@@ -1377,7 +1377,7 @@ class LoginController extends Controller {
             Session::put('url_hieofoneas', $url_hieofoneas);
             if ($practice1->patient_centric == 'y') {
                 if ($practice1->uma_uri !== null && $practice1->uma_uri !== '') {
-                    Session::put('uma_uri', '=', $practice1->uma_uri);
+                    Session::put('uma_uri', $practice1->uma_uri);
                 }
             }
             setcookie("login_attempts", 0, time()+900, '/');

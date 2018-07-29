@@ -13277,6 +13277,9 @@ class Controller extends BaseController
         $root_url = explode('/', $pnosh_url);
         $root_url1 = explode('.', $root_url[0]);
         $final_root_url = $root_url1[1] . '.' . $root_url1[2];
+        if ($pnosh_url == 'https://shihjay.xyz/nosh') {
+            $final_root_url = 'hieofone.org';
+        }
         if ($final_root_url == 'hieofone.org') {
             $relay_url = 'https://dir.' . $final_root_url . '/oidc_relay';
             if ($status == false) {
