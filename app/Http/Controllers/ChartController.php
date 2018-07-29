@@ -6826,14 +6826,15 @@ class ChartController extends Controller {
             'items_button_icon' => 'fa-tasks',
             'items' => $items
         ];
-        $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
         if (Session::has('uma_uri') == 'y') {
             $dropdown_array1 = [];
             $dropdown_array1['default_button_text'] = '<i class="fa fa-table fa-fw fa-btn"></i>Consent Table';
             $dropdown_array1['default_button_text_url'] = Session::get('uma_uri');
             $dropdown_array1['class'] = 'btn-success';
             $dropdown_array1['new_window'] = true;
-            $data['panel_dropdown'] .= '<span class="fa-btn"></span>' . $this->dropdown_build($dropdown_array1);
+            $data['panel_dropdown'] = $this->dropdown_build($dropdown_array1) . '<span class="fa-btn"></span>' . $this->dropdown_build($dropdown_array);
+        } else {
+            $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
         }
         $data = array_merge($data, $this->sidebar_build('chart'));
         Session::put('last_page', $request->fullUrl());
