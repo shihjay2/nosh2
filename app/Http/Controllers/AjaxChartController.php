@@ -143,14 +143,64 @@ class AjaxChartController extends Controller
     public function set_ccda_data(Request $request)
     {
         $data = $request->all();
-        Session::put('ccda', $data);
-        $columns = Schema::getColumnListing($data['type']);
-        $row_index = $columns[0];
-        $subtype = '';
-        if ($data['type'] == 'issues') {
-            $subtype = 'pl';
+        if (Session::get('patient_centric') == 'y') {
+            if ($data['type'] == 'rx_list') {
+                $reason = 'N/A';
+                if ($data1['reason'] !== '') {
+                    $reason = $data1['reason'];
+                }
+                $data1['rxl_medication'] = $data['name'];
+                $data1['rxl_dosage'] = $data['dosage'];
+                $data1['rxl_dosage_unit'] = $data['dosage-unit'];
+                $data1['rxl_route'] = $data['route'];
+                $data1['rxl_reason'] = $reason;
+                $data1['rxl_ndcid'] = $data['code'];
+                $data1['rxl_date_active'] = date('Y-m-d', $this->human_to_unix($data['date']));
+                $data1['rxl_instructions'] = $data['administration'];
+                if (isset($data['from'])) {
+                    $data1['rxl_instructions'] .= '; Obtained via FHIR from ' . $data['from'];
+                }
+            }
+            if ($data['type'] == 'issues') {
+                $data1['issue'] = $data['name'] . ' [' . $data['code'] . ']';
+                $data1['issue_date_active'] = date('Y-m-d', $this->human_to_unix($data['date']));
+                if (isset($data['from'])) {
+                    $data1['notes'] = 'Obtained via FHIR from ' . $data['from'];
+                }
+            }
+            if ($data['type'] == 'allergies') {
+                $data1['allergies_med'] = $data['name'];
+                $data1['allergies_reaction'] = $data['reaction'];
+                $data1['allergies_date_active'] = date('Y-m-d', $this->human_to_unix($data['date']));
+                $data1['meds_ndcid'] = $this->rxnorm_search($data['name']);
+                if (isset($data['from'])) {
+                    $data1['notes'] = 'Obtained via FHIR from ' . $data['from'];
+                }
+            }
+            if ($data['type'] = 'immunizations') {
+                $data1['imm_immunization'] = $data['name'];
+                $data1['imm_route'] = $data['route'];
+                $data1['imm_date'] = date('Y-m-d', $this->human_to_unix($data['date']));
+                if (isset($data['code'])) {
+                    $data1['imm_cvxcode'] = $data['code'];
+                }
+                if (isset($data['sequence'])) {
+                    $data1['imm_sequence'] = $data['sequence'];
+                }
+            }
+            DB::table($data['type'])->insert($data1);
+            Session::put('message_action', 'Added ' . $data['name']);
+            return Session::put('last_page');
+        } else {
+            Session::put('ccda', $data);
+            $columns = Schema::getColumnListing($data['type']);
+            $row_index = $columns[0];
+            $subtype = '';
+            if ($data['type'] == 'issues') {
+                $subtype = 'pl';
+            }
+            return route('chart_form', [$data['type'], $row_index, '0', $subtype]);
         }
-        return route('chart_form', [$data['type'], $row_index, '0', $subtype]);
     }
 
     public function set_chart_queue(Request $request)

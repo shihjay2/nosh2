@@ -4246,10 +4246,16 @@ class Controller extends BaseController
             $result1 = $query->get();
             $list_array = [];
             if ($result1->count()) {
+                $edit = $this->access_level('7');
+                $columns = Schema::getColumnListing($title_array[$type]['table']);
+                $row_index = $columns[0];
                 if ($type == 'Condition') {
                     foreach($result1 as $row1) {
                         $arr = [];
                         $arr['label'] = $row1->issue;
+                        if ($edit == true) {
+                            $arr['edit'] = route('chart_form', ['rx_list', $row_index, $row1->$row_index]);
+                        }
                         $list_array[] = $arr;
                     }
                 }
@@ -4260,6 +4266,9 @@ class Controller extends BaseController
                             $arr['label'] = $row1->rxl_medication . ' ' . $row1->rxl_dosage . ' ' . $row1->rxl_dosage_unit . ', ' . $row1->rxl_instructions . ' for ' . $row1->rxl_reason;
                         } else {
                             $arr['label'] = $row1->rxl_medication . ' ' . $row1->rxl_dosage . ' ' . $row1->rxl_dosage_unit . ', ' . $row1->rxl_sig . ', ' . $row1->rxl_route . ', ' . $row1->rxl_frequency . ' for ' . $row1->rxl_reason;
+                        }
+                        if ($edit == true) {
+                            $arr['edit'] = route('chart_form', ['rx_list', $row_index, $row1->$row_index]);
                         }
                         $list_array[] = $arr;
                     }
@@ -4280,6 +4289,9 @@ class Controller extends BaseController
                                 $arr['label'] = $row1->imm_immunization . $seq_array[$row1->imm_sequence];
                             }
                         }
+                        if ($edit == true) {
+                            $arr['edit'] = route('chart_form', ['rx_list', $row_index, $row1->$row_index]);
+                        }
                         $list_array[] = $arr;
                     }
                 }
@@ -4287,6 +4299,9 @@ class Controller extends BaseController
                     foreach ($result1 as $row1) {
                         $arr = [];
                         $arr['label'] = $row1->allergies_med . ' - ' . $row1->allergies_reaction;
+                        if ($edit == true) {
+                            $arr['edit'] = route('chart_form', ['rx_list', $row_index, $row1->$row_index]);
+                        }
                         $list_array[] = $arr;
                     }
                 }
