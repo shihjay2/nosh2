@@ -8708,6 +8708,7 @@ class ChartController extends Controller {
                 $client_name = 'mdNOSH - ' . $practice->practice_name;
                 $url1 = route('uma_auth');
                 $oidc = new OpenIDConnectUMAClient($as_uri);
+                $oidc->startSession();
                 $oidc->setClientName($client_name);
                 $oidc->setSessionName('pnosh');
                 $oidc->addRedirectURLs($url1);
@@ -8763,6 +8764,7 @@ class ChartController extends Controller {
         $client_id = Session::get('pnosh_client_id');
         $client_secret = Session::get('pnosh_client_secret');
         $oidc = new OpenIDConnectUMAClient($open_id_url, $client_id, $client_secret);
+        $oidc->startSession();
         $oidc->setRedirectURL($url);
         $oidc->setSessionName('pnosh');
         $oidc->addScope('openid');

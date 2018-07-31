@@ -1042,6 +1042,7 @@ class InstallController extends Controller {
                 $client_name = 'Patient NOSH for ' .  $patient->firstname . ' ' . $patient->lastname;
                 $url = route('uma_auth');
                 $oidc = new OpenIDConnectUMAClient($data['uma_uri']);
+                $oidc->startSession();
                 $oidc->setClientName($client_name);
                 $oidc->setSessionName('pnosh');
                 $oidc->addRedirectURLs($url);
@@ -1083,6 +1084,7 @@ class InstallController extends Controller {
                     $open_id_url = $query->uma_uri;
                     $url = route('uma_patient_centric');
                     $oidc = new OpenIDConnectUMAClient($open_id_url, $client_id, $client_secret);
+                    $oidc->startSession();
                     $oidc->setRedirectURL($url);
                     $oidc->setSessionName('pnosh');
                     $oidc->setUMA(true);

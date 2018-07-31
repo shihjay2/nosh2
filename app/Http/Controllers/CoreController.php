@@ -7818,6 +7818,7 @@ class CoreController extends Controller
         $url = route('uma_aat');
         // Requesting party claims
         $oidc = new OpenIDConnectUMAClient(Session::get('uma_uri'), Session::get('uma_client_id'), Session::get('uma_client_secret'));
+        $oidc->startSession();
         $oidc->setRedirectURL($url);
         $oidc->rqp_claims($permission_ticket);
     }
@@ -7863,6 +7864,7 @@ class CoreController extends Controller
             $client_secret = Session::get('uma_client_secret');
             $url = route('uma_api');
             $oidc = new OpenIDConnectUMAClient($as_uri, $client_id, $client_secret);
+            $oidc->startSession();
             $oidc->setSessionName('nosh');
             $oidc->setAccessToken(Session::get('uma_auth_access_token_nosh'));
             $oidc->setRedirectURL($url);
@@ -8052,6 +8054,7 @@ class CoreController extends Controller
             $client_name = 'mdNOSH - ' . $practice->practice_name;
             $url1 = route('uma_auth');
             $oidc = new OpenIDConnectUMAClient($as_uri);
+            $oidc->startSession();
             $oidc->setClientName($client_name);
             $oidc->setSessionName('nosh');
             $oidc->addRedirectURLs($url1);
@@ -8121,6 +8124,7 @@ class CoreController extends Controller
     public function uma_register_auth(Request $request)
     {
         $oidc = new OpenIDConnectUMAClient(Session::get('uma_uri'), Session::get('uma_client_id'), Session::get('uma_client_secret'));
+        $oidc->startSession();
         $oidc->setSessionName('nosh');
         $oidc->setRedirectURL(route('uma_register_auth'));
         $oidc->setSessionName('pnosh');
@@ -8176,6 +8180,7 @@ class CoreController extends Controller
             return redirect()->route('uma_register_auth');
         }
         $oidc = new OpenIDConnectUMAClient($patient->hieofone_as_url, $patient->hieofone_as_client_id, $patient->hieofone_as_client_secret);
+        $oidc->startSession();
         $oidc->setSessionName('nosh');
         $oidc->setUMA(true);
         $oidc->refreshToken($patient->hieofone_as_refresh_token);

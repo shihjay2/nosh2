@@ -221,6 +221,7 @@ class LoginController extends Controller {
         $practice = DB::table('practiceinfo')->where('practice_id', '=', '1')->first();
         $url = route('google_auth');
         $oidc = new OpenIDConnectUMAClient($open_id_url, $client_id, $client_secret);
+        $oidc->startSession();
         $oidc->setRedirectURL($url);
         $oidc->addScope('openid');
         $oidc->addScope('email');
@@ -505,6 +506,7 @@ class LoginController extends Controller {
             $open_id_url = $practice->uma_uri;
             $url = route('uma_logout');
             $oidc = new OpenIDConnectUMAClient($open_id_url, $client_id, $client_secret);
+            $oidc->startSession();
             $oidc->setRedirectURL($url);
             $oidc->setAccessToken(Session::get('uma_auth_access_token'));
             $oidc->revoke();
@@ -522,6 +524,7 @@ class LoginController extends Controller {
             $client_secret = $practice->uma_client_secret;
             $url = route('oidc_logout');
             $oidc = new OpenIDConnectUMAClient($open_id_url, $client_id, $client_secret);
+            $oidc->startSession();
             $oidc->setRedirectURL($url);
             $oidc->setAccessToken(Session::get('oidc_auth_access_token'));
             $oidc->revoke();
@@ -559,6 +562,7 @@ class LoginController extends Controller {
                 $open_id_url = 'http://noshchartingsystem.com/oidc';
                 $url = route('oidc');
                 $oidc = new OpenIDConnectUMAClient($open_id_url);
+                $oidc->startSession();
                 $oidc->setClientName($client_name);
                 $oidc->setRedirectURL($url);
                 $oidc->register();
@@ -579,6 +583,7 @@ class LoginController extends Controller {
         }
         $url = route('oidc');
         $oidc = new OpenIDConnectUMAClient($open_id_url, $client_id, $client_secret);
+        $oidc->startSession();
         $oidc->setRedirectURL($url);
         $oidc->addScope('openid');
         $oidc->addScope('email');
@@ -774,6 +779,7 @@ class LoginController extends Controller {
         $client_secret = $practice->uma_client_secret;
         $url = route('oidc_logout');
         $oidc = new OpenIDConnectUMAClient($open_id_url, $client_id, $client_secret);
+        $oidc->startSession();
         $oidc->setRedirectURL($url);
         $oidc->setAccessToken(Session::get('oidc_auth_access_token'));
         $oidc->revoke();
@@ -794,6 +800,7 @@ class LoginController extends Controller {
         $open_id_url = 'http://noshchartingsystem.com/oidc';
         $url = route('oidc');
         $oidc = new OpenIDConnectUMAClient($open_id_url);
+        $oidc->startSession();
         $oidc->setClientName($client_name);
         $oidc->setRedirectURL($url);
         $oidc->register();
@@ -816,6 +823,7 @@ class LoginController extends Controller {
         $client_secret = $practice->openidconnect_client_secret;
         $url = route('oidc_api');
         $oidc = new OpenIDConnectUMAClient($open_id_url, $client_id, $client_secret);
+        $oidc->startSession();
         $oidc->setRedirectURL($url);
         $oidc->authenticate();
         $firstname = $oidc->requestUserInfo('given_name');
@@ -1323,6 +1331,7 @@ class LoginController extends Controller {
         $open_id_url = $practice->uma_uri;
         $url = route('uma_auth');
         $oidc = new OpenIDConnectUMAClient($open_id_url, $client_id, $client_secret);
+        $oidc->startSession();
         $oidc->setRedirectURL($url);
         $oidc->setSessionName('pnosh');
         if ($practice->uma_refresh_token == '') {
@@ -1506,6 +1515,7 @@ class LoginController extends Controller {
         $open_id_url = $practice->uma_uri;
         $url = route('uma_logout');
         $oidc = new OpenIDConnectUMAClient($open_id_url, $client_id, $client_secret);
+        $oidc->startSession();
         $oidc->setRedirectURL($url);
         $oidc->setAccessToken(Session::get('uma_auth_access_token'));
         $oidc->revoke();
