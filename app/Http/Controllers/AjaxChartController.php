@@ -149,6 +149,11 @@ class AjaxChartController extends Controller
                 if ($data['reason'] !== '') {
                     $reason = $data['reason'];
                 }
+                $data1 = [
+                    'rxl_date_prescribed' => '',
+                    'rxl_date_inactive' => '',
+                    'rxl_date_old' => ''
+                ];
                 $data1['rxl_medication'] = $data['name'];
                 $data1['rxl_dosage'] = $data['dosage'];
                 $data1['rxl_dosage_unit'] = $data['dosage-unit'];
@@ -164,6 +169,8 @@ class AjaxChartController extends Controller
             if ($data['type'] == 'issues') {
                 $data1['issue'] = $data['name'] . ' [' . $data['code'] . ']';
                 $data1['issue_date_active'] = date('Y-m-d', $this->human_to_unix($data['date']));
+                $data1['type'] = 'pl';
+                $data1['issue_date_inactive'] = '';
                 if (isset($data['from'])) {
                     $data1['notes'] = 'Obtained via FHIR from ' . $data['from'];
                 }
@@ -173,6 +180,7 @@ class AjaxChartController extends Controller
                 $data1['allergies_reaction'] = $data['reaction'];
                 $data1['allergies_date_active'] = date('Y-m-d', $this->human_to_unix($data['date']));
                 $data1['meds_ndcid'] = $this->rxnorm_search($data['name']);
+                $data1['allergies_date_inactive'] = '';
                 if (isset($data['from'])) {
                     $data1['notes'] = 'Obtained via FHIR from ' . $data['from'];
                 }
@@ -181,6 +189,7 @@ class AjaxChartController extends Controller
                 $data1['imm_immunization'] = $data['name'];
                 $data1['imm_route'] = $data['route'];
                 $data1['imm_date'] = date('Y-m-d', $this->human_to_unix($data['date']));
+                $data1['imm_vis'] = '';
                 if (isset($data['code'])) {
                     $data1['imm_cvxcode'] = $data['code'];
                 }
