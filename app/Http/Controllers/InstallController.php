@@ -1380,7 +1380,7 @@ class InstallController extends Controller {
                                         }
                                     }
                                     file_put_contents($filename, $file);
-                                    if ($filename == 'composer.json' || $filename == 'composer.lock') {
+                                    if ($row1['filename'] == 'composer.json' || $row1['filename'] == 'composer.lock') {
                                         $composer = true;
                                     }
                                 }
