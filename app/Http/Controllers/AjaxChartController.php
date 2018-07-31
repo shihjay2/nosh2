@@ -177,7 +177,7 @@ class AjaxChartController extends Controller
                     $data1['notes'] = 'Obtained via FHIR from ' . $data['from'];
                 }
             }
-            if ($data['type'] = 'immunizations') {
+            if ($data['type'] == 'immunizations') {
                 $data1['imm_immunization'] = $data['name'];
                 $data1['imm_route'] = $data['route'];
                 $data1['imm_date'] = date('Y-m-d', $this->human_to_unix($data['date']));
