@@ -146,8 +146,8 @@ class AjaxChartController extends Controller
         if (Session::get('patient_centric') == 'y') {
             if ($data['type'] == 'rx_list') {
                 $reason = 'N/A';
-                if ($data1['reason'] !== '') {
-                    $reason = $data1['reason'];
+                if ($data['reason'] !== '') {
+                    $reason = $data['reason'];
                 }
                 $data1['rxl_medication'] = $data['name'];
                 $data1['rxl_dosage'] = $data['dosage'];
