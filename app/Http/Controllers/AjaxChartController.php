@@ -188,6 +188,7 @@ class AjaxChartController extends Controller
                     $data1['imm_sequence'] = $data['sequence'];
                 }
             }
+            $data1['pid'] = Session::get('pid');
             DB::table($data['type'])->insert($data1);
             Session::put('message_action', 'Added ' . $data['name']);
             return Session::put('last_page');
