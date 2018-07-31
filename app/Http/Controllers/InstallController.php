@@ -1202,24 +1202,24 @@ class InstallController extends Controller {
                         }
                     }
                     // Login as owner
-                    $user = DB::table('users')->where('id', '=', '2')->first();
-                    Auth::loginUsingId($user->id);
-                    $practice1 = DB::table('practiceinfo')->where('practice_id', '=', $user->practice_id)->first();
-                    Session::put('user_id', $user->id);
-                    Session::put('group_id', $user->group_id);
-                    Session::put('practice_id', $user->practice_id);
-                    Session::put('version', $practice1->version);
-                    Session::put('practice_active', $practice1->active);
-                    Session::put('displayname', $user->displayname);
-                    Session::put('documents_dir', $practice1->documents_dir);
-                    Session::put('rcopia', $practice1->rcopia_extension);
-                    Session::put('mtm_extension', $practice1->mtm_extension);
-                    Session::put('patient_centric', $practice1->patient_centric);
-                    Session::put('uma_auth_access_token', $access_token);
-                    Session::put('uport_id', $uport_id);
-                    $url_hieofoneas = str_replace('/nosh', '/resources/' . $practice1->uma_client_id, URL::to('/'));
-                    Session::put('url_hieofoneas', $url_hieofoneas);
-                    setcookie("login_attempts", 0, time()+900, '/');
+                    // $user = DB::table('users')->where('id', '=', '2')->first();
+                    // Auth::loginUsingId($user->id);
+                    // $practice1 = DB::table('practiceinfo')->where('practice_id', '=', $user->practice_id)->first();
+                    // Session::put('user_id', $user->id);
+                    // Session::put('group_id', $user->group_id);
+                    // Session::put('practice_id', $user->practice_id);
+                    // Session::put('version', $practice1->version);
+                    // Session::put('practice_active', $practice1->active);
+                    // Session::put('displayname', $user->displayname);
+                    // Session::put('documents_dir', $practice1->documents_dir);
+                    // Session::put('rcopia', $practice1->rcopia_extension);
+                    // Session::put('mtm_extension', $practice1->mtm_extension);
+                    // Session::put('patient_centric', $practice1->patient_centric);
+                    // Session::put('uma_auth_access_token', $access_token);
+                    // Session::put('uport_id', $uport_id);
+                    // $url_hieofoneas = str_replace('/nosh', '/resources/' . $practice1->uma_client_id, URL::to('/'));
+                    // Session::put('url_hieofoneas', $url_hieofoneas);
+                    // setcookie("login_attempts", 0, time()+900, '/');
                     return redirect($open_id_url);
                 }
             }
