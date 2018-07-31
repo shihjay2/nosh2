@@ -949,7 +949,20 @@ class InstallController extends Controller {
                         'GOOGLE_KEY' => '',
                         'GOOGLE_SECRET' => '',
                         'GOOGLE_REDIRECT_URI' => ''
-                    ]
+                    ],
+                    'none' => [
+                        'MAIL_DRIVER' => 'none',
+                        'MAILGUN_DOMAIN' => '',
+                        'MAILGUN_SECRET' => '',
+                        'MAIL_HOST' => '',
+                        'MAIL_PORT' => '',
+                        'MAIL_ENCRYPTION' => '',
+                        'MAIL_USERNAME' => '',
+                        'MAIL_PASSWORD' => '',
+                        'GOOGLE_KEY' => '',
+                        'GOOGLE_SECRET' => '',
+                        'GOOGLE_REDIRECT_URI' => ''
+                    ],
                 ];
                 $this->changeEnv($mail_arr[$request->input('mail_type')]);
                 if ($request->input('mail_type') == 'gmail') {

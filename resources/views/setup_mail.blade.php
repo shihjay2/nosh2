@@ -24,7 +24,7 @@
 
 							<div class="col-md-6">
 								<select id="mail_type" class="form-control" name="mail_type" value="{{ old('mail_type', $mail_type) }}">
-									<option value="">None</option>
+									<option value="none">None</option>
 									<option value="gmail" {{ $mail_type == 'gmail' ? 'selected="selected"' : '' }}>Google Gmail</option>
 									<option value="mailgun" {{ $mail_type == 'mailgun' ? 'selected="selected"' : '' }}>Mailgun</option>
 									<option value="sparkpost" {{ $mail_type == 'sparkpost' ? 'selected="selected"' : '' }}>SparkPost</option>

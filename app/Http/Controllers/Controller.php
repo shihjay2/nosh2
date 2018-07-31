@@ -16661,12 +16661,14 @@ class Controller extends BaseController
             // });
             // }
         }
-        Mail::send($template, $data_message, function ($message) use ($to, $subject, $practice) {
-			$message->to($to)
-				->from($practice->email, $practice->practice_name)
-				->subject($subject);
-		});
-		return "E-mail sent.";
+        if (env('MAIL_DRIVER') !== 'none') {
+            Mail::send($template, $data_message, function ($message) use ($to, $subject, $practice) {
+    			$message->to($to)
+    				->from($practice->email, $practice->practice_name)
+    				->subject($subject);
+    		});
+		    return "E-mail sent.";
+        }
         return true;
     }
 
