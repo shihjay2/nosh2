@@ -6741,8 +6741,10 @@ class ChartController extends Controller {
         $data['content'] .= '<h4 style="text-align:center;">Timeline</h4>';
         if (count($arr['json']) <1) {
             $data['content'] .= '<div class="alert alert-success"><p><span style="margin-right:15px;"><i class="fa fa-star-o fa-lg"></i></span><strong>Account Created!</strong></p>';
-            if ($demographics->photo == null && Session::get('patient_centric') == 'y') {
-                $data['content'] .= '<p>It is recommended to <a href="' . route("demographics_add_photo") . '">add a photo of you</a> so that other health care providers can recognize you.</p>';
+            if (Session::get('patient_centric') == 'y') {
+                if ($demographics->photo == null || $demographics->photo == '') {
+                    $data['content'] .= '<p>It is recommended to <a href="' . route("demographics_add_photo") . '">add a photo of you</a> so that other health care providers can recognize you.</p>';
+                }
             }
             $data['content'] .='</div>';
         } else {
