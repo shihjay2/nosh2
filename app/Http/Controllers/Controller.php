@@ -25,6 +25,7 @@ use Laravel\LegacyEncrypter\McryptEncrypter;
 use Mail;
 use PDF;
 use Request;
+use Schema;
 use shihjay2\tcpdi_merger\MyTCPDI;
 use shihjay2\tcpdi_merger\Merger;
 use Shihjay2\OpenIDConnectUMAClient;
