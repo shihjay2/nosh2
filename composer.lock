@@ -3175,12 +3175,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/shihjay2/OpenID-Connect-UMA-PHP.git",
-                "reference": "5bec04e1dd7383e9444fd96dfd119ebd0ecad465"
+                "reference": "d8e04a83338206a4382838deeb4f55366f1ac7a5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/shihjay2/OpenID-Connect-UMA-PHP/zipball/5bec04e1dd7383e9444fd96dfd119ebd0ecad465",
-                "reference": "5bec04e1dd7383e9444fd96dfd119ebd0ecad465",
+                "url": "https://api.github.com/repos/shihjay2/OpenID-Connect-UMA-PHP/zipball/d8e04a83338206a4382838deeb4f55366f1ac7a5",
+                "reference": "d8e04a83338206a4382838deeb4f55366f1ac7a5",
                 "shasum": ""
             },
             "require": {
@@ -3191,8 +3191,11 @@
             },
             "type": "library",
             "autoload": {
-                "classmap": [
-                    "src/"
+                "psr-4": {
+                    "Shihjay2\\": "src"
+                },
+                "files": [
+                    "src/functions.php"
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -3217,7 +3220,7 @@
                 "php",
                 "uma"
             ],
-            "time": "2018-07-31T03:37:11+00:00"
+            "time": "2018-07-31T12:02:25+00:00"
         },
         {
             "name": "shihjay2/tcpdi-merger",
