@@ -968,7 +968,11 @@ class InstallController extends Controller {
                 if ($request->input('mail_type') == 'gmail') {
                     return redirect()->route('googleoauth');
                 } else {
-                    return redirect()->route('setup_mail_test');
+                    if ($request->input('mail_type') !== 'none') {
+                        return redirect()->route('setup_mail_test');
+                    } else {
+                        return redirect()->route('dashboard');
+                    }
                 }
             } else {
                 $data2['noheader'] = true;
