@@ -78,7 +78,7 @@
 			$.ajax({
 				type: "POST",
 				url: '{!! $ajax1 !!}',
-				data: 'name=' + credentials.name + '&uport=' + credentials.address,
+				data: 'name=' + credentials.name + '&uport=' + credentials.networkAddress,
 				dataType: 'json',
 				success: function(data){
 					if (data.message !== 'OK') {
