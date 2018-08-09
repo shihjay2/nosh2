@@ -119,12 +119,12 @@ class ReminderController extends Controller {
 				$arr .= "Number of patients reminders sent to make appointment: " . $appointment_count1 . "<br>";
 			}
 		}
-		$results_count = $this->get_results();
+		// $results_count = $this->get_results();
 		$results_alert = $this->alert_message_send();
 		$results_practice_clean = $this->clean_practice();
 		$results_api = $this->api_process();
 		$this->clean_temp_dir();
-		$arr .= "Number of results obtained: " . $results_count . "<br>";
+		// $arr .= "Number of results obtained: " . $results_count . "<br>";
 		$arr .= "Number of alerts sent: " . $results_alert . "<br>";
 		$arr .= "Number of unused practices cleaned: " . $results_practice_clean . "<br>";
 		$arr .= "Number of commands sent via API: " . $results_api . "<br><br>";
