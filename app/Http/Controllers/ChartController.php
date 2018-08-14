@@ -947,7 +947,7 @@ class ChartController extends Controller {
         // $base_url = 'https://api.bluebutton.cms.gov';
         $title_array = [
             'Summary' => ['Patient Summary', 'fa-address-card', '/v1/connect/userinfo'],
-            'EOB' => ['Explaination of Benefits', 'fa-money', '/v1/fhir/ExplanationOfBenefit/?patient=' . Session::get('cms_pid')],
+            'EOB' => ['Explanation of Benefits', 'fa-money', '/v1/fhir/ExplanationOfBenefit/?patient=' . Session::get('cms_pid')],
             'Coverage' => ['Coverage Information', 'fa-address-book', '/v1/fhir/Coverage/?patient=' . Session::get('cms_pid')]
         ];
         $data['panel_header'] = 'CMS Bluebutton Data - ' . $title_array[$type][0];
