@@ -1391,8 +1391,10 @@ class ChartController extends Controller {
                     'address_id' => 'required'
                 ]);
             }
-            if ($data['address_id'] == '') {
-                unset($data['address_id']);
+            if (isset($data['address_id'])) {
+                if ($data['address_id'] == '') {
+                    unset($data['address_id']);
+                }
             }
         }
         // Mediations specific data handling

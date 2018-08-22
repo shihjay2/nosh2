@@ -30,7 +30,7 @@
         "maatwebsite/excel": "~2.1.0",
         "naviocean/laravel-nameparser": "dev-master",
         "phpseclib/phpseclib": "~2.0",
-        "shihjay2/tcpdi-merger": "0.4.*",
+        "shihjay2/tcpdi-merger": "dev-master",
         "rospdf/pdf-php": "^0.12.46",
         "simplesoftwareio/simple-qrcode": "~1.4",
         "soapbox/laravel-formatter": "2.x",
