@@ -1410,6 +1410,15 @@ class ChartController extends Controller {
                 unset($data['referral_specialty']);
             }
         }
+        // Billing specific handling
+        if ($table == 'billing_core') {
+            if ($action == 'save') {
+                $this->validate($request, [
+                    'cpt_charge' => 'numeric',
+                    'unit' => 'numeric'
+                ]);
+            }
+        }
         if ($action == 'save') {
             if ($id == '0') {
                 if ($table !== 'vitals') {
