@@ -835,8 +835,8 @@ class InstallController extends Controller {
                             $items[1]['default_value'] = Session::get('hash');
                             Session::forget('rx_json');
                             Session::forget('hash');
-                            $bytes = 4 * 64;
-                            $rx_hash = substr(substr($ret, 10), $bytes);
+                            $bytes = 13 * 64;
+                            $rx_hash = substr(substr(substr($ret, 18), $bytes), 0, -56);
                             $items[] = [
                                 'name' => 'rx_hash',
                                 'label' => 'Prescription Hash from Blockchain',
