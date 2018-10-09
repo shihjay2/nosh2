@@ -2315,7 +2315,7 @@ class CoreController extends Controller
                         foreach ($received as $received_row) {
                             DB::connection('mysql2')->table('received')->insert((array) $received_row);
                             if ($received_row->filePath != '') {
-                                $localPath3 = str_replace($documents_dir,'/',$scans_row->filePath);
+                                $localPath3 = str_replace($documents_dir,'/',$received_row->filePath);
                                 if (file_exists($received_row->filePath)) {
                                     $zip->addFile($received_row->filePath,$localPath3);
                                 }

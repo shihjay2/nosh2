@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
     <title>
         @if (isset($title))
             {{ $title }}
@@ -140,8 +140,8 @@
                             <li><a href="{{ url('/login') }}">{{ trans('nosh.login_heading') }}</a></li>
                         @endif
                     @else
-                        @if (Session::has('pid'))
-                            <li><a href="{{ route('uma_invite') }}"><i class="fa fa-share-square-o fa-fw fa-lg send_uma_invite" data-toggle="tooltip" data-placement="bottom" title="{{ trans('nosh.uma_invite') }}"></i></a></li>
+                        @if (Session::has('uma_uri'))
+                            <li><a href="{{ Session::get('uma_uri') }}/make_invitation"><i class="fa fa-share-square-o fa-fw fa-lg send_uma_invite" data-toggle="tooltip" data-placement="bottom" title="{{ trans('nosh.uma_invite') }}"></i></a></li>
                         @endif
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -282,7 +282,7 @@
                             </a>
                         </li>
                         <li @if(isset($documents_active)) class="active" @endif>
-                            <a href="{{ route('documents_list', ['type' => 'Laboratory']) }}">
+                            <a href="{{ route('documents_list', ['type' => 'All']) }}">
                                 <i class="fa fa-file-text-o fa-fw fa-lg"></i>
                                 <span class="sidebar-item">{{ trans('nosh.documents_list') }}</span>
                             </a>

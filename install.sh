@@ -238,7 +238,7 @@ cd $NEWNOSH
 sed -i '/^DB_DATABASE=/s/=.*/='"$MYSQL_DATABASE"'/' $ENV
 sed -i '/^DB_USERNAME=/s/=.*/='"$MYSQL_USERNAME"'/' $ENV
 sed -i '/^DB_PASSWORD=/s/=.*/='"$MYSQL_PASSWORD"'/' $ENV
-
+sed -i '/^APP_DEBUG=/s/=.*/='"false"'/' $ENV
 chown -R $WEB_GROUP.$WEB_USER $NEWNOSH
 chmod -R 755 $NEWNOSH
 chmod -R 777 $NEWNOSH/storage
@@ -279,6 +279,7 @@ APACHE_CONF="$APACHE_CONF
 	RewriteRule ^ index.php [L]
 	# Force SSL
 	RewriteCond %{HTTPS} !=on
+	RewriteCond %{HTTP_HOST} !=localhost
 	RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 	<IfModule mod_php5.c>
 		php_value upload_max_filesize 512M

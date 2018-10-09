@@ -2,7 +2,9 @@
 
 namespace App\Http\Middleware;
 
+use App;
 use Closure;
+use Config;
 use DB;
 use File;
 use Response;
@@ -42,6 +44,15 @@ class PostAuth
         $messages = DB::table('messaging')->where('mailbox', '=', Session::get('user_id'))->where('read', '=', null)->count();
         Session::put('messages_count', $messages);
         Session::put('notification_run', 'true');
+        $user = DB::table('users')->where('id', '=', Session::get('user_id'))->first();
+        $locale = Config::get('app.locale');
+        if ($user->locale == null) {
+            $user_data['locale'] = $locale;
+            DB::table('users')->where('id', '=', Session::get('user_id'))->update($user_data);
+        } else {
+            $locale = $user->locale;
+        }
+        App::setLocale($locale);
         // Check if pNOSH for provider that patient's demographic supplementary tables exist
         if (Session::get('patient_centric') == 'yp') {
             $relate = DB::table('demographics_notes')->where('pid', '=', Session::get('pid'))->where('practice_id', '=', Session::get('practice_id'))->first();

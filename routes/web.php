@@ -210,6 +210,7 @@ Route::get('encounter_vitals_view/{eid?}', ['as' => 'encounter_vitals_view', 'us
 Route::get('encounter_vitals_chart/{type}', ['as' => 'encounter_vitals_chart', 'uses' => 'ChartController@encounter_vitals_chart']);
 Route::get('encounters_list', ['as' => 'encounters_list', 'uses' => 'ChartController@encounters_list']);
 Route::get('family_history', ['as' => 'family_history', 'uses' => 'ChartController@family_history']);
+Route::any('family_history_sensitive/{id}', ['as' => 'family_history_sensitive', 'uses' => 'ChartController@family_history_sensitive']);
 Route::any('family_history_update/{id}', ['as' => 'family_history_update', 'uses' => 'ChartController@family_history_update']);
 Route::any('fhir_connect/{id?}', ['as' => 'fhir_connect', 'uses' => 'ChartController@fhir_connect']);
 Route::any('fhir_connect_display/{type?}', ['as' => 'fhir_connect_display', 'uses' => 'ChartController@fhir_connect_display']);
@@ -318,6 +319,7 @@ Route::group(['prefix' => 'fhir', 'middleware' => 'fhir'], function () {
     Route::resource('Appointment', 'AppointmentController'); //in use - appointments
     Route::resource('Binary', 'BinaryController'); //in use - documents
     Route::resource('CarePlan', 'CarePlanController');
+    Route::resource('CareTeam', 'CareTeamController');
     Route::resource('Composition', 'CompositionController');
     Route::resource('ConceptMap', 'ConceptMapController');
     Route::resource('Condition', 'ConditionController'); //in use - issues, assessments

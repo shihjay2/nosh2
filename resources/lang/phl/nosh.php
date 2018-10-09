@@ -131,7 +131,7 @@ return [
     "care_opportunities" => "Care Opportunities",
     "records_list" => "Coordination of Care",
     "billing_list" => "Billing",
-    "payors_list" => "Payers",
+    "payors_list" => "Payors",
     "search_chart" => "Search Chart...",
 
     // Search

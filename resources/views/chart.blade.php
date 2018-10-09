@@ -744,7 +744,7 @@
             if (noshdata.height_unit == 'cm') {
                 h = roundit(h/2.54);
             }
-            if (w !== '') {
+            if (w !== '' && h !== '' && w !== 0 && h !== 0) {
                 var text = '';
                 if ((w >= 500) || (h >= 120)) {
                     toastr.error('{{ trans('nosh.invalid_data') }}');

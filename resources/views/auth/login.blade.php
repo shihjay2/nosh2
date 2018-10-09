@@ -60,7 +60,7 @@
                         @if ($pnosh_provider == 'n')
                             <div class="form-group">
                                 <div class="col-md-6 col-md-offset-3">
-                                    <a class="btn btn-primary btn-block" href="{{ url('/uma_auth') }}">
+                                    <a class="btn btn-primary btn-block" href="{{ url('/') }}">
                                         <i class="fa fa-btn fa-openid"></i> {{ trans('nosh.button_pnosh_login') }}
                                     </a>
                                     <br><br><a href="#" id="show_login_form">{{ trans('nosh.button_pnosh_admin') }}</a><br><br>
@@ -69,7 +69,7 @@
                         @else
                             <div class="form-group">
                                 <div class="col-md-6 col-md-offset-3">
-									<a class="btn btn-primary btn-block" href="{{ url('/uma_auth') }}">
+									<a class="btn btn-primary btn-block" href="{{ url('/') }}">
                                         <i class="fa fa-btn fa-openid"></i> {{ trans('nosh.button_pnosh_login_with') }} HIE of One
                                     </a>
                                     <a class="btn btn-primary btn-block" href="{{ url('/oidc') }}">
