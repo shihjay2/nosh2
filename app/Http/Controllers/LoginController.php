@@ -1182,7 +1182,7 @@ class LoginController extends Controller {
                             'email' => $request->input('email')
                         ];
                         $this->send_mail('emails.loginregistrationrequest', $data_message2, 'New User Request', $row3->email, '1');
-                        $view_data1['header'] = 'Registration Sent';
+                        $view_data1['panel_header'] = 'Registration Sent';
                         $view_data1['content'] = "<div>Your registration information has been sent to the administrator and you will receive your registration code within 48-72 hours by e-mail after confirmation of your idenity.<br>Thank you!</div>";
                         return view('welcome', $view_data1);
                     }
