@@ -195,6 +195,8 @@ Route::get('encounter_assessment_add/{type}/{id}', ['as' => 'encounter_assessmen
 Route::get('encounter_assessment_delete/{id}', ['as' => 'encounter_assessment_delete', 'uses' => 'ChartController@encounter_assessment_delete']);
 Route::any('encounter_assessment_edit/{id}', ['as' => 'encounter_assessment_edit', 'uses' => 'ChartController@encounter_assessment_edit']);
 Route::get('encounter_assessment_move/{id}/{direction}', ['as' => 'encounter_assessment_move', 'uses' => 'ChartController@encounter_assessment_move']);
+// GYN 20181007: Add Copy to Problem List
+Route::get('encounter_assessment_copy/{id}', ['as' => 'encounter_assessment_copy', 'uses' => 'ChartController@encounter_assessment_copy']);
 Route::any('encounter_billing/{eid}/{section?}', ['as' => 'encounter_billing', 'uses' => 'ChartController@encounter_billing']);
 Route::get('encounter_close', ['as' => 'encounter_close', 'uses' => 'ChartController@encounter_close']);
 Route::get('encounter_delete_photo/{id}', ['as' => 'encounter_delete_photo', 'uses' => 'ChartController@encounter_delete_photo']);
