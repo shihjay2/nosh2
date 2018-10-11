@@ -3566,7 +3566,9 @@ class ChartController extends Controller {
             $dx_pre_array = [];
             for ($j = 1; $j <= 12; $j++) {
                 $col0 = 'assessment_' . $j;
-                if ($dxs->{$col0} !== '' && $dxs->{$col0} !== null) {
+                // GYN 20181006: Add ICD code to Assessment display
+                $col1 = 'assessment_icd' . $j;
+                if (!empty($dxs->{$col0})) {
                     $dx_pre_array[] = $j;
                 }
             }
@@ -3574,9 +3576,10 @@ class ChartController extends Controller {
                 $first_dx = $dx_pre_array[0];
                 $last_dx = $dx_pre_array[count($dx_pre_array) - 1];
                 foreach ($dx_pre_array as $dx_num) {
-                    $col = 'assessment_' . $dx_num;
                     $arr = [];
-                    $arr['label'] = '<strong>' . $dx_num . ':</strong> ' . $dxs->{$col};
+                    $arr['label'] = '<strong>' . $dx_num . ':</strong> ' . $dxs->{'assessment_'.$dx_num};
+                    // GYN 20181006: Add ICD code to assessment display
+                    $arr['label'] .= ' [' . $dxs->{'assessment_icd'.$dx_num} . ']';
                     $arr['edit'] = route('encounter_assessment_edit', [$dx_num]);
                     $arr['delete'] = route('encounter_assessment_delete', [$dx_num]);
                     if ($dx_num !== $first_dx && $dx_num !== $last_dx) {

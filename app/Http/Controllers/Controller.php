@@ -4195,11 +4195,17 @@ class Controller extends BaseController
             $data['assessment'] = '<br><h4>Assessment:</h4><p class="view">';
             for ($l = 1; $l <= 12; $l++) {
                 $col0 = 'assessment_' . $l;
-                if ($assessmentInfo->{$col0} !== '' && $assessmentInfo->{$col0} !== null) {
+				// GYN 20181006: Add ICD code to assessment display
+				$col1 = 'assessment_icd' . $l;
+                if (!empty($assessmentInfo->{$col0})) {
                     if ($l > 1) {
                         $data['assessment'] .= '<br />';
                     }
-                    $data['assessment'] .= '<strong>' . $assessmentInfo->{$col0} . '</strong><br />';
+                    $data['assessment'] .= '<strong>' . $assessmentInfo->{$col0};
+					if (!empty($assessmentInfo->{$col1})) {
+						$data['assessment'] .= ' [' . $assessmentInfo->{$col1} . ']';
+					}
+					$data['assessment'] .= '</strong><br />';
                 }
             }
             foreach ($assessment_arr as $assessment_k => $assessment_v) {

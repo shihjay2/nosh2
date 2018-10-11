@@ -1661,7 +1661,17 @@
                 } else {
                     if ($(this).hasClass('nosh-icd10')) {
                         if ($(this).hasClass('list-group-item-success') || $(this).hasClass('list-group-item-info')) {
-                            $('#' + target).val(value);
+                            // GYN 20181006: Parse out assessment and icd code								
+                            if (target.includes('_')) { // GYN 20181008: Only parse if target textbox contains '_'
+	                            $('#' + target).val(value.split(' [', 1));
+								var target_icd = target.replace("_", "_icd");
+								if ($('#' + target_icd).length != 0) { // GYN 20181008: Only if target_icd exists
+									$('#' + target.replace("_", "_icd")).val($(this).attr('data-nosh-id'));
+								}
+							}
+							else {
+	                            $('#' + target).val(value);								
+							}
                         } else {
                             proceed = false;
                             var list_item = $(this).attr('id');
