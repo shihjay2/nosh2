@@ -16471,6 +16471,10 @@ class Controller extends BaseController
                 if (isset($item['jump'])) {
                     $return .= '<a href="' . $item['jump'] . '" target="_blank" class="btn fa-btn" data-toggle="tooltip" title="Open Chart"><i class="fa fa-hand-o-right fa-lg"></i></a>';
                 }
+				// GYN 20181007: Add Assessment Copy to Problem List 
+				if (isset($item['problem_list'])) {
+                    $return .= '<a href="' . $item['problem_list'] . '" class="btn fa-btn" data-toggle="tooltip" title="Copy to Problem List"><i class="fa fa-share-square fa-lg" style="color:green"></i></a>';
+				}
                 $return .= '</span></li>';
             }
         }

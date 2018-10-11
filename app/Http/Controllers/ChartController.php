@@ -3593,6 +3593,8 @@ class ChartController extends Controller {
                             $arr['move_up'] = route('encounter_assessment_move', [$dx_num, 'up']);
                         }
                     }
+					// GYN 20181007: Add Assessment Copy to Problem List option
+                    $arr['problem_list'] = route('encounter_assessment_copy', [$dx_num]);
                     $dx_array[] = $arr;
                 }
                 $return .= $this->result_build($dx_array, 'assessment_list');
@@ -4267,6 +4269,79 @@ class ChartController extends Controller {
         return redirect(Session::get('last_page'));
     }
 
+    public function encounter_assessment_copy(Request $request, $id)
+ 		/**
+		 * Copy Encounter Assessment item to Problem List.
+		 *
+		 * Selected assessment will be added to the problem list via the "issues" table. 
+		 * If the issue (assessment) already exists in the table it will be "activated in place", if
+		 * it is not active. "Activated in place" means that its type will not be changed from
+		 * "Medical History" or "Surgical History" to "Problem List", just activated.
+		 *
+		 * @since x.x.x
+		 *
+		 * @link https://www.dropbox.com/s/3g4pc9ggoj1016d/Encounter%20View-%20Edit%20Assessment%20Doesn%27t%20update%20assessment_icd.pdf?dl=0
+		 * @global Lavavel helper Session.
+		 * @global Laravel helper DB.
+		 *
+		 * @param Request $request Ignored.
+		 * @param String $id Assessment ID# (builds column names in "assessment" table).
+		 * @return redirect page
+		 */
+   {
+        $query = DB::table('assessment')->where('eid', '=', Session::get('eid'))->first();
+        $assess_desc_key = 'assessment_' . $id;
+        $assess_icd_key = 'assessment_icd' . $id;
+
+		// Check for existing issue by getting existing issues in table
+		$issue_query = DB::table('issues')->where('pid', '=', $query->{'pid'})->get() ;
+		// If query succeeds with results
+		if (isset($issue_query) && $issue_query->count()) {
+			foreach ($issue_query as $issues_row) {
+				// Check for match
+				// Because 'issue' column is a mashup of text description and ICD code
+				// we need to parse it
+				$issue = explode( '[', $issues_row->issue); // $issue[0] is Text Description
+				$issue_icd =  (isset($issue[1])) ? explode( ']', $issue[1])[0] : '' ;
+				if ($issue_icd == $query->{$assess_icd_key}) {
+					// Found a matching ICD code
+					$message = "Already Active";
+					// Is it active: NULL, '', or "0000-00-00 00:00:00"
+					if ($issues_row->issue_date_inactive != "0000-00-00 00:00:00") {
+						// Yes, then activate it
+						$issue_data = [
+							'issue_date_active' => date("Y-m-d"),
+							'issue_date_inactive' => "0000-00-00 00:00:00",
+							'issue_provider' => Session::get('displayname')
+						];
+						$message = "Activated";
+						DB::table('issues')->where('issue_id', '=', $issues_row->issue_id)->update($issue_data);
+						$this->audit('Update');
+					}
+			        Session::put('message_action', 'Assessment ' . $message . ' in ' . $issues_row->type);
+			        return redirect(Session::get('last_page'));					
+				}
+			}			
+		}
+		// Assessment not found, so need to add it to 'issues' table
+		$issue_data = [
+			'pid' => $query->{'pid'},
+			'issue' => $query->{$assess_desc_key} . '[' . $query->{$assess_icd_key} . ']',
+			'issue_date_active' => date("Y-m-d"),
+			'issue_date_inactive' => "0000-00-00 00:00:00",
+			'issue_provider' => Session::get('displayname'),
+			'rcopia_sync' => 'n',
+			'type' => "Problem List",
+			'reconcile' => 'n',
+			'notes' => ''
+		];
+		
+		DB::table('issues')->insert($issue_data);
+		$this->Audit('Add');
+        Session::put('message_action', 'Assessment Added to Problem List');
+        return redirect(Session::get('last_page'));		
+	}
+	
     public function encounter_billing(Request $request, $eid, $section='what')
     {
         if ($request->isMethod('post')) {
