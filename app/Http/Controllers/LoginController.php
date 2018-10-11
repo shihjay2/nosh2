@@ -631,9 +631,11 @@ class LoginController extends Controller {
                 $invite_query = DB::table('uma_invitation')->where('email', '=', $email)->where('invitation_timeout', '>', time())->first();
                 if (!$invite_query) {
                     // No invitation, expired invitation, or access
-                    $view_data1['header'] = 'There Is A Problem!';
+                    $view_data1['panel_header'] = 'There Is A Problem!';
                     $view_data1['content'] = "<div>You have tried to login to this patient's personal electronic health record but you do not have sufficient priviledges to access it.<br>There are several reasons for this.<br>";
                     $view_data1['content'] .= "<ul><li>You were not given an invitation by this patient for access.</li><li>Your invitation has expired.  If so, please contact the patient directly.</li><li>If you previously had access, your acesss has been revoked by the patient.</li></ul></div>";
+                    $view_data1['assets_js'] = $this->assets_js();
+                    $view_data1['assets_css'] = $this->assets_css();
                     return view('welcome', $view_data1);
                 }
                 // Add resources associated with new provider user to pNOSH UMA Server
@@ -667,8 +669,10 @@ class LoginController extends Controller {
                         }
                     }
                 } else {
-                    $view_data2['header'] = 'No Practice NPI Registered!';
+                    $view_data2['panel_header'] = 'No Practice NPI Registered!';
                     $view_data2['content'] = "<div>Please have one registered on mdNOSH to continue.</div>";
+                    $view_data2['assets_js'] = $this->assets_js();
+                    $view_data2['assets_css'] = $this->assets_css();
                     return view('welcome', $view_data2);
                 }
                 if ($practice_id == false) {
@@ -1184,6 +1188,8 @@ class LoginController extends Controller {
                         $this->send_mail('emails.loginregistrationrequest', $data_message2, 'New User Request', $row3->email, '1');
                         $view_data1['panel_header'] = 'Registration Sent';
                         $view_data1['content'] = "<div>Your registration information has been sent to the administrator and you will receive your registration code within 48-72 hours by e-mail after confirmation of your idenity.<br>Thank you!</div>";
+                        $view_data1['assets_js'] = $this->assets_js();
+                        $view_data1['assets_css'] = $this->assets_css();
                         return view('welcome', $view_data1);
                     }
                 } else {

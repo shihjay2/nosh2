@@ -3173,7 +3173,7 @@ class ChartController extends Controller {
                     if (file_exists($row->documents_url)) {
                         unlink($row->documents_url);
                     }
-                    DB::table('documents')->where($row_index, '=', $row->row_index)->delete();
+                    DB::table('documents')->where($row_index, '=', $row->$row_index)->delete();
                     $this->audit('Delete');
                 }
             }
