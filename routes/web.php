@@ -169,7 +169,7 @@ Route::any('billing_notes', ['as' => 'billing_notes', 'uses' => 'ChartController
 Route::get('billing_payment_delete/{id}/{index}/{billing_id}', ['as' => 'billing_payment_delete', 'uses' => 'ChartController@billing_payment_delete']);
 Route::get('billing_payment_history/{id}/{index}', ['as' => 'billing_payment_history', 'uses' => 'ChartController@billing_payment_history']);
 Route::get('care_opportunities/{type}', ['as' => 'care_opportunities', 'uses' => 'ChartController@care_opportunities']);
-Route::any('cms_bluebutton', ['as' => 'cms_bluebutton', 'uses' => 'ChartController@cms_bluebutton']);
+Route::any('cms_bluebutton/{as?}', ['as' => 'cms_bluebutton', 'uses' => 'ChartController@cms_bluebutton']);
 Route::get('cms_bluebutton_display/{type?}', ['as' => 'cms_bluebutton_display', 'uses' => 'ChartController@cms_bluebutton_display']);
 Route::get('cms_bluebutton_eob/{sequence}', ['as' => 'cms_bluebutton_eob', 'uses' => 'ChartController@cms_bluebutton_eob']);
 Route::any('chart_action/{table}/{action}/{id}/{index}', ['as' => 'chart_action', 'uses' => 'ChartController@chart_action']);
@@ -214,7 +214,7 @@ Route::get('encounters_list', ['as' => 'encounters_list', 'uses' => 'ChartContro
 Route::get('family_history', ['as' => 'family_history', 'uses' => 'ChartController@family_history']);
 Route::any('family_history_sensitive/{id}', ['as' => 'family_history_sensitive', 'uses' => 'ChartController@family_history_sensitive']);
 Route::any('family_history_update/{id}', ['as' => 'family_history_update', 'uses' => 'ChartController@family_history_update']);
-Route::any('fhir_connect/{id?}', ['as' => 'fhir_connect', 'uses' => 'ChartController@fhir_connect']);
+Route::any('fhir_connect/{id?}/{as?}', ['as' => 'fhir_connect', 'uses' => 'ChartController@fhir_connect']);
 Route::any('fhir_connect_display/{type?}', ['as' => 'fhir_connect_display', 'uses' => 'ChartController@fhir_connect_display']);
 Route::any('fhir_connect_response', ['as' => 'fhir_connect_response', 'uses' => 'ChartController@fhir_connect_response']);
 Route::get('form_list/{type}', ['as' => 'form_list', 'uses' => 'ChartController@form_list']);

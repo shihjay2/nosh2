@@ -866,15 +866,15 @@ class ChartController extends Controller {
         return view('chart', $data);
     }
 
-    public function cms_bluebutton(Request $request)
+    public function cms_bluebutton(Request $request, $as='')
     {
         $data['panel_header'] = 'Connect to CMS Bluebutton';
         $data['message_action'] = Session::get('message_action');
         Session::forget('message_action');
         if (! Session::has('oidc_relay')) {
             $param = [
-                'origin_uri' => route('cms_bluebutton'),
-                'response_uri' => route('cms_bluebutton'),
+                'origin_uri' => route('cms_bluebutton', [$as]),
+                'response_uri' => route('cms_bluebutton', [$as]),
                 'fhir_url' => '',
                 'fhir_auth_url' => '',
                 'fhir_token_url' => '',
@@ -897,6 +897,12 @@ class ChartController extends Controller {
                 Session::put('oidc_relay', $oidc_response['state']);
                 return redirect($oidc_response['url']);
             } else {
+                if ($as !== '') {
+                    $practice = DB::table('practiceinfo')->where('practice_id', '=', '1')->first();
+                    if (!empty($practice->uma_uri)) {
+                        return redirect($practice->uma_uri);
+                    }
+                }
                 Session::put('message_action', $oidc_response['message']);
                 return redirect(Session::get('last_page'));
             }
@@ -934,6 +940,12 @@ class ChartController extends Controller {
                 Session::put('cms_pid', $cms_pid);
                 return redirect()->route('cms_bluebutton_display');
             } else {
+                if ($as !== '') {
+                    $practice = DB::table('practiceinfo')->where('practice_id', '=', '1')->first();
+                    if (!empty($practice->uma_uri)) {
+                        return redirect($practice->uma_uri);
+                    }
+                }
                 Session::put('message_action', $oidc_response1['message']);
                 return redirect(Session::get('last_page'));
             }
@@ -5827,7 +5839,7 @@ class ChartController extends Controller {
         return view('home', $data);
     }
 
-    public function fhir_connect(Request $request, $id='list')
+    public function fhir_connect(Request $request, $id='list', $as='')
     {
         $data['panel_header'] = 'Connect to a Patient Portal';
         $data['message_action'] = Session::get('message_action');
@@ -5922,6 +5934,9 @@ class ChartController extends Controller {
                 Session::put('fhir_auth_url', $metadata['auth_url']);
                 Session::put('fhir_token_url', $metadata['token_url']);
                 Session::put('fhir_name', $fhir_name);
+                if ($as !== '') {
+                    Session::put('fhir_as', 'true');
+                }
                 $connected1 = DB::table('refresh_tokens')->where('practice_id', '=', '1')->where('endpoint_uri', '=', $fhir_url)->first();
                 if (!$connected1) {
                     $refresh = [
@@ -5992,6 +6007,13 @@ class ChartController extends Controller {
                 Session::put('oidc_relay', $oidc_response['state']);
                 return redirect($oidc_response['url']);
             } else {
+                if (Session::has('fhir_as')) {
+                    Session::forget('fhir_as');
+                    $practice = DB::table('practiceinfo')->where('practice_id', '=', '1')->first();
+                    if (!empty($practice->uma_uri)) {
+                        return redirect($practice->uma_uri);
+                    }
+                }
                 Session::put('message_action', $oidc_response['message']);
                 return redirect(Session::get('last_page'));
             }
@@ -6005,9 +6027,17 @@ class ChartController extends Controller {
                 }
                 Session::put('fhir_access_token', $oidc_response1['tokens']['access_token']);
                 Session::put('fhir_patient_token', $oidc_response1['tokens']['patient_token']);
+                Session::forget('fhir_as');
                 // Session::put('fhir_refresh_token', $oidc_response1['tokens']['refresh_token']);
                 return redirect()->route('fhir_connect_display');
             } else {
+                if (Session::has('fhir_as')) {
+                    Session::forget('fhir_as');
+                    $practice = DB::table('practiceinfo')->where('practice_id', '=', '1')->first();
+                    if (!empty($practice->uma_uri)) {
+                        return redirect($practice->uma_uri);
+                    }
+                }
                 Session::put('message_action', $oidc_response1['message']);
                 return redirect(Session::get('last_page'));
             }
