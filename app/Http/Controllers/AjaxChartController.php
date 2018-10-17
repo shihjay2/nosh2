@@ -165,6 +165,7 @@ class AjaxChartController extends Controller
                 if (isset($data['from'])) {
                     $data1['rxl_instructions'] .= '; Obtained via FHIR from ' . $data['from'];
                 }
+                $source_index = 'rxl_id';
             }
             if ($data['type'] == 'issues') {
                 $data1['issue'] = $data['name'] . ' [' . $data['code'] . ']';
@@ -174,6 +175,7 @@ class AjaxChartController extends Controller
                 if (isset($data['from'])) {
                     $data1['notes'] = 'Obtained via FHIR from ' . $data['from'];
                 }
+                $source_index = 'issue_id';
             }
             if ($data['type'] == 'allergies') {
                 $data1['allergies_med'] = $data['name'];
@@ -184,6 +186,7 @@ class AjaxChartController extends Controller
                 if (isset($data['from'])) {
                     $data1['notes'] = 'Obtained via FHIR from ' . $data['from'];
                 }
+                $source_index = 'allergies_id';
             }
             if ($data['type'] == 'immunizations') {
                 $data1['imm_immunization'] = $data['name'];
@@ -196,9 +199,21 @@ class AjaxChartController extends Controller
                 if (isset($data['sequence'])) {
                     $data1['imm_sequence'] = $data['sequence'];
                 }
+                $source_index = 'imm_id';
             }
             $data1['pid'] = Session::get('pid');
-            DB::table($data['type'])->insert($data1);
+            $source_id = DB::table($data['type'])->insertGetId($data1);
+            if (isset($data['from'])) {
+                $data_sync = [
+                    'pid' => Session::get('pid'),
+                    'action' => 'Added ' . $data['name'],
+                    'from' => 'Synchronized via FHIR from ' . $data['from'],
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'source_id' => $source_id,
+                    'source_index' => $source_index
+                ];
+                DB::table('data_sync')->insert($data_sync);
+            }
             Session::put('message_action', 'Added ' . $data['name']);
             return Session::put('last_page');
         } else {

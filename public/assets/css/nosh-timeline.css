@@ -149,6 +149,9 @@ Main components
 .cd-timeline-img.cd-imm {
   background: #f0ca45;
 }
+.cd-timeline-img.cd-datasync {
+  background: #f0ca45;
+}
 @media only screen and (min-width: 1170px) {
   .cd-timeline-img {
     width: 60px;

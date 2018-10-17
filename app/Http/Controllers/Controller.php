@@ -16471,7 +16471,7 @@ class Controller extends BaseController
                 if (isset($item['jump'])) {
                     $return .= '<a href="' . $item['jump'] . '" target="_blank" class="btn fa-btn" data-toggle="tooltip" title="Open Chart"><i class="fa fa-hand-o-right fa-lg"></i></a>';
                 }
-				// GYN 20181007: Add Assessment Copy to Problem List 
+				// GYN 20181007: Add Assessment Copy to Problem List
 				if (isset($item['problem_list'])) {
                     $return .= '<a href="' . $item['problem_list'] . '" class="btn fa-btn" data-toggle="tooltip" title="Copy to Problem List"><i class="fa fa-share-square fa-lg" style="color:green"></i></a>';
 				}
@@ -17504,6 +17504,18 @@ class Controller extends BaseController
                 $date_arr[] = $this->human_to_unix($row6->allergies_date_active);
             }
         }
+        $query7 = DB::table('data_sync')->where('pid', '=', $pid)->get();
+        if ($query7->count()) {
+            foreach ($query7 as $row7) {
+                $description7 = $row7->action . ', ' . $row7->from;
+                $div7 = $this->timeline_item($row7->source_id, $row7->source_index, 'Data Sync via FHIR', $this->human_to_unix($row7->created_at), 'Data Sync via FHIR', $description7);
+                $json[] = [
+                    'div' => $div7,
+                    'startDate' => $this->human_to_unix($row7->created_at)
+                ];
+                $date_arr[] = $this->human_to_unix($row6->allergies_date_active);
+            }
+        }
         if (! empty($json)) {
             foreach ($json as $key => $value) {
                 $item[$key]  = $value['startDate'];
@@ -17549,6 +17561,9 @@ class Controller extends BaseController
         }
         if ($category == 'New Allergy') {
             $div .= '<div class="cd-timeline-img cd-allergy"><i class="fa fa-exclamation-triangle fa-fw fa-lg"></i>';
+        }
+        if ($category == 'Data Sync via FHIR') {
+            $div .= '<div class="cd-timeline-img cd-datasync"><i class="fa fa-fire fa-fw fa-lg"></i>';
         }
         $div .= '</div><div class="cd-timeline-content">';
         $div .= '<h3>' . $title . '</h3>';
