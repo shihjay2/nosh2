@@ -41,6 +41,7 @@ class CoreController extends Controller
     {
         if ($request->isMethod('post')) {
             $practice_id = Session::get('practice_id');
+            $result = DB::table('practiceinfo')->where('practice_id', '=', $practice_id)->first();
             $data = [
                 'lastname' => $request->input('lastname'),
                 'firstname' => $request->input('firstname'),
@@ -49,7 +50,8 @@ class CoreController extends Controller
                 'active' => '1',
                 'sexuallyactive' => 'no',
                 'tobacco' => 'no',
-                'pregnant' => 'no'
+                'pregnant' => 'no',
+                'country' => $result->country
             ];
             $pid = DB::table('demographics')->insertGetId($data);
             $this->audit('Add');
@@ -67,7 +69,6 @@ class CoreController extends Controller
             ];
             DB::table('demographics_relate')->insert($data2);
             $this->audit('Add');
-            $result = DB::table('practiceinfo')->where('practice_id', '=', $practice_id)->first();
             $directory = $result->documents_dir . $pid;
             mkdir($directory, 0775);
             Session::put('message_action', $data['lastname'] . ' ' . $data['firstname'] . ' added');
@@ -6132,7 +6133,7 @@ class CoreController extends Controller
             if ($result->birthday_extension == null) {
                 return redirect()->route('core_form', ['practiceinfo', 'practice_id', Session::get('practice_id'), 'extensions']);
             }
-            $state = $this->array_states();
+            $state = $this->array_states($result->country);
             $unit_arr = [
                 'in' => 'Inches',
                 'cm' => 'Centimeters',
@@ -6156,6 +6157,7 @@ class CoreController extends Controller
                 'Practice Name' => $result->practice_name,
                 'Street Address' => $result->street_address1,
                 'Street Address Line 2' => $result->street_address2,
+                'Country' => $result->country,
                 'City' => $result->city,
                 'State' => $state[$result->state],
                 'Zip' => $result->zip,
@@ -6187,6 +6189,7 @@ class CoreController extends Controller
             $billing_arr = [
                 'Street Address' => $result->billing_street_address1,
                 'Street Address Line 2' => $result->billing_street_address2,
+                'Country' => $result->billing_country,
                 'City' => $result->billing_city,
                 'State' => $state[$result->billing_state],
                 'Zip' => $result->billing_zip,

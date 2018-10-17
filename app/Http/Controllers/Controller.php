@@ -24,6 +24,7 @@ use Htmldom;
 use Laravel\LegacyEncrypter\McryptEncrypter;
 use Mail;
 use PDF;
+use PragmaRX\Countries\Package\Countries;
 use Request;
 use Schema;
 use shihjay2\tcpdi_merger\MyTCPDI;
@@ -1448,6 +1449,13 @@ class Controller extends BaseController
         return $return;
     }
 
+    protected function array_country()
+    {
+        $arr = Countries::all()->pluck('name.common')->toArray();
+        $return = array_combine($arr, $arr);
+        return $return;
+    }
+
     protected function array_duration()
     {
         $return = [
@@ -2281,9 +2289,20 @@ class Controller extends BaseController
         return $return;
     }
 
-    protected function array_states()
+    protected function array_states($country='United States')
     {
         $states = [
+            '' => '',
+        ];
+        $states1 = Countries::where('name.common', $country)
+            ->first()
+            ->hydrateStates()
+            ->states
+            ->sortBy('name')
+            ->pluck('name', 'postal')
+            ->toArray();
+        $states = array_merge($states, $states1);
+        $states_old = [
             '' => '',
             'AL' => 'Alabama',
             'AK' => 'Alaska',
@@ -5134,6 +5153,7 @@ class Controller extends BaseController
             '' => 'Select Electronic Order Interface',
             'PeaceHealth' => 'PeaceHealth Labs'
         ];
+        $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
         if ($id == '0') {
             $data = [
                 'displayname' => null,
@@ -5144,6 +5164,7 @@ class Controller extends BaseController
                 'facility' => null,
                 'street_address1' => null,
                 'street_address2' => null,
+                'country' => $practice->country,
                 'city' => null,
                 'state' => null,
                 'zip' => null,
@@ -5165,6 +5186,7 @@ class Controller extends BaseController
                 'facility' => $result->facility,
                 'street_address1' => $result->street_address1,
                 'street_address2' => $result->street_address2,
+                'country' => $result->country,
                 'city' => $result->city,
                 'state' => $result->state,
                 'zip' => $result->zip,
@@ -5277,6 +5299,14 @@ class Controller extends BaseController
                 'default_value' => $data['street_address2']
             ];
             $items[] = [
+                'name' => 'country',
+                'label' => 'Country',
+                'type' => 'select',
+                'select_items' => $this->array_country(),
+                'default_value' => $data['country'],
+                'class' => 'country'
+            ];
+            $items[] = [
                 'name' => 'city',
                 'label' => 'City',
                 'type' => 'text',
@@ -5287,8 +5317,9 @@ class Controller extends BaseController
                 'name' => 'state',
                 'label' => 'State',
                 'type' => 'select',
-                'select_items' => $this->array_states(),
-                'default_value' => $data['state']
+                'select_items' => $this->array_states($data['country']),
+                'default_value' => $data['state'],
+                'class' => 'state'
             ];
             $items[] = [
                 'name' => 'zip',
@@ -5935,6 +5966,7 @@ class Controller extends BaseController
         if ($subtype == 'contacts') {
             $contact_arr = [
                 'address' => $result->address,
+                'country' => $result->country,
                 'city' => $result->city,
                 'state' => $result->state,
                 'zip' => $result->zip,
@@ -5953,6 +5985,14 @@ class Controller extends BaseController
                 'default_value' => $contact_arr['address']
             ];
             $items[] = [
+                'name' => 'country',
+                'label' => 'Country',
+                'type' => 'select',
+                'select_items' => $this->array_country(),
+                'default_value' => $contact_arr['country'],
+                'class' => 'country'
+            ];
+            $items[] = [
                 'name' => 'city',
                 'label' => 'City',
                 'type' => 'text',
@@ -5963,8 +6003,9 @@ class Controller extends BaseController
                 'name' => 'state',
                 'label' => 'State',
                 'type' => 'select',
-                'select_items' => $this->array_states(),
-                'default_value' => $contact_arr['state']
+                'select_items' => $this->array_states($contact_arr['country']),
+                'default_value' => $contact_arr['state'],
+                'class' => 'state'
             ];
             $items[] = [
                 'name' => 'zip',
@@ -6027,6 +6068,7 @@ class Controller extends BaseController
                 'guardian_relationship' => $result->guardian_relationship,
                 'guardian_code' => $result->guardian_code,
                 'guardian_address' => $result->guardian_address,
+                'guardian_country' => $result->guardian_country,
                 'guardian_city' => $result->guardian_city,
                 'guardian_state' => $result->guardian_state,
                 'guardian_zip' => $result->guardian_zip,
@@ -6065,6 +6107,14 @@ class Controller extends BaseController
                 'default_value' => $guardian_arr['guardian_address']
             ];
             $items[] = [
+                'name' => 'guardian_country',
+                'label' => 'Country',
+                'type' => 'select',
+                'select_items' => $this->array_country(),
+                'default_value' => $guardian_arr['guardian_country'],
+                'class' => 'country'
+            ];
+            $items[] = [
                 'name' => 'guardian_city',
                 'label' => 'City',
                 'type' => 'text',
@@ -6075,8 +6125,9 @@ class Controller extends BaseController
                 'name' => 'guardian_state',
                 'label' => 'State',
                 'type' => 'select',
-                'select_items' => $this->array_states(),
-                'default_value' => $guardian_arr['guardian_state']
+                'select_items' => $this->array_states($guardian_arr['guardian_country']),
+                'default_value' => $guardian_arr['guardian_state'],
+                'class' => 'state'
             ];
             $items[] = [
                 'name' => 'guardian_zip',
@@ -6913,6 +6964,7 @@ class Controller extends BaseController
             'Child' => 'Child',
             'Other' => 'Other'
         ];
+        $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
         if ($id == '0') {
             $insurance = [
                 'insurance_plan_name' => null,
@@ -6929,6 +6981,7 @@ class Controller extends BaseController
                 'insurance_insu_dob' => null,
                 'insurance_insu_gender' => null,
                 'insurance_insu_address' => null,
+                'insurance_insu_country' => $practice->country,
                 'insurance_insu_city' => null,
                 'insurance_insu_state' => null,
                 'insurance_insu_zip' => null,
@@ -6952,6 +7005,7 @@ class Controller extends BaseController
                 'insurance_insu_dob' => date('Y-m-d', $this->human_to_unix($result->insurance_insu_dob)),
                 'insurance_insu_gender' => $result->insurance_insu_gender,
                 'insurance_insu_address' => $result->insurance_insu_address,
+                'insurance_insu_country' => $result->insurance_insu_country,
                 'insurance_insu_city' => $result->insurance_insu_city,
                 'insurance_insu_state' => $result->insurance_insu_state,
                 'insurance_insu_zip' => $result->insurance_insu_zip,
@@ -7038,6 +7092,14 @@ class Controller extends BaseController
             'default_value' => $insurance['insurance_insu_address']
         ];
         $items[] = [
+            'name' => 'insurance_insu_country',
+            'label' => 'Country',
+            'type' => 'select',
+            'select_items' => $this->array_country(),
+            'default_value' => $insurance['insurance_insu_country'],
+            'class' => 'country'
+        ];
+        $items[] = [
             'name' => 'insurance_insu_city',
             'label' => 'Insured City',
             'type' => 'text',
@@ -7050,8 +7112,9 @@ class Controller extends BaseController
             'label' => 'Insured State',
             'type' => 'select',
             'required' => true,
-            'select_items' => $this->array_states(),
-            'default_value' => $insurance['insurance_insu_state']
+            'select_items' => $this->array_states($insurance['insurance_insu_country']),
+            'default_value' => $insurance['insurance_insu_state'],
+            'class' => 'state'
         ];
         $items[] = [
             'name' => 'insurance_insu_zip',
@@ -7649,6 +7712,7 @@ class Controller extends BaseController
                 'practice_name' => $result->practice_name,
                 'street_address1' => $result->street_address1,
                 'street_address2' => $result->street_address2,
+                'country' => $result->country,
                 'city' => $result->city,
                 'state' => $result->state,
                 'zip' => $result->zip,
@@ -7690,6 +7754,14 @@ class Controller extends BaseController
                 'default_value' => $info_arr['street_address2']
             ];
             $items[] = [
+                'name' => 'country',
+                'label' => 'Country',
+                'type' => 'select',
+                'select_items' => $this->array_country(),
+                'default_value' => $info_arr['country'],
+                'class' => 'country'
+            ];
+            $items[] = [
                 'name' => 'city',
                 'label' => 'City',
                 'type' => 'text',
@@ -7700,9 +7772,10 @@ class Controller extends BaseController
                 'name' => 'state',
                 'label' => 'State',
                 'type' => 'select',
-                'select_items' => $this->array_states(),
+                'select_items' => $this->array_states($info_arr['country']),
                 'required' => true,
-                'default_value' => $info_arr['state']
+                'default_value' => $info_arr['state'],
+                'class' => 'state'
             ];
             $items[] = [
                 'name' => 'zip',
@@ -7899,6 +7972,7 @@ class Controller extends BaseController
             $billing_arr = [
                 'billing_street_address1' => $result->billing_street_address1,
                 'billing_street_address2' => $result->billing_street_address2,
+                'billing_country' => $result->billing_country,
                 'billing_city' => $result->billing_city,
                 'billing_state' => $result->billing_state,
                 'billing_zip' => $result->billing_zip,
@@ -7917,6 +7991,14 @@ class Controller extends BaseController
                 'default_value' => $billing_arr['billing_street_address2']
             ];
             $items[] = [
+                'name' => 'billing_country',
+                'label' => 'Country',
+                'type' => 'select',
+                'select_items' => $this->array_country(),
+                'default_value' => $billing_arr['country'],
+                'class' => 'country'
+            ];
+            $items[] = [
                 'name' => 'billing_city',
                 'label' => 'City',
                 'type' => 'text',
@@ -7927,9 +8009,10 @@ class Controller extends BaseController
                 'name' => 'billing_state',
                 'label' => 'State',
                 'type' => 'select',
-                'select_items' => $this->array_states(),
+                'select_items' => $this->array_states($billing_arr['country']),
                 'required' => true,
-                'default_value' => $billing_arr['billing_state']
+                'default_value' => $billing_arr['billing_state'],
+                'class' => 'state'
             ];
             $items[] = [
                 'name' => 'billing_zip',
@@ -8175,6 +8258,7 @@ class Controller extends BaseController
         $provider = [
             'specialty' => $result->specialty,
             'license' => $result->license,
+            'license_country' => $result->license_country,
             'license_state' => $result->license_state,
             'npi' => $result->npi,
             'npi_taxonomy' => $result->npi_taxonomy,
@@ -8199,10 +8283,17 @@ class Controller extends BaseController
             'default_value' => $provider['license']
         ];
         $items[] = [
+            'name' => 'license_country',
+            'label' => 'Country',
+            'type' => 'select',
+            'select_items' => $this->array_country(),
+            'default_value' => $provider['license_country']
+        ];
+        $items[] = [
             'name' => 'license_state',
             'label' => 'State Licensed',
             'type' => 'select',
-            'select_items' => $this->array_states(),
+            'select_items' => $this->array_states($provider['license_country']),
             'default_value' => $provider['license_state']
         ];
         $items[] = [
@@ -9243,6 +9334,7 @@ class Controller extends BaseController
                 $data2 = [
                     'specialty' => $provider->specialty,
                     'license' => $provider->license,
+                    'license_country' => $provider->license_country,
                     'license_state' => $provider->license_state,
                     'npi' => $provider->npi,
                     'npi_taxonomy' => $provider->npi_taxonomy,
@@ -9343,11 +9435,20 @@ class Controller extends BaseController
                 'default_value' => $data2['license']
             ];
             $items[] = [
+                'name' => 'license_country',
+                'label' => 'Country',
+                'type' => 'select',
+                'select_items' => $this->array_country(),
+                'default_value' => $data2['license_country'],
+                'class' => 'country'
+            ];
+            $items[] = [
                 'name' => 'license_state',
                 'label' => 'State Licensed',
                 'type' => 'select',
-                'select_items' => $this->array_states(),
-                'default_value' => $data2['license_state']
+                'select_items' => $this->array_states($data2['license_country']),
+                'default_value' => $data2['license_state'],
+                'class' => 'state'
             ];
             $items[] = [
                 'name' => 'npi',

@@ -2833,7 +2833,8 @@ class ChartController extends Controller {
         if ($result) {
             $gender = $this->array_gender();
             $marital = $this->array_marital();
-            $state = $this->array_states();
+            $state = $this->array_states($result->country);
+            $guardian_state = $this->array_states($result->guardian_country);
             $header_arr = [
                 'Name and Identity' => route('chart_form', ['demographics', 'pid', Session::get('pid'), 'name']),
                 'Contacts' => route('chart_form', ['demographics', 'pid', Session::get('pid'), 'contacts']),
@@ -2862,6 +2863,7 @@ class ChartController extends Controller {
             ];
             $contact_arr = [
                 'Address' => $result->address,
+                'Country' => $result->country,
                 'City' => $result->city,
                 'State' => $state[$result->state],
                 'Zip' => $result->zip,
@@ -2877,8 +2879,9 @@ class ChartController extends Controller {
                 'First Name' => $result->guardian_firstname,
                 'Relationship' => $result->guardian_relationship,
                 'Address' => $result->guardian_address,
+                'Country' => $result->guardian_country,
                 'City' => $result->guardian_city,
-                'State' => $state[$result->guardian_state],
+                'State' => $guardian_state[$result->guardian_state],
                 'Zip' => $result->guardian_zip,
                 'Email' => $result->guardian_email,
                 'Home Phone' => $result->guardian_phone_home,
@@ -4641,6 +4644,7 @@ class ChartController extends Controller {
                     'referring_provider_npi' => null,
                     'encounter_condition_work' => 'No',
                     'encounter_condition_auto' => 'No',
+                    'encounter_condition_auto_country' => $practice->country,
                     'encounter_condition_auto_state' => null,
                     'encounter_condition_other' => 'No',
                     'encounter_condition' => null,
@@ -4674,6 +4678,7 @@ class ChartController extends Controller {
                     'referring_provider_npi' => $result->referring_provider_npi,
                     'encounter_condition_work' => $result->encounter_condition_work,
                     'encounter_condition_auto' => $result->encounter_condition_auto,
+                    'encounter_condition_auto_country' => $result->encounter_condition_auto_country,
                     'encounter_condition_auto_state' => $result->encounter_condition_auto_state,
                     'encounter_condition_other' => $result->encounter_condition_other,
                     'encounter_condition' => $result->encounter_condition,
@@ -4706,7 +4711,7 @@ class ChartController extends Controller {
                 'No' => 'No',
                 'Yes' => 'Yes'
             ];
-            $encounter_auto_state_arr = $this->array_states();
+            $encounter_auto_state_arr = $this->array_states($encounter['encounter_condition_auto_country']);
             $items[] = [
                 'name' => 'encounter_provider',
                 'label' => 'Provider',
@@ -4811,11 +4816,20 @@ class ChartController extends Controller {
                     'default_value' => $encounter['encounter_condition_auto']
                 ];
                 $items[] = [
+                    'name' => 'encounter_condition_auto_country',
+                    'label' => 'Country',
+                    'type' => 'select',
+                    'select_items' => $this->array_country(),
+                    'default_value' => $encounter['encounter_condition_auto_country'],
+                    'class' => 'country'
+                ];
+                $items[] = [
                     'name' => 'encounter_condition_auto_state',
                     'label' => 'State Where Motor Vehicle Accident Occurred',
                     'type' => 'select',
                     'select_items' => $encounter_auto_state_arr,
-                    'default_value' => $encounter['encounter_condition_auto_state']
+                    'default_value' => $encounter['encounter_condition_auto_state'],
+                    'class' => 'state'
                 ];
                 $items[] = [
                     'name' => 'encounter_condition_other',

@@ -53,6 +53,7 @@ Route::any('uma_patient_centric_designate', ['as' => 'uma_patient_centric_design
 Route::get('update', ['as' => 'update_install', 'uses' => 'InstallController@update']);
 Route::get('update_env', ['as' => 'update_env', 'uses' => 'InstallController@update_env']);
 Route::get('update_system/{type?}', ['as' => 'update_system', 'uses' => 'InstallController@update_system']);
+Route::post('get_state_data', ['as' => 'get_state_data', 'uses' => 'AjaxInstallController@get_state_data']);
 
 // Core routes
 Route::get('/', ['as' => 'dashboard', 'uses' => 'CoreController@dashboard']);

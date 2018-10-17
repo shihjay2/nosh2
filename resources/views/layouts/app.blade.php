@@ -612,6 +612,7 @@
             'education': '<?php echo url("education"); ?>',
             'event_encounter': '<?php echo url("event_encounter"); ?>',
             'get_appointments': '<?php echo url("get_appointments"); ?>',
+            'get_state_data': '<?php echo url("get_state_data"); ?>',
             'home_url': '<?php echo url("/") . '/'; ?>',
             'image_dimensions': '<?php echo url("image_dimensions"); ?>',
             'last_page': '<?php echo url("last_page"); ?>',
@@ -1661,7 +1662,7 @@
                 } else {
                     if ($(this).hasClass('nosh-icd10')) {
                         if ($(this).hasClass('list-group-item-success') || $(this).hasClass('list-group-item-info')) {
-                            // GYN 20181006: Parse out assessment and icd code								
+                            // GYN 20181006: Parse out assessment and icd code
                             if (target.includes('_')) { // GYN 20181008: Only parse if target textbox contains '_'
 	                            $('#' + target).val(value.split(' [', 1));
 								var target_icd = target.replace("_", "_icd");
@@ -1670,7 +1671,7 @@
 								}
 							}
 							else {
-	                            $('#' + target).val(value);								
+	                            $('#' + target).val(value);
 							}
                         } else {
                             proceed = false;
@@ -2292,6 +2293,21 @@
                     window.location = data;
                 }
             });
+        });
+
+        $('.country select').change(function(event){
+            var country = $(this).val();
+            $('.state select').removeOption(/./);
+            $.ajax({
+                type: 'POST',
+                url: noshdata.get_state_data,
+                data: 'country=' + country,
+                dataType: 'json',
+                success: function(data){
+                    $('.state select').addOption(data, false);
+                }
+            });
+
         });
     </script>
     {{-- <script src="{{ elixir('js/app.js') }}"></script> --}}

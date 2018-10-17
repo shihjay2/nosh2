@@ -23,6 +23,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\MessageBag;
 use Imagick;
 use Laravel\LegacyEncrypter\McryptEncrypter;
+use PragmaRX\Countries\Package\Countries;
 use QrCode;
 use Response;
 use Schema;
@@ -159,6 +160,7 @@ class InstallController extends Controller {
                 $fax = '';
                 $patient_centric = 'y';
             }
+            $country = $request->input('country');
             $city = $request->input('city');
             $state = $request->input('state');
             $zip = $request->input('zip');
@@ -185,6 +187,7 @@ class InstallController extends Controller {
                 'practice_name' => $practice_name,
                 'street_address1' => $street_address1,
                 'street_address2' => $street_address2,
+                'country' => $country,
                 'city' => $city,
                 'state' => $state,
                 'zip' => $zip,
@@ -214,6 +217,7 @@ class InstallController extends Controller {
                     'tobacco' => 'no',
                     'pregnant' => 'no',
                     'address' => $street_address1,
+                    'country' => $country,
                     'city' => $city,
                     'state' => $state,
                     'zip' => $zip
@@ -472,6 +476,15 @@ class InstallController extends Controller {
                 ];
             }
             $items[] = [
+                'name' => 'country',
+                'label' => 'Country',
+                'type' => 'select',
+                'select_items' => $this->array_countries(),
+                'required' => true,
+                'default_value' => 'United States',
+                'class' => 'country'
+            ];
+            $items[] = [
                 'name' => 'city',
                 'label' => 'City',
                 'type' => 'text',
@@ -484,7 +497,8 @@ class InstallController extends Controller {
                 'type' => 'select',
                 'select_items' => $this->array_states(),
                 'required' => true,
-                'default_value' => null
+                'default_value' => null,
+                'class' => 'state'
             ];
             $items[] = [
                 'name' => 'zip',
@@ -1440,5 +1454,7 @@ class InstallController extends Controller {
 
     public function test1(Request $request)
     {
+        // Countries::all()->pluck('name.common');
+        return $this->array_states('Canada');
     }
 }

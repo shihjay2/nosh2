@@ -30,12 +30,13 @@
         "maatwebsite/excel": "~2.1.0",
         "naviocean/laravel-nameparser": "dev-master",
         "phpseclib/phpseclib": "~2.0",
-        "shihjay2/tcpdi-merger": "dev-master",
+        "pragmarx/countries": "^0.5.9",
         "rospdf/pdf-php": "^0.12.46",
+        "shihjay2/openid-connect-uma-php": "dev-master",
+        "shihjay2/tcpdi-merger": "dev-master",
         "simplesoftwareio/simple-qrcode": "~1.4",
         "soapbox/laravel-formatter": "2.x",
-        "yangqi/htmldom": "dev-master",
-        "shihjay2/openid-connect-uma-php": "dev-master"
+        "yangqi/htmldom": "dev-master"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
