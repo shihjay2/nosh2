@@ -17614,7 +17614,7 @@ class Controller extends BaseController
                     'div' => $div7,
                     'startDate' => $this->human_to_unix($row7->created_at)
                 ];
-                $date_arr[] = $this->human_to_unix($row6->allergies_date_active);
+                $date_arr[] = $this->human_to_unix($row7->created_at);
             }
         }
         if (! empty($json)) {
