@@ -547,7 +547,8 @@ class CoreController extends Controller
         ];
         $multiple_select_arr = [
             'message_to',
-            'cc'
+            'cc',
+            'schedule_notification'
         ];
         $duplicate_tables = [
             'addressbook'
@@ -565,7 +566,9 @@ class CoreController extends Controller
             'peacehealth_id',
             'rcopia_username',
             'schedule_increment',
-            'practice_id'
+            'practice_id',
+            'license_country',
+            'schedule_notification'
         ];
         $message = '';
         if (isset($table_message_arr[$table])) {
@@ -718,6 +721,11 @@ class CoreController extends Controller
                         if ($user_row->group_id === '100') {
                             $data_message['patient_portal'] = $practice->patient_portal;
                             $this->send_mail('emails.newmessage', $data_message, 'New Message in your Patient Portal', $user_row->email, Session::get('practice_id'));
+                        }
+                        if ($user_row->secure_message_notification !== 0) {
+                            $link = route('messaging', ['inbox']);
+                            $data_message1['item'] = 'You have a new message in your secure inbox.  <a href="' . $link . '"Click here</a>';
+                            $this->send_mail('emails.blank', $data_message1, 'New Message', $user_row->email, Session::get('practice_id'));
                         }
                     }
                 }

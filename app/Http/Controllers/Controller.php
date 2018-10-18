@@ -9284,6 +9284,10 @@ class Controller extends BaseController
     {
         $users_arr = $this->array_groups();
         $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
+        $secure_arr = [
+            '0' => 'No',
+            '1' => 'Yes'
+        ];
         if ($id == '0') {
             $data = [
                 'username' => null,
@@ -9296,7 +9300,8 @@ class Controller extends BaseController
                 'group_id' => $subtype,
                 'active' => '1',
                 'practice_id' => Session::get('practice_id'),
-                'locale' => null
+                'locale' => null,
+                'secure_message_notification' => '0'
             ];
             if ($subtype == '2') {
                 $data2 = [
@@ -9312,7 +9317,8 @@ class Controller extends BaseController
                     'rcopia_username' => null,
                     'schedule_increment' => null,
                     'peacehealth_id' => null,
-                    'practice_id' => Session::get('practice_id')
+                    'practice_id' => Session::get('practice_id'),
+                    'schedule_notification' => null
                 ];
             }
         } else {
@@ -9327,10 +9333,15 @@ class Controller extends BaseController
                 'group_id' => $result->group_id,
                 'active' => $result->active,
                 'practice_id' => $result->practice_id,
-                'locale' => $result->locale
+                'locale' => $result->locale,
+                'secure_message_notification' => $result->secure_message_notification
             ];
             if ($subtype == '2') {
                 $provider = DB::table('providers')->where('id', '=', $id)->first();
+                $schedule_notification = null;
+                if (!empty($provider->schedule_notification))  {
+                    $schedule_notification = explode(";", $provider->schedule_notification);
+                }
                 $data2 = [
                     'specialty' => $provider->specialty,
                     'license' => $provider->license,
@@ -9345,7 +9356,8 @@ class Controller extends BaseController
                     'rcopia_username' => $provider->rcopia_username,
                     'schedule_increment' => $provider->schedule_increment,
                     'peacehealth_id' => $provider->peacehealth_id,
-                    'practice_id' => $provider->practice_id
+                    'practice_id' => $provider->practice_id,
+                    'schedule_notification' => $schedule_notification
                 ];
             }
         }
@@ -9420,6 +9432,14 @@ class Controller extends BaseController
             'type' => 'text',
             'readonly' => true,
             'default_value' => $data['practice_id']
+        ];
+        $items[] = [
+            'name' => 'secure_message_notification',
+            'label' => 'Secure Message Notification',
+            'type' => 'select',
+            'required' => true,
+            'select_items' => $secure_arr,
+            'default_value' => $data['secure_message_notification']
         ];
         if ($subtype == '2') {
             $items[] = [
@@ -9506,6 +9526,15 @@ class Controller extends BaseController
                 'label' => 'Time Increment for schedule (minuntes)',
                 'type' => 'text',
                 'default_value' => $data2['schedule_increment']
+            ];
+            $items[] = [
+                'name' => 'schedule_notification[]',
+                'label' => 'Patient Portal Schedule Notifications To',
+                'type' => 'select',
+                'select_items' => $this->array_users(),
+                'multiple' => true,
+                'selectpicker' => true,
+                'default_value' => $data2['schedule_notification']
             ];
         }
         return $items;
@@ -16744,6 +16773,18 @@ class Controller extends BaseController
                         $this->textbelt($patient->reminder_to, $message, Session::get('practice_id'));
                     } else {
                         $this->send_mail('emails.reminder', $data_message, 'Appointment Reminder', $patient->reminder_to, Session::get('practice_id'));
+                    }
+                    if (Session::get('group_id') == '100') {
+                        $provider = DB::table('providers')->where('id', '=', $appt->provider_id)->first();
+                        if (!empty($provider->schedule_notification)) {
+                            $arr = explode(';', $provider->schedule_notification);
+                            foreach ($arr as $arr_row) {
+                                $user_row = DB::table('users')->where('id', '=', $arr_row)->first();
+                                $link = route('schedule');
+                                $data_message1['item'] = 'There is a new appointment made by a patient named ' . $patient->firstname . ' ' . substr($patient->lastname, 0, 1) . ' on ' . $data_message['startdate'] . '.  <a href="' . $link . '"Click here for more details.</a>';
+                                $this->send_mail('emails.blank', $data_message1, 'New Appointment by Patient', $user_row->email, Session::get('practice_id'));
+                            }
+                        }
                     }
                 }
             }
