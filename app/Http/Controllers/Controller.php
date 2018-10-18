@@ -11203,6 +11203,7 @@ class Controller extends BaseController
             PDF::SetMargins('16', '16' ,'16', true);
         }
         PDF::SetFooterMargin('40');
+        PDF::SetFont('freeserif', '', 10);
         PDF::AddPage();
         PDF::SetAutoPageBreak(TRUE, '40');
         PDF::writeHTML($html, true, false, false, false, '');
@@ -15361,7 +15362,7 @@ class Controller extends BaseController
             }
         }
         // Compile and save file
-        $pdf = new Merger(true);
+        $pdf = new Merger();
         foreach ($pdf_arr as $pdf_item) {
             if (file_exists($pdf_item)) {
                 $file_parts = pathinfo($pdf_item);
