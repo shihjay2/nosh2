@@ -2255,6 +2255,7 @@
         });
 
         $(document).on('click', '.nosh-ccda-list', function(event){
+            $('#modaltext').text('{{ trans('nosh.loading') }}...');
             $('#loadingModal').modal('show');
             var query = 'name=' + $(this).attr('data-nosh-name');
             query += '&type=' + $(this).attr('data-nosh-type');
