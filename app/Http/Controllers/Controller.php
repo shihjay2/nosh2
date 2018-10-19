@@ -16781,7 +16781,7 @@ class Controller extends BaseController
                             foreach ($arr as $arr_row) {
                                 $user_row = DB::table('users')->where('id', '=', $arr_row)->first();
                                 $link = route('schedule');
-                                $data_message1['item'] = 'There is a new appointment made by a patient named ' . $patient->firstname . ' ' . substr($patient->lastname, 0, 1) . ' on ' . $data_message['startdate'] . '.  <a href="' . $link . '"Click here for more details.</a>';
+                                $data_message1['item'] = '<p>There is a new appointment made by a patient named ' . $patient->firstname . ' ' . substr($patient->lastname, 0, 1) . ' on ' . $data_message['startdate'] . '.  <a href="' . $link . '"Click here for more details.</a></p>';
                                 $this->send_mail('emails.blank', $data_message1, 'New Appointment by Patient', $user_row->email, Session::get('practice_id'));
                             }
                         }

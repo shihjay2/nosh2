@@ -724,7 +724,7 @@ class CoreController extends Controller
                         }
                         if ($user_row->secure_message_notification !== 0) {
                             $link = route('messaging', ['inbox']);
-                            $data_message1['item'] = 'You have a new message in your secure inbox.  <a href="' . $link . '"Click here</a>';
+                            $data_message1['item'] = '<p>You have a new message in your secure inbox.  <a href="' . $link . '"Click here</a></p>';
                             $this->send_mail('emails.blank', $data_message1, 'New Message', $user_row->email, Session::get('practice_id'));
                         }
                     }
