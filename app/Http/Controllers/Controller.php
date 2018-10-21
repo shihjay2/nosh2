@@ -1438,13 +1438,13 @@ class Controller extends BaseController
     protected function array_color()
     {
         $return = [
-            'colorblue' => 'Blue',
-            'colorred' => 'Red',
-            'colororange' => 'Orange',
-            'coloryellow' => 'Yellow',
-            'colorpurple' => 'Purple',
-            'colorbrown' => 'Brown',
-            'colorblack' => 'Black'
+            'colorblue' => trans('noshform.colorblue'),
+            'colorred' => trans('noshform.colorred'),
+            'colororange' => trans('noshform.colororange'),
+            'coloryellow' => trans('noshform.coloryellow'),
+            'colorpurple' => trans('noshform.colorpurple'),
+            'colorbrown' => trans('noshform.colorbrown'),
+            'colorblack' => trans('noshform.colorblack')
         ];
         return $return;
     }
@@ -1459,18 +1459,18 @@ class Controller extends BaseController
     protected function array_duration()
     {
         $return = [
-            '900' => '15 minutes',
-            '1200' => '20 minutes',
-            '1800' => '30 minutes',
-            '2400' => '40 minutes',
-            '2700' => '45 minutes',
-            '3600' => '60 minutes',
-            '4500' => '75 minutes',
-            '4800' => '80 minutes',
-            '5400' => '90 minutes',
-            '6000' => '100 minutes',
-            '6300' => '105 minutes',
-            '7200' => '120 minutes'
+            '900' => '15 ' . trans('noshform.minutes'),
+            '1200' => '20 ' . trans('noshform.minutes'),
+            '1800' => '30 ' . trans('noshform.minutes'),
+            '2400' => '40 ' . trans('noshform.minutes'),
+            '2700' => '45 ' . trans('noshform.minutes'),
+            '3600' => '60 ' . trans('noshform.minutes'),
+            '4500' => '75 ' . trans('noshform.minutes'),
+            '4800' => '80 ' . trans('noshform.minutes'),
+            '5400' => '90 ' . trans('noshform.minutes'),
+            '6000' => '100 ' . trans('noshform.minutes'),
+            '6300' => '105 ' . trans('noshform.minutes'),
+            '7200' => '120 ' . trans('noshform.minutes')
         ];
         return $return;
     }
@@ -1478,15 +1478,15 @@ class Controller extends BaseController
     protected function array_encounter_type()
     {
         $return = [
-            'medical' => 'Medical Encounter',
-            'phone' => 'Phone Encounter',
-            'virtual' => 'Virtual Encounter',
+            'medical' => trans('noshform.medical_encounter'),
+            'phone' => trans('noshform.phone_encounter'),
+            'virtual' => trans('noshform.virtual_encounter'),
             'standardmedical1' => 'Standard Medical Visit V2', // Depreciated
             'standardmedical' => 'Standard Medical Visit V1', // Depreciated
-            'standardpsych' => 'Annual Psychiatric Evaluation',
-            'standardpsych1' => 'Psychiatric Encounter',
-            'clinicalsupport' => 'Clinical Support Visit',
-            'standardmtm' => 'Medical Therapy Management Encounter'
+            'standardpsych' => trans('noshform.standardpsych'),
+            'standardpsych1' => trans('noshform.standardpsych1'),
+            'clinicalsupport' => trans('noshform.clinicalsupport'),
+            'standardmtm' => trans('noshform.standardmtm')
         ];
         return $return;
     }
@@ -1504,9 +1504,9 @@ class Controller extends BaseController
     protected function array_gender()
     {
         $gender = [
-            'm' => 'Male',
-            'f' => 'Female',
-            'u' => 'Undifferentiated'
+            'm' => trans('noshform.male'),
+            'f' => trans('noshform.female'),
+            'u' => trans('noshform.undifferentiated')
         ];
         return $gender;
     }
@@ -1514,9 +1514,9 @@ class Controller extends BaseController
     protected function array_gender1()
     {
         $gender = [
-            'Male' => 'Male',
-            'Female' => 'Female',
-            'Undifferentiated' => 'Undifferentiated'
+            'Male' => trans('noshform.male'),
+            'Female' => trans('noshform.female'),
+            'Undifferentiated' => trans('noshform.undifferentiated')
         ];
         return $gender;
     }
@@ -1565,10 +1565,10 @@ class Controller extends BaseController
     protected function array_groups()
     {
         $user_arr = [
-            '2' => 'Physician',
-            '3' => 'Assistant',
-            '4' => 'Billing',
-            '100' => 'Patient'
+            '2' => trans('noshform.physician'),
+            '3' => trans('noshform.assistant'),
+            '4' => trans('noshform.billing'),
+            '100' => trans('noshform.patient')
         ];
         return $user_arr;
     }
@@ -1822,22 +1822,22 @@ class Controller extends BaseController
     protected function array_marital()
     {
         $marital = [
-            'Single' => 'Single',
-            'Married' => 'Married',
-            'Common law' => 'Common law',
-            'Domestic partner' => 'Domestic partner',
-            'Registered domestic partner' => 'Registered domestic partner',
-            'Interlocutory' => 'Interlocutory',
-            'Living together' => 'Living together',
-            'Legally Separated' => 'Legally Separated',
-            'Divorced' => 'Divorced',
-            'Separated' => 'Separated',
-            'Annulled' => 'Annulled',
-            'Widowed' => 'Widowed',
-            'Other' => 'Other',
-            'Unknown' => 'Unknown',
-            'Unmarried' => 'Unmarried',
-            'Unreported' => 'Unreported'
+            'Single' => trans('noshform.single'),
+            'Married' => trans('noshform.married'),
+            'Common law' => trans('noshform.commonlaw'),
+            'Domestic partner' => trans('noshform.domesticpartner'),
+            'Registered domestic partner' => trans('noshform.registereddomesticpartner'),
+            'Interlocutory' => trans('noshform.interlocutory'),
+            'Living together' => trans('noshform.livingtogether'),
+            'Legally Separated' => trans('noshform.legallyseparated'),
+            'Divorced' => trans('noshform.divorced'),
+            'Separated' => trans('noshform.separated'),
+            'Annulled' => trans('noshform.annulled'),
+            'Widowed' => trans('noshform.widowed'),
+            'Other' => trans('noshform.other'),
+            'Unknown' => trans('noshform.unknown'),
+            'Unmarried' => trans('noshform.unmarried'),
+            'Unreported' => trans('noshform.unreported')
         ];
         return $marital;
     }
@@ -2174,11 +2174,11 @@ class Controller extends BaseController
     protected function array_reminder_interval()
     {
         $method = [
-            'Default' => 'Default (48 hours prior)',
-            '24' => '24 hours prior',
-            '12' => '12 hours prior',
-            '6' => '6 hours prior',
-            '3' => '3 hours prior'
+            'Default' => trans('noshform.interval_default'),
+            '24' => '24 ' . trans('noshform.hours_prior'),
+            '12' => '12 ' . trans('noshform.hours_prior'),
+            '6' => '6 ' . trans('noshform.hours_prior'),
+            '3' => '3 ' . trans('noshform.hours_prior')
         ];
         return $method;
     }
@@ -2187,8 +2187,8 @@ class Controller extends BaseController
     {
         $method = [
             '' => '',
-            'Email' => 'Email',
-            'Cellular Phone' => 'Cellular Phone'
+            'Email' => trans('noshform.email'),
+            'Cellular Phone' => trans('noshform.cellular_phone')
         ];
         return $method;
     }
@@ -5150,7 +5150,7 @@ class Controller extends BaseController
     protected function form_addressbook($result, $table, $id, $subtype)
     {
         $electronic_order_arr = [
-            '' => 'Select Electronic Order Interface',
+            '' => trans('noshform.select_electronic_order'),
             'PeaceHealth' => 'PeaceHealth Labs'
         ];
         $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
@@ -5209,7 +5209,7 @@ class Controller extends BaseController
             ];
             $items[] = [
                 'name' => 'fax',
-                'label' => 'Fax',
+                'label' => trans('noshform.fax'),
                 'type' => 'text',
                 'phone' => true,
                 'required' => true,
@@ -5226,7 +5226,7 @@ class Controller extends BaseController
                 $data['specialty'] = $subtype;
                 $items[] = [
                     'name' => 'facility',
-                    'label' => 'Facility',
+                    'label' => trans('noshform.facility'),
                     'type' => 'text',
                     'required' => true,
                     'default_value' => $data['facility']
@@ -5240,39 +5240,39 @@ class Controller extends BaseController
             } else {
                 $items[] = [
                     'name' => 'firstname',
-                    'label' => 'First Name',
+                    'label' => trans('noshform.firstname'),
                     'type' => 'text',
                     'required' => true,
                     'default_value' => $data['firstname']
                 ];
                 $items[] = [
                     'name' => 'lastname',
-                    'label' => 'Last Name',
+                    'label' => trans('noshform.lastname'),
                     'type' => 'text',
                     'required' => true,
                     'default_value' => $data['lastname']
                 ];
                 $items[] = [
                     'name' => 'prefix',
-                    'label' => 'Prefix',
+                    'label' => trans('noshform.prefix'),
                     'type' => 'text',
                     'default_value' => $data['prefix']
                 ];
                 $items[] = [
                     'name' => 'suffix',
-                    'label' => 'Suffix',
+                    'label' => trans('noshform.suffix'),
                     'type' => 'text',
                     'default_value' => $data['suffix']
                 ];
                 $items[] = [
                     'name' => 'facility',
-                    'label' => 'Facility',
+                    'label' => trans('noshform.facility'),
                     'type' => 'text',
                     'default_value' => $data['facility']
                 ];
                 $items[] = [
                     'name' => 'specialty',
-                    'label' => 'Specialty',
+                    'label' => trans('noshform.specialty'),
                     'type' => 'text',
                     'required' => true,
                     'typeahead' => route('typeahead', ['table' => $table, 'column' => 'specialty']),
@@ -5280,27 +5280,27 @@ class Controller extends BaseController
                 ];
                 $items[] = [
                     'name' => 'npi',
-                    'label' => 'NPI',
+                    'label' => trans('noshform.npi'),
                     'type' => 'text',
                     'default_value' => $data['npi']
                 ];
             }
             $items[] = [
                 'name' => 'street_address1',
-                'label' => 'Address',
+                'label' => trans('noshform.street_address1'),
                 'type' => 'text',
                 'required' => true,
                 'default_value' => $data['street_address1']
             ];
             $items[] = [
                 'name' => 'street_address2',
-                'label' => 'Address 2',
+                'label' => trans('noshform.street_address2'),
                 'type' => 'text',
                 'default_value' => $data['street_address2']
             ];
             $items[] = [
                 'name' => 'country',
-                'label' => 'Country',
+                'label' => trans('noshform.country'),
                 'type' => 'select',
                 'select_items' => $this->array_country(),
                 'default_value' => $data['country'],
@@ -5308,14 +5308,14 @@ class Controller extends BaseController
             ];
             $items[] = [
                 'name' => 'city',
-                'label' => 'City',
+                'label' => trans('noshform.city'),
                 'type' => 'text',
                 'typeahead' => route('typeahead', ['table' => $table, 'column' => 'city']),
                 'default_value' => $data['city']
             ];
             $items[] = [
                 'name' => 'state',
-                'label' => 'State',
+                'label' => trans('noshform.state'),
                 'type' => 'select',
                 'select_items' => $this->array_states($data['country']),
                 'default_value' => $data['state'],
@@ -5323,41 +5323,41 @@ class Controller extends BaseController
             ];
             $items[] = [
                 'name' => 'zip',
-                'label' => 'Zip',
+                'label' => trans('noshform.zip'),
                 'type' => 'text',
                 'typeahead' => route('typeahead', ['table' => $table, 'column' => 'zip']),
                 'default_value' => $data['zip']
             ];
             $items[] = [
                 'name' => 'phone',
-                'label' => 'Phone',
+                'label' => trans('noshform.phone'),
                 'type' => 'text',
                 'phone' => true,
                 'default_value' => $data['phone']
             ];
             $items[] = [
                 'name' => 'fax',
-                'label' => 'Fax',
+                'label' => trans('noshform.fax'),
                 'type' => 'text',
                 'phone' => true,
                 'default_value' => $data['fax']
             ];
             $items[] = [
                 'name' => 'comments',
-                'label' => 'Comments',
+                'label' => trans('noshform.comments'),
                 'type' => 'text',
                 'default_value' => $data['comments']
             ];
             if ($subtype == 'Laboratory' || $subtype == 'Radiology' || $subtype == 'Cardiopulmonary') {
                 $items[] = [
                     'name' => 'ordering_id',
-                    'label' => 'Provider/Clinic Identity',
+                    'label' => trans('noshform.ordering_id'),
                     'type' => 'text',
                     'default_value' => $data['ordering_id']
                 ];
                 $items[] = [
                     'name' => 'electronic_order',
-                    'label' => 'Electronic Order Interface',
+                    'label' => trans('noshform.electronic_order'),
                     'type' => 'select',
                     'select_items' => $electronic_order_arr,
                     'default_value' => $data['electronic_order']
@@ -5418,28 +5418,28 @@ class Controller extends BaseController
         if ($subtype == '') {
             $items[] = [
                 'name' => 'alert',
-                'label' => 'Alert',
+                'label' => trans('noshform.alert'),
                 'type' => 'text',
                 'required' => true,
                 'default_value' => $alert['alert']
             ];
             $items[] = [
                 'name' => 'alert_provider',
-                'label' => 'User or Provider to Alert',
+                'label' => trans('noshform.alert_provider'),
                 'type' => 'select',
                 'select_items' => $users_arr,
                 'default_value' => $alert['alert_provider']
             ];
             $items[] = [
                 'name' => 'alert_description',
-                'label' => 'Description',
+                'label' => trans('noshform.alert_description'),
                 'type' => 'textarea',
                 'required' => true,
                 'default_value' => $alert['alert_description']
             ];
             $items[] = [
                 'name' => 'alert_date_active',
-                'label' => 'Due Date',
+                'label' => trans('noshform.alert_date_active'),
                 'type' => 'date',
                 'required' => true,
                 'default_value' => $alert['alert_date_active']
@@ -5447,12 +5447,12 @@ class Controller extends BaseController
             if ($portal_active == true) {
                 $items[] = [
                     'name' => 'alert_send_message',
-                    'label' => 'Message to Patient about Alert',
+                    'label' => trans('noshform.alert_send_message'),
                     'type' => 'select',
                     'select_items' => [
-                        'n' => 'No',
-                        'y' => 'Yes',
-                        's' => 'Message Sent'
+                        'n' => trans('noshform.no'),
+                        'y' => trans('noshform.yes'),
+                        's' => trans('noshform.message_sent')
                     ],
                     'default_value' => $alert['alert_send_message']
                 ];
@@ -5466,7 +5466,7 @@ class Controller extends BaseController
         if ($subtype == 'incomplete') {
             $items[] = [
                 'name' => 'alert_reason_not_complete',
-                'label' => 'Reason',
+                'label' => trans('noshform.alert_reason_not_complete'),
                 'type' => 'text',
                 'required' => true,
                 'default_value' => $alert['alert_reason_not_complete']
@@ -5478,9 +5478,9 @@ class Controller extends BaseController
     protected function form_allergies($result, $table, $id, $subtype)
     {
         $severity_arr = [
-            'mild' => 'Mild',
-            'moderate' => 'Moderate',
-            'severe' => 'Severe'
+            'mild' => trans('noshform.mild'),
+            'moderate' => trans('noshform.moderate'),
+            'severe' => trans('noshform.severe')
         ];
         $allergies_provider = null;
         $provider_id = null;
@@ -5544,14 +5544,14 @@ class Controller extends BaseController
         }
         $items[] = [
             'name' => 'allergies_med',
-            'label' => 'Substance or Medication',
+            'label' => trans('noshform.allergies_med'),
             'type' => 'text',
             'required' => true,
             'default_value' => $allergy['allergies_med']
         ];
         $items[] = [
             'name' => 'allergies_reaction',
-            'label' => 'Reaction',
+            'label' => trans('noshform.allergies_reaction'),
             'type' => 'text',
             'required' => true,
             'typeahead' => route('typeahead', ['table' => $table, 'column' => 'allergies_reaction']),
@@ -5559,34 +5559,34 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'allergies_severity',
-            'label' => 'Severity',
+            'label' => trans('noshform.allergies_severity'),
             'type' => 'select',
             'select_items' => $severity_arr,
             'default_value' => $allergy['allergies_severity']
         ];
         $items[] = [
             'name' => 'meds_ndcid',
-            'label' => 'RXNorm ID',
+            'label' => trans('noshform.meds_ndcid'),
             'type' => 'text',
             'readonly' => true,
             'default_value' => $allergy['meds_ndcid']
         ];
         $items[] = [
             'name' => 'allergies_date_active',
-            'label' => 'Date Active',
+            'label' => trans('noshform.allergies_date_active'),
             'type' => 'date',
             'required' => true,
             'default_value' => $allergy['allergies_date_active']
         ];
         $items[] = [
             'name' => 'notes',
-            'label' => 'Notes',
+            'label' => trans('noshform.notes'),
             'type' => 'textarea',
             'default_value' => $allergy['notes']
         ];
         $items[] = [
             'name' => 'label[]',
-            'label' => 'Sensitive Label',
+            'label' => trans('noshform.label'),
             'type' => 'select',
             'select_items' => $this->fhir_scopes_sensitivities(),
             'multiple' => true,
@@ -5656,7 +5656,7 @@ class Controller extends BaseController
         }
         $items[] = [
             'name' => 'cpt',
-            'label' => 'Procedure Code',
+            'label' => trans('noshform.cpt'),
             'type' => 'text',
             'required' => true,
             'typeahead' => route('typeahead', ['table' => $table, 'column' => 'cpt']),
@@ -5664,42 +5664,42 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'cpt_charge',
-            'label' => 'Procedure Charge',
+            'label' => trans('noshform.cpt_charge'),
             'type' => 'text',
             'required' => true,
             'default_value' => $cpt['cpt_charge']
         ];
         $items[] = [
             'name' => 'unit',
-            'label' => 'Unit(s)',
+            'label' => trans('noshform.unit'),
             'type' => 'text',
             'required' => true,
             'default_value' => $cpt['unit']
         ];
         $items[] = [
             'name' => 'modifier',
-            'label' => 'Modifier',
+            'label' => trans('noshform.modifier'),
             'type' => 'select',
             'select_items' => $this->array_modifier(),
             'default_value' => $cpt['modifier']
         ];
         $items[] = [
             'name' => 'dos_f',
-            'label' => 'Date of Service From',
+            'label' => trans('noshform.dos_f'),
             'type' => 'date',
             'required' => true,
             'default_value' => $cpt['dos_f']
         ];
         $items[] = [
             'name' => 'dos_t',
-            'label' => 'Date of Service To',
+            'label' => trans('noshform.dos_t'),
             'type' => 'date',
             'required' => true,
             'default_value' => $cpt['dos_t']
         ];
         $items[] = [
             'name' => 'icd_pointer[]',
-            'label' => 'Diagnosis Pointer',
+            'label' => trans('noshform.icd_pointer'),
             'type' => 'select',
             'select_items' => $this->array_assessment_billing($cpt['eid']),
             'required' => true,
@@ -5747,14 +5747,14 @@ class Controller extends BaseController
         }
         $items[] = [
             'name' => 'visit_type',
-            'label' => 'Visit Type',
+            'label' => trans('noshform.visit_type'),
             'type' => 'text',
             'required' => true,
             'default_value' => $data['visit_type']
         ];
         $items[] = [
             'name' => 'duration',
-            'label' => 'Duration',
+            'label' => trans('noshform.duration'),
             'type' => 'select',
             'select_items' => $this->array_duration(),
             'required' => true,
@@ -5762,7 +5762,7 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'classname',
-            'label' => 'Color',
+            'label' => trans('noshform.classname'),
             'type' => 'select',
             'select_items' => $this->array_color(),
             'required' => true,
@@ -5770,7 +5770,7 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'provider_id',
-            'label' => 'Provider',
+            'label' => trans('noshform.provider_id'),
             'type' => 'select',
             'select_items' => $providers_arr,
             'required' => true,
@@ -5829,46 +5829,46 @@ class Controller extends BaseController
             ];
             $items[] = [
                 'name' => 'lastname',
-                'label' => 'Last Name',
+                'label' => trans('noshform.lastname'),
                 'type' => 'text',
                 'required' => true,
                 'default_value' => $identity_arr['lastname']
             ];
             $items[] = [
                 'name' => 'firstname',
-                'label' => 'First Name',
+                'label' => trans('noshform.firstname'),
                 'type' => 'text',
                 'required' => true,
                 'default_value' => $identity_arr['firstname']
             ];
             $items[] = [
                 'name' => 'nickname',
-                'label' => 'Nickname',
+                'label' => trans('noshform.nickname'),
                 'type' => 'text',
                 'default_value' => $identity_arr['nickname']
             ];
             $items[] = [
                 'name' => 'middle',
-                'label' => 'Middle Name',
+                'label' => trans('noshform.middle'),
                 'type' => 'text',
                 'default_value' => $identity_arr['middle']
             ];
             $items[] = [
                 'name' => 'title',
-                'label' => 'Title',
+                'label' => trans('noshform.title'),
                 'type' => 'text',
                 'default_value' => $identity_arr['title']
             ];
             $items[] = [
                 'name' => 'DOB',
-                'label' => 'Date of Birth',
+                'label' => trans('noshform.DOB'),
                 'type' => 'date',
                 'required' => true,
                 'default_value' => $identity_arr['DOB']
             ];
             $items[] = [
                 'name' => 'sex',
-                'label' => 'Gender',
+                'label' => trans('noshform.sex'),
                 'type' => 'select',
                 'required' => true,
                 'select_items' => $this->array_gender(),
@@ -5876,19 +5876,19 @@ class Controller extends BaseController
             ];
             $items[] = [
                 'name' => 'patient_id',
-                'label' => 'Patient ID',
+                'label' => trans('noshform.patient_id'),
                 'type' => 'text',
                 'default_value' => $identity_arr['patient_id']
             ];
             $items[] = [
                 'name' => 'ss',
-                'label' => 'SSN',
+                'label' => trans('noshform.ss'),
                 'type' => 'text',
                 'default_value' => $identity_arr['ss']
             ];
             $items[] = [
                 'name' => 'race',
-                'label' => 'Race',
+                'label' => trans('noshform.race'),
                 'type' => 'select',
                 'select_items' => $race_arr,
                 'default_value' => $identity_arr['race']
@@ -5900,27 +5900,27 @@ class Controller extends BaseController
             ];
             $items[] = [
                 'name' => 'marital_status',
-                'label' => 'Marital Status',
+                'label' => trans('noshform.marital_status'),
                 'type' => 'select',
                 'select_items' => $this->array_marital(),
                 'default_value' => $identity_arr['marital_status']
             ];
             $items[] = [
                 'name' => 'partner_name',
-                'label' => 'Spouse/Partner Name',
+                'label' => trans('noshform.partner_name'),
                 'type' => 'text',
                 'default_value' => $identity_arr['partner_name']
             ];
             $items[] = [
                 'name' => 'employer',
-                'label' => 'Employer',
+                'label' => trans('noshform.employer'),
                 'type' => 'text',
                 'typeahead' => route('typeahead', ['table' => $table, 'column' => 'employer']),
                 'default_value' => $identity_arr['employer']
             ];
             $items[] = [
                 'name' => 'ethnicity',
-                'label' => 'Ethnicity',
+                'label' => trans('noshform.ethnicity'),
                 'type' => 'select',
                 'select_items' => $ethnicity_arr,
                 'default_value' => $identity_arr['ethnicity']
@@ -5932,13 +5932,13 @@ class Controller extends BaseController
             ];
             $items[] = [
                 'name' => 'caregiver',
-                'label' => 'Careiver(s)',
+                'label' => trans('noshform.caregiver'),
                 'type' => 'text',
                 'default_value' => $identity_arr['caregiver']
             ];
             $items[] = [
                 'name' => 'active',
-                'label' => 'Status',
+                'label' => trans('noshform.active'),
                 'type' => 'select',
                 'required' => true,
                 'select_items' => $active_arr,
@@ -5946,14 +5946,14 @@ class Controller extends BaseController
             ];
             $items[] = [
                 'name' => 'referred_by',
-                'label' => 'Referred By',
+                'label' => trans('noshform.referred_by'),
                 'type' => 'text',
                 'typeahead' => route('typeahead', ['table' => $table, 'column' => 'referred_by']),
                 'default_value' => $identity_arr['referred_by']
             ];
             $items[] = [
                 'name' => 'language',
-                'label' => 'Preferred Language',
+                'label' => trans('noshform.language'),
                 'type' => 'text',
                 'default_value' => $identity_arr['language']
             ];
@@ -5980,13 +5980,13 @@ class Controller extends BaseController
             ];
             $items[] = [
                 'name' => 'address',
-                'label' => 'Address',
+                'label' => trans('noshform.street_address1'),
                 'type' => 'text',
                 'default_value' => $contact_arr['address']
             ];
             $items[] = [
                 'name' => 'country',
-                'label' => 'Country',
+                'label' => trans('noshform.country'),
                 'type' => 'select',
                 'select_items' => $this->array_country(),
                 'default_value' => $contact_arr['country'],
@@ -5994,14 +5994,14 @@ class Controller extends BaseController
             ];
             $items[] = [
                 'name' => 'city',
-                'label' => 'City',
+                'label' => trans('noshform.city'),
                 'type' => 'text',
                 'typeahead' => route('typeahead', ['table' => $table, 'column' => 'city']),
                 'default_value' => $contact_arr['city']
             ];
             $items[] = [
                 'name' => 'state',
-                'label' => 'State',
+                'label' => trans('noshform.state'),
                 'type' => 'select',
                 'select_items' => $this->array_states($contact_arr['country']),
                 'default_value' => $contact_arr['state'],
@@ -6009,53 +6009,53 @@ class Controller extends BaseController
             ];
             $items[] = [
                 'name' => 'zip',
-                'label' => 'Zip',
+                'label' => trans('noshform.zip'),
                 'type' => 'text',
                 'default_value' => $contact_arr['zip']
             ];
             $items[] = [
                 'name' => 'email',
-                'label' => 'Email',
+                'label' => trans('noshform.email'),
                 'type' => 'email',
                 'default_value' => $contact_arr['email']
             ];
             $items[] = [
                 'name' => 'phone_home',
-                'label' => 'Home Phone',
+                'label' => trans('noshform.phone_home'),
                 'type' => 'text',
                 'phone' => true,
                 'default_value' => $contact_arr['phone_home']
             ];
             $items[] = [
                 'name' => 'phone_work',
-                'label' => 'Work Phone',
+                'label' => trans('noshform.phone_work'),
                 'type' => 'text',
                 'phone' => true,
                 'default_value' => $contact_arr['phone_work']
             ];
             $items[] = [
                 'name' => 'phone_cell',
-                'label' => 'Mobile',
+                'label' => trans('noshform.phone_cell'),
                 'type' => 'text',
                 'phone' => true,
                 'default_value' => $contact_arr['phone_cell']
             ];
             $items[] = [
                 'name' => 'emergency_contact',
-                'label' => 'Emergency Contact',
+                'label' => trans('noshform.emergency_contact'),
                 'type' => 'text',
                 'default_value' => $contact_arr['emergency_contact']
             ];
             $items[] = [
                 'name' => 'reminder_method',
-                'label' => 'Appointment Reminder Method',
+                'label' => trans('noshform.reminder_method'),
                 'type' => 'select',
                 'select_items' => $this->array_reminder_method(),
                 'default_value' => $contact_arr['reminder_method']
             ];
             $items[] = [
                 'name' => 'reminder_interval',
-                'label' => 'Appointment Reminder Interval',
+                'label' => trans('noshform.reminder_interval'),
                 'type' => 'select',
                 'select_items' => $this->array_reminder_interval(),
                 'default_value' => $contact_arr['reminder_interval']
@@ -6079,19 +6079,19 @@ class Controller extends BaseController
             ];
             $items[] = [
                 'name' => 'guardian_lastname',
-                'label' => 'Last Name',
+                'label' => trans('noshform.lastname'),
                 'type' => 'text',
                 'default_value' => $guardian_arr['guardian_lastname']
             ];
             $items[] = [
                 'name' => 'guardian_firstname',
-                'label' => 'First Name',
+                'label' => trans('noshform.firstname'),
                 'type' => 'text',
                 'default_value' => $guardian_arr['guardian_firstname']
             ];
             $items[] = [
                 'name' => 'guardian_relationship',
-                'label' => 'Relationship',
+                'label' => trans('noshform.relationship'),
                 'type' => 'text',
                 'default_value' => $guardian_arr['guardian_relationship']
             ];
@@ -6102,13 +6102,13 @@ class Controller extends BaseController
             ];
             $items[] = [
                 'name' => 'guardian_address',
-                'label' => 'Address',
+                'label' => trans('noshform.street_address1'),
                 'type' => 'text',
                 'default_value' => $guardian_arr['guardian_address']
             ];
             $items[] = [
                 'name' => 'guardian_country',
-                'label' => 'Country',
+                'label' => trans('noshform.country'),
                 'type' => 'select',
                 'select_items' => $this->array_country(),
                 'default_value' => $guardian_arr['guardian_country'],
@@ -6116,14 +6116,14 @@ class Controller extends BaseController
             ];
             $items[] = [
                 'name' => 'guardian_city',
-                'label' => 'City',
+                'label' => trans('noshform.city'),
                 'type' => 'text',
                 'typeahead' => route('typeahead', ['table' => $table, 'column' => 'guardian_city']),
                 'default_value' => $guardian_arr['guardian_city']
             ];
             $items[] = [
                 'name' => 'guardian_state',
-                'label' => 'State',
+                'label' => trans('noshform.state'),
                 'type' => 'select',
                 'select_items' => $this->array_states($guardian_arr['guardian_country']),
                 'default_value' => $guardian_arr['guardian_state'],
@@ -6131,33 +6131,33 @@ class Controller extends BaseController
             ];
             $items[] = [
                 'name' => 'guardian_zip',
-                'label' => 'Zip',
+                'label' => trans('noshform.zip'),
                 'type' => 'text',
                 'default_value' => $guardian_arr['guardian_zip']
             ];
             $items[] = [
                 'name' => 'guardian_email',
-                'label' => 'Email',
+                'label' => trans('noshform.email'),
                 'type' => 'email',
                 'default_value' => $guardian_arr['guardian_email']
             ];
             $items[] = [
                 'name' => 'guardian_phone_home',
-                'label' => 'Home Phone',
+                'label' => trans('noshform.phone_home'),
                 'type' => 'text',
                 'phone' => true,
                 'default_value' => $guardian_arr['guardian_phone_home']
             ];
             $items[] = [
                 'name' => 'guardian_phone_work',
-                'label' => 'Work Phone',
+                'label' => trans('noshform.phone_work'),
                 'type' => 'text',
                 'phone' => true,
                 'default_value' => $guardian_arr['guardian_phone_work']
             ];
             $items[] = [
                 'name' => 'guardian_phone_cell',
-                'label' => 'Mobile',
+                'label' => trans('noshform.phone_cell'),
                 'type' => 'text',
                 'phone' => true,
                 'default_value' => $guardian_arr['guardian_phone_cell']
@@ -6182,14 +6182,14 @@ class Controller extends BaseController
             }
             $items[] = [
                 'name' => 'preferred_provider',
-                'label' => 'Preferred Provider',
+                'label' => trans('noshform.preferred_provider'),
                 'type' => 'text',
                 'typeahead' => route('typeahead', ['table' => 'users', 'column' => 'displayname', 'subtype' => 'provider']),
                 'default_value' => $other_arr['preferred_provider']
             ];
             $items[] = [
                 'name' => 'pharmacy_address_id',
-                'label' => 'Preferred Pharmacy',
+                'label' => trans('noshform.preferred_pharmacy'),
                 'type' => 'select',
                 'select_items' => $this->array_orders_provider('Pharmacy'),
                 'default_value' => $other_arr['pharmacy_address_id']
@@ -6203,30 +6203,30 @@ class Controller extends BaseController
             // ];
             $items[] = [
                 'name' => 'other1',
-                'label' => 'Other Field 1',
+                'label' => trans('noshform.other1'),
                 'type' => 'text',
                 'default_value' => $other_arr['other1']
             ];
             $items[] = [
                 'name' => 'other2',
-                'label' => 'Other Field 2',
+                'label' => trans('noshform.other2'),
                 'type' => 'text',
                 'default_value' => $other_arr['other2']
             ];
             $items[] = [
                 'name' => 'comments',
-                'label' => 'Comments',
+                'label' => trans('noshform.comments'),
                 'type' => 'textarea',
                 'default_value' => $other_arr['comments']
             ];
         }
         if ($subtype == 'cc') {
             $card_type_arr = [
-                '' => 'Select a credit card type',
-                'MasterCard' => 'MasterCard',
-                'Visa' => 'Visa',
-                'Discover' => 'Discover',
-                'Amex'=>'American Express'
+                '' => trans('noshform.select_credit_card'),
+                'MasterCard' => trans('noshform.mastercard'),
+                'Visa' => trans('noshform.visa'),
+                'Discover' => trans('noshform.discover'),
+                'Amex'=> trans('noshform.amex')
             ];
             if ($result->creditcard_number == '' || $result->creditcard_number == null) {
                 $cc_arr = [
@@ -6245,14 +6245,14 @@ class Controller extends BaseController
             }
             $items[] = [
                 'name' => 'creditcard_number',
-                'label' => 'Card Number',
+                'label' => trans('noshform.creditcard_number'),
                 'type' => 'text',
                 'required' => true,
                 'default_value' => $cc_arr['creditcard_number']
             ];
             $items[] = [
                 'name' => 'creditcard_type',
-                'label' => 'Type',
+                'label' => trans('noshform.type'),
                 'type' => 'select',
                 'select_items' => $card_type_arr,
                 'required' => true,
@@ -6260,10 +6260,17 @@ class Controller extends BaseController
             ];
             $items[] = [
                 'name' => 'creditcard_expiration',
-                'label' => 'Expiration',
+                'label' => trans('noshform.creditcard_expiration'),
                 'type' => 'text',
                 'required' => true,
                 'default_value' => $cc_arr['creditcard_expiration']
+            ];
+            $items[] = [
+                'name' => 'creditcard_key',
+                'label' => trans('noshform.creditcard_key'),
+                'type' => 'text',
+                'required' => true,
+                'default_value' => $cc_arr['creditcard_key']
             ];
         }
         return $items;
@@ -6272,17 +6279,17 @@ class Controller extends BaseController
     protected function form_documents($result, $table, $id, $subtype)
     {
         $document_type_arr = [
-            'Laboratory' => 'Laboratory',
-            'Imaging' => 'Imaging',
-            'Cardiopulmonary' => 'Cardiopulmonary',
-            'Endoscopy' => 'Endoscopy',
-            'Referrals' => 'Referrals',
-            'Past_Records' => 'Past Records',
-            'Other_Forms' => 'Other Forms',
-            'Letters' => 'Letters',
-            'Education' => 'Education',
-            'ccda' => 'CCDAs',
-            'ccr' => 'CCRs'
+            'Laboratory' => trans('noshform.laboratory'),
+            'Imaging' => trans('noshform.imaging'),
+            'Cardiopulmonary' => trans('noshform.cardiopulmonary'),
+            'Endoscopy' => trans('noshform.endoscopy'),
+            'Referrals' => trans('noshform.referrals'),
+            'Past_Records' => trans('noshform.past_records'),
+            'Other_Forms' => trans('other_forms'),
+            'Letters' => trans('noshform.letters'),
+            'Education' => trans('noshform.education'),
+            'ccda' => trans('noshform.ccda'),
+            'ccr' => trans('noshform.ccr')
         ];
         if ($id == '0') {
             $document = [
@@ -6307,7 +6314,7 @@ class Controller extends BaseController
         }
         $items[] = [
             'name' => 'documents_from',
-            'label' => 'From',
+            'label' => trans('noshform.from'),
             'type' => 'text',
             'required' => true,
             'typeahead' => route('typeahead', ['table' => $table, 'column' => 'documents_from']),
@@ -6316,7 +6323,7 @@ class Controller extends BaseController
         if ($document['documents_type'] == 'ccda' || $document['documents_type'] == 'ccr') {
             $items[] = [
                 'name' => 'documents_type',
-                'label' => 'Type',
+                'label' => trans('noshform.type'),
                 'type' => 'select',
                 'select_items' => $document_type_arr,
                 'required' => true,
@@ -6326,7 +6333,7 @@ class Controller extends BaseController
         } else {
             $items[] = [
                 'name' => 'documents_type',
-                'label' => 'Type',
+                'label' => trans('noshform.type'),
                 'type' => 'select',
                 'select_items' => $document_type_arr,
                 'required' => true,
@@ -6335,7 +6342,7 @@ class Controller extends BaseController
         }
         $items[] = [
             'name' => 'documents_desc',
-            'label' => 'Description',
+            'label' => trans('noshform.description'),
             'type' => 'textarea',
             'required' => true,
             'typeahead' => route('typeahead', ['table' => $table, 'column' => 'documents_desc']),
@@ -6343,14 +6350,14 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'documents_date',
-            'label' => 'Date',
+            'label' => trans('noshform.date'),
             'type' => 'date',
             'required' => true,
             'default_value' => $document['documents_date']
         ];
         $items[] = [
             'name' => 'label[]',
-            'label' => 'Sensitive Label',
+            'label' => trans('noshform.label'),
             'type' => 'select',
             'select_items' => $this->fhir_scopes_sensitivities(),
             'multiple' => true,
@@ -6364,26 +6371,26 @@ class Controller extends BaseController
     {
         $rel_arr = [
             '' => '',
-            'Father' => 'Father',
-            'Mother' => 'Mother',
-            'Brother' => 'Brother',
-            'Sister' => 'Sister',
-            'Son' => 'Son',
-            'Daughter' => 'Daughter',
-            'Spouse' => 'Spouse',
-            'Partner' => 'Partner',
-            'Paternal Uncle' => 'Paternal Uncle',
-            'Paternal Aunt' => 'Paternal Aunt',
-            'Maternal Uncle' => 'Maternal Uncle',
-            'Maternal Aunt' => 'Maternal Aunt',
-            'Maternal Grandfather' => 'Maternal Grandfather',
-            'Maternal Grandmother' => 'Maternal Grandmother',
-            'Paternal Grandfather' => 'Paternal Grandfather',
-            'Paternal Grandmother' => 'Paternal Grandmother'
+            'Father' => trans('noshform.father'),
+            'Mother' => trans('noshform.mother'),
+            'Brother' => trans('noshform.brother'),
+            'Sister' => trans('noshform.sister'),
+            'Son' => trans('noshform.son'),
+            'Daughter' => trans('noshform.daughter'),
+            'Spouse' => trans('noshform.spouse'),
+            'Partner' => trans('noshform.partner'),
+            'Paternal Uncle' => trans('noshform.paternal_uncle'),
+            'Paternal Aunt' => trans('noshform.paternal_aunt'),
+            'Maternal Uncle' => trans('noshform.maternal_uncle'),
+            'Maternal Aunt' => trans('noshform.maternal_aunt'),
+            'Maternal Grandfather' => trans('noshform.maternal_grandfather'),
+            'Maternal Grandmother' => trans('noshform.maternal_grandmother'),
+            'Paternal Grandfather' => trans('noshform.paternal_grandfather'),
+            'Paternal Grandmother' => trans('noshform.paternal_grandmother')
         ];
         $status_arr = [
-            'Alive' => 'Alive',
-            'Deceased' => 'Deceased'
+            'Alive' => trans('noshform.alive'),
+            'Deceased' => trans('noshform.deceased')
         ];
         $name_arr[''] = '';
         $name_arr['Patient'] = 'Patient';
@@ -6394,14 +6401,14 @@ class Controller extends BaseController
         }
         $items[] = [
             'name' => 'name',
-            'label' => 'Name',
+            'label' => trans('noshform.name'),
             'type' => 'text',
             'required' => true,
             'default_value' => $result['name']
         ];
         $items[] = [
             'name' => 'relationship',
-            'label' => 'Relationship',
+            'label' => trans('noshform.relationship'),
             'type' => 'select',
             'select_items' => $rel_arr,
             'required' => true,
@@ -6409,7 +6416,7 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'status',
-            'label' => 'Living Status',
+            'label' => trans('noshform.living_status'),
             'type' => 'select',
             'select_items' => $status_arr,
             'required' => true,
@@ -6417,7 +6424,7 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'gender',
-            'label' => 'Gender',
+            'label' => trans('noshform.gender'),
             'type' => 'select',
             'select_items' => $this->array_gender1(),
             'required' => true,
@@ -6425,14 +6432,14 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'date_of_birth',
-            'label' => 'Date of Birth',
+            'label' => trans('noshform.DOB'),
             'type' => 'date',
             'required' => true,
             'default_value' => $result['date_of_birth']
         ];
         $items[] = [
             'name' => 'marital_status',
-            'label' => 'Marital Status',
+            'label' => trans('noshform.marital_status'),
             'type' => 'select',
             'select_items' => $this->array_marital(),
             'required' => true,
@@ -6440,14 +6447,14 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'mother',
-            'label' => 'Mother',
+            'label' => trans('noshform.mother'),
             'type' => 'select',
             'select_items' => $name_arr,
             'default_value' => $result['mother']
         ];
         $items[] = [
             'name' => 'father',
-            'label' => 'Father',
+            'label' => trans('noshform.father'),
             'type' => 'select',
             'select_items' => $name_arr,
             'default_value' => $result['father']
@@ -6458,7 +6465,7 @@ class Controller extends BaseController
         }
         $items[] = [
             'name' => 'medical[]',
-            'label' => 'Medical history',
+            'label' => trans('noshform.medical_history'),
             'type' => 'select',
             'select_items' => $medical_arr,
             'required' => true,
@@ -6474,17 +6481,17 @@ class Controller extends BaseController
         $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
         $role_arr = [
             '' => '',
-            'Primary Care Provider' => 'Primary Care Provider',
+            'Primary Care Provider' => trans('noshform.primary_care_provider'),
             'Consulting Provider' => trans('nosh.consulting_provider'),
             'Referring Provider' => trans('nosh.referring_provider')
         ];
         $nosh_action_arr = [
-            'chart_queue,encounters' => 'Select Records to Print',
-            'download_ccda' => 'Download CCDA',
-            'print_action,all' => 'Print All Records',
-            'print_action,1year' => 'Print All Records from Past Year',
-            'print_queue,all' => 'All Records to Print Queue',
-            'print_queue,1year' => 'All Records from Past Year to Print Queue'
+            'chart_queue,encounters' => trans('noshform.select_records'),
+            'download_ccda' => trans('noshform.download_ccda'),
+            'print_action,all' => trans('noshform.print_all_records'),
+            'print_action,1year' => trans('noshform.print_all_1year'),
+            'print_queue,all' => trans('noshform.print_queue_all'),
+            'print_queue,1year' => trans('noshform.print_queue_1year')
         ];
         if ($practice->fax_type !== '') {
             $nosh_action_arr['fax_action,all'] = 'Fax All Records';
@@ -7995,7 +8002,7 @@ class Controller extends BaseController
                 'label' => 'Country',
                 'type' => 'select',
                 'select_items' => $this->array_country(),
-                'default_value' => $billing_arr['country'],
+                'default_value' => $billing_arr['billing_country'],
                 'class' => 'country'
             ];
             $items[] = [
@@ -8009,7 +8016,7 @@ class Controller extends BaseController
                 'name' => 'billing_state',
                 'label' => 'State',
                 'type' => 'select',
-                'select_items' => $this->array_states($billing_arr['country']),
+                'select_items' => $this->array_states($billing_arr['billing_country']),
                 'required' => true,
                 'default_value' => $billing_arr['billing_state'],
                 'class' => 'state'
@@ -9307,6 +9314,7 @@ class Controller extends BaseController
                 $data2 = [
                     'specialty' => null,
                     'license' => null,
+                    'license_country' => 'United States',
                     'license_state' => null,
                     'npi' => null,
                     'npi_taxonomy' => null,
