@@ -479,7 +479,7 @@ class InstallController extends Controller {
                 'name' => 'country',
                 'label' => 'Country',
                 'type' => 'select',
-                'select_items' => $this->array_countries(),
+                'select_items' => $this->array_country(),
                 'required' => true,
                 'default_value' => 'United States',
                 'class' => 'country'
