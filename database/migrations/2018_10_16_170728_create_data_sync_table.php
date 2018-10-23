@@ -13,15 +13,17 @@ class CreateDataSyncTable extends Migration
      */
     public function up()
     {
-        Schema::create('data_sync', function (Blueprint $table) {
-            $table->increments('id');
-            $table->bigInteger('pid')->nullable();
-            $table->longtext('action')->nullable();
-            $table->string('from', 255)->nullable();
-            $table->bigInteger('source_id')->nullable();
-            $table->string('source_index')->nullable();
-            $table->timestamps();
-        });
+        if(!Schema::hasTable('data_sync')) {
+            Schema::create('data_sync', function (Blueprint $table) {
+                $table->increments('id');
+                $table->bigInteger('pid')->nullable();
+                $table->longtext('action')->nullable();
+                $table->string('from', 255)->nullable();
+                $table->bigInteger('source_id')->nullable();
+                $table->string('source_index')->nullable();
+                $table->timestamps();
+            });
+        }
     }
 
     /**

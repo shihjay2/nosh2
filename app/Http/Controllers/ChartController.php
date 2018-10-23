@@ -7185,7 +7185,7 @@ class ChartController extends Controller {
         }
         $data['content'] = $return;
         $data['payors_active'] = true;
-        $data['panel_header'] = 'Payors';
+        $data['panel_header'] = trans('nosh.payors_list');
         $data = array_merge($data, $this->sidebar_build('chart'));
         //$data['template_content'] = 'test';
         $dropdown_array1 = [

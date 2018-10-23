@@ -25,6 +25,8 @@ use RecursiveIteratorIterator;
 use Schema;
 use Session;
 use SoapBox\Formatter\Formatter;
+use Symfony\Component\Process\Process;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 use URL;
 use ZipArchive;
 
@@ -5835,7 +5837,13 @@ class CoreController extends Controller
             $file = $request->input('backup');
             $command = "mysql -u " . env('DB_USERNAME') . " -p". env('DB_PASSWORD') . " " . env('DB_DATABASE') . " < " . $file;
             system($command);
-            Session::put('message_action', 'Backup restored');
+            // Do migrations if needed
+            $migrate = new Process("php artisan migrate --force");
+            $migrate->setWorkingDirectory(base_path());
+            $migrate->setTimeout(null);
+            $migrate->run();
+            $return = nl2br($migrate->getOutput());
+            Session::put('message_action', 'Backup restored<br>' . $return);
             return redirect()->route('dashboard');
         } else {
             $practice = DB::table('practiceinfo')->first();

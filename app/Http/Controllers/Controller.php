@@ -6393,7 +6393,7 @@ class Controller extends BaseController
             'Deceased' => trans('noshform.deceased')
         ];
         $name_arr[''] = '';
-        $name_arr['Patient'] = 'Patient';
+        $name_arr['Patient'] = trans('noshform.patient');
         if (! empty($arr)) {
             foreach($arr as $person) {
                 $name_arr[$person['Name']] = $person['Name'];
@@ -6494,11 +6494,11 @@ class Controller extends BaseController
             'print_queue,1year' => trans('noshform.print_queue_1year')
         ];
         if ($practice->fax_type !== '') {
-            $nosh_action_arr['fax_action,all'] = 'Fax All Records';
-            $nosh_action_arr['fax_action,1year'] = 'Fax All Records from Past Year';
-            $nosh_action_arr['chart_queue,encounters'] .= ' or Fax';
-            $nosh_action_arr['fax_queue,all'] = 'All Records to Fax Queue';
-            $nosh_action_arr['fax_queue,1year'] = 'All Records from Past Year to Fax Queue';
+            $nosh_action_arr['fax_action,all'] = trans('noshform.fax_all_records');
+            $nosh_action_arr['fax_action,1year'] = trans('noshform.fax_all_1year');
+            $nosh_action_arr['chart_queue,encounters'] .= trans('noshform.or_fax');
+            $nosh_action_arr['fax_queue,all'] = trans('noshform.fax_queue_all');
+            $nosh_action_arr['fax_queue,1year'] = trans('noshform.fax_queue_1year');
         }
         if ($id == '0') {
             $data = [
@@ -6525,7 +6525,7 @@ class Controller extends BaseController
         }
         $items[] = [
             'name' => 'hippa_reason',
-            'label' => 'Reason',
+            'label' => trans('noshform.hippa_reason'),
             'type' => 'text',
             'required' => true,
             'typeahead' => route('typeahead', ['table' => $table, 'column' => 'hippa_reason']),
@@ -6533,7 +6533,7 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'hippa_provider',
-            'label' => 'Release To',
+            'label' => trans('noshform.hippa_provider'),
             'type' => 'text',
             'required' => true,
             'typeahead' => route('typeahead', ['table' => $table, 'column' => 'hippa_provider']),
@@ -6542,14 +6542,14 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'hippa_role',
-            'label' => 'Provider Role',
+            'label' => trans('noshform.hippa_role'),
             'type' => 'select',
             'select_items' => $role_arr,
             'default_value' => $data['hippa_role']
         ];
         $items[] = [
             'name' => 'hippa_date_release',
-            'label' => 'Date of Records Release',
+            'label' => trans('noshform.hippa_date_release'),
             'type' => 'date',
             'required' => true,
             'default_value' => $data['hippa_date_release']
@@ -6576,7 +6576,7 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'nosh_action',
-            'label' => 'Action after Saving',
+            'label' => trans('noshform.nosh_action'),
             'type' => 'select',
             'select_items' => $nosh_action_arr,
             'required' => true
@@ -6588,25 +6588,25 @@ class Controller extends BaseController
     {
         $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
         $type_arr = [
-            '' => 'Select Option',
-            'General Medical Records' => 'General Medical Records',
-            'Specific' => [
-                'History and Physical' => 'History and Physical',
-                'Medications and Therapy' => 'Medications and Therapy',
-                'Lab, Imaging, or Cardiopulmonary Report' => 'Lab, Imaging, or Cardiopulmonary Report',
-                'Operative Report' => 'Operative Report',
-                'Accident or Injury' => 'Accident or Injury',
-                'Immunizations' => 'Immunizations',
-                'Other' => 'Other'
+            '' => trans('noshform.select_option'),
+            trans('noshform.general_medical_records') => trans('noshform.general_medical_records'),
+            trans('noshform.specific') => [
+                trans('noshform.history_physical') => trans('noshform.history_physical'),
+                trans('noshform.medications_therapy') => trans('noshform.medications_therapy'),
+                trans('noshform.lab_report') => 'Lab, Imaging, or Cardiopulmonary Report',
+                trans('noshform.operative_report') => trans('noshform_operative_report'),
+                trans('noshform.accident_injury') => trans('noshform.accident_injury'),
+                trans('noshform.immunizations') => trans('noshform.immunizations'),
+                trans('noshform.other') => trans('noshform.other')
             ]
         ];
         $nosh_action_arr = [
-            'print_action' => 'Print',
-            'print_queue' => 'Add to Print Queue'
+            'print_action' => trans('noshform.print'),
+            'print_queue' => trans('noshform.add_print_queue')
         ];
         if ($practice->fax_type !== '') {
-            $nosh_action_arr['fax_action'] = 'Fax';
-            $nosh_action_arr['fax_queue'] = 'Add to Fax Queue';
+            $nosh_action_arr['fax_action'] = trans('noshform.fax');
+            $nosh_action_arr['fax_queue'] = trans('noshform.add_fax_queue');
         }
         if ($id == '0') {
             $data = [
@@ -6659,7 +6659,7 @@ class Controller extends BaseController
         }
         $items[] = [
             'name' => 'request_reason',
-            'label' => 'Reason',
+            'label' => trans('noshform.request_reason'),
             'type' => 'text',
             'required' => true,
             'typeahead' => route('typeahead', ['table' => $table, 'column' => 'request_reason']),
@@ -6667,7 +6667,7 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'request_type',
-            'label' => 'Type',
+            'label' => trans('noshform.request_type'),
             'type' => 'select',
             'required' => true,
             'select_items' => $type_arr,
@@ -6675,7 +6675,7 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'request_to',
-            'label' => 'Records Release To',
+            'label' => trans('noshform.request_to'),
             'type' => 'text',
             'required' => true,
             'class' => 'nosh-data-address',
@@ -6684,59 +6684,59 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'hippa_date_request',
-            'label' => 'Date of Request',
+            'label' => trans('noshform.hippa_date_request'),
             'type' => 'date',
             'required' => true,
             'default_value' => $data['hippa_date_request']
         ];
         $items[] = [
             'name' => 'history_physical',
-            'label' => 'Date of History and Physical',
+            'label' => trans('noshform.history_physical'),
             'type' => 'date',
             'default_value' => $data['history_physical']
         ];
         $items[] = [
             'name' => 'lab_type',
-            'label' => 'Type of Test',
+            'label' => trans('noshform.lab_type'),
             'type' => 'text',
             'typeahead' => route('typeahead', ['table' => $table, 'column' => 'lab_type']),
             'default_value' => $data['lab_type']
         ];
         $items[] = [
             'name' => 'lab_date',
-            'label' => 'Date of Test',
+            'label' => trans('noshform.lab_date'),
             'type' => 'date',
             'default_value' => $data['lab_date']
         ];
         $items[] = [
             'name' => 'op',
-            'label' => 'Type of Operation',
+            'label' => trans('noshform.op'),
             'type' => 'text',
             'typeahead' => route('typeahead', ['table' => $table, 'column' => 'op']),
             'default_value' => $data['op']
         ];
         $items[] = [
             'name' => 'accident_f',
-            'label' => 'Date of Injury/Accident (from)',
+            'label' => trans('noshform.accident_f'),
             'type' => 'date',
             'default_value' => $data['accident_f']
         ];
         $items[] = [
             'name' => 'accident_t',
-            'label' => 'Date of Injury/Accident (to)',
+            'label' => trans('noshform.accident_t'),
             'type' => 'date',
             'default_value' => $data['accident_t']
         ];
         $items[] = [
             'name' => 'other',
-            'label' => 'Other',
+            'label' => trans('noshform.other'),
             'type' => 'text',
             'typeahead' => route('typeahead', ['table' => $table, 'column' => 'other']),
             'default_value' => $data['other']
         ];
         $items[] = [
             'name' => 'received',
-            'label' => 'Received',
+            'label' => trans('noshform.received'),
             'type' => 'checkbox',
             'value' => 'Yes',
             'default_value' => $data['received']
@@ -6758,7 +6758,7 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'nosh_action',
-            'label' => 'Action after Saving',
+            'label' => trans('noshform.nosh_action'),
             'type' => 'select',
             'select_items' => $nosh_action_arr,
             'required' => true
@@ -6769,28 +6769,28 @@ class Controller extends BaseController
     protected function form_immunizations($result, $table, $id, $subtype)
     {
         $nosh_action_arr = [
-            '' => 'Do Nothing',
-            'inventory' => 'Pull from Vaccine Inventory'
+            '' => trans('noshform.do_nothing'),
+            'inventory' => trans('noshform.pull_inventory')
         ];
         if (Session::get('group_id') == '100') {
             unset($nosh_action_arr['inventory']);
         }
         $sequence_arr = [
             '' => '',
-            '1' => 'First',
-            '2' => 'Second',
-            '3' => 'Third',
-            '4' => 'Fourth',
-            '5' => 'Fifth'
+            '1' => trans('noshform.first'),
+            '2' => trans('noshform.second'),
+            '3' => trans('noshform.third'),
+            '4' => trans('noshform.fourth'),
+            '5' => trans('noshform.fifth')
         ];
         $site_arr = [
             '' => '',
-            'Right Deltoid' => 'Right Deltoid',
-            'Left Deltoid' => 'Left Deltoid',
-            'Right Gluteus' => 'Right Gluteus',
-            'Left Gluteus' => 'Left Gluteus',
-            'Right Thigh' => 'Right Thigh',
-            'Left Thigh' => 'Left Thigh'
+            trans('noshform.right') . ' ' . trans('noshform.deltoid') => trans('noshform.right') . ' ' . trans('noshform.deltoid'),
+            trans('noshform.left') . ' ' . trans('noshform.deltoid') => trans('noshform.left') . ' ' . trans('noshform.deltoid'),
+            trans('noshform.right') . ' ' . trans('noshform.gluteus') => trans('noshform.right') . ' ' . trans('noshform.gluteus'),
+            trans('noshform.left') . ' ' . trans('noshform.gluteus') => trans('noshform.left') . ' ' . trans('noshform.gluteus'),
+            trans('noshform.right') . ' ' . trans('noshform.thigh') => trans('noshform.right') . ' ' . trans('noshform.thigh'),
+            trans('noshform.left') . ' ' . trans('noshform.thigh') => trans('noshform.left') . ' ' . trans('noshform.thigh')
         ];
         if ($id == '0') {
             $imm = [
@@ -6852,7 +6852,7 @@ class Controller extends BaseController
         }
         $items[] = [
             'name' => 'imm_immunization',
-            'label' => 'Immunization',
+            'label' => trans('noshform.imm_immunization'),
             'type' => 'text',
             'required' => true,
             'default_value' => $imm['imm_immunization']
@@ -6860,83 +6860,83 @@ class Controller extends BaseController
         if (Session::get('group_id') != '100') {
             $items[] = [
                 'name' => 'imm_sequence',
-                'label' => 'Sequence',
+                'label' => trans('noshform.imm_sequence'),
                 'type' => 'select',
                 'select_items' => $sequence_arr,
                 'default_value' => $imm['imm_sequence']
             ];
             $items[] = [
                 'name' => 'imm_elsewhere',
-                'label' => 'Given Elsewhere',
+                'label' => trans('noshform.imm_elsewhere'),
                 'type' => 'checkbox',
                 'value' => 'Yes',
                 'default_value' => $imm['imm_elsewhere']
             ];
             $items[] = [
                 'name' => 'imm_vis',
-                'label' => 'VIS Given',
+                'label' => trans('noshform.imm_vis'),
                 'type' => 'checkbox',
                 'value' => 'Yes',
                 'default_value' => $imm['imm_vis']
             ];
             $items[] = [
                 'name' => 'imm_body_site',
-                'label' => 'Body Site',
+                'label' => trans('noshform.imm_body_site'),
                 'type' => 'select',
                 'select_items' => $site_arr,
                 'default_value' => $imm['imm_body_site']
             ];
             $items[] = [
                 'name' => 'imm_route',
-                'label' => 'Route',
+                'label' => trans('noshform.imm_route'),
                 'type' => 'select',
                 'select_items' => $this->array_route(),
                 'default_value' => $imm['imm_route']
             ];
             $items[] = [
                 'name' => 'imm_dosage',
-                'label' => 'Dosage',
+                'label' => trans('noshform.imm_dosage'),
                 'type' => 'text',
                 'typeahead' => route('typeahead', ['table' => $table, 'column' => 'imm_dosage']),
                 'default_value' => $imm['imm_dosage']
             ];
             $items[] = [
                 'name' => 'imm_dosage_unit',
-                'label' => 'Dosage Unit',
+                'label' => trans('noshform.imm_dosage_unit'),
                 'type' => 'text',
                 'typeahead' => route('typeahead', ['table' => $table, 'column' => 'imm_dosage_unit']),
                 'default_value' => $imm['imm_dosage_unit']
             ];
             $items[] = [
                 'name' => 'imm_lot',
-                'label' => 'Lot Number',
+                'label' => trans('noshform.imm_lot'),
                 'type' => 'text',
                 'default_value' => $imm['imm_lot']
             ];
             $items[] = [
                 'name' => 'imm_manufacturer',
-                'label' => 'Manufacturer',
+                'label' => trans('noshform.imm_manufacturer'),
                 'type' => 'text',
                 'typeahead' => route('typeahead', ['table' => $table, 'column' => 'imm_manufacturer']),
                 'default_value' => $imm['imm_manufacturer']
             ];
             $items[] = [
                 'name' => 'imm_expiration',
-                'label' => 'Expiration Date',
+                'label' => trans('noshform.imm_expiration'),
                 'type' => 'date',
                 'default_value' => $imm['imm_expiration']
             ];
         }
         $items[] = [
             'name' => 'imm_date',
-            'label' => 'Date Active',
+            'label' => trans('noshform.imm_date'),
             'type' => 'date',
             'required' => true,
             'default_value' => $imm['imm_date']
         ];
         $items[] = [
             'name' => 'imm_cvxcode',
-            'label' => 'CVX Code',
+            'label' => trans('noshform.imm_cvxcode'),
             'type' => 'text',
             'readonly' => true,
             'default_value' => $imm['imm_cvxcode']
@@ -6949,7 +6949,7 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'nosh_action',
-            'label' => 'Action after Saving',
+            'label' => trans('noshform.nosh_action'),
             'type' => 'select',
             'select_items' => $nosh_action_arr
         ];
@@ -6960,16 +6960,16 @@ class Controller extends BaseController
     {
         $insurance_order_arr = [
             '' => '',
-            'Primary' => 'Primary',
-            'Secondary' => 'Secondary',
-            'Unassigned' => 'Unassigned'
+            'Primary' => trans('noshform.primary'),
+            'Secondary' => trans('noshform.secondary'),
+            'Unassigned' => trans('noshform.unassigned'),
         ];
         $insurance_relationship_arr = [
             '' => '',
-            'Self' => 'Self',
-            'Spouse' => 'Spouse',
-            'Child' => 'Child',
-            'Other' => 'Other'
+            'Self' => trans('noshform.self'),
+            'Spouse' => trans('noshform.spouse'),
+            'Child' => trans('noshform.child'),
+            'Other' => trans('noshform.other')
         ];
         $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
         if ($id == '0') {
@@ -7023,7 +7023,7 @@ class Controller extends BaseController
         }
         $items[] = [
             'name' => 'insurance_plan_name',
-            'label' => 'Insurance Provider',
+            'label' => trans('noshform.insurance_plan_name'),
             'type' => 'text',
             'readonly' => true,
             'required' => true,
@@ -7037,55 +7037,55 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'insurance_order',
-            'label' => 'Insurance Priority',
+            'label' => trans('noshform.insurance_order'),
             'type' => 'select',
             'select_items' => $insurance_order_arr,
             'default_value' => $insurance['insurance_order']
         ];
         $items[] = [
             'name' => 'insurance_id_num',
-            'label' => 'ID Number',
+            'label' => trans('noshform.insurance_id_num'),
             'type' => 'text',
             'required' => true,
             'default_value' => $insurance['insurance_id_num']
         ];
         $items[] = [
             'name' => 'insurance_group',
-            'label' => 'Group Number',
+            'label' => trans('noshform.insurance_group'),
             'type' => 'text',
             'default_value' => $insurance['insurance_group']
         ];
         $items[] = [
             'name' => 'insurance_relationship',
-            'label' => 'Relationship',
+            'label' => trans('noshform.relationship'),
             'type' => 'select',
             'select_items' => $insurance_relationship_arr,
             'default_value' => $insurance['insurance_relationship']
         ];
         $items[] = [
             'name' => 'insurance_insu_lastname',
-            'label' => 'Insured Last Name',
+            'label' => trans('noshform.insurance_insu_lastname'),
             'type' => 'text',
             'required' => true,
             'default_value' => $insurance['insurance_insu_lastname']
         ];
         $items[] = [
             'name' => 'insurance_insu_firstname',
-            'label' => 'Insured First Name',
+            'label' => trans('noshform.insurance_insu_firstname'),
             'type' => 'text',
             'required' => true,
             'default_value' => $insurance['insurance_insu_firstname']
         ];
         $items[] = [
             'name' => 'insurance_insu_dob',
-            'label' => 'Insured Date of Birth',
+            'label' => trans('noshform.insurance_insu_dob'),
             'type' => 'date',
             'required' => true,
             'default_value' => $insurance['insurance_insu_dob']
         ];
         $items[] = [
             'name' => 'insurance_insu_gender',
-            'label' => 'Gender',
+            'label' => trans('noshform.gender'),
             'type' => 'select',
             'required' => true,
             'select_items' => $this->array_gender(),
@@ -7093,14 +7093,14 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'insurance_insu_address',
-            'label' => 'Insured Address',
+            'label' => trans('noshform.insurance_insu_address'),
             'type' => 'text',
             'required' => true,
             'default_value' => $insurance['insurance_insu_address']
         ];
         $items[] = [
             'name' => 'insurance_insu_country',
-            'label' => 'Country',
+            'label' => trans('noshform.country'),
             'type' => 'select',
             'select_items' => $this->array_country(),
             'default_value' => $insurance['insurance_insu_country'],
@@ -7108,7 +7108,7 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'insurance_insu_city',
-            'label' => 'Insured City',
+            'label' => trans('noshform.insurance_insu_city'),
             'type' => 'text',
             'required' => true,
             'typeahead' => route('typeahead', ['table' => $table, 'column' => 'insurance_insu_city']),
@@ -7116,7 +7116,7 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'insurance_insu_state',
-            'label' => 'Insured State',
+            'label' => trans('noshform.insurance_insu_state'),
             'type' => 'select',
             'required' => true,
             'select_items' => $this->array_states($insurance['insurance_insu_country']),
@@ -7125,33 +7125,33 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'insurance_insu_zip',
-            'label' => 'Insured Zip',
+            'label' => trans('noshform.insurance_insu_zip'),
             'type' => 'text',
             'required' => true,
             'default_value' => $insurance['insurance_insu_zip']
         ];
         $items[] = [
             'name' => 'insurance_insu_phone',
-            'label' => 'Insured Phone',
+            'label' => trans('noshform.insurance_insu_phone'),
             'type' => 'text',
             'phone' => true,
             'default_value' => $insurance['insurance_insu_phone']
         ];
         $items[] = [
             'name' => 'insurance_copay',
-            'label' => 'Copay',
+            'label' => trans('noshform.insurance_copay'),
             'type' => 'text',
             'default_value' => $insurance['insurance_copay']
         ];
         $items[] = [
             'name' => 'insurance_deductible',
-            'label' => 'Deductible',
+            'label' => trans('noshform.insurance_deductible'),
             'type' => 'text',
             'default_value' => $insurance['insurance_deductible']
         ];
         $items[] = [
             'name' => 'insurance_comments',
-            'label' => 'Comments',
+            'label' => trans('noshform.comments'),
             'type' => 'textarea',
             'default_value' => $insurance['insurance_comments']
         ];
