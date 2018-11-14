@@ -3052,6 +3052,7 @@ class ChartController extends Controller {
 
     public function document_upload(Request $request)
     {
+        ini_set('memory_limit','196M');
         if ($request->isMethod('post')) {
             $pid = Session::get('pid');
             $directory = Session::get('documents_dir') . $pid;
