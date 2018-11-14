@@ -2,7 +2,7 @@
 	<head>
 		<style>
 			body {
-				font-family: Arial, sans-serif;
+				/* font-family: Arial, sans-serif; */
 				font-size: 0.9em;
 				margin:     0;
 				padding:    0;

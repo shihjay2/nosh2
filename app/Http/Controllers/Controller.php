@@ -1921,12 +1921,13 @@ class Controller extends BaseController
         if ($type == 'Referral') {
             $return[''] = 'Select Provider';
         }
+        if ($type == 'Pharmacy') {
+            $return[''] = 'Select Pharmacy';
+        }
         if ($result->count()) {
             foreach ($result as $row) {
                 if ($type == 'Referral') {
                     $return[$row->address_id] = $row->specialty . ': ' . $row->displayname;
-                } elseif ($type == 'Pharmacy') {
-                    $return[''] = 'Select Pharmacy';
                 } else {
                     $return[$row->address_id] = $row->displayname;
                 }
@@ -5120,7 +5121,7 @@ class Controller extends BaseController
         if (isset($form_array['outro'])) {
             $return .= $form_array['outro'];
         }
-        $save_button_label = 'Save';
+        $save_button_label = trans('noshform.save');
         if (isset($form_array['save_button_label'])) {
             $save_button_label = $form_array['save_button_label'];
         }
@@ -5137,9 +5138,9 @@ class Controller extends BaseController
         }
         if (isset($form_array['remove_cancel']) == false) {
             if (isset($form_array['origin'])) {
-                $return .= '<a href="' . $form_array['origin'] . '" class="btn btn-danger" style="margin:10px"><i class="fa fa-btn fa-ban"></i> Cancel</a>';
+                $return .= '<a href="' . $form_array['origin'] . '" class="btn btn-danger" style="margin:10px"><i class="fa fa-btn fa-ban"></i> ' . trans('noshform.cancel') . '</a>';
             } else {
-                $return .= '<a href="' . Session::get('last_page') . '" class="btn btn-danger" style="margin:10px"><i class="fa fa-btn fa-ban"></i> Cancel</a>';
+                $return .= '<a href="' . Session::get('last_page') . '" class="btn btn-danger" style="margin:10px"><i class="fa fa-btn fa-ban"></i> ' . trans('noshform.cancel') . '</a>';
             }
         }
         $return .= '</div></div>';
@@ -5399,7 +5400,8 @@ class Controller extends BaseController
                 'orders_id' => null,
                 'pid' => Session::get('pid'),
                 'practice_id' => Session::get('practice_id'),
-                'alert_send_message' => null
+                'alert_send_message' => null,
+                'results' => 0
             ];
         } else {
             $alert = [
@@ -5412,7 +5414,8 @@ class Controller extends BaseController
                 'orders_id' => $result->orders_id,
                 'pid' => $result->pid,
                 'practice_id' => $result->practice_id,
-                'alert_send_message' => $result->alert_send_message
+                'alert_send_message' => $result->alert_send_message,
+                'results' => $result->results
             ];
         }
         if ($subtype == '') {
@@ -5461,6 +5464,11 @@ class Controller extends BaseController
                 'name' => 'practice_id',
                 'type' => 'hidden',
                 'default_value' => $alert['practice_id']
+            ];
+            $items[] = [
+                'name' => 'results',
+                'type' => 'hidden',
+                'default_value' => $alert['results']
             ];
         }
         if ($subtype == 'incomplete') {
@@ -5938,7 +5946,7 @@ class Controller extends BaseController
             ];
             $items[] = [
                 'name' => 'active',
-                'label' => trans('noshform.active'),
+                'label' => trans('noshform.status'),
                 'type' => 'select',
                 'required' => true,
                 'select_items' => $active_arr,
@@ -6285,7 +6293,7 @@ class Controller extends BaseController
             'Endoscopy' => trans('noshform.endoscopy'),
             'Referrals' => trans('noshform.referrals'),
             'Past_Records' => trans('noshform.past_records'),
-            'Other_Forms' => trans('other_forms'),
+            'Other_Forms' => trans('noshform.other_forms'),
             'Letters' => trans('noshform.letters'),
             'Education' => trans('noshform.education'),
             'ccda' => trans('noshform.ccda'),
@@ -7161,14 +7169,14 @@ class Controller extends BaseController
     protected function form_issues($result, $table, $id, $subtype)
     {
         $issue_type_arr = [
-            'pl' => 'Problem List',
-            'mh' => 'Medical History',
-            'sh' => 'Surgical History'
+            'pl' => trans('noshform.pl'),
+            'mh' => trans('noshform.mh'),
+            'sh' => trans('noshform.sh')
         ];
         $issue_type_arr1 = [
-            'Problem List' => 'Problem List',
-            'Medical History' => 'Medical History',
-            'Surgical History' => 'Surgical History'
+            'Problem List' => trans('noshform.pl'),
+            'Medical History' => trans('noshform.mh'),
+            'Surgical History' => trans('noshform.sh')
         ];
         if ($id == '0') {
             $issue = [
@@ -7186,7 +7194,7 @@ class Controller extends BaseController
                 $issue['issue'] = $ccda['name'] . ' [' . $ccda['code'] . ']';
                 $issue['issue_date_active'] = date('Y-m-d', $this->human_to_unix($ccda['date']));
                 if (isset($ccda['from'])) {
-                    $issue['notes'] = 'Obtained via FHIR from ' . $ccda['from'];
+                    $issue['notes'] = trans('noshform.obtained_fhir') . ' ' . $ccda['from'];
                 }
             }
         } else {
@@ -7210,14 +7218,14 @@ class Controller extends BaseController
         }
         $items[] = [
             'name' => 'issue',
-            'label' => 'Condition',
+            'label' => trans('noshform.issue'),
             'type' => 'text',
             'required' => true,
             'default_value' => $issue['issue']
         ];
         $items[] = [
             'name' => 'type',
-            'label' => 'Type',
+            'label' => trans('noshform.type'),
             'type' => 'select',
             'required' => true,
             'select_items' => $issue_type_arr1,
@@ -7225,14 +7233,14 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'issue_date_active',
-            'label' => 'Date Active',
+            'label' => trans('noshform.issue_date_active'),
             'type' => 'date',
             'required' => true,
             'default_value' => $issue['issue_date_active']
         ];
         $items[] = [
             'name' => 'notes',
-            'label' => 'Notes',
+            'label' => trans('noshform.notes'),
             'type' => 'textarea',
             'default_value' => $issue['notes']
         ];
@@ -7249,7 +7257,7 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'label[]',
-            'label' => 'Sensitive Label',
+            'label' => trans('noshform.label'),
             'type' => 'select',
             'select_items' => $this->fhir_scopes_sensitivities(),
             'multiple' => true,
@@ -7381,7 +7389,7 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'subject',
-            'label' => 'Subject',
+            'label' => trans('noshform.subject'),
             'type' => 'text',
             'required' => true,
             'default_value' => $messaging['subject']
@@ -7389,7 +7397,7 @@ class Controller extends BaseController
         if (Session::get('group_id') != '100') {
             $items[] = [
                 'name' => 'patient_name',
-                'label' => 'Concerning this Patient (optional)',
+                'label' => trans('noshform.patient_name'),
                 'type' => 'text',
                 'readonly' => true,
                 'default_value' => $messaging['patient_name']
@@ -7403,7 +7411,7 @@ class Controller extends BaseController
         }
         $items[] = [
             'name' => 'message_to[]',
-            'label' => 'To',
+            'label' => trans('noshform.message_to'),
             'type' => 'select',
             'select_items' => $this->array_users_all('2'),
             'required' => true,
@@ -7413,7 +7421,7 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'cc[]',
-            'label' => 'CC',
+            'label' => trans('noshform.cc'),
             'type' => 'select',
             'select_items' => $this->array_users_all('2'),
             'multiple' => true,
@@ -7422,7 +7430,7 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'body',
-            'label' => 'Message',
+            'label' => trans('noshform.body'),
             'type' => 'textarea',
             'required' => true,
             'default_value' => $messaging['body']
@@ -7434,19 +7442,19 @@ class Controller extends BaseController
     {
         $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
         $type_arr = [
-            'orders_labs' => ['Laboratory', 'Laboratory results pending.', 'orders_labs_icd', 'Lab Test(s)', 'Laboratory'],
-            'orders_radiology' => ['Imaging', 'Imaging results pending.', 'orders_radiology_icd', 'Imaging Test(s)', 'Radiology'],
-            'orders_cp' => ['Cardiopulmonary', 'Cardiopulmonary results pending.', 'orders_cp_icd', 'Cardiopulmonary Test(s)', 'Cardiopulmonary'],
-            'orders_referrals' => ['Referrals', 'Referral pending.', 'orders_referrals_icd', 'Referral Details', 'Referral']
+            'orders_labs' => ['Laboratory', 'Laboratory results pending.', 'orders_labs_icd', trans('noshform.orders_labs'), trans('noshform.laboratory')],
+            'orders_radiology' => ['Imaging', 'Imaging results pending.', 'orders_radiology_icd', trans('noshform.orders_radiology'), trans('noshform.imaging')],
+            'orders_cp' => ['Cardiopulmonary', 'Cardiopulmonary results pending.', 'orders_cp_icd', trans('noshform.orders_cp'), trans('noshform.cardiopulmonary')],
+            'orders_referrals' => ['Referrals', 'Referral pending.', 'orders_referrals_icd', trans('noshform.orders_referrals'), trans('noshform.referral')]
         ];
         $nosh_action_arr = [
-            '' => 'Save Only',
-            'print_action' => 'Print',
-            'print_queue' => 'Add to Print Queue'
+            '' => trans('noshform.save_only'),
+            'print_action' => trans('noshform.print'),
+            'print_queue' => trans('noshform.add_print_queue')
         ];
         if ($practice->fax_type !== '') {
-            $nosh_action_arr['fax_action'] = 'Fax';
-            $nosh_action_arr['fax_queue'] = 'Add to Fax Queue';
+            $nosh_action_arr['fax_action'] = trans('noshform.fax');
+            $nosh_action_arr['fax_queue'] = trans('noshform.add_fax_queue');
         }
         if ($id == '0') {
             $orders = [
@@ -7507,7 +7515,7 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => $subtype . '_icd[]',
-            'label' => 'Diagnosis Codes',
+            'label' => trans('noshform.diagnosis_codes'),
             'type' => 'select',
             'select_items' => ${$subtype . '_icd'},
             'multiple' => true,
@@ -7517,7 +7525,7 @@ class Controller extends BaseController
         if ($subtype == 'orders_referrals') {
             $referral_specialty = null;
             $specialty_arr = [];
-            $specialty_arr[''] = 'Choose Specialty';
+            $specialty_arr[''] = trans('noshform.choose_specialty');
             $specialty_query = DB::table('addressbook')->select('specialty')->distinct()->orderBy('specialty', 'asc')->get();
             if ($specialty_query->count()) {
                 foreach ($specialty_query as $specialty_row) {
@@ -7531,14 +7539,14 @@ class Controller extends BaseController
             }
             $items[] = [
                 'name' => 'referral_specialty',
-                'label' => 'Specialty',
+                'label' => trans('noshform.referral_specialty'),
                 'type' => 'select',
                 'select_items' => $specialty_arr,
                 'default_value' => $referral_specialty
             ];
             $items[] = [
                 'name' => 'address_id',
-                'label' => $type_arr[$subtype][4] . ' Provider',
+                'label' => $type_arr[$subtype][4] . ' ' . trans('noshform.provider'),
                 'type' => 'select',
                 'required' => true,
                 'select_items' => $this->array_orders_provider($type_arr[$subtype][4], 'all'),
@@ -7547,7 +7555,7 @@ class Controller extends BaseController
         } else {
             $items[] = [
                 'name' => 'address_id',
-                'label' => $type_arr[$subtype][4] . ' Provider',
+                'label' => $type_arr[$subtype][4] . ' ' . trans('noshform.provider'),
                 'type' => 'select',
                 'required' => true,
                 'select_items' => $this->array_orders_provider($type_arr[$subtype][4]),
@@ -7556,14 +7564,14 @@ class Controller extends BaseController
         }
         $items[] = [
             'name' => 'orders_pending_date',
-            'label' => 'Order Pending Date',
+            'label' => trans('noshform.orders_pending_date'),
             'type' => 'date',
             'required' => true,
             'default_value' => $orders['orders_pending_date']
         ];
         $items[] = [
             'name' => 'orders_insurance[]',
-            'label' => 'Insurance',
+            'label' => trans('noshform.insurance'),
             'type' => 'select',
             'select_items' => $this->array_insurance_active(),
             'required' => true,
@@ -7573,7 +7581,7 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'orders_notes',
-            'label' => 'Notes about Order',
+            'label' => trans('noshform.orders_notes'),
             'type' => 'textarea',
             'default_value' => $orders['orders_notes']
         ];
@@ -7591,7 +7599,7 @@ class Controller extends BaseController
         }
         $items[] = [
             'name' => 'nosh_action',
-            'label' => 'Action after Saving',
+            'label' => trans('noshform.nosh_action'),
             'type' => 'select',
             'select_items' => $nosh_action_arr,
         ];
@@ -7611,35 +7619,35 @@ class Controller extends BaseController
             ];
             $items[] = [
                 'name' => 'oh_sh',
-                'label' => 'Social History',
+                'label' => trans('noshform.oh_sh'),
                 'type' => 'textarea',
                 'textarea_short' => true,
                 'default_value' => $lifestyle['oh_sh']
             ];
             $items[] = [
                 'name' => 'sexuallyactive',
-                'label' => 'Sexually Active',
+                'label' => trans('noshform.sexuallyactive'),
                 'type' => 'select',
-                'select_items' => ['no' => 'No', 'yes' => 'Yes'],
+                'select_items' => ['no' => trans('noshform.no'), 'yes' => trans('noshform.yes')],
                 'default_value' => $lifestyle['sexuallyactive']
             ];
             $items[] = [
                 'name' => 'oh_diet',
-                'label' => 'Diet',
+                'label' => trans('noshform.oh_diet'),
                 'type' => 'textarea',
                 'textarea_short' => true,
                 'default_value' => $lifestyle['oh_diet']
             ];
             $items[] = [
                 'name' => 'oh_physical_activity',
-                'label' => 'Physical Activity',
+                'label' => trans('noshform.oh_physical_activity'),
                 'type' => 'textarea',
                 'textarea_short' => true,
                 'default_value' => $lifestyle['oh_physical_activity']
             ];
             $items[] = [
                 'name' => 'oh_employment',
-                'label' => 'Employment/School',
+                'label' => trans('noshform.oh_employment'),
                 'type' => 'textarea',
                 'textarea_short' => true,
                 'default_value' => $lifestyle['oh_employment']
@@ -7654,28 +7662,28 @@ class Controller extends BaseController
             ];
             $items[] = [
                 'name' => 'oh_etoh',
-                'label' => 'Alcohol Use',
+                'label' => trans('noshform.oh_etoh'),
                 'type' => 'textarea',
                 'textarea_short' => true,
                 'default_value' => $habits['oh_etoh']
             ];
             $items[] = [
                 'name' => 'tobacco',
-                'label' => 'Tobacco Use',
+                'label' => trans('noshform.tobacco'),
                 'type' => 'select',
-                'select_items' => ['no' => 'No', 'yes' => 'Yes'],
+                'select_items' => ['no' => trans('noshform.no'), 'yes' => trans('noshform.yes')],
                 'default_value' => $habits['tobacco']
             ];
             $items[] = [
                 'name' => 'oh_tobacco',
-                'label' => 'Tobacco Use Details',
+                'label' => trans('noshform.oh_tobacco'),
                 'type' => 'textarea',
                 'textarea_short' => true,
                 'default_value' => $habits['oh_tobacco']
             ];
             $items[] = [
                 'name' => 'oh_drugs',
-                'label' => 'Illicit Drug Use',
+                'label' => trans('noshform.oh_drugs'),
                 'type' => 'textarea',
                 'textarea_short' => true,
                 'default_value' => $habits['oh_drugs']
@@ -7689,21 +7697,21 @@ class Controller extends BaseController
             ];
             $items[] = [
                 'name' => 'oh_psychosocial',
-                'label' => 'Psychosocial History',
+                'label' => trans('noshform.oh_psychosocial'),
                 'type' => 'textarea',
                 'textarea_short' => true,
                 'default_value' => $mental_health['oh_psychosocial']
             ];
             $items[] = [
                 'name' => 'oh_developmental',
-                'label' => 'Developmental History',
+                'label' => trans('noshform.oh_developmental'),
                 'type' => 'textarea',
                 'textarea_short' => true,
                 'default_value' => $mental_health['oh_developmental']
             ];
             $items[] = [
                 'name' => 'oh_medtrials',
-                'label' => 'Past Medication Trials',
+                'label' => trans('noshform.oh_medtrials'),
                 'type' => 'textarea',
                 'textarea_short' => true,
                 'default_value' => $mental_health['oh_developmental']
@@ -7733,7 +7741,7 @@ class Controller extends BaseController
             if (Session::get('patient_centric') == 'n') {
                 $items[] = [
                     'name' => 'practice_name',
-                    'label' => 'Practice Name',
+                    'label' => trans('noshform.practice_name'),
                     'type' => 'text',
                     'required' => true,
                     'default_value' => $info_arr['practice_name']
@@ -7741,7 +7749,7 @@ class Controller extends BaseController
             } else {
                 $items[] = [
                     'name' => 'practice_name',
-                    'label' => 'Practice Name',
+                    'label' => trans('noshform.practice_name'),
                     'type' => 'text',
                     'readonly' => true,
                     'default_value' => $info_arr['practice_name']
@@ -7749,20 +7757,20 @@ class Controller extends BaseController
             }
             $items[] = [
                 'name' => 'street_address1',
-                'label' => 'Street Address',
+                'label' => trans('noshform.street_address1'),
                 'type' => 'text',
                 'required' => true,
                 'default_value' => $info_arr['street_address1']
             ];
             $items[] = [
                 'name' => 'street_address2',
-                'label' => 'Street Address Line 2',
+                'label' => trans('noshform.street_address2'),
                 'type' => 'text',
                 'default_value' => $info_arr['street_address2']
             ];
             $items[] = [
                 'name' => 'country',
-                'label' => 'Country',
+                'label' => trans('noshform.country'),
                 'type' => 'select',
                 'select_items' => $this->array_country(),
                 'default_value' => $info_arr['country'],
@@ -7770,14 +7778,14 @@ class Controller extends BaseController
             ];
             $items[] = [
                 'name' => 'city',
-                'label' => 'City',
+                'label' => trans('noshform.city'),
                 'type' => 'text',
                 'required' => true,
                 'default_value' => $info_arr['city']
             ];
             $items[] = [
                 'name' => 'state',
-                'label' => 'State',
+                'label' => trans('noshform.state'),
                 'type' => 'select',
                 'select_items' => $this->array_states($info_arr['country']),
                 'required' => true,
@@ -7786,7 +7794,7 @@ class Controller extends BaseController
             ];
             $items[] = [
                 'name' => 'zip',
-                'label' => 'Zip',
+                'label' => trans('noshform.zip'),
                 'type' => 'text',
                 'required' => true,
                 'default_value' => $info_arr['zip']
@@ -7794,7 +7802,7 @@ class Controller extends BaseController
             if (Session::get('patient_centric') == 'n') {
                 $items[] = [
                     'name' => 'phone',
-                    'label' => 'Phone',
+                    'label' => trans('noshform.phone'),
                     'type' => 'text',
                     'required' => true,
                     'phone' => true,
@@ -7802,7 +7810,7 @@ class Controller extends BaseController
                 ];
                 $items[] = [
                     'name' => 'fax',
-                    'label' => 'Fax',
+                    'label' => trans('noshform.fax'),
                     'type' => 'text',
                     'required' => true,
                     'phone' => true,
@@ -7811,14 +7819,14 @@ class Controller extends BaseController
             } else {
                 $items[] = [
                     'name' => 'phone',
-                    'label' => 'Phone',
+                    'label' => trans('noshform.phone'),
                     'type' => 'text',
                     'phone' => true,
                     'default_value' => $info_arr['phone']
                 ];
                 $items[] = [
                     'name' => 'fax',
-                    'label' => 'Fax',
+                    'label' => trans('noshform.fax'),
                     'type' => 'text',
                     'phone' => true,
                     'default_value' => $info_arr['fax']
@@ -7826,27 +7834,27 @@ class Controller extends BaseController
             }
             $items[] = [
                 'name' => 'email',
-                'label' => 'Email',
+                'label' => trans('noshform.email'),
                 'type' => 'email',
                 'required' => true,
                 'default_value' => $info_arr['email']
             ];
             $items[] = [
                 'name' => 'website',
-                'label' => 'Website',
+                'label' => trans('noshform.website'),
                 'type' => 'text',
                 'default_value' => $info_arr['website']
             ];
             if (Session::get('practice_id') == '1') {
-                $items[] = [
-                    'name' => 'smtp_user',
-                    'label' => 'Gmail username for sending e-mail',
-                    'type' => 'text',
-                    'default_value' => $info_arr['smtp_user']
-                ];
+                // $items[] = [
+                //     'name' => 'smtp_user',
+                //     'label' => 'Gmail username for sending e-mail',
+                //     'type' => 'text',
+                //     'default_value' => $info_arr['smtp_user']
+                // ];
                 $items[] = [
                     'name' => 'patient_portal',
-                    'label' => 'Patient Portal Web Address',
+                    'label' => trans('noshform.patient_portal'),
                     'type' => 'text',
                     'default_value' => $info_arr['patient_portal']
                 ];
@@ -7870,35 +7878,36 @@ class Controller extends BaseController
                 'hc_unit' => $result->hc_unit,
                 'encounter_template' => $result->encounter_template,
                 'additional_message' => $result->additional_message,
-                'reminder_interval' => $result->reminder_interval
+                'reminder_interval' => $result->reminder_interval,
+                'locale' => $result->locale
             ];
             $items[] = [
                 'name' => 'primary_contact',
-                'label' => 'Primary Contact',
+                'label' => trans('noshform.primary_contact'),
                 'type' => 'text',
                 'default_value' => $settings_arr['primary_contact']
             ];
             $items[] = [
                 'name' => 'npi',
-                'label' => 'Practice NPI',
+                'label' => trans('noshform.practice_npi'),
                 'type' => 'text',
                 'default_value' => $settings_arr['npi']
             ];
             $items[] = [
                 'name' => 'medicare',
-                'label' => 'Practice Medicare Number',
+                'label' => trans('noshform.practice_medicare'),
                 'type' => 'text',
                 'default_value' => $settings_arr['medicare']
             ];
             $items[] = [
                 'name' => 'tax_id',
-                'label' => 'Practice Tax ID Number',
+                'label' => trans('noshform.tax_id'),
                 'type' => 'text',
                 'default_value' => $settings_arr['tax_id']
             ];
             $items[] = [
                 'name' => 'default_pos_id',
-                'label' => 'Default Practice Location',
+                'label' => trans('noshform.default_pos_id'),
                 'type' => 'select',
                 'select_items' => $this->array_pos(),
                 'default_value' => $settings_arr['default_pos_id']
@@ -7906,7 +7915,7 @@ class Controller extends BaseController
             if (Session::get('practice_id') == '1') {
                 $items[] = [
                     'name' => 'documents_dir',
-                    'label' => 'Documents Directory',
+                    'label' => trans('noshform.documents_dir'),
                     'type' => 'text',
                     'required' => true,
                     'default_value' => $settings_arr['documents_dir']
@@ -7914,7 +7923,7 @@ class Controller extends BaseController
             } else {
                 $items[] = [
                     'name' => 'documents_dir',
-                    'label' => 'Documents Directory',
+                    'label' => trans('noshform.documents_dir'),
                     'type' => 'text',
                     'required' => true,
                     'readonly' => true,
@@ -7923,31 +7932,31 @@ class Controller extends BaseController
             }
             $items[] = [
                 'name' => 'weight_unit',
-                'label' => 'Weight Unit',
+                'label' => trans('noshform.weight_unit'),
                 'type' => 'select',
-                'select_items' => ['lbs' => 'Pounds', 'kg' => 'Kilograms'],
+                'select_items' => ['lbs' => trans('noshform.lbs'), 'kg' => trans('noshform.kg')],
                 'required' => true,
                 'default_value' => $settings_arr['weight_unit']
             ];
             $items[] = [
                 'name' => 'height_unit',
-                'label' => 'Height Unit',
+                'label' => trans('noshform.height_unit'),
                 'type' => 'select',
-                'select_items' => ['in' => 'Inches', 'cm' => 'Centimeters'],
+                'select_items' => ['in' => trans('noshform.in'), 'cm' => trans('noshform.cm')],
                 'required' => true,
                 'default_value' => $settings_arr['height_unit']
             ];
             $items[] = [
                 'name' => 'temp_unit',
-                'label' => 'Temperature Unit',
+                'label' => trans('noshform.temp_unit'),
                 'type' => 'select',
-                'select_items' => ['F' => 'Fahrenheit', 'C' => 'Celcius'],
+                'select_items' => ['F' => trans('noshform.F'), 'C' => trans('noshform.C')],
                 'required' => true,
                 'default_value' => $settings_arr['temp_unit']
             ];
             $items[] = [
                 'name' => 'hc_unit',
-                'label' => 'Head Circumference Unit',
+                'label' => trans('noshform.hc_unit'),
                 'type' => 'select',
                 'select_items' => ['in' => 'Inches', 'cm' => 'Centimeters'],
                 'required' => true,
@@ -7955,7 +7964,7 @@ class Controller extends BaseController
             ];
             $items[] = [
                 'name' => 'encounter_template',
-                'label' => 'Default Encounter Template',
+                'label' => trans('noshform.encounter_template'),
                 'type' => 'select',
                 'select_items' => $encounter_type_arr,
                 'required' => true,
@@ -7963,16 +7972,23 @@ class Controller extends BaseController
             ];
             $items[] = [
                 'name' => 'additional_message',
-                'label' => 'Additional Message for Appointment Reminders',
+                'label' => trans('noshform.additional_message'),
                 'type' => 'textarea',
                 'default_value' => $settings_arr['additional_message']
             ];
             $items[] = [
                 'name' => 'reminder_interval',
-                'label' => 'Appointment Reminder Interval',
+                'label' => trans('noshform.reminder_interval'),
                 'type' => 'select',
                 'select_items' => $this->array_reminder_interval(),
                 'default_value' => $settings_arr['reminder_interval']
+            ];
+            $items[] = [
+                'name' => 'locale',
+                'label' => trans('noshform.locale'),
+                'type' => 'select',
+                'select_items' => $this->array_locale(),
+                'default_value' => $settings_arr['locale']
             ];
         }
         if ($subtype == 'billing') {
@@ -7986,20 +8002,20 @@ class Controller extends BaseController
             ];
             $items[] = [
                 'name' => 'billing_street_address1',
-                'label' => 'Street Address',
+                'label' => trans('noshform.street_address1'),
                 'type' => 'text',
                 'required' => true,
                 'default_value' => $billing_arr['billing_street_address1']
             ];
             $items[] = [
                 'name' => 'billing_street_address2',
-                'label' => 'Street Address Line 2',
+                'label' => trans('noshform.street_address2'),
                 'type' => 'text',
                 'default_value' => $billing_arr['billing_street_address2']
             ];
             $items[] = [
                 'name' => 'billing_country',
-                'label' => 'Country',
+                'label' => trans('noshform.country'),
                 'type' => 'select',
                 'select_items' => $this->array_country(),
                 'default_value' => $billing_arr['billing_country'],
@@ -8007,14 +8023,14 @@ class Controller extends BaseController
             ];
             $items[] = [
                 'name' => 'billing_city',
-                'label' => 'City',
+                'label' => trans("noshform.city"),
                 'type' => 'text',
                 'required' => true,
                 'default_value' => $billing_arr['billing_city']
             ];
             $items[] = [
                 'name' => 'billing_state',
-                'label' => 'State',
+                'label' => trans('noshform.state'),
                 'type' => 'select',
                 'select_items' => $this->array_states($billing_arr['billing_country']),
                 'required' => true,
@@ -8023,7 +8039,7 @@ class Controller extends BaseController
             ];
             $items[] = [
                 'name' => 'billing_zip',
-                'label' => 'Zip',
+                'label' => trans('noshform.zip'),
                 'type' => 'text',
                 'required' => true,
                 'default_value' => $billing_arr['billing_zip']
@@ -8031,13 +8047,13 @@ class Controller extends BaseController
         }
         if ($subtype == 'extensions') {
             $appt_arr = [
-                '604800' => '1 week',
-                '1209600' => '2 weeks',
-                '2629743' => '1 month',
-                '5259486' => '2 months',
-                '7889229' => '3 months',
-                '15778458' => '6 months',
-                '31556926' => '1 year'
+                '604800' => trans('noshform.1_week'),
+                '1209600' => trans('noshform.2_weeks'),
+                '2629743' => trans('noshform.1_month'),
+                '5259486' => trans('noshform.2_months'),
+                '7889229' => trans('noshform.3_months'),
+                '15778458' => trans('noshform.6_months'),
+                '31556926' => trans('noshform.1_year')
             ];
             $extensions_arr = [
                 'fax_type' => $result->fax_type,
@@ -8052,59 +8068,59 @@ class Controller extends BaseController
             ];
             $items[] = [
                 'name' => 'fax_type',
-                'label' => 'Fax Integration Enabled',
+                'label' => trans('noshform.fax_type'),
                 'type' => 'select',
-                'select_items' => ['' => 'None', 'phaxio' => 'Phaxio'],
+                'select_items' => ['' => trans('noshform.none'), 'phaxio' => trans('noshform.phaxio')],
                 'default_value' => $extensions_arr['fax_type']
             ];
             $items[] = [
                 'name' => 'phaxio_api_key',
-                'label' => 'Phaxio API Key',
+                'label' => trans('noshform.phaxio_api_key'),
                 'type' => 'text',
                 'default_value' => $extensions_arr['phaxio_api_key']
             ];
             $items[] = [
                 'name' => 'phaxio_api_secret',
-                'label' => 'Phaxio API Secret',
+                'label' => trans('noshform.phaxio_api_secret'),
                 'type' => 'text',
                 'default_value' => $extensions_arr['phaxio_api_secret']
             ];
             $items[] = [
                 'name' => 'birthday_extension',
-                'label' => 'Birthday Message Enabled',
+                'label' => trans('noshform.birthday_extension'),
                 'type' => 'select',
-                'select_items' => ['n' => 'No','y' => 'Yes'],
+                'select_items' => ['n' => trans('noshform.no'),'y' => trans('noshform.yes')],
                 'default_value' => $extensions_arr['birthday_extension']
             ];
             $items[] = [
                 'name' => 'birthday_message',
-                'label' => 'Birthday Message',
+                'label' => trans('noshform.birthday_message'),
                 'type' => 'textarea',
                 'default_value' => $extensions_arr['birthday_message']
             ];
             $items[] = [
                 'name' => 'appointment_extension',
-                'label' => 'Appointment Reminder Enabled',
+                'label' => trans('noshform.appointment_extension'),
                 'type' => 'select',
-                'select_items' => ['n' => 'No','y' => 'Yes'],
+                'select_items' => ['n' => trans('noshform.no'),'y' => trans('noshform.yes')],
                 'default_value' => $extensions_arr['appointment_extension']
             ];
             $items[] = [
                 'name' => 'appointment_interval',
-                'label' => 'Appointment Interval (minimum time lapsed from last appointment)',
+                'label' => trans('noshform.appointment_interval'),
                 'type' => 'select',
                 'select_items' => $appt_arr,
                 'default_value' => $extensions_arr['appointment_interval']
             ];
             $items[] = [
                 'name' => 'appointment_message',
-                'label' => 'Continuing Care Reminder Message',
+                'label' => trans('noshform.appointment_message'),
                 'type' => 'textarea',
                 'default_value' => $extensions_arr['appointment_message']
             ];
             $items[] = [
                 'name' => 'sms_url',
-                'label' => 'SMS URL',
+                'label' => trans('noshform.sms_url'),
                 'type' => 'text',
                 'default_value' => $extensions_arr['sms_url']
             ];
@@ -8132,125 +8148,125 @@ class Controller extends BaseController
             ];
             $items[] = [
                 'name' => 'weekends',
-                'label' => 'Include Weekends in the Schedule',
+                'label' => trans('noshform.weekends'),
                 'type' => 'select',
                 'select_items' => ['0' => 'No', '1' => 'Yes'],
                 'default_value' => $schedule['weekends']
             ];
             $items[] = [
                 'name' => 'minTime',
-                'label' => 'First hour/time that will be displayed on the schedule',
+                'label' => trans('noshform.minTime'),
                 'type' => 'text',
                 'time' => true,
                 'default_value' => $schedule['minTime']
             ];
             $items[] = [
                 'name' => 'maxTime',
-                'label' => 'Last hour/time that will be displayed on the schedule',
+                'label' => trans('noshform.maxTime'),
                 'type' => 'text',
                 'time' => true,
                 'default_value' => $schedule['maxTime']
             ];
             $items[] = [
                 'name' => 'timezone',
-                'label' => 'Timezone',
+                'label' => trans('noshform.timezone'),
                 'type' => 'text',
                 'default_value' => $schedule['timezone']
             ];
             $items[] = [
                 'name' => 'mon_o',
-                'label' => 'Monday open at',
+                'label' => trans('noshform.monday') . ' ' . trans('noshform.open_at'),
                 'type' => 'text',
                 'time' => true,
                 'default_value' => $schedule['mon_o']
             ];
             $items[] = [
                 'name' => 'mon_c',
-                'label' => 'Monday close at',
+                'label' => trans('noshform.monday') . ' '  . trans('noshform.close_at'),
                 'type' => 'text',
                 'time' => true,
                 'default_value' => $schedule['mon_c']
             ];
             $items[] = [
                 'name' => 'tue_o',
-                'label' => 'Tuesday open at',
+                'label' => trans('noshform.tuesday') . ' ' . trans('noshform.open_at'),
                 'type' => 'text',
                 'time' => true,
                 'default_value' => $schedule['tue_o']
             ];
             $items[] = [
                 'name' => 'tue_c',
-                'label' => 'Tuesday close at',
+                'label' => trans('noshform.tuesday') . ' ' . trans('noshform.close_at'),
                 'type' => 'text',
                 'time' => true,
                 'default_value' => $schedule['tue_c']
             ];
             $items[] = [
                 'name' => 'wed_o',
-                'label' => 'Wednesday open at',
+                'label' => trans('noshform.wednesday') . ' ' . trans('noshform.open_at'),
                 'type' => 'text',
                 'time' => true,
                 'default_value' => $schedule['wed_o']
             ];
             $items[] = [
                 'name' => 'wed_c',
-                'label' => 'Wednesday close at',
+                'label' => trans('noshform.wednesday') . ' ' . trans('noshform.close_at'),
                 'type' => 'text',
                 'time' => true,
                 'default_value' => $schedule['wed_c']
             ];
             $items[] = [
                 'name' => 'thu_o',
-                'label' => 'Thursday open at',
+                'label' => trans('noshform.thursday') . ' ' . trans('noshform.open_at'),
                 'type' => 'text',
                 'time' => true,
                 'default_value' => $schedule['thu_o']
             ];
             $items[] = [
                 'name' => 'thu_c',
-                'label' => 'Thursday close at',
+                'label' => trans('noshform.thursday') . ' ' . trans('noshform.close_at'),
                 'type' => 'text',
                 'time' => true,
                 'default_value' => $schedule['thu_c']
             ];
             $items[] = [
                 'name' => 'fri_o',
-                'label' => 'Friday open at',
+                'label' => trans('noshform.friday') . ' ' . trans('noshform.open_at'),
                 'type' => 'text',
                 'time' => true,
                 'default_value' => $schedule['fri_o']
             ];
             $items[] = [
                 'name' => 'fri_c',
-                'label' => 'Friday close at',
+                'label' => trans('noshform.friday') . ' ' . trans('noshform.close_at'),
                 'type' => 'text',
                 'time' => true,
                 'default_value' => $schedule['fri_c']
             ];
             $items[] = [
                 'name' => 'sat_o',
-                'label' => 'Saturday open at',
+                'label' => trans('noshform.saturday') . ' ' . trans('noshform.open_at'),
                 'type' => 'text',
                 'time' => true,
                 'default_value' => $schedule['sat_o']
             ];
             $items[] = [
                 'name' => 'sat_c',
-                'label' => 'Saturday close at',
+                'label' => trans('noshform.saturday') . ' ' . trans('noshform.close_at'),
                 'type' => 'text',
                 'time' => true,
                 'default_value' => $schedule['sat_c']
             ];
             $items[] = [
                 'name' => 'sun_o',
-                'label' => 'Sunday open at',
+                'label' => trans('noshform.sunday') . ' ' . trans('noshform.open_at'),
                 'type' => 'text',
                 'time' => true,
                 'default_value' => $schedule['sun_o']
             ];
             $items[] = [
                 'name' => 'sun_c',
-                'label' => 'Sunday close at',
+                'label' => trans('noshform.sunday') . ' ' . trans('noshform.close_at'),
                 'type' => 'text',
                 'time' => true,
                 'default_value' => $schedule['sun_c']
@@ -8262,6 +8278,10 @@ class Controller extends BaseController
     protected function form_providers($result, $table, $id, $subtype)
     {
         $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
+        $schedule_notification = null;
+        if (!empty($result->schedule_notification))  {
+            $schedule_notification = explode(";", $result->schedule_notification);
+        }
         $provider = [
             'specialty' => $result->specialty,
             'license' => $result->license,
@@ -8275,23 +8295,24 @@ class Controller extends BaseController
             'tax_id' => $result->tax_id,
             'rcopia_username' => $result->rcopia_username,
             'schedule_increment' => $result->schedule_increment,
-            'peacehealth_id' => $result->peacehealth_id
+            'peacehealth_id' => $result->peacehealth_id,
+            'schedule_notification' => $schedule_notification
         ];
         $items[] = [
             'name' => 'specialty',
-            'label' => 'Specialty',
+            'label' => trans('noshform.specialty'),
             'type' => 'text',
             'default_value' => $provider['specialty']
         ];
         $items[] = [
             'name' => 'license',
-            'label' => 'License Number',
+            'label' => trans('noshform.license'),
             'type' => 'text',
             'default_value' => $provider['license']
         ];
         $items[] = [
             'name' => 'license_country',
-            'label' => 'Country',
+            'label' => trans('noshform.license_country'),
             'type' => 'select',
             'select_items' => $this->array_country(),
             'default_value' => $provider['license_country']
@@ -8301,51 +8322,52 @@ class Controller extends BaseController
             'label' => 'State Licensed',
             'type' => 'select',
             'select_items' => $this->array_states($provider['license_country']),
-            'default_value' => $provider['license_state']
+            'default_value' => $provider['license_state'],
+            'class' => 'state'
         ];
         $items[] = [
             'name' => 'npi',
-            'label' => 'NPI',
+            'label' => trans('noshform.npi'),
             'type' => 'text',
             'default_value' => $provider['npi']
         ];
         $items[] = [
             'name' => 'npi_taxonomy',
-            'label' => 'NPI Taxonomy',
+            'label' => trans('noshform.npi_taxonomy'),
             'type' => 'text',
             'readonly' => true,
             'default_value' => $provider['npi_taxonomy']
         ];
         $items[] = [
             'name' => 'upin',
-            'label' => 'UPIN',
+            'label' => trans('noshform.upin'),
             'type' => 'text',
             'default_value' => $provider['upin']
         ];
         $items[] = [
             'name' => 'dea',
-            'label' => 'DEA Number',
+            'label' => trans('noshform.dea'),
             'type' => 'text',
             'default_value' => $provider['dea']
         ];
         $items[] = [
             'name' => 'medicare',
-            'label' => 'Medicare Number',
+            'label' => trans('noshform.medicare'),
             'type' => 'text',
             'default_value' => $provider['medicare']
         ];
         $items[] = [
             'name' => 'tax_id',
-            'label' => 'Tax ID Number',
+            'label' => trans('noshform.tax_id'),
             'type' => 'text',
             'default_value' => $provider['tax_id']
         ];
-        $items[] = [
-            'name' => 'peacehealth_id',
-            'label' => 'PeaceHealth ID Number',
-            'type' => 'text',
-            'default_value' => $provider['peacehealth_id']
-        ];
+        // $items[] = [
+        //     'name' => 'peacehealth_id',
+        //     'label' => 'PeaceHealth ID Number',
+        //     'type' => 'text',
+        //     'default_value' => $provider['peacehealth_id']
+        // ];
         if ($practice->rcopia_extension == 'y') {
             $items[] = [
                 'name' => 'rcopia_username',
@@ -8356,9 +8378,18 @@ class Controller extends BaseController
         }
         $items[] = [
             'name' => 'schedule_increment',
-            'label' => 'Time increment for schedule (minutes)',
+            'label' => trans('noshform.schedule_increment'),
             'type' => 'text',
             'default_value' => $provider['schedule_increment']
+        ];
+        $items[] = [
+            'name' => 'schedule_notification[]',
+            'label' => trans('noshform.schedule_notification'),
+            'type' => 'select',
+            'select_items' => $this->array_users(),
+            'multiple' => true,
+            'selectpicker' => true,
+            'default_value' => $provider['schedule_notification']
         ];
         return $items;
     }
@@ -8380,14 +8411,14 @@ class Controller extends BaseController
         }
         $items[] = [
             'name' => 'faxrecipient',
-            'label' => 'Recipient',
+            'label' => trans('noshform.faxrecipient'),
             'type' => 'text',
             'required' => true,
             'default_value' => $messaging['faxrecipient']
         ];
         $items[] = [
             'name' => 'faxnumber',
-            'label' => 'Fax Number',
+            'label' => trans('noshform.faxnumber'),
             'type' => 'text',
             'phone' => true,
             'required' => true,
@@ -8406,13 +8437,13 @@ class Controller extends BaseController
         $providers_arr['0'] = 'All Providers';
         $providers_arr = $providers_arr + $this->array_providers();
         $day_arr = [
-            'monday' => 'Monday',
-            'tuesday' => 'Tuesday',
-            'wednesday' => 'Wednesday',
-            'thursday' => 'Thursday',
-            'friday' => 'Friday',
-            'saturday' => 'Saturday',
-            'sunday' => 'Sunday'
+            'monday' => trans('noshform.monday'),
+            'tuesday' => trans('noshform.tuesday'),
+            'wednesday' => trans('noshform.wednesday'),
+            'thursday' => trans('noshform.thursday'),
+            'friday' => trans('noshform.friday'),
+            'saturday' => trans('noshform.saturday'),
+            'sunday' => trans('noshform.sunday')
         ];
         if ($id == '0') {
             $data = [
@@ -8438,7 +8469,7 @@ class Controller extends BaseController
         }
         $items[] = [
             'name' => 'repeat_day',
-            'label' => 'Day',
+            'label' => trans('noshform.repeat_day'),
             'type' => 'select',
             'select_items' => $day_arr,
             'required' => true,
@@ -8446,7 +8477,7 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'repeat_start_time',
-            'label' => 'Start Time',
+            'label' => trans('noshform.repeat_start_time'),
             'type' => 'text',
             'time' => true,
             'required' => true,
@@ -8454,7 +8485,7 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'repeat_end_time',
-            'label' => 'End Time',
+            'label' => trans('noshform.repeat_end_time'),
             'type' => 'text',
             'time' => true,
             'required' => true,
@@ -8462,21 +8493,21 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'title',
-            'label' => 'Title',
+            'label' => trans('noshform.schedule_title'),
             'type' => 'text',
             'required' => true,
             'default_value' => $data['title']
         ];
         $items[] = [
             'name' => 'reason',
-            'label' => 'Reason',
+            'label' => trans('noshform.schedule_reason'),
             'type' => 'text',
             'required' => true,
             'default_value' => $data['reason']
         ];
         $items[] = [
             'name' => 'provider_id',
-            'label' => 'Provider',
+            'label' => trans('noshform.provider_id'),
             'type' => 'select',
             'select_items' => $providers_arr,
             'required' => true,
@@ -8489,15 +8520,15 @@ class Controller extends BaseController
     {
         $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
         $nosh_action_arr = [
-            'electronic_sign' => 'Electronically Sign',
-            'print_action' => 'Print',
-            'print_queue,single' => 'Add to Print Queue',
+            'electronic_sign' => trans('noshform.electronically_sign'),
+            'print_action' => trans('noshform.print'),
+            'print_queue,single' => trans('noshform.add_print_queue'),
             'print_queue,combined' => 'Add to Print Queue, Combined In One Page'
         ];
         if ($practice->fax_type !== '') {
-            $nosh_action_arr['fax_action'] = 'Fax';
-            $nosh_action_arr['fax_queue,single'] = 'Add to Fax Queue';
-            $nosh_action_arr['fax_queue,combined'] = 'Add to Fax Queue, Combined In One Page';
+            $nosh_action_arr['fax_action'] = trans('noshform.fax');
+            $nosh_action_arr['fax_queue,single'] = trans('noshform.add_fax_queue');
+            $nosh_action_arr['fax_queue,combined'] = trans('noshform.add_fax_queue_one');
         }
         $edit = $this->access_level('3');
         $rxl_provider = null;
@@ -8561,7 +8592,7 @@ class Controller extends BaseController
                 $rx['rxl_date_active'] = date('Y-m-d', $this->human_to_unix($ccda['date']));
                 $rx['rxl_instructions'] = $ccda['administration'];
                 if (isset($ccda['from'])) {
-                    $rx['rxl_instructions'] .= '; Obtained via FHIR from ' . $ccda['from'];
+                    $rx['rxl_instructions'] .= '; ' . trans('noshform.obtained_fhir') . ' ' . $ccda['from'];
                 }
             }
         } else {
@@ -8621,7 +8652,6 @@ class Controller extends BaseController
             } else {
                 $rx['rxl_date_old'] = date('Y-m-d', $this->human_to_unix($result->rxl_date_old));
             }
-            $data['panel_header'] = 'Edit Medication';
             if ($subtype !== '') {
                 $rx['rxl_quantity'] = $result->rxl_quantity;
                 $rx['rxl_refill'] = $result->rxl_refill;
@@ -8639,7 +8669,7 @@ class Controller extends BaseController
         }
         $items[] = [
             'name' => 'rxl_medication',
-            'label' => 'Medication',
+            'label' => trans('noshform.rxl_medication'),
             'type' => 'text',
             'required' => true,
             'typeahead' => route('typeahead', ['table' => $table, 'column' => 'rxl_medication']),
@@ -8647,49 +8677,49 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'rxl_dosage',
-            'label' => 'Dosage',
+            'label' => trans('noshform.rxl_dosage'),
             'type' => 'text',
             'required' => true,
             'default_value' => $rx['rxl_dosage']
         ];
         $items[] = [
             'name' => 'rxl_dosage_unit',
-            'label' => 'Dosage Unit',
+            'label' => trans('noshform.rxl_dosage_unit'),
             'type' => 'text',
             'required' => true,
             'default_value' => $rx['rxl_dosage_unit']
         ];
         $items[] = [
             'name' => 'rxl_sig',
-            'label' => 'Sig',
+            'label' => trans('noshform.rxl_sig'),
             'type' => 'text',
             'typeahead' => route('typeahead', ['table' => $table, 'column' => 'rxl_sig']),
             'default_value' => $rx['rxl_sig']
         ];
         $items[] = [
             'name' => 'rxl_route',
-            'label' => 'Route',
+            'label' => trans('noshform.rxl_route'),
             'type' => 'select',
             'select_items' => $this->array_route(),
             'default_value' => $rx['rxl_route']
         ];
         $items[] = [
             'name' => 'rxl_frequency',
-            'label' => 'Frequency',
+            'label' => trans('noshform.rxl_frequency'),
             'type' => 'text',
             'typeahead' => route('typeahead', ['table' => $table, 'column' => 'rxl_frequency']),
             'default_value' => $rx['rxl_frequency']
         ];
         $items[] = [
             'name' => 'rxl_instructions',
-            'label' => 'Special Instructions',
+            'label' => trans('noshform.rxl_instructions'),
             'type' => 'text',
             'typeahead' => route('typeahead', ['table' => $table, 'column' => 'rxl_instructions']),
             'default_value' => $rx['rxl_instructions']
         ];
         $items[] = [
             'name' => 'rxl_reason',
-            'label' => 'Reason',
+            'label' => trans('noshform.rxl_reason'),
             'type' => 'text',
             'required' => true,
             'typeahead' => route('typeahead', ['table' => $table, 'column' => 'rxl_reason']),
@@ -8697,21 +8727,21 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'rxl_date_active',
-            'label' => 'Date Active',
+            'label' => trans('noshform.rxl_date_active'),
             'type' => 'date',
             'required' => true,
             'default_value' => $rx['rxl_date_active']
         ];
         $items[] = [
             'name' => 'rxl_ndcid',
-            'label' => 'NDC ID',
+            'label' => trans('noshform.rxl_ndcid'),
             'type' => 'text',
             'readonly' => true,
             'default_value' => $rx['rxl_ndcid']
         ];
         $items[] = [
             'name' => 'label[]',
-            'label' => 'Sensitive Label',
+            'label' => trans('noshform.label'),
             'type' => 'select',
             'select_items' => $this->fhir_scopes_sensitivities(),
             'multiple' => true,
@@ -8742,33 +8772,33 @@ class Controller extends BaseController
         if ($subtype !== '') {
             $items[] = [
                 'name' => 'rxl_days',
-                'label' => 'Duration (days)',
+                'label' => trans('noshform.rxl_days'),
                 'type' => 'text',
                 'default_value' => $rx['rxl_days']
             ];
             $items[] = [
                 'name' => 'rxl_quantity',
-                'label' => 'Quantity',
+                'label' => trans('noshform.rxl_quantity'),
                 'type' => 'text',
                 'required' => true,
                 'default_value' => $rx['rxl_quantity']
             ];
             $items[] = [
                 'name' => 'rxl_refill',
-                'label' => 'Refills',
+                'label' => trans('noshform.rxl_refill'),
                 'type' => 'text',
                 'default_value' => $rx['rxl_refill']
             ];
             $items[] = [
                 'name' => 'daw',
-                'label' => 'Dispense As Written',
+                'label' => trans('noshform.daw'),
                 'type' => 'checkbox',
                 'value' => 'Yes',
                 'default_value' => $rx['daw']
             ];
             $items[] = [
                 'name' => 'dea',
-                'label' => 'DEA Number on Prescription',
+                'label' => trans('noshform.rxl_dea'),
                 'type' => 'checkbox',
                 'value' => 'Yes',
                 'default_value' => $rx['dea']
@@ -8802,14 +8832,14 @@ class Controller extends BaseController
             } else {
                 $items[] = [
                     'name' => 'notification',
-                    'label' => 'Notification To (SMS or Email)',
+                    'label' => trans('noshform.notification'),
                     'type' => 'text',
                     'default_value' => $patient->reminder_to
                 ];
             }
             $items[] = [
                 'name' => 'nosh_action',
-                'label' => 'Action after Saving',
+                'label' => trans('noshform.nosh_action'),
                 'type' => 'select',
                 'select_items' => $nosh_action_arr,
                 'required' => true
@@ -8821,8 +8851,8 @@ class Controller extends BaseController
     protected function form_sup_list($result, $table, $id, $subtype)
     {
         $nosh_action_arr = [
-            '' => 'Do Nothing',
-            'inventory' => 'Pull from Supplements Inventory'
+            '' => trans('noshform.do_nothing'),
+            'inventory' => trans('noshform.pull_inventory1')
         ];
         if ($id == '0') {
             $sup = [
@@ -8875,56 +8905,56 @@ class Controller extends BaseController
         }
         $items[] = [
             'name' => 'sup_supplement',
-            'label' => 'Supplement',
+            'label' => trans('noshform.sup_supplement'),
             'type' => 'text',
             'required' => true,
             'default_value' => $sup['sup_supplement']
         ];
         $items[] = [
             'name' => 'sup_dosage',
-            'label' => 'Dosage',
+            'label' => trans('noshform.sup_dosage'),
             'type' => 'text',
             'required' => true,
             'default_value' => $sup['sup_dosage']
         ];
         $items[] = [
             'name' => 'sup_dosage_unit',
-            'label' => 'Dosage Unit',
+            'label' => trans('noshform.sup_dosage_unit'),
             'type' => 'text',
             'required' => true,
             'default_value' => $sup['sup_dosage_unit']
         ];
         $items[] = [
             'name' => 'sup_sig',
-            'label' => 'Sig',
+            'label' => trans('noshform.sup_sig'),
             'type' => 'text',
             'typeahead' => route('typeahead', ['table' => $table, 'column' => 'sup_sig']),
             'default_value' => $sup['sup_sig']
         ];
         $items[] = [
             'name' => 'sup_route',
-            'label' => 'Route',
+            'label' => trans('noshform.sup_route'),
             'type' => 'select',
             'select_items' => $this->array_route(),
             'default_value' => $sup['sup_route']
         ];
         $items[] = [
             'name' => 'sup_frequency',
-            'label' => 'Frequency',
+            'label' => trans('noshform.sup_frequency'),
             'type' => 'text',
             'typeahead' => route('typeahead', ['table' => $table, 'column' => 'sup_frequency']),
             'default_value' => $sup['sup_frequency']
         ];
         $items[] = [
             'name' => 'sup_instructions',
-            'label' => 'Special Instructions',
+            'label' => trans('noshform.sup_instructions'),
             'type' => 'text',
             'typeahead' => route('typeahead', ['table' => $table, 'column' => 'sup_instructions']),
             'default_value' => $sup['sup_instructions']
         ];
         $items[] = [
             'name' => 'sup_reason',
-            'label' => 'Reason',
+            'label' => trans('noshform.sup_reason'),
             'type' => 'text',
             'required' => true,
             'typeahead' => route('typeahead', ['table' => $table, 'column' => 'sup_reason']),
@@ -8932,14 +8962,14 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'sup_date_active',
-            'label' => 'Date Active',
+            'label' => trans('noshform.sup_date_active'),
             'type' => 'date',
             'required' => true,
             'default_value' => $sup['sup_date_active']
         ];
         $items[] = [
             'name' => 'nosh_action',
-            'label' => 'Action after Saving',
+            'label' => trans('noshform.nosh_action'),
             'type' => 'select',
             'select_items' => $nosh_action_arr
         ];
@@ -8993,7 +9023,7 @@ class Controller extends BaseController
         }
         $items[] = [
             'name' => 'sup_description',
-            'label' => 'Supplement Description',
+            'label' => trans('noshform.sup_description'),
             'type' => 'text',
             'required' => true,
             'typeahead' => route('typeahead', ['table' => $table, 'column' => 'sup_description']),
@@ -9001,7 +9031,7 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'sup_strength',
-            'label' => 'Strength',
+            'label' => trans('noshform.sup_strength'),
             'type' => 'text',
             'required' => true,
             'typeahead' => route('typeahead', ['table' => $table, 'column' => 'sup_manufacturer']),
@@ -9009,14 +9039,14 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'sup_manufacturer',
-            'label' => 'Manufacturer',
+            'label' => trans('noshform.sup_manufacturer'),
             'type' => 'text',
             'typeahead' => route('typeahead', ['table' => $table, 'column' => 'sup_manufacturer']),
             'default_value' => $data['sup_manufacturer']
         ];
         $items[] = [
             'name' => 'quantity1',
-            'label' => 'Quantity',
+            'label' => trans('noshform.quantity1'),
             'type' => 'text',
             'required' => true,
             'typeahead' => route('typeahead', ['table' => $table, 'column' => 'quantity1']),
@@ -9024,7 +9054,7 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'charge',
-            'label' => 'Manufacturer',
+            'label' => trans('noshform.sup_charge'),
             'type' => 'text',
             'required' => true,
             'typeahead' => route('typeahead', ['table' => $table, 'column' => 'charge']),
@@ -9032,7 +9062,7 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'cpt',
-            'label' => 'Procedure Code',
+            'label' => trans('noshform.sup_cpt'),
             'type' => 'text',
             'required' => true,
             'typeahead' => route('typeahead', ['table' => $table, 'column' => 'cpt']),
@@ -9040,14 +9070,14 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'sup_expiration',
-            'label' => 'Expiration Date',
+            'label' => trans('noshform.sup_expiration'),
             'type' => 'date',
             'required' => true,
             'default_value' => $data['sup_expiration']
         ];
         $items[] = [
             'name' => 'date_purchase',
-            'label' => 'Date of Purchase',
+            'label' => trans('noshform.date_purchase'),
             'type' => 'date',
             'required' => true,
             'default_value' => $data['date_purchase']
@@ -9063,9 +9093,9 @@ class Controller extends BaseController
     protected function form_tests($result, $table, $id, $subtype)
     {
         $test_type_arr = [
-            '' => 'Select Type',
-            'Laboratory' => 'Laboratory',
-            'Imaging' => 'Imaging'
+            '' => trans('noshform.select_type'),
+            'Laboratory' => trans('noshform.laboratory'),
+            'Imaging' => trans('noshform.imaging')
         ];
         if ($id == '0') {
             $tests = [
@@ -9096,7 +9126,7 @@ class Controller extends BaseController
         }
         $items[] = [
             'name' => 'test_type',
-            'label' => 'Type',
+            'label' => trans('noshform.test_type'),
             'type' => 'select',
             'required' => true,
             'select_items' => $test_type_arr,
@@ -9104,7 +9134,7 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'test_name',
-            'label' => 'Test Name',
+            'label' => trans('noshform.test_name'),
             'type' => 'text',
             'required' => true,
             'typeahead' => route('typeahead', ['table' => $table, 'column' => 'test_name']),
@@ -9112,14 +9142,14 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'test_result',
-            'label' => 'Result',
+            'label' => trans('noshform.test_result'),
             'type' => 'text',
             'required' => true,
             'default_value' => $tests['test_result']
         ];
         $items[] = [
             'name' => 'test_units',
-            'label' => 'Result Units',
+            'label' => trans('noshform.test_units'),
             'type' => 'text',
             'required' => true,
             'typeahead' => route('typeahead', ['table' => $table, 'column' => 'test_units']),
@@ -9127,41 +9157,41 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'test_reference',
-            'label' => 'Normal Reference Range',
+            'label' => trans('noshform.test_reference'),
             'type' => 'text',
             'default_value' => $tests['test_reference']
         ];
         $items[] = [
             'name' => 'test_flags',
-            'label' => 'Flag',
+            'label' => trans('noshform.test_flags'),
             'type' => 'select',
             'select_items' => $this->array_test_flag(),
             'default_value' => $tests['test_flags']
         ];
         $items[] = [
             'name' => 'test_datetime',
-            'label' => 'Date of Test',
+            'label' => trans('noshform.test_datetime'),
             'type' => 'date',
             'required' => true,
             'default_value' => $tests['test_datetime']
         ];
         $items[] = [
             'name' => 'test_from',
-            'label' => 'Location',
+            'label' => trans('noshform.test_from'),
             'type' => 'text',
             'typeahead' => route('typeahead', ['table' => $table, 'column' => 'test_from']),
             'default_value' => $tests['test_from']
         ];
         $items[] = [
             'name' => 'test_code',
-            'label' => 'LOINC Code',
+            'label' => trans('noshform.test_code'),
             'type' => 'text',
             'typeahead' => route('typeahead', ['table' => $table, 'column' => 'test_code']),
             'default_value' => $tests['test_code']
         ];
         $items[] = [
             'name' => 'test_provider_id',
-            'label' => 'Provider',
+            'label' => trans('noshform.test_provider_id'),
             'type' => 'select',
             'select_items' => $this->array_providers(),
             'default_value' => $tests['test_provider_id']
@@ -9452,19 +9482,19 @@ class Controller extends BaseController
         if ($subtype == '2') {
             $items[] = [
                 'name' => 'specialty',
-                'label' => 'Specialty',
+                'label' => trans('noshform.specialty'),
                 'type' => 'text',
                 'default_value' => $data2['specialty']
             ];
             $items[] = [
                 'name' => 'license',
-                'label' => 'License Number',
+                'label' => trans('noshform.license'),
                 'type' => 'text',
                 'default_value' => $data2['license']
             ];
             $items[] = [
                 'name' => 'license_country',
-                'label' => 'Country',
+                'label' => trans('noshform.license_country'),
                 'type' => 'select',
                 'select_items' => $this->array_country(),
                 'default_value' => $data2['license_country'],
@@ -9472,7 +9502,7 @@ class Controller extends BaseController
             ];
             $items[] = [
                 'name' => 'license_state',
-                'label' => 'State Licensed',
+                'label' => trans('noshform.license_state'),
                 'type' => 'select',
                 'select_items' => $this->array_states($data2['license_country']),
                 'default_value' => $data2['license_state'],
@@ -9480,64 +9510,64 @@ class Controller extends BaseController
             ];
             $items[] = [
                 'name' => 'npi',
-                'label' => 'NPI',
+                'label' => trans('noshform.npi'),
                 'type' => 'text',
                 'default_value' => $data2['npi']
             ];
             $items[] = [
                 'name' => 'npi_taxonomy',
-                'label' => 'NPI Taxonomy',
+                'label' => trans('noshform.npi_taxonomy'),
                 'type' => 'text',
                 'readonly' => true,
                 'default_value' => $data2['npi_taxonomy']
             ];
             $items[] = [
                 'name' => 'upin',
-                'label' => 'UPIN',
+                'label' => trans('noshform.upin'),
                 'type' => 'text',
                 'default_value' => $data2['upin']
             ];
             $items[] = [
                 'name' => 'dea',
-                'label' => 'DEA Number',
+                'label' => trans('noshform.dea'),
                 'type' => 'text',
                 'default_value' => $data2['dea']
             ];
             $items[] = [
                 'name' => 'medicare',
-                'label' => 'Medicare Number',
+                'label' => trans('noshform.medicare'),
                 'type' => 'text',
                 'default_value' => $data2['medicare']
             ];
             $items[] = [
                 'name' => 'tax_id',
-                'label' => 'Tax ID Number',
+                'label' => trans('noshform.tax_id'),
                 'type' => 'text',
                 'default_value' => $data2['tax_id']
             ];
-            $items[] = [
-                'name' => 'peacehealth_id',
-                'label' => 'PeaceHealth ID Number',
-                'type' => 'text',
-                'default_value' => $data2['peacehealth_id']
-            ];
+            // $items[] = [
+            //     'name' => 'peacehealth_id',
+            //     'label' => 'PeaceHealth ID Number',
+            //     'type' => 'text',
+            //     'default_value' => $data2['peacehealth_id']
+            // ];
             if ($practice->rcopia_extension == 'y') {
                 $items[] = [
                     'name' => 'rcopia_username',
-                    'label' => 'rCopia Username',
+                    'label' => trans('noshform.rcopia_username'),
                     'type' => 'text',
                     'default_value' => $data2['rcopia_username']
                 ];
             }
             $items[] = [
                 'name' => 'schedule_increment',
-                'label' => 'Time Increment for schedule (minuntes)',
+                'label' => trans('noshform.schedule_increment'),
                 'type' => 'text',
                 'default_value' => $data2['schedule_increment']
             ];
             $items[] = [
                 'name' => 'schedule_notification[]',
-                'label' => 'Patient Portal Schedule Notifications To',
+                'label' => trans('noshform.schedule_notification'),
                 'type' => 'select',
                 'select_items' => $this->array_users(),
                 'multiple' => true,
@@ -12192,7 +12222,7 @@ class Controller extends BaseController
                 if ($item != 'cwp' && $item != 'uri' && $item != 'aab' && $item != 'pce' && $item != 'lbp') {
                     $html .= $row['html'] . '<br><br>';
                     if (!empty($row['fix'])) {
-                        $html .= '<div class="alert alert-danger"><strong>Fixes:</strong><ul>';
+                        $html .= '<div class="alert alert-danger"><strong>' . trans('noshform.hedis_fix') . ':</strong><ul>';
                         foreach ($row['fix'] as $row1) {
                             $html .= '<li>' . $row1 . '</li>';
                         }
@@ -12200,26 +12230,26 @@ class Controller extends BaseController
                     }
                 } else {
                     if ($item == 'cwp') {
-                        $html .= '<strong>Appropriate Testing for Children With Pharyngitis:</strong>';
-                        $html .= '<ul><li>Percentage tested: ' . $row['percent_test'] . '</li>';
-                        $html .= '<li>Percentage treated with antibiotics: ' . $row['percent_abx'] . '</li>';
-                        $html .= '<li>Percentage treated with antibiotics without testing: ' . $row['percent_abx_no_test'] . '</li></ul>';
+                        $html .= '<strong>' . trans('noshform.hedis_cwp') . ':</strong>';
+                        $html .= '<ul><li>' . trans('noshform.hedis_cwp_perc') . ': ' . $row['percent_test'] . '</li>';
+                        $html .= '<li>' . trans('noshform.hedis_cwp_perc1') . ': ' . $row['percent_abx'] . '</li>';
+                        $html .= '<li>' . trans('noshform.hedis_cwp_perc2') . ': ' . $row['percent_abx_no_test'] . '</li></ul>';
                     }
                     if ($item == 'uri') {
-                        $html .= '<strong>Appropriate Treatment for Children With Upper Respiratory Infection:</strong>';
-                        $html .= '<ul><li>Percentage treated with antibiotics: ' . $row['percent_abx'] . '</li></ul>';
+                        $html .= '<strong>' . trans('noshform.hedis_uri') . ':</strong>';
+                        $html .= '<ul><li>' . trans('noshform.hedis_uri_perc') . ': ' . $row['percent_abx'] . '</li></ul>';
                     }
                     if ($item == 'aab') {
-                        $html .= '<strong>Avoidance of Antibiotic Treatment for Adults with Acute Bronchitis:</strong>';
-                        $html .= '<ul><li>Percentage treated with antibiotics: ' . $row['percent_abx'] . '</li></ul>';
+                        $html .= '<strong>' . trans('noshform.hedis_aab') . ':</strong>';
+                        $html .= '<ul><li>' . trans('noshform.hedis_aab_perc') . ': ' . $row['percent_abx'] . '</li></ul>';
                     }
                     if ($item == 'pce') {
-                        $html .= '<strong>Pharmacotherapy Management of COPD Exacerbation:</strong>';
-                        $html .= '<ul><li>Percentage treated for COPD exacerbations: ' . $row['percent_tx'] . '</li></ul>';
+                        $html .= '<strong>' . trans('noshform.hedis_pce') . ':</strong>';
+                        $html .= '<ul><li>' . trans('noshform.hedis_pce_perc') . ': ' . $row['percent_tx'] . '</li></ul>';
                     }
                     if ($item == 'lbp') {
-                        $html .= '<strong>Use of Imaging Studies for Low Back Pain:</strong>';
-                        $html .= '<ul><li>Percentage of instances where no imaging study was performed for a diagnosis of low back pain: ' . $row['percent_no_rad'] . '</li></ul>';
+                        $html .= '<strong>' . trans('noshform.hedis_lbp') . ':</strong>';
+                        $html .= '<ul><li>' . trans('noshform.hedis_lbp_perc') . ': ' . $row['percent_no_rad'] . '</li></ul>';
                     }
                 }
                 $html .= '<hr class="ui-state-default"/>';
@@ -12235,7 +12265,7 @@ class Controller extends BaseController
     protected function hedis_bcs($pid)
     {
         $data = [];
-        $data['html'] = '<i class="fa fa-lg fa-times"></i> Breast Cancer Screening not performed';
+        $data['html'] = '<i class="fa fa-lg fa-times"></i> ' . trans('noshform.hedis_bcs_n');
         $data['goal'] = 'n';
         $data['fix'] = [];
         $score = 0;
@@ -12259,12 +12289,12 @@ class Controller extends BaseController
                 if ($query2) {
                     $score++;
                 } else {
-                    $data['fix'][] = 'Mammogram needs to be performed';
+                    $data['fix'][] = trans('noshform.hedis_bcs_fix');
                 }
             }
         }
         if ($score >= 1) {
-            $data['html'] = '<i class="fa fa-lg fa-check"></i> Breast Cancer Screening performed';
+            $data['html'] = '<i class="fa fa-lg fa-check"></i> ' . trans('noshform.hedis_bcs_y');
             $data['goal'] = 'y';
         }
         return $data;
@@ -12273,7 +12303,7 @@ class Controller extends BaseController
     protected function hedis_cbp($pid)
     {
         $data = [];
-        $data['html'] = '<i class="fa fa-lg fa-times"></i> Controlling High Blood Pressure not performed';
+        $data['html'] = '<i class="fa fa-lg fa-times"></i> ' . trans('noshform.hedis_cbp_n');
         $data['goal'] = 'n';
         $data['fix'] = [];
         $score = 0;
@@ -12289,13 +12319,13 @@ class Controller extends BaseController
             }
             $score = $systolic + $diastolic;
             if ($score == 2) {
-                $data['html'] = '<i class="fa fa-lg fa-check"></i> Controlling High Blood Pressure performed';
+                $data['html'] = '<i class="fa fa-lg fa-check"></i> ' . trans('noshform.hedis_cbp_y');
                 $data['goal'] = 'y';
             } else {
-                $data['fix'][] = 'Blood pressure needs to be under better control.';
+                $data['fix'][] = trans('noshform.hedis_cbp_fix1');
             }
         } else {
-            $data['fix'][] = 'Blood pressures need to be measured.';
+            $data['fix'][] = trans('noshform.hedis_cbp_fix2');
         }
         return $data;
     }
@@ -12303,7 +12333,7 @@ class Controller extends BaseController
     protected function hedis_ccs($pid)
     {
         $data = [];
-        $data['html'] = '<i class="fa fa-lg fa-times"></i> Cervical Cancer Screening not performed';
+        $data['html'] = '<i class="fa fa-lg fa-times"></i> ' . trans('noshform.hedis_ccs_n');
         $data['goal'] = 'n';
         $data['fix'] = [];
         $score = 0;
@@ -12327,12 +12357,12 @@ class Controller extends BaseController
                 if ($query2) {
                     $score++;
                 } else {
-                    $data['fix'][] = 'Pap test needs to be performed';
+                    $data['fix'][] = trans('noshform.hedis_ccs_fix');
                 }
             }
         }
         if ($score >= 1) {
-            $data['html'] = '<i class="fa fa-lg fa-check"></i> Cervical Cancer Screening performed';
+            $data['html'] = '<i class="fa fa-lg fa-check"></i> ' . trans('noshform.hedis_ccs_y');
             $data['goal'] = 'y';
         }
         return $data;
@@ -12341,7 +12371,7 @@ class Controller extends BaseController
     protected function hedis_cdc($pid)
     {
         $data = [];
-        $data['html'] = '<i class="fa fa-lg fa-times"></i> Comprehensive Diabetes Care not performed';
+        $data['html'] = '<i class="fa fa-lg fa-times"></i> ' . trans('noshform.hedis_cdc_n');
         $data['goal'] = 'n';
         $data['fix'] = [];
         $score = 0;
@@ -12378,7 +12408,7 @@ class Controller extends BaseController
                 if ($query2) {
                     $score++;
                 } else {
-                    $data['fix'][] = 'HgbA1c needs to be measured';
+                    $data['fix'][] = trans('noshform.hedis_cdc_fix1');
                 }
             }
         }
@@ -12418,7 +12448,7 @@ class Controller extends BaseController
                 if ($query5) {
                     $score++;
                 } else {
-                    $data['fix'][] = 'LDL needs to be measured';
+                    $data['fix'][] = trans('noshform.hedis_cdc_fix2');
                 }
             }
         }
@@ -12446,7 +12476,7 @@ class Controller extends BaseController
                 if ($query8) {
                     $score++;
                 } else {
-                    $data['fix'][] = 'Urine microalbumin needs to be measured';
+                    $data['fix'][] = trans('noshform.hedis_cdc_fix3');
                 }
             }
         }
@@ -12475,7 +12505,7 @@ class Controller extends BaseController
             if ($query10) {
                 $score++;
             } else {
-                $data['fix'][] = 'Diabetic eye exam needs to be performed';
+                $data['fix'][] = trans('noshform.hedis_cdc_fix4');
             }
         }
         // BP
@@ -12493,13 +12523,13 @@ class Controller extends BaseController
             if ($bp_score == 2) {
                 $score++;
             } else {
-                $data['fix'][] = 'Blood pressure needs to be under better control.';
+                $data['fix'][] = trans('noshform.hedis_cdc_fix5');
             }
         } else {
-            $data['fix'][] = 'Blood pressures need to be measured.';
+            $data['fix'][] = trans('noshform.hedis_cdc_fix6');
         }
         if ($score == 5) {
-            $data['html'] = '<i class="fa fa-lg fa-check"></i> Comprehensive Diabetes Care performed';
+            $data['html'] = '<i class="fa fa-lg fa-check"></i> ' . trans('noshform.hedis_cdc_y');
             $data['goal'] = 'y';
         }
         return $data;
@@ -12508,7 +12538,7 @@ class Controller extends BaseController
     protected function hedis_chl($pid)
     {
         $data = [];
-        $data['html'] = '<i class="fa fa-lg fa-times"></i> Chlamydia Screening not performed';
+        $data['html'] = '<i class="fa fa-lg fa-times"></i> ' . trans('noshform.hedis_chl_n');
         $data['goal'] = 'n';
         $data['fix'] = [];
         $score = 0;
@@ -12532,12 +12562,12 @@ class Controller extends BaseController
                 if ($query2) {
                     $score++;
                 } else {
-                    $data['fix'][] = 'Chlamydia test needs to be performed';
+                    $data['fix'][] = trans('noshform.hedis_chl_fix');
                 }
             }
         }
         if ($score >= 1) {
-            $data['html'] = '<i class="fa fa-lg fa-check"></i> Chlamydia Screening performed';
+            $data['html'] = '<i class="fa fa-lg fa-check"></i> ' . trans('noshform.hedis_chl_y');
             $data['goal'] = 'y';
         }
         return $data;
@@ -12546,7 +12576,7 @@ class Controller extends BaseController
     protected function hedis_cis($pid)
     {
         $data = [];
-        $data['html'] = '<i class="fa fa-lg fa-times"></i> Childhood Immunization Status not performed';
+        $data['html'] = '<i class="fa fa-lg fa-times"></i> ' . trans('noshform.hedis_cis_n');
         $data['goal'] = 'n';
         $data['fix'] = [];
         $score = 0;
@@ -12574,7 +12604,7 @@ class Controller extends BaseController
         if ($query_1) {
             $score++;
         } else {
-            $data['fix'][] = 'Needs DTaP immunization';
+            $data['fix'][] = trans('noshform.hedis_cis_fix1');
         }
         // IPV
         $query_2 = DB::table('immunizations')
@@ -12596,7 +12626,7 @@ class Controller extends BaseController
         if ($query_2) {
             $score++;
         } else {
-            $data['fix'][] = 'Needs IPV immunization';
+            $data['fix'][] = trans('noshform.hedis_cis_fix2');
         }
         // MMR
         $query_3 = DB::table('immunizations')
@@ -12618,7 +12648,7 @@ class Controller extends BaseController
         if ($query_3) {
             $score++;
         } else {
-            $data['fix'][] = 'Needs MMR immunization';
+            $data['fix'][] = trans('noshform.hedis_cis_fix3');
         }
         // Hib
         $query_4 = DB::table('immunizations')
@@ -12640,7 +12670,7 @@ class Controller extends BaseController
         if ($query_4) {
             $score++;
         } else {
-            $data['fix'][] = 'Needs Hib immunization';
+            $data['fix'][] = trans('noshform.hedis_cis_fix4');
         }
         // HepB
         $query_5 = DB::table('immunizations')
@@ -12662,7 +12692,7 @@ class Controller extends BaseController
         if ($query_5) {
             $score++;
         } else {
-            $data['fix'][] = 'Needs Hepatitis B immunization';
+            $data['fix'][] = trans('noshform.hedis_cis_fix5');
         }
         // Varicella
         $query_6 = DB::table('immunizations')
@@ -12684,7 +12714,7 @@ class Controller extends BaseController
         if ($query_6) {
             $score++;
         } else {
-            $data['fix'][] = 'Needs Varicella immunization';
+            $data['fix'][] = trans('noshform.hedis_cis_fix6');
         }
         // Pneumococcal
         $query_7 = DB::table('immunizations')
@@ -12706,7 +12736,7 @@ class Controller extends BaseController
         if ($query_7) {
             $score++;
         } else {
-            $data['fix'][] = 'Needs Pneumoccocal immunization';
+            $data['fix'][] = trans('noshform.hedis_cis_fix7');
         }
         // HepA
         $query_8 = DB::table('immunizations')
@@ -12728,7 +12758,7 @@ class Controller extends BaseController
         if ($query_8) {
             $score++;
         } else {
-            $data['fix'][] = 'Needs Hepatitis A immunization';
+            $data['fix'][] = trans('noshform.hedis_cis_fix8');
         }
         // Rotavirus
         $query_9 = DB::table('immunizations')
@@ -12750,7 +12780,7 @@ class Controller extends BaseController
         if ($query_9) {
             $score++;
         } else {
-            $data['fix'][] = 'Needs Rotavirus immunization';
+            $data['fix'][] = trans('noshform.hedis_cis_fix9');
         }
         // Influenza
         $query_10 = DB::table('immunizations')
@@ -12772,10 +12802,10 @@ class Controller extends BaseController
         if ($query_10) {
             $score++;
         } else {
-            $data['fix'][] = 'Needs influenza immunization';
+            $data['fix'][] = trans('noshform.hedis_cis_fix10');
         }
         if ($score >= 11) {
-            $data['html'] = '<i class="fa fa-lg fa-check"></i> Childhood Immunization Status performed';
+            $data['html'] = '<i class="fa fa-lg fa-check"></i> ' . trans('noshform.hedis_cis_y');
             $data['goal'] = 'y';
         }
         return $data;
@@ -12784,7 +12814,7 @@ class Controller extends BaseController
     protected function hedis_cmc($pid)
     {
         $data = [];
-        $data['html'] = '<i class="fa fa-lg fa-times"></i> Cholesterol Management for Patients With Cardiovascular Conditions not performed';
+        $data['html'] = '<i class="fa fa-lg fa-times"></i> ' . trans('noshform.hedis_cmc_n');
         $data['goal'] = 'n';
         $data['fix'] = [];
         $score = 0;
@@ -12823,12 +12853,12 @@ class Controller extends BaseController
                 if ($query2) {
                     $score++;
                 } else {
-                    $data['fix'][] = 'LDL needs to be measured';
+                    $data['fix'][] = trans('noshform.hedis_cmc_fix');
                 }
             }
         }
         if ($score >= 1) {
-            $data['html'] = '<i class="fa fa-lg fa-check"></i> Cholesterol Management for Patients With Cardiovascular Conditions performed';
+            $data['html'] = '<i class="fa fa-lg fa-check"></i> ' . trans('noshform.hedis_cmc_y');
             $data['goal'] = 'y';
         }
         return $data;
@@ -12903,14 +12933,14 @@ class Controller extends BaseController
                         if ($query4) {
                             $score++;
                         } else {
-                            $data['fix'][] = 'Colon cancer screening needs to be performed';
+                            $data['fix'][] = trans('noshform.hedis_col_fix');
                         }
                     }
                 }
             }
         }
         if ($score >= 1) {
-            $data['html'] = '<i class="fa fa-lg fa-check"></i> Colorectal Cancer Screening performed';
+            $data['html'] = '<i class="fa fa-lg fa-check"></i> ' . trans('noshform.hedis_col_y');
             $data['goal'] = 'y';
         }
         return $data;
@@ -12978,7 +13008,7 @@ class Controller extends BaseController
     protected function hedis_gso($pid)
     {
         $data = [];
-        $data['html'] = '<i class="fa fa-lg fa-times"></i> Glaucoma Screening Older Adults not performed';
+        $data['html'] = '<i class="fa fa-lg fa-times"></i> ' . trans('noshform.hedis_gso_n');
         $data['goal'] = 'n';
         $data['fix'] = [];
         $score = 0;
@@ -13002,12 +13032,12 @@ class Controller extends BaseController
                 if ($query2) {
                     $score++;
                 } else {
-                    $data['fix'][] = 'Glaucoma screening needs to be performed';
+                    $data['fix'][] = trans('noshform.hedis_gso_fix');
                 }
             }
         }
         if ($score >= 1) {
-            $data['html'] = '<i class="fa fa-lg fa-check"></i> Glaucoma Screening Older Adults performed';
+            $data['html'] = '<i class="fa fa-lg fa-check"></i> ' . trans('noshform.hedis_gso_y');
             $data['goal'] = 'y';
         }
         return $data;
@@ -13016,7 +13046,7 @@ class Controller extends BaseController
     protected function hedis_ima($pid)
     {
         $data = [];
-        $data['html'] = '<i class="fa fa-lg fa-times"></i> Immunizations for Adolescents not performed';
+        $data['html'] = '<i class="fa fa-lg fa-times"></i> ' . trans('noshform.hedis_ima_n');
         $data['goal'] = 'n';
         $data['fix'] = [];
         $score = 0;
@@ -13044,7 +13074,7 @@ class Controller extends BaseController
         if ($query_1) {
             $score++;
         } else {
-            $data['fix'][] = 'Needs meningococcal immunization';
+            $data['fix'][] = trans('noshform.hedis_ima_fix');
         }
         // Tdap
         $query_2 = DB::table('immunizations')
@@ -13066,10 +13096,10 @@ class Controller extends BaseController
         if ($query_2) {
             $score++;
         } else {
-            $data['fix'][] = 'Needs Tdap immunization';
+            $data['fix'][] = trans('noshform.hedis_ima_fix2');
         }
         if ($score >= 2) {
-            $data['html'] = '<i class="fa fa-lg fa-check"></i> Immunizations for Adolescents performed';
+            $data['html'] = '<i class="fa fa-lg fa-check"></i> ' . trans('noshform.hedis_ima_y');
             $data['goal'] = 'y';
         }
         return $data;
@@ -13098,7 +13128,7 @@ class Controller extends BaseController
     protected function hedis_hpv($pid)
     {
         $data = [];
-        $data['html'] = '<i class="fa fa-lg fa-times"></i> Human Papillomavirus Vaccine for Female Adolescents not performed';
+        $data['html'] = '<i class="fa fa-lg fa-times"></i> ' . trans('noshform.hedis_hpv_n');
         $data['goal'] = 'n';
         $data['fix'] = [];
         $score = 0;
@@ -13139,10 +13169,10 @@ class Controller extends BaseController
                 }
             }
         } else {
-            $data['fix'][] = 'Needs HPV immunization';
+            $data['fix'][] = trans('noshform.hedis_hpv_fix');
         }
         if ($score >= 1) {
-            $data['html'] = '<i class="fa fa-lg fa-check"></i> Human Papillomavirus Vaccine for Female Adolescents performed';
+            $data['html'] = '<i class="fa fa-lg fa-check"></i> ' . trans('noshform.hedis_hpv_y');
             $data['goal'] = 'y';
         }
         return $data;
@@ -13200,7 +13230,7 @@ class Controller extends BaseController
     protected function hedis_lsc($pid)
     {
         $data = [];
-        $data['html'] = '<i class="fa fa-lg fa-times"></i> Lead Screening in Children not performed';
+        $data['html'] = '<i class="fa fa-lg fa-times"></i> ' . trans('noshform.hedis_lsc_n');
         $data['goal'] = 'n';
         $data['fix'] = [];
         $score = 0;
@@ -13224,12 +13254,12 @@ class Controller extends BaseController
                 if ($query2) {
                     $score++;
                 } else {
-                    $data['fix'][] = 'Lead level needs to be measured';
+                    $data['fix'][] = trans('noshform.hedis_lsc_fix');
                 }
             }
         }
         if ($score >= 1) {
-            $data['html'] = '<i class="fa fa-lg fa-check"></i> Lead Screening in Children performed';
+            $data['html'] = '<i class="fa fa-lg fa-check"></i> ' . trans('noshform.hedis_lsc_y');
             $data['goal'] = 'y';
         }
         return $data;
@@ -13238,7 +13268,7 @@ class Controller extends BaseController
     protected function hedis_omw($pid)
     {
         $data = [];
-        $data['html'] = '<i class="fa fa-lg fa-times"></i> Disease Modifying Anti-Rheumatic Drug Therapy for Rheumatoid Arthritis not performed';
+        $data['html'] = '<i class="fa fa-lg fa-times"></i> ' . trans('noshform.hedis_omw_n');
         $data['goal'] = 'n';
         $data['fix'] = [];
         $score = 0;
@@ -13289,10 +13319,10 @@ class Controller extends BaseController
             }
         }
         if ($score >= 1) {
-            $data['html'] = '<i class="fa fa-lg fa-check"></i> Disease Modifying Anti-Rheumatic Drug Therapy for Rheumatoid Arthritis performed';
+            $data['html'] = '<i class="fa fa-lg fa-check"></i> ' . trans('noshform.hedis_omw_y');
             $data['goal'] = 'y';
         } else {
-            $data['fix'][] = 'Bone density screening needs to be performed or osteoporosis prevention medication is recommended';
+            $data['fix'][] = trans('noshform.hedis_omw_fix');
         }
         return $data;
     }
@@ -13300,7 +13330,7 @@ class Controller extends BaseController
     protected function hedis_pbh($pid)
     {
         $data = [];
-        $data['html'] = '<i class="fa fa-lg fa-times"></i> Persistence of Beta-Blocker Treatment After a Heart Attack not performed';
+        $data['html'] = '<i class="fa fa-lg fa-times"></i> ' . trans('noshform.hedis_pbh_n');
         $data['goal'] = 'n';
         $data['fix'] = [];
         $score = 0;
@@ -13315,10 +13345,10 @@ class Controller extends BaseController
             }
         }
         if ($score >= 1) {
-            $data['html'] = '<i class="fa fa-lg fa-check"></i> Persistence of Beta-Blocker Treatment After a Heart Attack performed';
+            $data['html'] = '<i class="fa fa-lg fa-check"></i> ' . trans('noshform.hedis_pbh_y');
             $data['goal'] = 'y';
         } else {
-            $data['fix'][] = 'Beta blocker is recommended.';
+            $data['fix'][] = trans('noshform.hedis_pbh_fix');
         }
         return $data;
     }
@@ -13364,7 +13394,7 @@ class Controller extends BaseController
     protected function hedis_spr($pid)
     {
         $data = [];
-        $data['html'] = '<i class="fa fa-lg fa-times"></i> Use of Spirometry Testing in the Assessment and Diagnosis of COPD not performed';
+        $data['html'] = '<i class="fa fa-lg fa-times"></i> ' . trans('noshform.hedis_spr_n');
         $data['goal'] = 'n';
         $data['fix'] = [];
         $score = 0;
@@ -13388,12 +13418,12 @@ class Controller extends BaseController
                 if ($query2) {
                     $score++;
                 } else {
-                    $data['fix'][] = 'Glaucoma screening needs to be performed';
+                    $data['fix'][] = trans('noshform.hedis_spr_fix');
                 }
             }
         }
         if ($score >= 1) {
-            $data['html'] = '<i class="fa fa-lg fa-check"></i> Use of Spirometry Testing in the Assessment and Diagnosis of COPD performed';
+            $data['html'] = '<i class="fa fa-lg fa-check"></i> ' . trans('noshform.hedis_spr_y');
             $data['goal'] = 'y';
         }
         return $data;
@@ -13432,7 +13462,7 @@ class Controller extends BaseController
     protected function hedis_wcc($pid)
     {
         $data = [];
-        $data['html'] = '<i class="fa fa-lg fa-times"></i> Weight Assessment and Counseling for Nutrition and Physical Activity for Children and Adolescents not performed';
+        $data['html'] = '<i class="fa fa-lg fa-times"></i> ' . trans('noshform.hedis_wcc_n');
         $data['goal'] = 'n';
         $data['fix'] = [];
         $score = 0;
@@ -13440,7 +13470,7 @@ class Controller extends BaseController
         if ($query) {
             $score++;
         } else {
-            $data['fix'][] = 'BMI, height, and weight needs to be measured';
+            $data['fix'][] = trans('noshform.hedis_wcc_fix1');
         }
         $query1 = DB::table('billing_core')
             ->where('pid', '=', $pid)
@@ -13461,7 +13491,7 @@ class Controller extends BaseController
         if ($query1) {
             $score++;
         } else {
-            $data['fix'][] = 'Nutritional counseling needs to be performed';
+            $data['fix'][] = trans('noshform.hedis_wcc_fix2');
         }
         $query2 = DB::table('assessment')
             ->where('pid', '=', $pid)
@@ -13482,7 +13512,7 @@ class Controller extends BaseController
         if ($query2) {
             $score++;
         } else {
-            $data['fix'][] = 'BMI, height, and weight needs to be measured';
+            $data['fix'][] = trans('noshform.hedis_wcc_fix1');
         }
         $query3 = DB::table('assessment')
             ->where('pid', '=', $pid)
@@ -13503,7 +13533,7 @@ class Controller extends BaseController
         if ($query3) {
             $score++;
         } else {
-            $data['fix'][] = 'Nutritional counseling needs to be performed';
+            $data['fix'][] = trans('noshform.hedis_wcc_fix2');
         }
         $query4 = DB::table('assessment')
             ->where('pid', '=', $pid)
@@ -13524,10 +13554,10 @@ class Controller extends BaseController
         if ($query4) {
             $score++;
         } else {
-            $data['fix'][] = 'Physical activity counseling needs to be performed.';
+            $data['fix'][] = trans('noshform.hedis_wcc_fix3');
         }
         if ($score >= 2) {
-            $data['html'] = '<i class="fa fa-lg fa-check"></i> Weight Assessment and Counseling for Nutrition and Physical Activity for Children and Adolescents performed';
+            $data['html'] = '<i class="fa fa-lg fa-check"></i> ' . trans('noshform.hedis_wcc_y');
             $data['goal'] = 'y';
         }
         return $data;
@@ -14109,7 +14139,7 @@ class Controller extends BaseController
         }
         $data['practiceInfo'] .= '<br />';
         $data['practiceInfo'] .= $practice->city . ', ' . $practice->state . ' ' . $practice->zip . '<br />';
-        $data['practiceInfo'] .= 'Phone: ' . $practice->phone . ', Fax: ' . $practice->fax . '<br />';
+        $data['practiceInfo'] .= 'Tel: ' . $practice->phone . ', Fax: ' . $practice->fax . '<br />';
         $data['practiceLogo'] = $this->practice_logo($practice_id);
         $data['title'] = $title;
         return view('pdf.intro', $data);

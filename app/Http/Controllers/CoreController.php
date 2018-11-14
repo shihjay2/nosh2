@@ -4339,17 +4339,17 @@ class CoreController extends Controller
         $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
         $return = '';
         $type_arr = [
-            'inbox' => ['Inbox', 'fa-inbox'],
-            'drafts' => ['Drafts', 'fa-pencil-square-o'],
-            'outbox' => ['Sent Messages', 'fa-upload'],
+            'inbox' => [trans('noshform.inbox'), 'fa-inbox'],
+            'drafts' => [trans('noshform.drafts'), 'fa-pencil-square-o'],
+            'outbox' => [trans('noshform.outbox'), 'fa-upload'],
             'separator' => 'separator',
-            'scans' => ['Scans', 'fa-file-o']
+            'scans' => [trans('noshform.scans'), 'fa-file-o']
         ];
         if ($practice->fax_type !== '') {
             $type_arr['separator1'] = 'separator';
-            $type_arr['faxes'] = ['Faxes', 'fa-fax'];
-            $type_arr['faxes_draft'] = ['Draft Faxes', 'fa-share-square'];
-            $type_arr['faxes_sent'] = ['Sent Faxes', 'fa-share-square-o'];
+            $type_arr['faxes'] = [trans('noshform.faxes'), 'fa-fax'];
+            $type_arr['faxes_draft'] = [trans('noshform.faxes_draft'), 'fa-share-square'];
+            $type_arr['faxes_sent'] = [trans('noshform.faxes_sent'), 'fa-share-square-o'];
         }
         $dropdown_array = [
             'items_button_text' => $type_arr[$type][0]
@@ -4428,7 +4428,7 @@ class CoreController extends Controller
             $items1 = [];
             $items1[] = [
                 'type' => 'item',
-                'label' => 'New Message',
+                'label' => trans('noshform.new_message'),
                 'icon' => 'fa-plus',
                 'url' => route('core_form', ['messaging', $row_index, '0'])
             ];
@@ -4491,7 +4491,7 @@ class CoreController extends Controller
             $items1 = [];
             $items1[] = [
                 'type' => 'item',
-                'label' => 'New Fax',
+                'label' => trans('noshform.new_fax'),
                 'icon' => 'fa-plus',
                 'url' => route('messaging_sendfax', ['0'])
             ];
@@ -4516,10 +4516,10 @@ class CoreController extends Controller
         if (! empty($list_array)) {
             $return .= $this->result_build($list_array, $type . '_list');
         } else {
-            $return .= ' None.';
+            $return .= ' ' . trans('noshform.none') . '.';
         }
         $data['content'] = $return;
-        $data['panel_header'] = 'Messaging';
+        $data['panel_header'] = trans('noshform.messaging');
         Session::put('last_page', $request->fullUrl());
         if (Session::has('download_now')) {
             $data['download_now'] = route('download_now');
@@ -4567,7 +4567,7 @@ class CoreController extends Controller
             $file->move($directory, $new_name);
             return redirect(Session::get('message_photo_last_page'));
         } else {
-            $data['panel_header'] = 'Upload A Photo/Image';
+            $data['panel_header'] = trans('noshform.messaging_add_photo');
             $data['document_upload'] = route('messaging_add_photo', [$message_id]);
             $type_arr = ['png', 'jpg'];
             $data['document_type'] = json_encode($type_arr);
@@ -4619,7 +4619,7 @@ class CoreController extends Controller
                 imagesavealpha($image, true);
                 imagejpeg($image, $arr1[$request->input('image_path')], 100);
             }
-            Session::put('message_action', 'Page saved');
+            Session::put('message_action', trans('noshform.page_saved'));
             if ($last_key == $request->input('image_path')) {
                 return redirect()->route('messaging_editdoc_process', [$id, $type]);
             } else {
@@ -4713,17 +4713,17 @@ class CoreController extends Controller
                 'form_id' => 'image_form',
                 'action' => route('messaging_editdoc', [$id, $type]),
                 'items' => $items,
-                'save_button_label' => 'Save',
-                'add_save_button' => ['delete' => 'Discard Page'],
+                'save_button_label' => trans('noshform.save'),
+                'add_save_button' => ['delete' => trans('noshform.discard_page')],
                 'origin' => route('messaging_editdoc_cancel', [$id, $type])
             ];
             $data['content'] = $this->form_build($form_array);
-            $data['panel_header'] = 'Annotate Document';
+            $data['panel_header'] = trans('noshform.annotate_document');
             $dropdown_array = [];
             $items = [];
             $items[] = [
                 'type' => 'item',
-                'label' => 'Back',
+                'label' => trans('noshform.back'),
                 'icon' => 'fa-chevron-left',
                 'url' => Session::get('last_page')
             ];
@@ -4733,7 +4733,7 @@ class CoreController extends Controller
             $items1 = [];
             $items1[] = [
                 'type' => 'item',
-                'label' => 'Process Document',
+                'label' => trans('noshform.process_document'),
                 'icon' => 'fa-floppy-o',
                 'url' => route('messaging_editdoc_process', [$id, $type])
             ];
@@ -4819,32 +4819,32 @@ class CoreController extends Controller
             if ($request->has('submit')) {
                 if ($request->input('submit') == 'download') {
                     Session::put('download_now', $file_path);
-                    Session::put('message_action', 'Document saved in patient chart');
+                    Session::put('message_action', trans('noshform.document_saved_chart'));
                     return redirect($origin);
                 }
                 if ($request->input('submit') == 'fax') {
                     Session::put('fax_now', $file_path);
                     Session::put('fax_fileoriginal', $request->input('documents_type') . ' for ' . $patient->firstname . ' ' . $patient->lastname);
-                    Session::put('message_action', 'Document saved in patient chart, ready to be faxed');
+                    Session::put('message_action', trans('noshform.document_saved_chart') . ', ' . trans('noshform.ready_to_fax'));
                     return redirect()->route('messaging_sendfax', ['0']);
                 }
             } else {
-                Session::put('message_action', 'Document saved in patient chart');
+                Session::put('message_action', trans('noshform.document_saved_chart'));
                 return redirect($origin);
             }
         } else {
             $data['search_patient1'] = 'pid';
             $document_type_arr = [
-                'Laboratory' => 'Laboratory',
-                'Imaging' => 'Imaging',
-                'Cardiopulmonary' => 'Cardiopulmonary',
-                'Endoscopy' => 'Endoscopy',
-                'Referrals' => 'Referrals',
-                'Past_Records' => 'Past Records',
-                'Other_Forms' => 'Other Forms',
-                'Letters' => 'Letters',
-                'ccda' => 'CCDAs',
-                'ccr' => 'CCRs'
+                'Laboratory' => trans('noshform.laboratory'),
+                'Imaging' => trans('noshform.imaging'),
+                'Cardiopulmonary' => trans('noshform.cardiopulmonary'),
+                'Endoscopy' => trans('noshform.endoscopy'),
+                'Referrals' => trans('noshform.referrals'),
+                'Past_Records' => trans('noshform.past_records'),
+                'Other_Forms' => trans('noshform.other_forms'),
+                'Letters' => trans('noshform.letters'),
+                'ccda' => trans('noshform.ccda'),
+                'ccr' => trans('noshform.ccr')
             ];
             $items[] = [
                 'name' => 'pid',
@@ -4854,7 +4854,7 @@ class CoreController extends Controller
             ];
             $items[] = [
                 'name' => 'documents_from',
-                'label' => 'From',
+                'label' => trans('noshform.documents_from'),
                 'type' => 'text',
                 'required' => true,
                 'typeahead' => route('typeahead', ['table' => 'documents', 'column' => 'documents_from']),
@@ -4862,7 +4862,7 @@ class CoreController extends Controller
             ];
             $items[] = [
                 'name' => 'documents_type',
-                'label' => 'Type',
+                'label' => trans('noshform.documents_type'),
                 'type' => 'select',
                 'select_items' => $document_type_arr,
                 'required' => true,
@@ -4870,7 +4870,7 @@ class CoreController extends Controller
             ];
             $items[] = [
                 'name' => 'documents_desc',
-                'label' => 'Description',
+                'label' => trans('noshform.documents_desc'),
                 'type' => 'textarea',
                 'required' => true,
                 'typeahead' => route('typeahead', ['table' => 'documents', 'column' => 'documents_desc']),
@@ -4878,7 +4878,7 @@ class CoreController extends Controller
             ];
             $items[] = [
                 'name' => 'documents_date',
-                'label' => 'Date',
+                'label' => trans('noshform.documents_date'),
                 'type' => 'date',
                 'required' => true,
                 'default_value' => date('Y-m-d')
@@ -4888,10 +4888,10 @@ class CoreController extends Controller
                 $origin = Session::get('messaging_last_page');
             }
             $intro = '<div class="form-group" id="patient_name_div"><label class="col-md-3 control-label">Patient</label><div class="col-md-8"><p class="form-control-static" id="patient_name"></p></div></div>';
-            $add_save['download'] = 'Save and Download';
+            $add_save['download'] = trans('noshform.save_download');
             $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
             if ($practice->fax_type !== '') {
-                $add_save['fax'] = 'Save and Fax';
+                $add_save['fax'] = trans('noshform.save_fax');
             }
             $form_array = [
                 'form_id' => 'document_process_form',
@@ -4903,12 +4903,12 @@ class CoreController extends Controller
                 'add_save_button' => $add_save
             ];
             $data['content'] = $this->form_build($form_array);
-            $data['panel_header'] = 'Process and Assign Document';
+            $data['panel_header'] = trans('noshform.messaging_editdoc_process');
             $dropdown_array = [];
             $items = [];
             $items[] = [
                 'type' => 'item',
-                'label' => 'Back',
+                'label' => trans('noshform.back'),
                 'icon' => 'fa-chevron-left',
                 'url' => $origin
             ];
@@ -4918,7 +4918,7 @@ class CoreController extends Controller
             $items1 = [];
             $items1[] = [
                 'type' => 'item',
-                'label' => 'Process Document',
+                'label' => trans('noshform.process_document'),
                 'icon' => 'fa-floppy-o',
                 'url' => route('messaging_editdoc_process', [$id, $type])
             ];
@@ -4933,10 +4933,10 @@ class CoreController extends Controller
     public function messaging_export(Request $request, $id)
     {
         $query = DB::table('messaging')->where('message_id', '=', $id)->first();
-        $message = 'Internal messaging with patient on: ' . date('Y-m-d', $this->human_to_unix($query->date)) . "\n\r" . $query->body;
+        $message = trans('noshform.internal_message_on') . ': ' . date('Y-m-d', $this->human_to_unix($query->date)) . "\n\r" . $query->body;
         $message = str_replace("<br>", "", $message);
         $data = [
-            't_messages_subject' => 'Internal messaging with patient: ' . $query->subject,
+            't_messages_subject' => trans('noshform.internal_message') . ': ' . $query->subject,
             't_messages_message' => $message,
             't_messages_dos' => date('Y-m-d H:i:s', time()),
             't_messages_provider' => Session::get('displayname'),
@@ -4961,7 +4961,7 @@ class CoreController extends Controller
                 $this->audit('Add');
             }
         }
-        Session::put('message_action', 'Message exported to the chart as a telephone message');
+        Session::put('message_action', trans('noshform.messaging_export'));
         return redirect(Session::get('last_page'));
     }
 
@@ -4982,7 +4982,7 @@ class CoreController extends Controller
             }
             DB::table('sendfax')->where('job_id', '=', $id)->update($data);
             if ($request->has('submit')) {
-                Session::put('message_action', 'Job ' . $id . ' saved as draft');
+                Session::put('message_action', 'Job ' . $id . ' ' . trans('noshform.saved_as_draft'));
                 return redirect(Session::get('last_page'));
             } else {
                 $message = $this->send_fax($id, '', '');
@@ -5074,7 +5074,7 @@ class CoreController extends Controller
             $return .= '</div></div>';
             $formitems[] = [
                 'name' => 'faxsubject',
-                'label' => 'Subject',
+                'label' => trans('noshform.faxsubject'),
                 'type' => 'text',
                 'required' => true,
                 'typeahead' => route('typeahead', ['table' => 'sendfax', 'column' => 'faxsubject']),
@@ -5082,14 +5082,14 @@ class CoreController extends Controller
             ];
             $formitems[] = [
                 'name' => 'faxcoverpage',
-                'label' => 'Coverpage',
+                'label' => trans('noshform.faxcoverpage'),
                 'type' => 'checkbox',
                 'value' => 'yes',
                 'default_value' => $sendfax['faxcoverpage']
             ];
             $formitems[] = [
                 'name' => 'faxmessage',
-                'label' => 'Coverpage Message',
+                'label' => trans('noshform.faxmessage'),
                 'type' => 'textarea',
                 'default_value' => $sendfax['faxmessage']
             ];
@@ -5097,16 +5097,16 @@ class CoreController extends Controller
                 'form_id' => 'fax_form',
                 'action' => route('messaging_sendfax', [$id]),
                 'items' => $formitems,
-                'save_button_label' => 'Save',
+                'save_button_label' => trans('noshform.save'),
                 'add_save_button' => [
-                    'draft' => 'Save as Draft'
+                    'draft' => trans('noshform.save_as_draft')
                 ]
             ];
             $return .= $this->header_build('Details');
             $return .= $this->form_build($form_array);
             $return .= '</div></div>';
             $dropdown_array = [
-                'default_button_text' => '<i class="fa fa-chevron-left fa-fw fa-btn"></i>Back',
+                'default_button_text' => '<i class="fa fa-chevron-left fa-fw fa-btn"></i>' . trans('noshform.back'),
                 'default_button_text_url' => Session::get('last_page')
             ];
             $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
@@ -5116,20 +5116,20 @@ class CoreController extends Controller
             $items1 = [];
             $items1[] = [
                 'type' => 'item',
-                'label' => 'Add Recipient',
+                'label' => trans('noshform.add_recipient'),
                 'icon' => 'fa-user-plus',
                 'url' => route('core_form', ['recipients', 'sendlist_id', '0', $id])
             ];
             $items1[] = [
                 'type' => 'item',
-                'label' => 'Add Page or Document',
+                'label' => trans('noshform.add_page'),
                 'icon' => 'fa-plus',
                 'url' => route('messaging_sendfax_upload', [$id])
             ];
             $dropdown_array1['items'] = $items1;
             $data['panel_dropdown'] .= '<span class="fa-btn"></span>' . $this->dropdown_build($dropdown_array1);
             $data['content'] = $return;
-            $data['panel_header'] = 'Fax Details - Job ' . $id;
+            $data['panel_header'] = trans('noshform.fax_details') . ' ' . $id;
             Session::put('messaging_last_page', $request->fullUrl());
             $data['assets_js'] = $this->assets_js();
             $data['assets_css'] = $this->assets_css();
@@ -5493,10 +5493,10 @@ class CoreController extends Controller
                 imagecopyresampled($scaledImage, $img, 0, 0, 0, 0, $scaledWidth, $scaledHeight, $width, $height);
                 $this->saveImage($scaledImage, $practice_logo);
             }
-            Session::put('message_action', 'Practice logo updated');
+            Session::put('message_action', trans('noshform.practice_logo_updated'));
             return redirect(Session::get('last_page'));
         } else {
-            $data['panel_header'] = 'Upload Practice Logo';
+            $data['panel_header'] = trans('noshform.practice_logo_upload');
             $data['document_upload'] = route('practice_logo_upload');
             $type_arr = ['jpg', 'jpeg', 'png', 'gif'];
             $data['document_type'] = json_encode($type_arr);
@@ -6151,107 +6151,108 @@ class CoreController extends Controller
             }
             $state = $this->array_states($result->country);
             $unit_arr = [
-                'in' => 'Inches',
-                'cm' => 'Centimeters',
-                'lbs' => 'Pounds',
-                'kg' => 'Kilograms',
-                'F' => 'Fahrenheit',
-                'C' => 'Celcius',
-                'n' => 'No',
-                'y' => 'Yes',
-                '' => 'No',
-                'phaxio' => 'Phaxio'
+                'in' => trans('noshform.in'),
+                'cm' => trans('noshform.cm'),
+                'lbs' => trans('noshform.lbs'),
+                'kg' => trans('noshform.kg'),
+                'F' => trans('noshform.F'),
+                'C' => trans('noshform.C'),
+                'n' => trans('noshform.no'),
+                'y' => trans('noshform.yes'),
+                '' => trans('noshform.no'),
+                'phaxio' => trans('noshform.phaxio')
             ];
             $header_arr = [
-                'Practice Information' => route('core_form', ['practiceinfo', 'practice_id', Session::get('practice_id'), 'information']),
-                'Practice Settings' => route('core_form', ['practiceinfo', 'practice_id', Session::get('practice_id'), 'settings']),
-                'Billing' => route('core_form', ['practiceinfo', 'practice_id', Session::get('practice_id'), 'billing']),
-                'Extensions' => route('core_form', ['practiceinfo', 'practice_id', Session::get('practice_id'), 'extensions']),
-                'Practice Logo' => route('practice_logo_upload')
+                trans('noshform.practice_information') => route('core_form', ['practiceinfo', 'practice_id', Session::get('practice_id'), 'information']),
+                trans('noshform.practice_settings') => route('core_form', ['practiceinfo', 'practice_id', Session::get('practice_id'), 'settings']),
+                trans('noshform.billing') => route('core_form', ['practiceinfo', 'practice_id', Session::get('practice_id'), 'billing']),
+                trans('noshform.extensions') => route('core_form', ['practiceinfo', 'practice_id', Session::get('practice_id'), 'extensions']),
+                trans('noshform.practice_logo') => route('practice_logo_upload')
             ];
             $info_arr = [
-                'Practice Name' => $result->practice_name,
-                'Street Address' => $result->street_address1,
-                'Street Address Line 2' => $result->street_address2,
-                'Country' => $result->country,
-                'City' => $result->city,
-                'State' => $state[$result->state],
-                'Zip' => $result->zip,
-                'Phone' => $result->phone,
-                'Fax' => $result->fax,
-                'Email' => $result->email,
-                'Website' => $result->website,
+                trans('noshform.practice_name') => $result->practice_name,
+                trans('noshform.street_address1') => $result->street_address1,
+                trans('noshform.street_address2')=> $result->street_address2,
+                trans('noshform.country') => $result->country,
+                trans('noshform.city') => $result->city,
+                trans('noshform.state') => $state[$result->state],
+                trans('noshform.zip') => $result->zip,
+                trans('noshform.phone') => $result->phone,
+                trans('noshform.fax') => $result->fax,
+                trans('noshform.email') => $result->email,
+                trans('noshform.website') => $result->website,
                 'Gmail Account' => $result->smtp_user,
-                'Patient Portal Address' => $result->patient_portal
+                trans('noshform.patient_portal') => $result->patient_portal
             ];
             $encounter_type_arr = $this->array_encounter_type();
             // Remove depreciated encounter types for new encounters
             unset($encounter_type_arr['standardmedical']);
             unset($encounter_type_arr['standardmedical1']);
             $settings_arr = [
-                'Primary Contact' => $result->primary_contact,
-                'Practice NPI' => $result->npi,
-                'Practice Medicare Number' => $result->medicare,
-                'Practice Tax ID Number' => $result->tax_id,
-                'Default Practice Location' => $result->default_pos_id,
-                'Documents Directory' => $result->documents_dir,
-                'Weight Unit' => $unit_arr[$result->weight_unit],
-                'Height Unit' => $unit_arr[$result->height_unit],
-                'Temperature Unit' => $unit_arr[$result->temp_unit],
-                'Head Circumference Unit' => $unit_arr[$result->hc_unit],
-                'Default Encounter Template' => $encounter_type_arr[$result->encounter_template],
-                'Additional Message in Appointment Reminders' => $result->additional_message
+                trans('noshform.primary_contact') => $result->primary_contact,
+                trans('noshform.practice_npi') => $result->npi,
+                trans('noshform.practice_medicare') => $result->medicare,
+                trans('noshform.tax_id') => $result->tax_id,
+                trans('noshform.default_pos_id') => $result->default_pos_id,
+                trans('noshform.documents_dir') => $result->documents_dir,
+                trans('noshform.weight_unit') => $unit_arr[$result->weight_unit],
+                trans('noshform.height_unit') => $unit_arr[$result->height_unit],
+                trans('noshform.temp_unit') => $unit_arr[$result->temp_unit],
+                trans('noshform.hc_unit') => $unit_arr[$result->hc_unit],
+                trans('noshform.encounter_template') => $encounter_type_arr[$result->encounter_template],
+                trans('noshform.additional_message') => $result->additional_message,
+                trans('noshform.locale') => $result->locale
             ];
             $billing_arr = [
-                'Street Address' => $result->billing_street_address1,
-                'Street Address Line 2' => $result->billing_street_address2,
-                'Country' => $result->billing_country,
-                'City' => $result->billing_city,
-                'State' => $state[$result->billing_state],
-                'Zip' => $result->billing_zip,
+                trans('noshform.street_address1') => $result->billing_street_address1,
+                trans('noshform.street_address2') => $result->billing_street_address2,
+                trans('noshform.country') => $result->billing_country,
+                trans('noshform.city') => $result->billing_city,
+                trans('noshform.state') => $state[$result->billing_state],
+                trans('noshform.zip') => $result->billing_zip,
             ];
             $appt_arr = [
-                '604800' => '1 week',
-                '1209600' => '2 weeks',
-                '2629743' => '1 month',
-                '5259486' => '2 months',
-                '7889229' => '3 months',
-                '15778458' => '6 months',
-                '31556926' => '1 year'
+                '604800' => trans('noshform.1_week'),
+                '1209600' => trans('noshform.2_weeks'),
+                '2629743' => trans('noshform.1_month'),
+                '5259486' => trans('noshform.2_months'),
+                '7889229' => trans('noshform.3_months'),
+                '15778458' => trans('noshform.6_months'),
+                '31556926' => trans('noshform.1_year')
             ];
             $extensions_arr = [
-                'Fax Integration Enabled' => $unit_arr[$result->fax_type],
-                'Phaxio API Key' => $result->phaxio_api_key,
-                'Phaxio API Secret' => $result->phaxio_api_secret,
-                'Birthday Message Enabled' => $unit_arr[$result->birthday_extension],
-                'Birthday Message' => $result->birthday_message,
-                'Appointment Reminder Enabled' => $unit_arr[$result->appointment_extension],
-                'Appointment Interval' => $appt_arr[$result->appointment_interval],
-                'Reminder Message' => $result->appointment_message,
-                'SMS URL' => $result->sms_url
+                trans('noshform.fax_type') => $unit_arr[$result->fax_type],
+                trans('noshform.phaxio_api_key') => $result->phaxio_api_key,
+                trans('noshform.phaxio_api_secret') => $result->phaxio_api_secret,
+                trans('noshform.birthday_extension') => $unit_arr[$result->birthday_extension],
+                trans('noshform.birthday_message') => $result->birthday_message,
+                trans('noshform.appointment_extension')=> $unit_arr[$result->appointment_extension],
+                trans('noshform.appointment_interval1') => $appt_arr[$result->appointment_interval],
+                trans('noshform.appointment_message') => $result->appointment_message,
+                trans('noshform.sms_url') => $result->sms_url
             ];
-            $return = $this->header_build($header_arr, 'Practice Information');
+            $return = $this->header_build($header_arr, trans('noshform.practice_information'));
             foreach ($info_arr as $key1 => $value1) {
                 if ($value1 !== '' && $value1 !== null) {
                     $return .= '<div class="col-md-3"><b>' . $key1 . '</b></div><div class="col-md-8">' . $value1 . '</div>';
                 }
             }
             $return .= '</div></div></div>';
-            $return .= $this->header_build($header_arr, 'Practice Settings');
+            $return .= $this->header_build($header_arr, trans('noshform.practice_settings'));
             foreach ($settings_arr as $key2 => $value2) {
                 if ($value2 !== '' && $value2 !== null) {
                     $return .= '<div class="col-md-3"><b>' . $key2 . '</b></div><div class="col-md-8">' . $value2 . '</div>';
                 }
             }
             $return .= '</div></div></div>';
-            $return .= $this->header_build($header_arr, 'Billing');
+            $return .= $this->header_build($header_arr, trans('noshform.billing'));
             foreach ($billing_arr as $key3 => $value3) {
                 if ($value3 !== '' && $value3 !== null) {
                     $return .= '<div class="col-md-3"><b>' . $key3 . '</b></div><div class="col-md-8">' . $value3 . '</div>';
                 }
             }
             $return .= '</div></div></div>';
-            $return .= $this->header_build($header_arr, 'Extensions');
+            $return .= $this->header_build($header_arr, trans('noshform.extensions'));
             foreach ($extensions_arr as $key4 => $value4) {
                 if ($value4 !== '' && $value4 !== null) {
                     $return .= '<div class="col-md-3"><b>' . $key4 . '</b></div><div class="col-md-8">' . $value4 . '</div>';
@@ -6260,7 +6261,7 @@ class CoreController extends Controller
             $return .= '</div></div>';
             if ($result->birthday_extension == 'y') {
                 $return .= '<div class="alert alert-success">';
-                $return .= '<strong>The birthday message sent out will appear like this:</strong><br><br>SMS message:<br>Happy Birthday, {patient first name}, from ';
+                $return .= '<strong>' . trans('noshform.birthday_message_desc') . '</strong><br><br>' . trans('noshform.sms_message') . '<br>Happy Birthday, {patient first name}, from ';
                 $return .= $result->practice_name . '! Call ' . $result->phone . ' if you would like to schedule an appointment with your provider.<br><br>E-mail message:<br>Happy Birthday, {patients first name}, from ';
                 $return .= $result->practice_name . '!<br>' . $result->birthday_message . '<br>If you would like to set up an appointment with your provider, please contact us at ';
                 $return .= $result->phone . ' or reply to this e-mail at ' . $result->email;
@@ -6268,29 +6269,29 @@ class CoreController extends Controller
             }
             if ($result->appointment_extension == 'y') {
                 $return .= '<div class="alert alert-info">';
-                $return .= '<strong>The continuing care reminder message sent out will appear like this:</strong><br><br>SMS message:<br>Time for continuing care appointment with ';
+                $return .= '<strong>' . trans('noshform.continue_care_desc') . '</strong><br><br>' . trans('noshform.sms_message') . '<br>Time for continuing care appointment with ';
                 $return .= $result->practice_name . '. Call ' . $result->phone . ' to schedule an appointment or visit' . $result->patient_portal . ' to schedule online.<br><br>E-mail message:<br>Dear,  {patients first name},<br>It is time for your continuing care appointment with ';
                 $return .= $result->practice_name . 'Please call us at ' . $result->phone . ' or visit ' . $result->patient_portal . ' to schedule your next appointment at your earliest convenience.<br>';
                 $return .= $result->appointment_message . '<br>Thank you,<br>' . $result->practice_name . '<br>Phone: ' . $result->phone . '<br>Email: ' . $result->email;
                 $return .= '</div>';
             }
             $return .= '</div>';
-            $return .= $this->header_build($header_arr, 'Practice Logo');
+            $return .= $this->header_build($header_arr, trans('noshform.practice_logo'));
             if ($result->practice_logo !== '') {
                 if (file_exists(public_path() . '/' . $result->practice_logo)) {
-                    $return .= HTML::image($result->practice_logo, 'Practice Logo', array('border' => '0'));
+                    $return .= HTML::image($result->practice_logo, trans('noshform.practice_logo'), array('border' => '0'));
                 } else {
-                    $return .= 'None';
+                    $return .= trans('noshform.none');
                 }
             } else {
-                $return .= 'None';
+                $return .= trans('noshform.none');
             }
             $return .= '</div></div></div>';
         } else {
             $return .= ' None.';
         }
         $data['content'] = $return;
-        $data['panel_header'] = 'Practice Setup';
+        $data['panel_header'] = trans('noshform.practice_setup');
         Session::put('last_page', $request->fullUrl());
         $data['assets_js'] = $this->assets_js();
         $data['assets_css'] = $this->assets_css();
@@ -7656,9 +7657,9 @@ class CoreController extends Controller
         $data['message_action'] = Session::get('message_action');
         Session::forget('message_action');
         $type_arr = [
-            'inventory' => ['Supplement Inventory', 'fa-folder'],
-            'old_inventory' => ['Past Supplement Inventory', 'fa-folder-o'],
-            'sales_tax' => ['Configure Sales Tax', 'fa-money']
+            'inventory' => [trans('noshform.supplement_inventory'), 'fa-folder'],
+            'old_inventory' => [trans('noshform.supplement_inventory_past'), 'fa-folder-o'],
+            'sales_tax' => [trans('noshform.configure_sales_tax'), 'fa-money']
         ];
         $dropdown_array = [
             'items_button_text' => $type_arr[$type][0]
@@ -7696,7 +7697,7 @@ class CoreController extends Controller
                 }
                 $return .= $this->result_build($list_array, 'supplement_inventory_list');
             } else {
-                $return .= 'No supplements.';
+                $return .= trans('noshform.no_supplements') . '.';
             }
             $dropdown_array1 = [
                 'items_button_icon' => 'fa-plus'
@@ -7722,7 +7723,7 @@ class CoreController extends Controller
             if ($query->count()) {
                 $list_array = [];
                 foreach ($query as $row) {
-                    $arr['label'] = '<b>' . $row->sup_description . ', ' . $row->sup_strength . '</b><br><br><b>Quantity:</b> ' . $row->quantity1 . '<br><b>Date Purchased:</b> ' . date('Y-m-d', $this->human_to_unix($row->date_purchase));
+                    $arr['label'] = '<b>' . $row->sup_description . ', ' . $row->sup_strength . '</b><br><br><b>' . trans('noshform.quantity1') . ':</b> ' . $row->quantity1 . '<br><b>' . trans('noshform.date_purchase') . ':</b> ' . date('Y-m-d', $this->human_to_unix($row->date_purchase));
                     $arr['edit'] = route('core_form', ['supplement_inventory', $row_index, $row->$row_index]);
                     $arr['reactivate'] = route('core_action', ['table' => 'supplement_inventory', 'action' => 'reactivate', 'index' => $row_index, 'id' => $row->$row_index]);
                     $arr['delete'] = route('core_action', ['table' => 'supplement_inventory', 'action' => 'delete', 'index' => $row_index, 'id' => $row->$row_index]);
@@ -7730,7 +7731,7 @@ class CoreController extends Controller
                 }
                 $return .= $this->result_build($list_array, 'old_supplement_inventory_list');
             } else {
-                $return .= 'No supplements.';
+                $return .= trans('noshform.no_supplements') . '.';
             }
         }
         if ($type == 'sales_tax') {
@@ -7738,7 +7739,7 @@ class CoreController extends Controller
             $items = [];
             $items[] = [
                 'name' => 'sales_tax',
-                'label' => 'Sales Tax %',
+                'label' => trans('noshform.sales_tax'),
                 'type' => 'text',
                 'default_value' => $practice->sales_tax
             ];
@@ -7746,12 +7747,12 @@ class CoreController extends Controller
                 'form_id' => 'sales_tax_form',
                 'action' => route('supplements_sales_tax'),
                 'items' => $items,
-                'save_button_label' => 'Save'
+                'save_button_label' => trans('noshform.save')
             ];
             $return .= $this->form_build($form_array);
         }
         $data['content'] = $return;
-        $data['panel_header'] = 'Supplements';
+        $data['panel_header'] = trans('noshform.supplements');
         Session::put('last_page', $request->fullUrl());
         $data['assets_js'] = $this->assets_js();
         $data['assets_css'] = $this->assets_css();
@@ -7765,7 +7766,7 @@ class CoreController extends Controller
         ]);
         $data['sales_tax'] = $request->input('sales_tax');
         DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->update($data);
-        Session::put('message_action', 'Sales Tax saved');
+        Session::put('message_action', trans('noshform.sales_tax_saved'));
         return redirect(Session::get('last_page'));
     }
 

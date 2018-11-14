@@ -147,11 +147,11 @@ class ChartController extends Controller {
         Session::forget('message_action');
         $query = DB::table('alerts')->where('pid', '=', Session::get('pid'))->where('practice_id', '=', Session::get('practice_id'));
         $type_arr = [
-            'active' => ['Active', 'fa-bell'],
-            'pending' => ['Pending', 'fa-clock-o'],
-            'results' => ['Pending Results', 'fa-flask'],
-            'completed' => ['Completed', 'fa-check'],
-            'canceled' => ['Canceled', 'fa-times']
+            'active' => [trans('noshform.alert_active'), 'fa-bell'],
+            'pending' => [trans('noshform.alert_pending'), 'fa-clock-o'],
+            'results' => [trans('noshform.alert_pending_results'), 'fa-flask'],
+            'completed' => [trans('noshform.alert_completed'), 'fa-check'],
+            'canceled' => [trans('noshform.alert_canceled'), 'fa-times']
         ];
         $dropdown_array = [
             'items_button_text' => $type_arr[$type][0]
@@ -190,7 +190,8 @@ class ChartController extends Controller {
                 ->where(function($query_array1) {
                     $query_array1->where('alert', '=', 'Laboratory results pending')
                     ->orWhere('alert', '=', 'Radiology results pending')
-                    ->orWhere('alert', '=', 'Cardiopulmonary results pending');
+                    ->orWhere('alert', '=', 'Cardiopulmonary results pending')
+                    ->orWhere('results', '=', 1);
                 });
         }
         $dropdown_array['items'] = $items;
@@ -226,7 +227,7 @@ class ChartController extends Controller {
         }
         $data['content'] = $return;
         $data['alerts_active'] = true;
-        $data['panel_header'] = 'Alerts';
+        $data['panel_header'] = trans('noshform.alerts');
         $data = array_merge($data, $this->sidebar_build('chart'));
         //$data['template_content'] = 'test';
         if ($edit == true) {
@@ -260,22 +261,22 @@ class ChartController extends Controller {
         if ($type == 'active') {
             $query->where('allergies_date_inactive', '=', '0000-00-00 00:00:00');
             $dropdown_array = [
-                'items_button_text' => 'Active'
+                'items_button_text' => trans('noshform.allergies_active')
             ];
             $items[] = [
                 'type' => 'item',
-                'label' => 'Inactive',
+                'label' => trans('noshform.allergies_inactive'),
                 'icon' => 'fa-times',
                 'url' => route('allergies_list', ['inactive'])
             ];
         } else {
             $query->where('allergies_date_inactive', '!=', '0000-00-00 00:00:00');
             $dropdown_array = [
-                'items_button_text' => 'Inactive'
+                'items_button_text' => trans('noshform.allergies_inactive')
             ];
             $items[] = [
                 'type' => 'item',
-                'label' => 'Active',
+                'label' => trans('noshform.allergies_active'),
                 'icon' => 'fa-check',
                 'url' => route('allergies_list', ['active'])
             ];
@@ -314,7 +315,7 @@ class ChartController extends Controller {
         }
         $data['content'] = $return;
         $data['allergies_active'] = true;
-        $data['panel_header'] = 'Allergies';
+        $data['panel_header'] = trans('noshform.allergies');
         $data = array_merge($data, $this->sidebar_build('chart'));
         //$data['template_content'] = 'test';
         if ($edit == true) {
@@ -338,7 +339,7 @@ class ChartController extends Controller {
                 if (! empty($list_array)) {
                     $allergies_encounter .= implode("\n", array_column($list_array, 'label'));
                 }
-                $allergies_encounter .= "\n" . 'Reviewed by ' . Session::get('displayname') . ' on ' . date('Y-m-d');
+                $allergies_encounter .= "\n" . trans('noshform.reviewed_by') . ' ' . Session::get('displayname') . ' ' . trans('noshform.on') . ' ' . date('Y-m-d');
                 $encounter_query = DB::table('other_history')->where('eid', '=', Session::get('eid'))->first();
                 $encounter_data['oh_allergies'] = $allergies_encounter;
                 if ($encounter_query) {
@@ -351,7 +352,7 @@ class ChartController extends Controller {
                 if ($data['message_action'] !== '') {
                     $data['message_action'] .= '<br>';
                 }
-                $data['message_action'] .= 'Alleriges marked as reviewed for encounter.';
+                $data['message_action'] .= trans('noshform.allergies_message_action_encounter');
             }
         }
         Session::put('last_page', $request->fullUrl());
@@ -374,7 +375,7 @@ class ChartController extends Controller {
         $this->audit('Delete');
         DB::table('billing_core')->where('other_billing_id', '=', $id)->delete();
         $this->audit('Delete');
-        Session::get('message_action', 'Miscellaneous bill deleted');
+        Session::get('message_action', trans('noshform.billing_message_action_delete'));
         return redirect(Session::get('last_page'));
     }
 
@@ -399,14 +400,14 @@ class ChartController extends Controller {
             if ($id !== 'new') {
                 DB::table('billing_core')->where('billing_core_id', '=', $id)->update($data);
                 $this->audit('Update');
-                $message = 'Miscellaneous bill updated';
+                $message = trans('billing_message_action_update');
             } else {
                 $id1 = DB::table('billing_core')->insertGetId($data);
                 $this->audit('Add');
                 $data1['other_billing_id'] = $id1;
                 DB::table('billing_core')->where('billing_core_id', '=', $id1)->update($data1);
                 $this->audit('Update');
-                $message = 'Miscellaneous bill added';
+                $message = trans('noshform.billing_message_action_added');
             }
             Session::put('message_action', $message);
             return redirect(Session::get('last_page'));
@@ -422,7 +423,7 @@ class ChartController extends Controller {
                     'dos_f' => date('Y-m-d'),
                     'cpt_charge' => null
                 ];
-                $data['panel_header'] = 'Add Miscellaneous Bill';
+                $data['panel_header'] = trans('noshform.billing_add_misc');
             } else {
                 $query = DB::table('billing_core')->where('billing_core_id', '=', $id)->first();
                 $result = [
@@ -435,7 +436,7 @@ class ChartController extends Controller {
                     'dos_f' => date('Y-m-d', $this->human_to_unix($query->dos_f)),
                     'cpt_charge' => $query->cpt_charge
                 ];
-                $data['panel_header'] = 'Update Miscellaneous Bill';
+                $data['panel_header'] = trans('noshform.billing_update_misc');
             }
             $items[] = [
                 'name' => 'eid',
@@ -467,21 +468,21 @@ class ChartController extends Controller {
             ];
             $items[] = [
                 'name' => 'dos_f',
-                'label' => 'Date of Charge',
+                'label' => trans('noshform.date_of_charge'),
                 'type' => 'date',
                 'required' => true,
                 'default_value' => $result['dos_f']
             ];
             $items[] = [
                 'name' => 'cpt_charge',
-                'label' => 'Charge Amount',
+                'label' => trans('noshform.charge_amount'),
                 'type' => 'text',
                 'required' => true,
                 'default_value' => $result['cpt_charge']
             ];
             $items[] = [
                 'name' => 'reason',
-                'label' => 'Reason',
+                'label' => trans('noshform.misc_reason'),
                 'type' => 'text',
                 'required' => true,
                 'typeahead' => route('typeahead', ['table' => 'billing_core', 'column' => 'reason']),
@@ -491,7 +492,7 @@ class ChartController extends Controller {
                 'form_id' => 'payment_form',
                 'action' => route('billing_details', [$id]),
                 'items' => $items,
-                'save_button_label' => 'Save'
+                'save_button_label' => trans('noshform.save')
             ];
             $data['content'] = $this->form_build($form_array);
             $data['billing_active'] = true;
@@ -725,12 +726,12 @@ class ChartController extends Controller {
         $age1 = $age_date->diffinYears();
         $return = '';
         $type_arr = [
-            'prevention' => ['Prevention', 'fa-calendar'],
-            'immunizations' => ['Immunizations', 'fa-magic'],
-            'hedis' => ['HEDIS Audit', 'fa-clock-o']
+            'prevention' => [trans('noshform.prevention'), 'fa-calendar'],
+            'immunizations' => [trans('noshform.immunizations'), 'fa-magic'],
+            'hedis' => [trans('noshform.hedis'), 'fa-clock-o']
         ];
         if ($age1 >= 40 && $age1 <= 79) {
-            $type_arr['ascvd'] = ['ASCVD Risk', 'fa-heartbeat'];
+            $type_arr['ascvd'] = [trans('noshform.ascvd'), 'fa-heartbeat'];
         }
         $dropdown_array = [
             'items_button_text' => $type_arr[$type][0]
@@ -767,11 +768,11 @@ class ChartController extends Controller {
             curl_close($cr);
             $epss = json_decode($data1, true);
             if (isset($epss['specificRecommendations'])) {
-                $return .= '<h4>US Preventative Services Task Force Recommendations</h4>';
-                $grade_ab = '<div class="alert alert-success"><h5>Grades A & B</h5><p>Offer or provide this service:</p><ul>';
-                $grade_c = '<div class="alert alert-warning"><h5>Grade C</h5><p>Offer or provide this service for selected patients depending on individual circumstances:</p><ul>';
-                $grade_d = '<div class="alert alert-danger"><h5>Grade D</h5><p>Discourage the use of this service:</p><ul>';
-                $grade_i = '<div class="alert alert-info"><h5>Grade I</h5><p>Read the clinical considerations section of USPSTF Recommendation Statement. If the service is offered, patients should understand the uncertainty about the balance of benefits and harms:</p><ul>';
+                $return .= '<h4>' . trans('noshform.uspstf') . '</h4>';
+                $grade_ab = '<div class="alert alert-success"><h5>' . trans('noshform.uspstf_ab') . '</h5><p>' . trans('noshform.uspstf_ab_desc') . '</p><ul>';
+                $grade_c = '<div class="alert alert-warning"><h5>' . trans('noshform.uspstf_c') . '</h5><p>' . trans('noshform.uspstf_c_desc') . '</p><ul>';
+                $grade_d = '<div class="alert alert-danger"><h5>' . trans('noshform.uspstf_d') . '</h5><p>' . trans('noshform.uspstf_d_desc') . '</p><ul>';
+                $grade_i = '<div class="alert alert-info"><h5>' . trans('noshform.uspstf_i') . '</h5><p>' . trans('noshform.uspstf_i_desc') . '</p><ul>';
                  foreach ($epss['specificRecommendations'] as $rec) {
                     $rec_text = '<li>' . $rec['title'] . rtrim($rec['text']) . ', Grade: ' . $rec['grade'] .'</li>';
                     if ($rec['grade'] == 'A' || $rec['grade'] == 'B') {
@@ -793,7 +794,7 @@ class ChartController extends Controller {
                 $grade_i .= '</ul></div>';
                 $return .= $grade_ab . $grade_c . $grade_d . $grade_i;
             } else {
-                $return .= '<h4>US Preventative Services Task Force Recommendations Not Available At This Time</h4>';
+                $return .= '<h4>' . trans('noshform.uspstf_none') . '</h4>';
             }
         }
         if ($type == 'immunizations') {
@@ -820,26 +821,26 @@ class ChartController extends Controller {
         }
         if ($type == 'ascvd') {
             $ascvd_rec = [
-                'startAspirin' => 'Start or continue aspirin now',
-                'startAspirin_StartBPlowering' => 'Start/continue aspirin + start/add BP-lowering drug now',
-                'startAspirin_StartBPlowering_StopSmoking' => 'Start/continue aspirin + start/add BP-lowering drug + stop smoking for 2 years',
-                'startAspirin_StartStatin' => 'Start/continue aspirin + start/intensify statin now',
-                'startAspirin_StartStatin_StopSmoking' => 'Start/continue aspirin + start/intensify statin + stop smoking for 2 years',
-                'startAspirin_StopSmoking' => 'Start/continue aspirin + stop smoking for 2 years',
-                'startBPlowering' => 'Start (or add) BP-lowering drug now',
-                'startBPlowering_StopSmoking' => 'Start/add BP-lowering drug + stop smoking for 2 years',
-                'startStatin' => 'Start statin (moderate intensity) or intensify statin from moderate to high intensity dose now',
-                'startStatin_StartAspirin_StartBPlowering' => 'Start/continue aspirin + start/intensify statin + start/add BP-lowering drug now',
-                'startStatin_StartBPlowering' => 'Start/continue statin + start/add BP-lowering drug now',
-                'startStatin_StartBPlowering_StopSmoking' => 'Start/intensify statin + start/add BP-lowering drug + stop smoking for 2 years',
-                'startStatin_StopSmoking' => 'Start/intensify statin + stop smoking for 2 years',
-                'stopSmoking' => 'Stop smoking for 2 years',
-                'startAll' => 'Start or continue aspirin now + start/intensify statin + start/add BP-lowering drug + stop smoking for 2 years'
+                'startAspirin' => trans('noshform.startAspirin'),
+                'startAspirin_StartBPlowering' => trans('noshform.startAspirin_StartBPlowering'),
+                'startAspirin_StartBPlowering_StopSmoking' => trans('noshform.startAspirin_StartBPlowering_StopSmoking'),
+                'startAspirin_StartStatin' => trans('noshform.startAspirin_StartStatin'),
+                'startAspirin_StartStatin_StopSmoking' => trans('noshform.startAspirin_StartStatin_StopSmoking'),
+                'startAspirin_StopSmoking' => trans('noshform.startAspirin_StopSmoking'),
+                'startBPlowering' => trans('noshform.startBPlowering'),
+                'startBPlowering_StopSmoking' => trans('noshform.startBPlowering_StopSmoking'),
+                'startStatin' => trans('noshform.startStatin'),
+                'startStatin_StartAspirin_StartBPlowering' => trans('noshform.startStatin_StartAspirin_StartBPlowering'),
+                'startStatin_StartBPlowering' => trans('noshform.startStatin_StartBPlowering'),
+                'startStatin_StartBPlowering_StopSmoking' => trans('noshform.startStatin_StartBPlowering_StopSmoking'),
+                'startStatin_StopSmoking' => trans('noshform.startStatin_StopSmoking'),
+                'stopSmoking' => trans('noshform.stopSmoking'),
+                'startAll' => trans('noshform.startAll')
             ];
-            $return .= '<h4>ASCVD Risk Calculation</h4>';
+            $return .= '<h4>' . trans('noshform.ascvd_calc') . '</h4>';
             $ascvd_arr = $this->ascvd_calc();
             if ($ascvd_arr['status'] !== 'missing') {
-                $return .= '<div class="alert alert-info"><strong>Baseline 10 year ASCVD Risk: </strong>' . $ascvd_arr['baselineRisk'] .'%</div>';
+                $return .= '<div class="alert alert-info"><strong>' . trans('noshform.ascvd_baseline') . ': </strong>' . $ascvd_arr['baselineRisk'] .'%</div>';
                 $ascvd_arr1 = [];
                 foreach ($ascvd_arr['therapyChoice'] as $ascvd_item_k => $ascvd_item_v) {
                     if ($ascvd_item_v !== 'NA') {
@@ -856,7 +857,7 @@ class ChartController extends Controller {
                 $return .= $ascvd_arr['message'];
             }
         }
-        $data['panel_header'] = 'Care Opportunites';
+        $data['panel_header'] = trans('noshform.care_opportunities');
         $data['content'] = $return;
         $data = array_merge($data, $this->sidebar_build('chart'));
         $data['care_active'] = true;
@@ -958,11 +959,11 @@ class ChartController extends Controller {
         $base_url = 'https://sandbox.bluebutton.cms.gov';
         // $base_url = 'https://api.bluebutton.cms.gov';
         $title_array = [
-            'Summary' => ['Patient Summary', 'fa-address-card', '/v1/connect/userinfo'],
-            'EOB' => ['Explanation of Benefits', 'fa-money', '/v1/fhir/ExplanationOfBenefit/?patient=' . Session::get('cms_pid')],
-            'Coverage' => ['Coverage Information', 'fa-address-book', '/v1/fhir/Coverage/?patient=' . Session::get('cms_pid')]
+            'Summary' => [trans('noshform.patient_summary'), 'fa-address-card', '/v1/connect/userinfo'],
+            'EOB' => [trans('noshform.explanation_of_benefit'), 'fa-money', '/v1/fhir/ExplanationOfBenefit/?patient=' . Session::get('cms_pid')],
+            'Coverage' => [trans('noshform.coverage'), 'fa-address-book', '/v1/fhir/Coverage/?patient=' . Session::get('cms_pid')]
         ];
-        $data['panel_header'] = 'CMS Bluebutton Data - ' . $title_array[$type][0];
+        $data['panel_header'] = trans('noshform.cms_bluebutton_display') . ' - ' . $title_array[$type][0];
         $url = $base_url . $title_array[$type][2];
         $result = $this->fhir_request($url,false,$token,true);
         $data['message_action'] = Session::get('message_action');
@@ -989,24 +990,18 @@ class ChartController extends Controller {
             foreach ($title_array as $title_k=>$title_v) {
                 if ($title_k !== 'Summary') {
                     $data['content'] .= '<a href="' . route('cms_bluebutton_display', [$title_k]) . '" class="list-group-item"><i class="fa ' . $title_v[1] . ' fa-fw"></i><span style="margin:10px;">' . $title_v[0] . '</span></a>';
+                    $items[] = [
+                        'type' => 'item',
+                        'label' => $title_v[0],
+                        'icon' => $title_v[1],
+                        'url' => route('cms_bluebutton_display', [$title_k])
+                    ];
                 }
             }
             $data['content'] .= '</div>';
-            $data['panel_header'] = 'Billing';
+            $data['panel_header'] = trans('noshform.patient_summary');
             $dropdown_array = [
                 'items_button_text' => 'CMS Bluebutton Data'
-            ];
-            $items[] = [
-                'type' => 'item',
-                'label' => 'Encounters',
-                'icon' => 'fa-stethoscope',
-                'url' => route('billing_list', ['encounters', Session::get('pid')])
-            ];
-            $items[] = [
-                'type' => 'item',
-                'label' => 'Miscellaneous Bills',
-                'icon' => 'fa-shopping-basket',
-                'url' => route('billing_list', ['misc', Session::get('pid')])
             ];
             $dropdown_array['items'] = $items;
             $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
@@ -1015,7 +1010,7 @@ class ChartController extends Controller {
             $items = [];
             $items[] = [
                 'type' => 'item',
-                'label' => 'Back',
+                'label' => trans('noshform.back'),
                 'icon' => 'fa-chevron-left',
                 'url' => route('cms_bluebutton_display', ['Summary'])
             ];
@@ -1050,7 +1045,7 @@ class ChartController extends Controller {
                                     if ($row2['resource']['status'] == 'active') {
                                         if (isset($row2['resource']['billablePeriod']['start'])) {
                                             $arr = [];
-                                            $arr['label'] = (string) $row2['resource']['billablePeriod']['start'] . ' - Payment Amount: ' . $row2['resource']['payment']['amount']['value'] . ' ' . $row2['resource']['payment']['amount']['code'];
+                                            $arr['label'] = (string) $row2['resource']['billablePeriod']['start'] . ' - ' . trans('noshform.payment_amount') . ': ' . $row2['resource']['payment']['amount']['value'] . ' ' . $row2['resource']['payment']['amount']['code'];
                                             $dx_session = [];
                                             foreach ($row2['resource']['diagnosis'] as $dx_row) {
                                                 $dx_session[$dx_row['sequence']] = $dx_row['diagnosisCodeableConcept']['coding'][0]['code'];
@@ -1109,13 +1104,13 @@ class ChartController extends Controller {
 
     public function cms_bluebutton_eob(Request $request, $sequence)
     {
-        $data['panel_header'] = 'CMS Bluebutton EOB Details';
+        $data['panel_header'] = trans('noshform.cms_bluebutton_eob');
         $sub = Session::get('sub_session');
         $dropdown_array = [];
         $items = [];
         $items[] = [
             'type' => 'item',
-            'label' => 'Back',
+            'label' => trans('noshform.back'),
             'icon' => 'fa-chevron-left',
             'url' => route('cms_bluebutton_display', ['EOB'])
         ];
@@ -1123,10 +1118,10 @@ class ChartController extends Controller {
         $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
         $data['content'] = '';
         foreach ($sub[$sequence] as $sub_row) {
-            $data['content'] .= '<strong>Date: </strong>' . $sub_row['date'] . '<br>';
-            $data['content'] .= '<strong>Quantitiy: </strong>' . $sub_row['quantity'] . '<br>';
-            $data['content'] .= '<strong>Diagnosis Code: </strong>' . $sub_row['diagnosis'] . '<br>';
-            $data['content'] .= '<strong>Adjudications: </strong><ul>';
+            $data['content'] .= '<strong>' . trans('noshform.cms_bluebutton_eob_date') . ': </strong>' . $sub_row['date'] . '<br>';
+            $data['content'] .= '<strong>' . trans('noshform.cms_bluebutton_eob_quantity') . ': </strong>' . $sub_row['quantity'] . '<br>';
+            $data['content'] .= '<strong>' . trans('noshform.cms_bluebutton_eob_diagnosis') . ': </strong>' . $sub_row['diagnosis'] . '<br>';
+            $data['content'] .= '<strong>' . trans('noshform.cms_bluebutton_eob_adjudications') . ': </strong><ul>';
             foreach ($sub_row['adjudications'] as $row) {
                 $data['content'] .= '<li>' . $row . '</li>';
             }
@@ -1196,21 +1191,21 @@ class ChartController extends Controller {
             'rx_list'
         ];
         $table_message_arr = [
-            'issues' => 'Issue ',
-            'allergies' => 'Allergy ',
-            'rx_list' => 'Medication ',
-            'sup_list' => 'Supplement ',
-            'immunizations' => 'Immunization ',
-            'alerts' => 'Alert ',
-            'documents' => 'Document ',
+            'issues' => trans('noshform.issue') . ' ',
+            'allergies' => trans('noshform.allergy') . ' ',
+            'rx_list' => trans('noshform.medication') . ' ',
+            'sup_list' => trans('noshform.supplement') . ' ',
+            'immunizations' => trans('noshform.immunization') . ' ',
+            'alerts' => trans('noshform.alert') . ' ',
+            'documents' => trans('noshform.document') . ' ',
             'tests' => 'Result ',
-            'orders' => 'Order ',
+            'orders' => trans('noshform.order') . ' ',
             'vitals' => 'Vital Signs ',
             't_messages' => 'Message ',
-            'hippa' => 'Records Release ',
-            'hippa_request' => 'Records Request ',
-            'billing_core' => 'Billing ',
-            'demographics' => 'Demographics '
+            'hippa' => trans('noshform.hippa') . ' ',
+            'hippa_request' => trans('noshform.hippa_request') . ' ',
+            'billing_core' => trans('noshform.billing') . ' ',
+            'demographics' => trans('noshform.demographics') .' '
         ];
         $multiple_select_arr = [
             'icd_pointer'
@@ -1459,7 +1454,7 @@ class ChartController extends Controller {
                         }
                     }
                 }
-                $arr['message'] = $message . 'added!';
+                $arr['message'] = $message . trans('noshform.added') . '!';
                 if ($next_action !== '') {
                     if (filter_var($next_action, FILTER_VALIDATE_URL) == false) {
                         $type = '';
@@ -1498,7 +1493,7 @@ class ChartController extends Controller {
                 //     }
                 // }
                 $row_id1 = $id;
-                $arr['message'] = $message . 'updated!';
+                $arr['message'] = $message . trans('noshform.updated') . '!';
                 if ($sync_message !== '') {
                     $arr['message'] .= '<br>' . $sync_message;
                 }
@@ -1600,23 +1595,23 @@ class ChartController extends Controller {
                         ];
                         DB::table('messaging')->insert($internal_message_data);
                         $this->audit('Add');
-                        $arr['message'] .= '<br>Internal message sent';
+                        $arr['message'] .= '<br>' . trans('noshform.internal_message_sent');
                     }
                 }
             }
             // Orders - post save handling
             if ($table == 'orders') {
                 $orders_type_arr = [
-                    'orders_labs' => ['Laboratory Orders', 'Laboratory results pending '],
-                    'orders_radiology' => ['Imaging Orders', 'Radiology results pending'],
-                    'orders_cp' => ['Cardiopulmonary Orders', 'Cardiopulmonary results pending'],
-                    'orders_referrals' => ['Referrals', 'Referral pending']
+                    'orders_labs' => [trans('noshform.laboratory_orders'), trans('noshform.laboratory_results_pending')],
+                    'orders_radiology' => [trans('noshform.imaging_orders'), trans('noshform.radiology_results_pending')],
+                    'orders_cp' => [trans('noshform.cardiopulmonary_orders'), trans('cardiopulmonary_results_pending')],
+                    'orders_referrals' => [trans('noshform.referrals'), trans('noshform.referral_pending')]
                 ];
                 foreach ($orders_type_arr as $type_k => $type_v) {
                     if (isset($data[$type_k])) {
                         $alert_subject = $type_v[1];
                         if (strtotime($data['orders_pending_date']) > time() && $type_k !== 'orders_referrals') {
-                            $alert_subject .= " - NEED TO OBTAIN";
+                            $alert_subject .= " - " . trans('noshform.need_obtain');
                         }
                         $orders_arr = explode("\n", $data[$type_k]);
                         $orders_new_arr = [];
@@ -1624,7 +1619,7 @@ class ChartController extends Controller {
                             $orders_new_arr[] = preg_replace('/\[[^\]]*\]/', '', $orders_item);
                         }
                         $order_address = DB::table('addressbook')->where('address_id', '=', $data['address_id'])->first();
-                        $description = $type_v[0] . ' sent to ' . $order_address->displayname;
+                        $description = $type_v[0] . trans('noshform.sent_to') . $order_address->displayname;
                         if ($type_k !== 'orders_referrals') {
                             $description .= ': '. implode(', ', $orders_new_arr);
                         }
@@ -1639,8 +1634,12 @@ class ChartController extends Controller {
                                 'orders_id' => $row_id1,
                                 'pid' => Session::get('pid'),
                                 'practice_id' => Session::get('practice_id'),
-                                'alert_send_message' => 'n'
+                                'alert_send_message' => 'n',
+                                'results' => 1
                             ];
+                            if ($type_k == 'orders_referrals') {
+                                $orders_alert_data['results'] = 0;
+                            }
                             DB::table('alerts')->insert($orders_alert_data);
                             $this->audit('Add');
                         } else {
@@ -1653,7 +1652,11 @@ class ChartController extends Controller {
                                     'alert_date_complete' => '',
                                     'alert_reason_not_complete' => '',
                                     'alert_provider' => Session::get('user_id'),
+                                    'results' => 1
                                 ];
+                                if ($type_k == 'orders_referrals') {
+                                    $orders_alert_data['results'] = 0;
+                                }
                                 DB::table('alerts')->where('alert_id', '=', $old_alert->alert_id)->update($orders_alert_data);
                                 $this->audit('Update');
                             }
@@ -1725,7 +1728,7 @@ class ChartController extends Controller {
             if ($update_query1->label !== '') {
                 $this->uma_resource_process($update_query1->label, $id, $table, true);
             }
-            $arr['message'] = $message . 'inactivated!';
+            $arr['message'] = $message . trans('noshform.inactivated') . '!';
         }
         if ($action == 'reactivate') {
             if ($table == 'issues') {
@@ -1773,7 +1776,7 @@ class ChartController extends Controller {
             if ($update_query2->label !== '') {
                 $this->uma_resource_process($update_query2->label, $id, $table);
             }
-            $arr['message'] = $message . 'reactivated!';
+            $arr['message'] = $message . trans('noshform.reactivated') . '!';
         }
         if ($action == 'move_mh') {
             if ($table == 'issues') {
@@ -1781,7 +1784,7 @@ class ChartController extends Controller {
             }
             DB::table($table)->where($index, '=', $id)->update($data_mh);
             $this->audit('Update');
-            $arr['message'] = $message . 'moved to Medical History';
+            $arr['message'] = $message . trans('noshform.moved_to') . ' ' . trans('noshform.mh');
         }
         if ($action == 'move_pl') {
             if ($table == 'issues') {
@@ -1789,7 +1792,7 @@ class ChartController extends Controller {
             }
             DB::table($table)->where($index, '=', $id)->update($data_pl);
             $this->audit('Update');
-            $arr['message'] = $message . 'moved to Problem List';
+            $arr['message'] = $message . trans('noshform.moved_to') . ' ' . trans('noshform.pl');
         }
         if ($action == 'move_sh') {
             if ($table == 'issues') {
@@ -1797,7 +1800,7 @@ class ChartController extends Controller {
             }
             DB::table($table)->where($index, '=', $id)->update($data_sh);
             $this->audit('Update');
-            $arr['message'] = $message . 'moved to Surgical History';
+            $arr['message'] = $message . trans('noshform.moved_to') . ' ' . trans('noshform.sh');
         }
         if ($action == 'delete') {
             if($practice->rcopia_extension == 'y') {
@@ -1848,7 +1851,7 @@ class ChartController extends Controller {
             //         $this->api_data('delete', $table, $index, $id);
             //     }
             // }
-            $arr['message'] = $message . 'deleted!';
+            $arr['message'] = $message . trans('noshform.deleted') . '!';
         }
         if ($action == 'prescribe') {
             $provider = DB::table('providers')->where('id', '=', Session::get('user_id'))->first();
@@ -1860,7 +1863,7 @@ class ChartController extends Controller {
                 $data['rxl_dea'] = $provider->dea;
             }
             if($request->input('daw') == 'Yes') {
-                $data['rxl_daw'] = 'Dispense As Written';
+                $data['rxl_daw'] = trans('noshform.daw');
             }
             unset($data['dea']);
             unset($data['daw']);
@@ -1908,7 +1911,7 @@ class ChartController extends Controller {
                         $this->uma_resource_process($data['label'], $row_id1, $table);
                     }
                 }
-                $arr['message'] = $message . 'prescribed!';
+                $arr['message'] = $message . trans('noshform.prescribed') . '!';
             } else {
                 $data5['rxl_date_old'] = date('Y-m-d H:i:s', time());
                 DB::table($table)->where($index, '=', $id)->update($data5);
@@ -1941,7 +1944,7 @@ class ChartController extends Controller {
                 //         $this->api_data('update', $table, $index, $id);
                 //     }
                 // }
-                $arr['message'] = $message . 'refilled!';
+                $arr['message'] = $message . trans('noshform.refilled'). '!';
             }
             if ($next_action !== 'electronic_sign') {
                 $this->prescription_notification($row_id1, $to);
@@ -2000,7 +2003,7 @@ class ChartController extends Controller {
             }
             DB::table($table)->where($index, '=', $id)->update($data6);
             $this->audit('Update');
-            $arr['message'] = $message . 'marked as completed!';
+            $arr['message'] = $message . trans('noshform.marked_completed') . '!';
         }
         if ($action == 'eie') {
             $row = DB::table('rx_list')->where('rxl_id', '=', $id)->first();
@@ -2050,7 +2053,7 @@ class ChartController extends Controller {
 
             // $this->api_data('delete', 'rx_list', 'rxl_id', $old_rxl_id);
             // UMA placeholder
-            $arr['message'] = "Entered medication in error process complete!";
+            $arr['message'] = trans('noshform.eie') . "!";
         }
         $arr['response'] = 'OK';
         Session::put('message_action', $arr['message']);
@@ -2097,49 +2100,49 @@ class ChartController extends Controller {
         if ($table == 'issues') {
             $data['search_icd'] = 'issue';
             $issue_type_arr = [
-                'pl' => 'Problem',
-                'mh' => 'Medical History',
-                'sh' => 'Surgical History'
+                'pl' => trans('noshform.problem'),
+                'mh' => trans('noshform.medical_history'),
+                'sh' => trans('noshform.surgical_history')
             ];
             if ($id == '0') {
-                $data['panel_header'] = 'Add ' . $issue_type_arr[$subtype];
+                $data['panel_header'] = trans('noshform.add') . ' ' . $issue_type_arr[$subtype];
             } else {
-                $data['panel_header'] = 'Edit ' . $issue_type_arr[$subtype];
+                $data['panel_header'] = trans('noshform.edit') . ' ' . $issue_type_arr[$subtype];
             }
         }
         // Allergies
         if ($table == 'allergies') {
             if ($id == '0') {
-                $data['panel_header'] = 'Add Allergy';
+                $data['panel_header'] = trans('noshform.add') . ' ' . trans('noshform.allergy');
             } else {
-                $data['panel_header'] = 'Edit Allergy';
+                $data['panel_header'] = trans('noshform.edit') . ' ' . trans('noshform.allergy');
             }
         }
         // Medications, Prescriptions
         if ($table == 'rx_list') {
             $data['search_rx'] = 'rxl_medication';
             $rx_array = [
-                'prescribe' => 'New Prescription',
-                'refill' => 'Refill Prescription'
+                'prescribe' => trans('noshform.new') . ' ' . trans('noshform.prescription'),
+                'refill' => trans('noshform.refill') . ' ' . trans('noshform.prescription')
             ];
             if ($id == '0') {
-                $data['panel_header'] = 'Add Medication';
+                $data['panel_header'] = trans('noshform.add') . ' ' . trans('noshform.medication');
                 if ($subtype !== '') {
                     // If new prescription and no active encounter - create one and come back
                     if (!Session::has('eid')) {
                         Session::put('encounter_redirect', $request->fullUrl());
-                        Session::put('message_action', 'Creating an encounter first to add a prescription.');
+                        Session::put('message_action', trans('noshform.encounter_prescription'));
                         return redirect()->route('encounter_details', ['0']);
                     }
                     $data['panel_header'] = $rx_array[$subtype];
                 }
             } else {
-                $data['panel_header'] = 'Edit Medication';
+                $data['panel_header'] = trans('noshform.edit') . ' ' . trans('noshform.medication');
                 if ($subtype !== '') {
                     $data['panel_header'] = $rx_array[$subtype];
                 } else {
                     $dropdown_array = [
-                        'default_button_text' => 'Refill Medication',
+                        'default_button_text' => trans('noshform.refill') . ' ' . trans('noshform.medication'),
                         'default_button_text_url' => route('chart_form', ['rx_list', $index, $id, 'refill'])
                     ];
                     $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
@@ -2154,9 +2157,9 @@ class ChartController extends Controller {
                 $data['search_supplement_option'] = 'Y';
             }
             if ($id == '0') {
-                $data['panel_header'] = 'Add Supplement';
+                $data['panel_header'] = trans('noshform.add') . ' ' . trans('noshform.supplement');
             } else {
-                $data['panel_header'] = 'Edit Supplement';
+                $data['panel_header'] = trans('noshform.edit') . ' ' . trans('noshform.supplement');
             }
         }
         // Immunizations
@@ -2166,32 +2169,32 @@ class ChartController extends Controller {
                 $data['search_immunization_inventory'] = 'imm_immunization';
             }
             if ($id == '0') {
-                $data['panel_header'] = 'Add Immunization';
+                $data['panel_header'] = trans('noshform.add') . ' ' . trans('noshform.immunization');
             } else {
-                $data['panel_header'] = 'Edit Immunization';
+                $data['panel_header'] = trans('noshform.edit') . ' ' . trans('noshform.immunization');
             }
         }
         // Alerts
         if ($table == 'alerts') {
             if ($id == '0') {
-                $data['panel_header'] = 'Add Alert';
+                $data['panel_header'] = trans('noshform.add') . ' ' . trans('noshform.alert');
             } else {
-                $data['panel_header'] = 'Edit Alert';
+                $data['panel_header'] = trans('noshform.edit') . ' ' . trans('noshform.allergy');
             }
             if ($subtype == 'incomplete') {
-                $data['panel_header'] = 'Mark Alert as Incomplete';
+                $data['panel_header'] = trans('noshform.mark_alert_incomplete');
             }
         }
         // Demographics
         if ($table == 'demographics') {
             if ($subtype == 'name') {
                 $data['search_language'] = 'language';
-                $data['panel_header'] = 'Edit Name and Identity';
+                $data['panel_header'] = trans('noshform.edit') . ' ' . trans('noshform.name_identity');
             }
             if ($subtype == 'contacts') {
-                $data['panel_header'] = 'Edit Contacts';
+                $data['panel_header'] = trans('noshform.edit') . ' ' . trans('noshform.contacts');
                 $dropdown_array = [
-                    'default_button_text' => 'Test Reminder',
+                    'default_button_text' => trans('noshform.test_reminder'),
                     'default_button_text_url' => '#',
                     'default_button_id' => 'test_reminder'
                 ];
@@ -2199,9 +2202,9 @@ class ChartController extends Controller {
             }
             if ($subtype == 'guardians') {
                 $data['search_guardian'] = 'guardian_relationship';
-                $data['panel_header'] = 'Edit Guardians';
+                $data['panel_header'] = trans('noshform.edit') . ' ' . trans('noshform.guardians');
                 $dropdown_array = [
-                    'default_button_text' => 'Copy from Patient',
+                    'default_button_text' => trans('noshform.guardian_import'),
                     'default_button_text_url' => '#',
                     'default_button_id' => 'guardian_import'
                 ];
@@ -2209,33 +2212,33 @@ class ChartController extends Controller {
             }
             if ($subtype == 'other') {
                 $dropdown_array = [
-                    'default_button_text' => 'Add New Pharmacy',
+                    'default_button_text' => trans('noshform.add_pharmacy'),
                     'default_button_text_url' => route('core_form', ['addressbook', 'address_id', '0', 'Pharmacy']),
                     'default_button_id' => 'add_pharmacy'
                 ];
                 $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
-                $data['panel_header'] = 'Edit Other';
+                $data['panel_header'] = trans('noshform.edit') . ' ' . trans('noshform.other');
                 Session::put('addressbook_last_page', $request->fullUrl());
             }
             if ($subtype == 'cc') {
-                $data['panel_header'] = 'Credit Card';
+                $data['panel_header'] = trans('noshform.credit_card');
             }
         }
         // Docuuments
         if ($table == 'documents') {
             if ($id == '0') {
-                $data['panel_header'] = 'Add Document';
+                $data['panel_header'] = trans('noshform.add') . ' ' . trans('noshform.document');
             } else {
-                $data['panel_header'] = 'Edit Document';
+                $data['panel_header'] = trans('noshform.edit') . ' ' . trans('noshform.document');
             }
         }
         // Insurance
         if ($table == 'insurance') {
             $data['search_insurance'] = 'address_id';
             if ($id == '0') {
-                $data['panel_header'] = 'Add Insurance';
+                $data['panel_header'] = trans('noshform.add') . ' ' . trans('noshform.insurance');
             } else {
-                $data['panel_header'] = 'Edit Insurance';
+                $data['panel_header'] = trans('noshform.edit') . ' ' . trans('noshform.insurance');
             }
         }
         // Test Results
@@ -2262,31 +2265,31 @@ class ChartController extends Controller {
         // Other history
         if ($table == 'other_history') {
             if ($subtype == 'lifestyle') {
-                $data['panel_header'] = 'Edit Lifestyle';
+                $data['panel_header'] = trans('noshform.edit') . ' ' . trans('noshform.lifestyle');
             }
             if ($subtype == 'habits') {
-                $data['panel_header'] = 'Edit Habits';
+                $data['panel_header'] = trans('noshform.edit') . ' ' . trans('noshform.habits');
             }
             if ($subtype == 'mental_health') {
-                $data['panel_header'] = 'Edit Mental Health';
+                $data['panel_header'] = trans('noshform.edit') . ' ' . trans('noshform.mental_health');
             }
         }
         // Billing core
         if ($table == 'billing_core') {
             $data['search_cpt'] = 'cpt';
             if ($id == '0') {
-                $data['panel_header'] = 'Add Procedure Code';
+                $data['panel_header'] = trans('noshform.add') . ' ' . trans('noshform.cpt');
             } else {
-                $data['panel_header'] = 'Edit Procedure Code';
+                $data['panel_header'] = trans('noshform.edit') . ' ' . trans('noshform.cpt');
             }
         }
         // Orders
         if ($table == 'orders') {
             $type_arr = [
-                'orders_labs' => ['Laboratory', 'Laboratory results pending.', 'orders_labs_icd', 'Lab Test(s)', 'Laboratory'],
-                'orders_radiology' => ['Imaging', 'Imaging results pending.', 'orders_radiology_icd', 'Imaging Test(s)', 'Radiology'],
-                'orders_cp' => ['Cardiopulmonary', 'Cardiopulmonary results pending.', 'orders_cp_icd', 'Cardiopulmonary Test(s)', 'Cardiopulmonary'],
-                'orders_referrals' => ['Referrals', 'Referral pending.', 'orders_referrals_icd', 'Referral Details', 'Referral']
+                'orders_labs' => [trans('noshform.laboratory'), trans('noshform.laboratory_results_pending'), 'orders_labs_icd', trans('noshform.orders_labs'), trans('noshform.laboratory')],
+                'orders_radiology' => [trans('noshform.imaging'), trans('noshform.radiology_results_pending'), 'orders_radiology_icd', trans('noshform.orders_radiology'), trans('noshform.radiology')],
+                'orders_cp' => [trans('noshform.cardiopulmonary'), trans('noshform.cardiopulmonary_results_pending'), 'orders_cp_icd', trans('noshform.orders_cp'), trans('noshform.cardiopulmonary')],
+                'orders_referrals' => [trans('noshform.referral'), trans('noshform.referral_pending'), 'orders_referrals_icd', trans('noshform.orders_referrals'), trans('noshform.referral')]
             ];
             $data['search_icd'] = $type_arr[$subtype][2];
             if ($subtype == 'orders_labs') {
@@ -2300,10 +2303,10 @@ class ChartController extends Controller {
                 // If new order and no active encounter - create one and come back
                 if (!Session::has('eid')) {
                     Session::put('encounter_redirect', $request->fullUrl());
-                    Session::put('message_action', 'Creating an encounter first to add a new order');
+                    Session::put('message_action', trans('noshform.encounter_order'));
                     return redirect()->route('encounter_details', ['0']);
                 }
-                $data['panel_header'] = 'Add ' . $type_arr[$subtype][0] . ' Order';
+                $data['panel_header'] = trans('noshform.add') . ' ' . $type_arr[$subtype][0] . ' ' . trans('noshform.order');
             } else {
                 if (!Session::has('eid')) {
                     // If no active encounter, check if encounter is locked; if so, create addendum
@@ -2316,14 +2319,14 @@ class ChartController extends Controller {
                         Session::put('encounter_provider', $user_query->displayname);
                     } else {
                         Session::put('encounter_redirect', $request->fullUrl());
-                        Session::put('message_action', 'Creating an addendum first to edit this order');
+                        Session::put('message_action', trans('noshform.addendum_order'));
                         return redirect()->route('encounter_addendum', $result->eid);
                     }
                 }
-                $data['panel_header'] = 'Edit ' . $type_arr[$subtype][0] . ' Order';
+                $data['panel_header'] = trans('noshform.edit') . ' ' . $type_arr[$subtype][0] . ' ' . trans('noshform.order');
             }
             $dropdown_array = [
-                'default_button_text' => 'Add New ' . $type_arr[$subtype][4] . ' Provider',
+                'default_button_text' => trans('noshform.add_new') . ' ' . $type_arr[$subtype][4] . ' ' . trans('noshform.provider'),
                 'default_button_text_url' => route('core_form', ['addressbook', 'address_id', '0', $type_arr[$subtype][4]]),
                 'default_button_id' => 'add_external_provider'
             ];
@@ -2364,12 +2367,12 @@ class ChartController extends Controller {
         if ($table == 'hippa') {
             $data['search_address'] = 'address_id';
             if ($id == '0') {
-                $data['panel_header'] = 'Add Records Release';
+                $data['panel_header'] = trans('noshform.add') . ' ' . trans('noshform.hippa');
             } else {
-                $data['panel_header'] = 'Edit Records Release';
+                $data['panel_header'] = trans('noshform.edit') . ' ' . trans('noshform.hippa');
             }
             $dropdown_array = [
-                'default_button_text' => 'Add New Address Book Entry',
+                'default_button_text' => trans('noshform.add_address_book'),
                 'default_button_text_url' => route('core_form', ['addressbook', 'address_id', '0']),
                 'default_button_id' => 'add_external_provider'
             ];
@@ -2380,12 +2383,12 @@ class ChartController extends Controller {
         if ($table == 'hippa_request') {
             $data['search_address'] = 'address_id';
             if ($id == '0') {
-                $data['panel_header'] = 'Add Records Request';
+                $data['panel_header'] = trans('noshform.add') . ' ' . trans('noshform.hippa_request');
             } else {
-                $data['panel_header'] = 'Edit Records Request';
+                $data['panel_header'] = trans('noshform.edit') . ' ' . trans('noshform.hippa_request');
             }
             $dropdown_array = [
-                'default_button_text' => 'Add New Address Book Entry',
+                'default_button_text' => trans('noshform.add_address_book'),
                 'default_button_text_url' => route('core_form', ['addressbook', 'address_id', '0']),
                 'default_button_id' => 'add_external_provider'
             ];
@@ -2396,7 +2399,7 @@ class ChartController extends Controller {
             'form_id' => $table . '_form',
             'action' => route('chart_action', ['table' => $table, 'action' => 'save', 'index' => $index, 'id' => $id]),
             'items' => $items,
-            'save_button_label' => 'Save'
+            'save_button_label' => trans('noshform.save')
         ];
         if ($table == 'rx_list') {
             if ($subtype == 'prescribe' || $subtype == 'refill') {
@@ -2458,7 +2461,7 @@ class ChartController extends Controller {
                     $items = [];
                     $items[] = [
                         'type' => 'item',
-                        'label' => 'GoodRX',
+                        'label' => trans('noshform.goodrx'),
                         'icon' => 'fa-chevron-down',
                         'url' => '#goodrx_container'
                     ];
@@ -2480,17 +2483,17 @@ class ChartController extends Controller {
         $data['message_action'] = Session::get('message_action');
         Session::forget('message_action');
         $type_arr = [
-            'encounters' => ['Encounters', 'fa-stethoscope'],
-            't_messages' => ['Messages', 'fa-phone'],
-            'Laboratory' => ['Laboratory', 'fa-flask'],
-            'Imaging' => ['Imaging', 'fa-film'],
-            'Cardiopulmonary' => ['Cardiopulmonary', 'fa-heartbeat'],
-            'Endoscopy' => ['Endoscopy', 'fa-video-camera'],
-            'Referrals' => ['Referrals', 'fa-hand-o-right'],
-            'Past_Records' => ['Past Records', 'fa-folder'],
-            'Other_Forms' => ['Other Forms', 'fa-file-o'],
-            'Letters' => ['Letters', 'fa-file-text-o'],
-            'ccda' => ['CCDAs', 'fa-file-code-o']
+            'encounters' => [trans('noshform.encounters'), 'fa-stethoscope'],
+            't_messages' => [trans('noshform.t_messages'), 'fa-phone'],
+            'Laboratory' => [trans('noshform.laboratory'), 'fa-flask'],
+            'Imaging' => [trans('noshform.imaging'), 'fa-film'],
+            'Cardiopulmonary' => [trans('noshform.cardiopulmonary'), 'fa-heartbeat'],
+            'Endoscopy' => [trans('noshform.endoscopy'), 'fa-video-camera'],
+            'Referrals' => [trans('noshform.referrals'), 'fa-hand-o-right'],
+            'Past_Records' => [trans('noshform.past_records'), 'fa-folder'],
+            'Other_Forms' => [trans('noshform.other_forms'), 'fa-file-o'],
+            'Letters' => [trans('noshform.letters'), 'fa-file-text-o'],
+            'ccda' => [trans('noshform.ccda'), 'fa-file-code-o']
         ];
         $dropdown_array = [
             'items_button_text' => $type_arr[$type][0]
@@ -2568,30 +2571,30 @@ class ChartController extends Controller {
             }
             $return .= $this->result_build($list_array, 'chart_queue_list');
         } else {
-            $return .= ' None.';
+            $return .= ' ' . trans('noshform.none') . '.';
         }
         $data['content'] = $return;
-        $data['panel_header'] = 'Select Records';
+        $data['panel_header'] = trans('noshform.chart_queue');
         $data['records_active'] = true;
         $dropdown_array1 = [
-            'items_button_text' => 'Actions'
+            'items_button_text' => trans('noshform.actions')
         ];
         $items1 = [];
         $items1[] = [
             'type' => 'item',
-            'label' => 'Print',
+            'label' => trans('noshform.print'),
             'icon' => 'fa-print',
             'url' => route('print_action', ['hippa', $hippa_id, $pid, 'queue'])
         ];
         $items1[] = [
             'type' => 'item',
-            'label' => 'Fax',
+            'label' => trans('noshform.fax'),
             'icon' => 'fa-fax',
             'url' => route('fax_action', ['hippa', $hippa_id, $pid, 'queue'])
         ];
         $items1[] = [
             'type' => 'item',
-            'label' => 'Cancel',
+            'label' => trans('noshform.cancel'),
             'icon' => 'fa-chevron-left',
             'url' => route('patient')
         ];
@@ -2611,22 +2614,22 @@ class ChartController extends Controller {
         if ($type == 'active') {
             $query->where('issue_date_inactive', '=', '0000-00-00 00:00:00');
             $dropdown_array = [
-                'items_button_text' => 'Active'
+                'items_button_text' => trans('noshform.active')
             ];
             $items[] = [
                 'type' => 'item',
-                'label' => 'Inactive',
+                'label' => trans('noshform.inactive'),
                 'icon' => 'fa-times',
                 'url' => route('conditions_list', ['inactive'])
             ];
         } else {
             $query->where('issue_date_inactive', '!=', '0000-00-00 00:00:00');
             $dropdown_array = [
-                'items_button_text' => 'Inactive'
+                'items_button_text' => trans('noshform.inactive')
             ];
             $items[] = [
                 'type' => 'item',
-                'label' => 'Active',
+                'label' => trans('noshform.active'),
                 'icon' => 'fa-check',
                 'url' => route('conditions_list', ['active'])
             ];
@@ -2642,7 +2645,7 @@ class ChartController extends Controller {
         $mh_list_array = [];
         $sh_list_array = [];
         if ($result->count()) {
-            $return .= '<ul class="nav nav-tabs"><li class="active"><a data-toggle="tab" href="#pl" style="color:green;">Problems</a></li><li><a data-toggle="tab" href="#mh" title="Medical History">Past</a></li><li><a data-toggle="tab" href="#sh" title="Surgical History" style="color:red;">Surgeries</a></li></ul><div class="tab-content" style="margin-top:15px;">';
+            $return .= '<ul class="nav nav-tabs"><li class="active"><a data-toggle="tab" href="#pl" style="color:green;">' . trans('noshform.problems') . '</a></li><li><a data-toggle="tab" href="#mh" title="' . trans('noshform.medical_history') . '">' . trans('noshform.past') . '</a></li><li><a data-toggle="tab" href="#sh" title="' . trans('noshform.surgical_history') . '" style="color:red;">' . trans('noshform.surgeries') . '</a></li></ul><div class="tab-content" style="margin-top:15px;">';
             foreach ($result as $row) {
                 if ($row->type == 'Problem List') {
                     $pl_arr = [];
@@ -2724,7 +2727,7 @@ class ChartController extends Controller {
         }
         $data['content'] = $return;
         $data['issues_active'] = true;
-        $data['panel_header'] = 'Conditions';
+        $data['panel_header'] = trans('noshform.conditions');
         $data = array_merge($data, $this->sidebar_build('chart'));
         //$data['template_content'] = 'test';
         if ($edit == true) {
@@ -2734,19 +2737,19 @@ class ChartController extends Controller {
             $items1 = [];
             $items1[] = [
                 'type' => 'item',
-                'label' => 'Add Problem',
+                'label' => trans('noshform.add_problem'),
                 'icon' => 'fa-plus',
                 'url' => route('chart_form', ['issues', $row_index, '0', 'pl'])
             ];
             $items1[] = [
                 'type' => 'item',
-                'label' => 'Add Medical History',
+                'label' => trans('noshform.add_medical_history'),
                 'icon' => 'fa-plus',
                 'url' => route('chart_form', ['issues', $row_index, '0', 'mh'])
             ];
             $items1[] = [
                 'type' => 'item',
-                'label' => 'Add Surgical History',
+                'label' => trans('noshform.add_surgical_history'),
                 'icon' => 'fa-plus',
                 'url' => route('chart_form', ['issues', $row_index, '0', 'sh'])
             ];
@@ -2756,19 +2759,19 @@ class ChartController extends Controller {
                 ];
                 $items1[] = [
                     'type' => 'item',
-                    'label' => 'Copy All Problems to Assessment',
+                    'label' => trans('noshform.copy_all_problems'),
                     'icon' => 'fa-clone',
                     'url' => route('encounter_assessment_add', ['issue', 'pl'])
                 ];
                 $items1[] = [
                     'type' => 'item',
-                    'label' => 'Copy All Medical History to Assessment',
+                    'label' => trans('noshform.copy_all_medical_history'),
                     'icon' => 'fa-clone',
                     'url' => route('encounter_assessment_add', ['issue', 'mh'])
                 ];
                 $items1[] = [
                     'type' => 'item',
-                    'label' => 'Copy All Surgical History to Assessment',
+                    'label' => trans('noshform.copy_all_surgical_history'),
                     'icon' => 'fa-clone',
                     'url' => route('encounter_assessment_add', ['issue', 'sh'])
                 ];
@@ -2787,8 +2790,8 @@ class ChartController extends Controller {
                 if (! empty($sh_list_array)) {
                     $sh_encounter .= implode("\n", array_column($sh_list_array, 'label'));
                 }
-                $mh_encounter .= "\n" . 'Reviewed by ' . Session::get('displayname') . ' on ' . date('Y-m-d');
-                $sh_encounter .= "\n" . 'Reviewed by ' . Session::get('displayname') . ' on ' . date('Y-m-d');
+                $mh_encounter .= "\n" . trans('noshform.reviewed_by') . ' ' . Session::get('displayname') . ' ' . trans('noshform.on') . ' ' . date('Y-m-d');
+                $sh_encounter .= "\n" . trans('noshform.reviewed_by') . ' ' . Session::get('displayname') . ' ' . trans('noshform.on') . ' ' . date('Y-m-d');
                 $encounter_query = DB::table('other_history')->where('eid', '=', Session::get('eid'))->first();
                 $encounter_data = [
                     'oh_pmh' => $mh_encounter,
@@ -2804,7 +2807,7 @@ class ChartController extends Controller {
                 if ($data['message_action'] !== '') {
                     $data['message_action'] .= '<br>';
                 }
-                $data['message_action'] .= 'Past medical and surgical history marked as reviewed for encounter.';
+                $data['message_action'] .= trans('noshform.issue_message_action_encounter');
             }
         }
         Session::put('last_page', $request->fullUrl());
@@ -2821,14 +2824,14 @@ class ChartController extends Controller {
         $return = '';
         if (Session::get('patient_centric') !== 'yp') {
             $dropdown_array = [
-                'default_button_text' => 'Register to Portal',
+                'default_button_text' => trans('noshform.register_portal'),
                 'default_button_text_url' => route('register_patient')
             ];
             $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
         }
         $active_arr = [
-            '0' => 'Inactive',
-            '1' => 'Active'
+            '0' => trans('noshform.inactive'),
+            '1' => trans('noshform.active')
         ];
         if ($result) {
             $gender = $this->array_gender();
@@ -2836,91 +2839,91 @@ class ChartController extends Controller {
             $state = $this->array_states($result->country);
             $guardian_state = $this->array_states($result->guardian_country);
             $header_arr = [
-                'Name and Identity' => route('chart_form', ['demographics', 'pid', Session::get('pid'), 'name']),
-                'Contacts' => route('chart_form', ['demographics', 'pid', Session::get('pid'), 'contacts']),
-                'Guardians' => route('chart_form', ['demographics', 'pid', Session::get('pid'), 'guardians']),
-                'Other' => route('chart_form', ['demographics', 'pid', Session::get('pid'), 'other']),
+                trans('noshform.name_identity') => route('chart_form', ['demographics', 'pid', Session::get('pid'), 'name']),
+                trans('noshform.contacts') => route('chart_form', ['demographics', 'pid', Session::get('pid'), 'contacts']),
+                trans('noshform.guardians') => route('chart_form', ['demographics', 'pid', Session::get('pid'), 'guardians']),
+                trans('noshform.other') => route('chart_form', ['demographics', 'pid', Session::get('pid'), 'other']),
             ];
             $identity_arr = [
-                'Last Name' => $result->lastname,
-                'First Name' => $result->firstname,
-                'Nickname' => $result->nickname,
-                'Middle Name' => $result->middle,
-                'Title' => $result->title,
-                'Date of Birth' => date('F jS, Y', strtotime($result->DOB)),
-                'Gender' => $gender[$result->sex],
-                'Patient ID' => $result->patient_id,
-                'SSN' => $result->ss,
-                'Race' => $result->race,
-                'Marital Status' => $result->marital_status,
-                'Spouse/Partner Name' => $result->partner_name,
-                'Employer' => $result->employer,
-                'Ethnicity' => $result->ethnicity,
-                'Caregiver(s)' => $result->caregiver,
-                'Status' => $active_arr[$result->active],
-                'Referred By' => $result->referred_by,
-                'Preferred Language' => $result->language
+                trans('noshform.lastname') => $result->lastname,
+                trans('noshform.firstname') => $result->firstname,
+                trans('noshform.nickname') => $result->nickname,
+                trans('noshform.middle') => $result->middle,
+                trans('noshform.title') => $result->title,
+                trans('noshform.DOB') => date('F jS, Y', strtotime($result->DOB)),
+                trans('noshform.sex') => $gender[$result->sex],
+                trans('noshform.patient_id') => $result->patient_id,
+                trans('noshform.ss') => $result->ss,
+                trans('noshform.race') => $result->race,
+                trans('noshform.marital_status') => $result->marital_status,
+                trans('noshform.partner_name') => $result->partner_name,
+                trans('noshform.employer') => $result->employer,
+                trans('noshform.ethnicity') => $result->ethnicity,
+                trans('noshform.caregiver') => $result->caregiver,
+                trans('noshform.status') => $active_arr[$result->active],
+                trans('noshform.referred_by') => $result->referred_by,
+                trans('noshform.language') => $result->language
             ];
             $contact_arr = [
-                'Address' => $result->address,
-                'Country' => $result->country,
-                'City' => $result->city,
-                'State' => $state[$result->state],
-                'Zip' => $result->zip,
-                'Email' => $result->email,
-                'Home Phone' => $result->phone_home,
-                'Work Phone' => $result->phone_work,
-                'Mobile' => $result->phone_cell,
-                'Emergency Contact' => $result->emergency_contact,
-                'Appointment Reminder Method' => $result->reminder_method
+                trans('noshform.street_address1') => $result->address,
+                trans('noshform.country') => $result->country,
+                trans('noshform.city') => $result->city,
+                trans('noshform.state') => $state[$result->state],
+                trans('noshform.zip') => $result->zip,
+                trans('noshform.email') => $result->email,
+                trans('noshform.phone_home') => $result->phone_home,
+                trans('noshform.phone_work') => $result->phone_work,
+                trans('noshform.phone_cell') => $result->phone_cell,
+                trans('noshform.emergency_contact') => $result->emergency_contact,
+                trans('noshform.reminder_method') => $result->reminder_method
             ];
             $guardian_arr = [
-                'Last Name' => $result->guardian_lastname,
-                'First Name' => $result->guardian_firstname,
-                'Relationship' => $result->guardian_relationship,
-                'Address' => $result->guardian_address,
-                'Country' => $result->guardian_country,
-                'City' => $result->guardian_city,
-                'State' => $guardian_state[$result->guardian_state],
-                'Zip' => $result->guardian_zip,
-                'Email' => $result->guardian_email,
-                'Home Phone' => $result->guardian_phone_home,
-                'Work Phone' => $result->guardian_phone_work,
-                'Mobile' => $result->guardian_phone_cell
+                trans('noshform.lastname') => $result->guardian_lastname,
+                trans('noshform.firstname') => $result->guardian_firstname,
+                trans('noshform.relationship') => $result->guardian_relationship,
+                trans('noshform.street_address1') => $result->guardian_address,
+                trans('noshform.country') => $result->guardian_country,
+                trans('noshform.city') => $result->guardian_city,
+                trans('noshform.state') => $guardian_state[$result->guardian_state],
+                trans('noshform.zip') => $result->guardian_zip,
+                trans('noshform.email') => $result->guardian_email,
+                trans('noshform.phone_home') => $result->guardian_phone_home,
+                trans('noshform.phone_work') => $result->guardian_phone_work,
+                trans('noshform.phone_cell') => $result->guardian_phone_cell
             ];
             $other_arr = [
-                'Preferred Provider' => $result->preferred_provider,
-                'Preferred Pharmacy' => $result->preferred_pharmacy,
-                'Other Field 1' => $result->other1,
-                'Other Field 2' => $result->other2,
-                'Comments' => $result->comments
+                trans('noshform.preferred_provider') => $result->preferred_provider,
+                trans('noshform.preferred_pharmacy') => $result->preferred_pharmacy,
+                trans('noshform.other1') => $result->other1,
+                trans('noshform.other2') => $result->other2,
+                trans('noshform.comments') => $result->comments
             ];
             if ($result->pharmacy_address_id !== '' && $result->pharmacy_address_id !== null) {
                 $pharmacy_query = DB::table('addressbook')->where('address_id', '=', $result->pharmacy_address_id)->first();
                 $other_arr['Preferred Pharmacy'] = (is_object($pharmacy_query) ? $pharmacy_query->displayname : '');
             }
-            $return = $this->header_build($header_arr, 'Name and Identity');
+            $return = $this->header_build($header_arr, trans('noshform.name_identity'));
             foreach ($identity_arr as $key1 => $value1) {
                 if ($value1 !== '' && $value1 !== null) {
                     $return .= '<div class="col-md-3"><b>' . $key1 . '</b></div><div class="col-md-8">' . $value1 . '</div>';
                 }
             }
             $return .= '</div></div></div>';
-            $return .= $this->header_build($header_arr, 'Contacts');
+            $return .= $this->header_build($header_arr, trans('noshform.contacts'));
             foreach ($contact_arr as $key2 => $value2) {
                 if ($value2 !== '' && $value2 !== null) {
                     $return .= '<div class="col-md-3"><b>' . $key2 . '</b></div><div class="col-md-8">' . $value2 . '</div>';
                 }
             }
             $return .= '</div></div></div>';
-            $return .= $this->header_build($header_arr, 'Guardians');
+            $return .= $this->header_build($header_arr, trans('noshform.guardians'));
             foreach ($guardian_arr as $key3 => $value3) {
                 if ($value3 !== '' && $value3 !== null) {
                     $return .= '<div class="col-md-3"><b>' . $key3 . '</b></div><div class="col-md-8">' . $value3 . '</div>';
                 }
             }
             $return .= '</div></div></div>';
-            $return .= $this->header_build($header_arr, 'Other');
+            $return .= $this->header_build($header_arr, trans('noshform.other'));
             foreach ($other_arr as $key4 => $value4) {
                 if ($value4 !== '' && $value4 !== null) {
                     $return .= '<div class="col-md-3"><b>' . $key4 . '</b></div><div class="col-md-8">' . $value4 . '</div>';
@@ -2928,11 +2931,11 @@ class ChartController extends Controller {
             }
             $return .= '</div></div></div>';
         } else {
-            $return .= ' None.';
+            $return .= ' ' . trans('noshform.none') . '.';
         }
         $data['content'] = $return;
         $data['demographics_active'] = true;
-        $data['panel_header'] = 'Demographics';
+        $data['panel_header'] = trans('noshform.demographics');
         $data = array_merge($data, $this->sidebar_build('chart'));
         Session::put('last_page', $request->fullUrl());
         $data['assets_js'] = $this->assets_js('chart');
@@ -2952,10 +2955,10 @@ class ChartController extends Controller {
             $data['photo'] = $file_path;
             $image_id = DB::table('demographics')->where('pid', '=', $pid)->update($data);
             $this->audit('Update');
-            Session::put('message_action', 'Photo added');
+            Session::put('message_action', trans('noshform.photo_added'));
             return redirect(Session::get('last_page'));
         } else {
-            $data['panel_header'] = 'Upload Photo';
+            $data['panel_header'] = trans('noshform.upload_photo');
             $data['document_upload'] = route('demographics_add_photo');
             $type_arr = ['png', 'jpg'];
             $data['document_type'] = json_encode($type_arr);
@@ -2983,7 +2986,7 @@ class ChartController extends Controller {
             while(!file_exists($file_path)) {
                 sleep(2);
             }
-            $desc = 'Letter for ' . Session::get('ptname');
+            $desc = trans('noshform.letter_for') . ' ' . Session::get('ptname');
             $pages_data = [
                 'documents_url' => $file_path,
                 'pid' => $pid,
@@ -3003,12 +3006,12 @@ class ChartController extends Controller {
                 ->where('practice_id', '=', Session::get('practice_id'))
                 ->orderBy('eid', 'desc')
                 ->first();
-            $start = 'This letter is in regards to ' . $pt->firstname . ' ' . $pt->lastname . ' (Date of Birth: ' . date('F jS, Y', $this->human_to_unix($pt->DOB)) . '), who is a patient of mine.  ';
+            $start = trans('noshform.letter1') . $pt->firstname . ' ' . $pt->lastname . ' (' . trans('noshform.DOB') . ': ' . date('F jS, Y', $this->human_to_unix($pt->DOB)) . '), ' . trans('noshform.letter2') . '.  ';
             if ($encounter) {
                 $start .= $pt->firstname . ' was last seen by me on ' . date('F jS, Y', strtotime($encounter->encounter_DOS)) . '.  ';
             }
             $data['documents_active'] = true;
-            $data['panel_header'] = 'Generate Letter';
+            $data['panel_header'] = trans('noshform.generate_letter');
             $items[] = [
                 'name' => 'address_id',
                 'type' => 'hidden',
@@ -3016,7 +3019,7 @@ class ChartController extends Controller {
             ];
             $items[] = [
                 'name' => 'letter_to',
-                'label' => 'To',
+                'label' => trans('noshform.letter_to'),
                 'type' => 'text',
                 'required' => true,
                 'typeahead' => route('typeahead', ['table' => 'addressbook', 'column' => 'displayname', 'subtype' => 'address_id']),
@@ -3024,7 +3027,7 @@ class ChartController extends Controller {
             ];
             $items[] = [
                 'name' => 'letter_body',
-                'label' => 'Letter Body',
+                'label' => trans('noshform.letter_body'),
                 'type' => 'textarea',
                 'required' => true,
                 'default_value' => $start
@@ -3033,11 +3036,11 @@ class ChartController extends Controller {
                 'form_id' => 'document_letter_form',
                 'action' => route('document_letter'),
                 'items' => $items,
-                'save_button_label' => 'Save and Print'
+                'save_button_label' => trans('noshform.save_print')
             ];
             $data['content'] = $this->form_build($form_array);
             $data['template_content'] = 'test';
-            $dropdown_array['default_button_text'] = '<i class="fa fa-chevron-left fa-fw fa-btn"></i>Back';
+            $dropdown_array['default_button_text'] = '<i class="fa fa-chevron-left fa-fw fa-btn"></i>' . trans('noshform.back');
             $dropdown_array['default_button_text_url'] = Session::get('last_page');
             $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
             $data = array_merge($data, $this->sidebar_build('chart'));
@@ -3064,11 +3067,11 @@ class ChartController extends Controller {
             return redirect()->route('chart_form', ['documents', 'documents_id', $documents_id]);
         } else {
             $data['documents_active'] = true;
-            $data['panel_header'] = 'Upload A File';
+            $data['panel_header'] = trans('noshform.document_upload');
             $data['document_upload'] = route('document_upload');
             $type_arr = ['pdf'];
             $data['document_type'] = json_encode($type_arr);
-            $dropdown_array['default_button_text'] = '<i class="fa fa-chevron-left fa-fw fa-btn"></i>Back';
+            $dropdown_array['default_button_text'] = '<i class="fa fa-chevron-left fa-fw fa-btn"></i>' . trans('noshform.back');
             $dropdown_array['default_button_text_url'] = Session::get('last_page');
             $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
             $data = array_merge($data, $this->sidebar_build('chart'));
@@ -3101,7 +3104,7 @@ class ChartController extends Controller {
         $items = [];
         $items[] = [
             'type' => 'item',
-            'label' => 'Back',
+            'label' => trans('noshform.back'),
             'icon' => 'fa-chevron-left',
             'url' => Session::get('last_page')
         ];
@@ -3118,7 +3121,7 @@ class ChartController extends Controller {
         $dropdown_array1['items'] = $items1;
         $data['panel_dropdown'] .= '<span class="fa-btn"></span>' . $this->dropdown_build($dropdown_array1);
         $data['documents_active'] = true;
-        $data['panel_header'] = date('Y-m-d', $this->human_to_unix($result->documents_date)) . ' - ' . $result->documents_desc . ' from ' . $result->documents_from;
+        $data['panel_header'] = date('Y-m-d', $this->human_to_unix($result->documents_date)) . ' - ' . $result->documents_desc . ' ' . trans('noshform.from1') . ' ' . $result->documents_from;
         $data = array_merge($data, $this->sidebar_build('chart'));
         $data['assets_js'] = $this->assets_js('documents');
         $data['assets_css'] = $this->assets_css('documents');
@@ -3135,18 +3138,18 @@ class ChartController extends Controller {
             $query = DB::table('documents')->where('pid', '=', Session::get('pid'))->where('documents_type', '=', $type)->orderBy('documents_date', 'desc');
         }
         $type_arr = [
-            'All' => ['All', 'fa-files-o'],
-            'Laboratory' => ['Laboratory', 'fa-flask'],
-            'Imaging' => ['Imaging', 'fa-film'],
-            'Cardiopulmonary' => ['Cardiopulmonary', 'fa-heartbeat'],
-            'Endoscopy' => ['Endoscopy', 'fa-video-camera'],
-            'Referrals' => ['Referrals', 'fa-hand-o-right'],
-            'Past_Records' => ['Past Records', 'fa-folder'],
-            'Other_Forms' => ['Other Forms', 'fa-file-o'],
-            'Letters' => ['Letters', 'fa-file-text-o'],
-            'Education' => ['Education', 'fa-info-circle'],
-            'ccda' => ['CCDAs', 'fa-file-code-o'],
-            'ccr' => ['CCRs', 'fa-file-code-o'],
+            'All' => [trans('noshform.all'), 'fa-files-o'],
+            'Laboratory' => [trans('noshform.laboratory'), 'fa-flask'],
+            'Imaging' => [trans('noshform.imaging'), 'fa-film'],
+            'Cardiopulmonary' => [trans('noshform.cardiopulmonary'), 'fa-heartbeat'],
+            'Endoscopy' => [trans('noshform.endoscopy'), 'fa-video-camera'],
+            'Referrals' => [trans('noshform.referrals'), 'fa-hand-o-right'],
+            'Past_Records' => [trans('noshform.past_records'), 'fa-folder'],
+            'Other_Forms' => [trans('noshform.other_forms'), 'fa-file-o'],
+            'Letters' => [trans('noshform.letters'), 'fa-file-text-o'],
+            'Education' => [trans('noshform.education'), 'fa-info-circle'],
+            'ccda' => [trans('noshform.ccda'), 'fa-file-code-o'],
+            'ccr' => [trans('noshform.ccr'), 'fa-file-code-o'],
         ];
         $dropdown_array = [
             'items_button_text' => $type_arr[$type][0]
@@ -3198,7 +3201,7 @@ class ChartController extends Controller {
         }
         $data['content'] = $return;
         $data['documents_active'] = true;
-        $data['panel_header'] = 'Documents';
+        $data['panel_header'] = trans('noshform.documents');
         $data = array_merge($data, $this->sidebar_build('chart'));
         //$data['template_content'] = 'test';
         if ($edit == true) {
@@ -3208,31 +3211,31 @@ class ChartController extends Controller {
             $items1 = [];
             $items1[] = [
                 'type' => 'item',
-                'label' => 'Upload Document',
+                'label' => trans('noshform.upload_document'),
                 'icon' => 'fa-plus',
                 'url' => route('document_upload')
             ];
             $items1[] = [
                 'type' => 'item',
-                'label' => 'Generate Letter',
+                'label' => trans('noshform.generate_letter'),
                 'icon' => 'fa-pencil-square-o',
                 'url' => route('document_letter')
             ];
             $items1[] = [
                 'type' => 'item',
-                'label' => 'Add Patient Education',
+                'label' => trans('noshform.add_patient_education'),
                 'icon' => 'fa-info-circle',
                 'url' => route('encounter_education')
             ];
             $items1[] = [
                 'type' => 'item',
-                'label' => 'Upload Consolidated Clinical Document (C-CDA)',
+                'label' => trans('noshform.upload_ccda'),
                 'icon' => 'fa-upload',
                 'url' => route('upload_ccda')
             ];
             $items1[] = [
                 'type' => 'item',
-                'label' => 'Upload Continuity of Care Record (CCR)',
+                'label' => trans('noshform.upload_ccr'),
                 'icon' => 'fa-upload',
                 'url' => route('upload_ccr')
             ];
@@ -6819,22 +6822,22 @@ class ChartController extends Controller {
         if ($type == 'active') {
             $query->where('rxl_date_inactive', '=', '0000-00-00 00:00:00')->where('rxl_date_old', '=', '0000-00-00 00:00:00');
             $dropdown_array = [
-                'items_button_text' => 'Active'
+                'items_button_text' => trans('noshform.active')
             ];
             $items[] = [
                 'type' => 'item',
-                'label' => 'Inactive',
+                'label' => trans('noshform.inactive'),
                 'icon' => 'fa-times',
                 'url' => route('medications_list', ['inactive'])
             ];
         } else {
             $query->where('rxl_date_inactive', '!=', '0000-00-00 00:00:00');
             $dropdown_array = [
-                'items_button_text' => 'Inactive'
+                'items_button_text' => trans('noshform.inactive')
             ];
             $items[] = [
                 'type' => 'item',
-                'label' => 'Active',
+                'label' => trans('noshform.active'),
                 'icon' => 'fa-check',
                 'url' => route('medications_list', ['active'])
             ];
@@ -6895,7 +6898,7 @@ class ChartController extends Controller {
         }
         $data['content'] = $return;
         $data['medications_active'] = true;
-        $data['panel_header'] = 'Medications';
+        $data['panel_header'] = trans('noshform.medications');
         $data = array_merge($data, $this->sidebar_build('chart'));
         //$data['template_content'] = 'test';
         if ($edit == true) {
@@ -6905,7 +6908,7 @@ class ChartController extends Controller {
             $items1 = [];
             $items1[] = [
                 'type' => 'item',
-                'label' => 'Add',
+                'label' => trans('noshform.add'),
                 'icon' => 'fa-plus',
                 'url' => route('chart_form', ['rx_list', $row_index, '0'])
             ];
@@ -6917,7 +6920,7 @@ class ChartController extends Controller {
                 ];
                 $items2[] = [
                     'type' => 'item',
-                    'label' => 'Prescribe',
+                    'label' => trans('noshform.prescribe'),
                     'icon' => 'fa-plus',
                     'url' => route('chart_form', ['rx_list', $row_index, '0', 'prescribe'])
                 ];
@@ -6932,7 +6935,7 @@ class ChartController extends Controller {
                 if (! empty($list_array)) {
                     $medications_encounter .= implode("\n", array_column($list_array, 'label'));
                 }
-                $medications_encounter .= "\n" . 'Reviewed by ' . Session::get('displayname') . ' on ' . date('Y-m-d');
+                $medications_encounter .= "\n" . trans('noshform.reviewed_by') . ' ' . Session::get('displayname') . ' ' . trans('noshform.on') . ' ' . date('Y-m-d');
                 $encounter_query = DB::table('other_history')->where('eid', '=', Session::get('eid'))->first();
                 $encounter_data['oh_meds'] = $medications_encounter;
                 if ($encounter_query) {
@@ -6945,7 +6948,7 @@ class ChartController extends Controller {
                 if ($data['message_action'] !== '') {
                     $data['message_action'] .= '<br>';
                 }
-                $data['message_action'] .= 'Medications marked as reviewed for encounter.';
+                $data['message_action'] .= trans('noshform.medication_encounter');
             }
         }
         if (Session::has('demo_comment')) {
@@ -7031,44 +7034,44 @@ class ChartController extends Controller {
         if ($edit == true) {
             $items[] = [
                 'type' => 'item',
-                'label' => 'New Encounter',
+                'label' => trans('noshform.new_encounter'),
                 'icon' => 'fa-stethoscope',
                 'url' => route('encounter_details', ['0'])
             ];
             $items[] = [
                 'type' => 'item',
-                'label' => 'New Telephone Message',
+                'label' => trans('noshform.new_t_message'),
                 'icon' => 'fa-phone',
                 'url' => route('chart_form', ['t_messages', 't_messages_id', '0'])
             ];
             $items[] = [
                 'type' => 'item',
-                'label' => 'New Letter',
+                'label' => trans('noshform.new_letter'),
                 'icon' => 'fa-pencil-square-o',
                 'url' => route('document_letter')
             ];
             $items[] = [
                 'type' => 'item',
-                'label' => 'New Test Results',
+                'label' => trans('noshform.new_tests'),
                 'icon' => 'fa-flask',
                 'url' => route('chart_form', ['tests', 'tests_id', '0'])
             ];
         }
         $items[] = [
             'type' => 'item',
-            'label' => 'New Alert',
+            'label' => trans('noshform.new_alert'),
             'icon' => 'fa-exclamation-triangle',
             'url' => route('chart_form', ['alerts', 'alert_id', '0'])
         ];
         $items[] = [
             'type' => 'item',
-            'label' => 'New Document',
+            'label' => trans('noshform.new_document'),
             'icon' => 'fa-file-o',
             'url' => route('document_upload')
         ];
         $items[] = [
             'type' => 'item',
-            'label' => 'Add Patient Photo',
+            'label' => trans('noshform.add_patient_photo'),
             'icon' => 'fa-camera',
             'url' => route('demographics_add_photo')
         ];
@@ -7081,7 +7084,7 @@ class ChartController extends Controller {
                 Session::put('messaging_patient', $messaging);
                 $items[] = [
                     'type' => 'item',
-                    'label' => 'New Message to Patient',
+                    'label' => trans('noshform.new_patient_messaging'),
                     'icon' => 'fa-envelope',
                     'url' => route('core_form', ['messaging', 'message_id', '0'])
                 ];
@@ -7089,7 +7092,7 @@ class ChartController extends Controller {
         }
         $items[] = [
             'type' => 'item',
-            'label' => 'New Coordination of Care Transaction',
+            'label' => trans('noshform.new_coordination_care'),
             'icon' => 'fa-print',
             'url' => route('chart_form', ['hippa', 'hippa_id', '0'])
         ];
@@ -7256,10 +7259,10 @@ class ChartController extends Controller {
         Session::forget('message_action');
         $query = DB::table('orders')->where('pid', '=', Session::get('pid'))->where($type, '!=', '')->orderBy('orders_date', 'desc');
         $type_arr = [
-            'orders_labs' => ['Laboratory', 'fa-flask'],
-            'orders_radiology' => ['Imaging', 'fa-film'],
-            'orders_cp' => ['Cardiopulmonary', 'fa-heartbeat'],
-            'orders_referrals' => ['Referrals', 'fa-hand-o-right']
+            'orders_labs' => [trans('noshform.laboratory'), 'fa-flask'],
+            'orders_radiology' => [trans('noshform.imaging'), 'fa-film'],
+            'orders_cp' => [trans('noshform.cardiopulmonary'), 'fa-heartbeat'],
+            'orders_referrals' => [trans('noshform.referrals'), 'fa-hand-o-right']
         ];
         $dropdown_array = [
             'items_button_text' => $type_arr[$type][0]
@@ -7303,7 +7306,7 @@ class ChartController extends Controller {
         }
         $data['content'] = $return;
         $data['orders_active'] = true;
-        $data['panel_header'] = 'Pending Orders';
+        $data['panel_header'] = trans('noshform.pending_orders');
         $data = array_merge($data, $this->sidebar_build('chart'));
         //$data['template_content'] = 'test';
         if ($edit == true) {
@@ -7313,25 +7316,25 @@ class ChartController extends Controller {
             $items1 = [];
             $items1[] = [
                 'type' => 'item',
-                'label' => 'Add Lab Order',
+                'label' => trans('noshform.add_lab_order'),
                 'icon' => 'fa-plus',
                 'url' => route('chart_form', ['orders', 'orders_id', '0', 'orders_labs'])
             ];
             $items1[] = [
                 'type' => 'item',
-                'label' => 'Add Imaging Order',
+                'label' => trans('noshform.add_imaging_order'),
                 'icon' => 'fa-plus',
                 'url' => route('chart_form', ['orders', 'orders_id', '0', 'orders_radiology'])
             ];
             $items1[] = [
                 'type' => 'item',
-                'label' => 'Add Cardiopulmonary Order',
+                'label' => trans('noshform.add_cardiopulmonary_order'),
                 'icon' => 'fa-plus',
                 'url' => route('chart_form', ['orders', 'orders_id', '0', 'orders_cp'])
             ];
             $items1[] = [
                 'type' => 'item',
-                'label' => 'Add Referral',
+                'label' => trans('noshform.add_referral'),
                 'icon' => 'fa-plus',
                 'url' => route('chart_form', ['orders', 'orders_id', '0', 'orders_referrals'])
             ];
@@ -7352,11 +7355,11 @@ class ChartController extends Controller {
             $table = 'hippa';
             $query = DB::table($table)->where('pid', '=', Session::get('pid'))->where('practice_id', '=', Session::get('practice_id'))->where('other_hippa_id', '=', '0')->orderBy('hippa_date_release', 'desc');
             $dropdown_array = [
-                'items_button_text' => 'Records Releases'
+                'items_button_text' => trans('noshform.hippas')
             ];
             $items[] = [
                 'type' => 'item',
-                'label' => 'Records Requests',
+                'label' => trans('noshform.hippa_requests'),
                 'icon' => 'fa-arrow-down',
                 'url' => route('records_list', ['request'])
             ];
@@ -7364,11 +7367,11 @@ class ChartController extends Controller {
             $table ='hippa_request';
             $query = DB::table($table)->where('pid', '=', Session::get('pid'))->where('practice_id', '=', Session::get('practice_id'))->orderBy('hippa_date_request', 'desc');
             $dropdown_array = [
-                'items_button_text' => 'Records Requests'
+                'items_button_text' => trans('noshform.hippa_requests')
             ];
             $items[] = [
                 'type' => 'item',
-                'label' => 'Records Releases',
+                'label' => trans('noshform.hippas'),
                 'icon' => 'fa-arrow-up',
                 'url' => route('records_list', ['release'])
             ];
@@ -7407,7 +7410,7 @@ class ChartController extends Controller {
         } else {
             $return .= ' None.';
         }
-        $data['panel_header'] = 'Coordination of Care';
+        $data['panel_header'] = trans('noshform.coordination_of_care');
         $data['content'] = $return;
         $data['records_active'] = true;
         $data = array_merge($data, $this->sidebar_build('chart'));
@@ -7419,25 +7422,25 @@ class ChartController extends Controller {
             $items1 = [];
             $items1[] = [
                 'type' => 'item',
-                'label' => 'Add Records Release',
+                'label' => trans('noshform.add') . ' ' . trans('noshform.hippa'),
                 'icon' => 'fa-plus',
                 'url' => route('chart_form', ['hippa', $row_index, '0'])
             ];
             $items1[] = [
                 'type' => 'item',
-                'label' => 'Add Records Request',
+                'label' => trans('noshform.add') . ' ' . trans('noshform.hippa_request'),
                 'icon' => 'fa-plus',
                 'url' => route('chart_form', ['hippa_request', $row_index, '0'])
             ];
             $items1[] = [
                 'type' => 'item',
-                'label' => 'Upload Consolidated Clinical Document (C-CDA)',
+                'label' => trans('noshform.upload_ccda'),
                 'icon' => 'fa-upload',
                 'url' => route('upload_ccda')
             ];
             $items1[] = [
                 'type' => 'item',
-                'label' => 'Upload Continuity of Care Record (CCR)',
+                'label' => trans('noshform.upload_ccr'),
                 'icon' => 'fa-upload',
                 'url' => route('upload_ccr')
             ];
@@ -7474,7 +7477,7 @@ class ChartController extends Controller {
             ];
             $this->send_mail('emails.loginregistrationcode', $data1, 'Patient Portal Registration Code', $result->email, Session::get('practice_id'));
         }
-        Session::put('message_action', "Registration Code: " . $token);
+        Session::put('message_action', trans('noshform.registration_code') . ": " . $token);
         return redirect(Session::get('last_page'));
     }
 
@@ -7539,8 +7542,8 @@ class ChartController extends Controller {
         Session::forget('message_action');
         $query = DB::table('tests')->where('pid', '=', Session::get('pid'))->where('test_type', '=', $type)->orderBy('test_datetime', 'desc');
         $type_arr = [
-            'Laboratory' => ['Laboratory', 'fa-flask'],
-            'Imaging' => ['Imaging', 'fa-film'],
+            'Laboratory' => [trans('noshform.laboratory'), 'fa-flask'],
+            'Imaging' => [trans('noshform.imaging'), 'fa-film'],
         ];
         $dropdown_array = [
             'items_button_text' => $type_arr[$type][0]
@@ -7557,7 +7560,7 @@ class ChartController extends Controller {
         }
         $items[] = [
             'type' => 'item',
-            'label' => 'Vital Signs',
+            'label' => trans('noshform.vital_signs'),
             'icon' => 'fa-eye',
             'url' => route('encounter_vitals_view')
         ];
@@ -7583,11 +7586,11 @@ class ChartController extends Controller {
             }
             $return .= $this->result_build($list_array, 'results_list', false, true);
         } else {
-            $return .= ' None.';
+            $return .= ' ' . trans('noshform.none') . '.';
         }
         $data['content'] = $return;
         $data['results_active'] = true;
-        $data['panel_header'] = 'Results';
+        $data['panel_header'] = trans('noshform.results');
         $data = array_merge($data, $this->sidebar_build('chart'));
         //$data['template_content'] = 'test';
         if ($edit == true) {
@@ -7597,13 +7600,13 @@ class ChartController extends Controller {
             $items1 = [];
             $items1[] = [
                 'type' => 'item',
-                'label' => 'Add Result',
+                'label' => trans('noshform.add_result'),
                 'icon' => 'fa-plus',
                 'url' => route('chart_form', ['tests', 'tests_id', '0'])
             ];
             $items1[] = [
                 'type' => 'item',
-                'label' => 'Result Reply To Patient',
+                'label' => trans('noshform.results_reply'),
                 'icon' => 'fa-reply',
                 'url' => route('results_reply')
             ];
@@ -7757,7 +7760,8 @@ class ChartController extends Controller {
                 ->where(function($query_array1) {
                     $query_array1->where('alert', '=', 'Laboratory results pending')
                     ->orWhere('alert', '=', 'Radiology results pending')
-                    ->orWhere('alert', '=', 'Cardiopulmonary results pending');
+                    ->orWhere('alert', '=', 'Cardiopulmonary results pending')
+                    ->orWhere('results', '=', 1);
                 })
                 ->get();
             if ($query->count()) {
@@ -7779,7 +7783,7 @@ class ChartController extends Controller {
             }
             $items[] = [
                 'name' => 'tests_performed[]',
-                'label' => 'Tests Performed',
+                'label' => trans('noshform.tests_performed'),
                 'type' => 'select',
                 'select_items' => $tests_arr,
                 'multiple' => true,
@@ -7789,22 +7793,22 @@ class ChartController extends Controller {
             ];
             $items[] = [
                 'name' => 'message',
-                'label' => 'Message to Patient',
+                'label' => trans('noshform.tests_message'),
                 'type' => 'textarea',
                 'required' => true,
                 'default_value' => null
             ];
             $items[] = [
                 'name' => 'followup',
-                'label' => 'Followup',
+                'label' => trans('noshform.followup'),
                 'type' => 'text',
                 'default_value' => null
             ];
             $items[] = [
                 'name' => 'action',
-                'label' => 'Action after Saving',
+                'label' => trans('noshform.nosh_action'),
                 'type' => 'select',
-                'select_items' => ['portal' => 'Send Message to Portal', 'letter' => 'Send Letter'],
+                'select_items' => ['portal' => trans('noshform.send_portal'), 'letter' => trans('noshform.send_letter')],
                 'required' => true,
                 'default_value' => null
             ];
@@ -7815,7 +7819,7 @@ class ChartController extends Controller {
                 'origin' => Session::get('last_page')
             ];
             $data['content'] = $this->form_build($form_array);
-            $data['panel_header'] = 'Reply to Patient about New Results';
+            $data['panel_header'] = trans('noshform.results_reply_header');
             $data['alerts_active'] = true;
             $data = array_merge($data, $this->sidebar_build('chart'));
             $data['assets_js'] = $this->assets_js('chart');
@@ -7830,7 +7834,7 @@ class ChartController extends Controller {
         Session::forget('message_action');
         $test_arr = $this->array_test_flag();
         $test = DB::table('tests')->where('tests_id', '=', $id)->first();
-        $return = '<div class="table-responsive"><table class="table table-striped"><thead><tr><th>Date</th><th>Result</th><th>Unit</th><th>Range</th><th>Flag</th></thead><tbody>';
+        $return = '<div class="table-responsive"><table class="table table-striped"><thead><tr><th>' . trans('noshform.date') . '</th><th>' . trans('noshform.test_result') . '</th><th>' . trans('noshform.unit') . '</th><th>' . trans('noshform.range') . '</th><th>' . trans('noshform.test_flags') . '</th></thead><tbody>';
         // Get old results for comparison table
         $query = DB::table('tests')
             ->where('test_name', '=', $test->test_name)
@@ -7860,26 +7864,26 @@ class ChartController extends Controller {
         $return .= '</tbody></table></div>';
         $edit = $this->access_level('2');
         $dropdown_array = [];
-        $dropdown_array['default_button_text'] = '<i class="fa fa-chevron-left fa-fw fa-btn"></i>Back';
+        $dropdown_array['default_button_text'] = '<i class="fa fa-chevron-left fa-fw fa-btn"></i>' . trans('noshform.back');
         $dropdown_array['default_button_text_url'] = Session::get('last_page');
         $items = [];
         if ($edit == true) {
             $items[] = [
                 'type' => 'item',
-                'label' => 'Edit',
+                'label' => trans('noshform.edit'),
                 'icon' => 'fa-pencil',
                 'url' => route('chart_form', ['tests', 'tests_id', $id])
             ];
         }
         $items[] = [
             'type' => 'item',
-            'label' => 'Chart',
+            'label' => trans('noshform.chart'),
             'icon' => 'fa-line-chart',
             'url' => route('results_chart', [$id])
         ];
         $items[] = [
             'type' => 'item',
-            'label' => 'Print',
+            'label' => trans('noshform.print'),
             'icon' => 'fa-print',
             'url' => route('results_print', [$id])
         ];
@@ -7888,25 +7892,25 @@ class ChartController extends Controller {
         ];
         $items[] = [
             'type' => 'item',
-            'label' => 'Add Lab Order',
+            'label' => trans('noshform.add_lab_order'),
             'icon' => 'fa-thumbs-o-up',
             'url' => route('chart_form', ['orders', 'orders_id', '0', 'orders_labs'])
         ];
         $items[] = [
             'type' => 'item',
-            'label' => 'Add Imaging Order',
+            'label' => trans('noshform.add_imaging_order'),
             'icon' => 'fa-thumbs-o-up',
             'url' => route('chart_form', ['orders', 'orders_id', '0', 'orders_radiology'])
         ];
         $items[] = [
             'type' => 'item',
-            'label' => 'Add Cardiopulmonary Order',
+            'label' => trans('noshform.add_cardiopulmonary_order'),
             'icon' => 'fa-thumbs-o-up',
             'url' => route('chart_form', ['orders', 'orders_id', '0', 'orders_cp'])
         ];
         $items[] = [
             'type' => 'item',
-            'label' => 'Add Referral',
+            'label' => trans('noshform.add_referral'),
             'icon' => 'fa-thumbs-o-up',
             'url' => route('chart_form', ['orders', 'orders_id', '0', 'orders_referrals'])
         ];
@@ -7919,7 +7923,8 @@ class ChartController extends Controller {
         if (Session::has('eid')) {
             if (Session::get('group_id') == '2') {
                 // Mark conditions list as reviewed by physician
-                $results_encounter = $test->test_name . ': ' .  $test->test_result . ' ' .  $test->test_units . '; Reference: ' . $test->test_reference . '; Flags: ' . $test_arr[$test->test_flags] . '; Performed on: ' . date('Y-m-d', $this->human_to_unix($test->test_datetime));
+                $results_encounter = $test->test_name . ': ' .  $test->test_result . ' ' .  $test->test_units . '; ' . trans('noshform.reference') . ': ' . $test->test_reference . '; ' . trans('noshform.flags') . ': ' . $test_arr[$test->test_flags];
+                $results_encounter .= '; ' . trans('noshform.performed_on') . ': ' . date('Y-m-d', $this->human_to_unix($test->test_datetime));
                 $encounter_query = DB::table('other_history')->where('eid', '=', Session::get('eid'))->first();
                 $encounter_data['oh_results'] = $results_encounter;
                 if ($encounter_query) {
@@ -7940,7 +7945,7 @@ class ChartController extends Controller {
                 if ($data['message_action'] !== '') {
                     $data['message_action'] .= '<br>';
                 }
-                $data['message_action'] .= 'Test result marked as reviewed for encounter.';
+                $data['message_action'] .= trans('noshform.results_encounter');
             }
         }
         $data['assets_js'] = $this->assets_js('chart');
@@ -8516,43 +8521,43 @@ class ChartController extends Controller {
         $patient = DB::table('demographics')->where('pid', '=', Session::get('pid'))->first();
         if ($result) {
             $header_arr = [
-                'Lifestyle' => route('chart_form', ['other_history', 'pid', Session::get('pid'), 'lifestyle']),
-                'Habits' => route('chart_form', ['other_history', 'pid', Session::get('pid'), 'habits']),
-                'Mental Health' => route('chart_form', ['other_history', 'pid', Session::get('pid'), 'mental_health'])
+                trans('noshform.lifestyle') => route('chart_form', ['other_history', 'pid', Session::get('pid'), 'lifestyle']),
+                trans('noshform.habits') => route('chart_form', ['other_history', 'pid', Session::get('pid'), 'habits']),
+                trans('noshform.mental_health') => route('chart_form', ['other_history', 'pid', Session::get('pid'), 'mental_health'])
             ];
             $lifestyle_arr = [
-                'Social History' => nl2br($result->oh_sh),
-                'Sexually Active' => ucfirst($patient->sexuallyactive),
-                'Diet' => nl2br($result->oh_diet),
-                'Physical Activity' => nl2br($result->oh_physical_activity),
-                'Employment/School' => nl2br($result->oh_employment)
+                trans('noshform.oh_sh') => nl2br($result->oh_sh),
+                trans('noshform.sexuallyactive') => ucfirst($patient->sexuallyactive),
+                trans('noshform.oh_diet') => nl2br($result->oh_diet),
+                trans('noshform.oh_physical_activity') => nl2br($result->oh_physical_activity),
+                trans('noshform.oh_employment') => nl2br($result->oh_employment)
             ];
             $habits_arr = [
-                'Alcohol Use' => nl2br($result->oh_etoh),
-                'Tobacco Use' => ucfirst($patient->tobacco),
-                'Tobacco Use Details' => nl2br($result->oh_tobacco),
-                'Illicit Drug Use' => nl2br($result->oh_drugs)
+                trans('noshform.oh_etoh') => nl2br($result->oh_etoh),
+                trans('noshform.tobacco') => ucfirst($patient->tobacco),
+                trans('noshform.oh_tobacco') => nl2br($result->oh_tobacco),
+                trans('noshform.oh_drugs') => nl2br($result->oh_drugs)
             ];
             $mental_health_arr = [
-                'Psychosocial History' => nl2br($result->oh_psychosocial),
-                'Developmental History' => nl2br($result->oh_developmental),
-                'Past Medication Trials' => nl2br($result->oh_medtrials)
+                trans('noshform.oh_psychosocial') => nl2br($result->oh_psychosocial),
+                trans('noshform.oh_developmental') => nl2br($result->oh_developmental),
+                trans('noshform.oh_medtrials') => nl2br($result->oh_medtrials)
             ];
-            $return = $this->header_build($header_arr, 'Lifestyle');
+            $return = $this->header_build($header_arr, trans('noshform.lifestyle'));
             foreach ($lifestyle_arr as $key1 => $value1) {
                 if ($value1 !== '' && $value1 !== null) {
                     $return .= '<div class="col-md-3"><b>' . $key1 . '</b></div><div class="col-md-8">' . $value1 . '</div>';
                 }
             }
             $return .= '</div></div></div>';
-            $return .= $this->header_build($header_arr, 'Habits');
+            $return .= $this->header_build($header_arr, trans('noshform.habits'));
             foreach ($habits_arr as $key2 => $value2) {
                 if ($value2 !== '' && $value2 !== null) {
                     $return .= '<div class="col-md-3"><b>' . $key2 . '</b></div><div class="col-md-8">' . $value2 . '</div>';
                 }
             }
             $return .= '</div></div></div>';
-            $return .= $this->header_build($header_arr, 'Mental Health');
+            $return .= $this->header_build($header_arr, trans('noshform.mental_health'));
             foreach ($mental_health_arr as $key3 => $value3) {
                 if ($value3 !== '' && $value3 !== null) {
                     $return .= '<div class="col-md-3"><b>' . $key3 . '</b></div><div class="col-md-8">' . $value3 . '</div>';
@@ -8581,15 +8586,15 @@ class ChartController extends Controller {
                     if ($data['message_action'] !== '') {
                         $data['message_action'] .= '<br>';
                     }
-                    $data['message_action'] .= 'Social history marked as reviewed for encounter.';
+                    $data['message_action'] .= trans('noshform.social_history_encounter');
                 }
             }
         } else {
-            $return .= ' None.';
+            $return .= ' ' . trans('noshform.none') . '.';
         }
         $data['content'] = $return;
         $data['sh_active'] = true;
-        $data['panel_header'] = 'Social History';
+        $data['panel_header'] = trans('noshform.social_history');
         $data = array_merge($data, $this->sidebar_build('chart'));
         Session::put('last_page', $request->fullUrl());
         $data['assets_js'] = $this->assets_js('chart');
@@ -8605,22 +8610,22 @@ class ChartController extends Controller {
         if ($type == 'active') {
             $query->where('sup_date_inactive', '=', '0000-00-00 00:00:00');
             $dropdown_array = [
-                'items_button_text' => 'Active'
+                'items_button_text' => trans('noshform.active')
             ];
             $items[] = [
                 'type' => 'item',
-                'label' => 'Inactive',
+                'label' => trans('noshform.inactive'),
                 'icon' => 'fa-times',
                 'url' => route('supplements_list', ['inactive'])
             ];
         } else {
             $query->where('sup_date_inactive', '!=', '0000-00-00 00:00:00');
             $dropdown_array = [
-                'items_button_text' => 'Inactive'
+                'items_button_text' => trans('noshform.inactive')
             ];
             $items[] = [
                 'type' => 'item',
-                'label' => 'Active',
+                'label' => trans('noshform.active'),
                 'icon' => 'fa-check',
                 'url' => route('supplements_list', ['active'])
             ];
@@ -8657,11 +8662,11 @@ class ChartController extends Controller {
             }
             $return .= $this->result_build($list_array, 'supplements_list');
         } else {
-            $return .= ' None.';
+            $return .= ' ' . trans('noshform.none') . '.';
         }
         $data['content'] = $return;
         $data['supplements_active'] = true;
-        $data['panel_header'] = 'Supplements';
+        $data['panel_header'] = trans('noshform.supplements');
         $data = array_merge($data, $this->sidebar_build('chart'));
         //$data['template_content'] = 'test';
         if ($edit == true) {
@@ -8671,7 +8676,7 @@ class ChartController extends Controller {
             $items1 = [];
             $items1[] = [
                 'type' => 'item',
-                'label' => 'Add',
+                'label' => trans('noshform.add'),
                 'icon' => 'fa-plus',
                 'url' => route('chart_form', ['sup_list', $row_index, '0'])
             ];
@@ -8683,7 +8688,7 @@ class ChartController extends Controller {
             $items2 = [];
             $items2[] = [
                 'type' => 'item',
-                'label' => 'Order',
+                'label' => trans('noshform.order'),
                 'icon' => 'fa-plus',
                 'url' => route('chart_form', ['sup_list', $row_index, '0', 'order'])
             ];
@@ -8710,7 +8715,7 @@ class ChartController extends Controller {
                 if ($data['message_action'] !== '') {
                     $data['message_action'] .= '<br>';
                 }
-                $data['message_action'] .= 'Supplements marked as reviewed for encounter.';
+                $data['message_action'] .= trans('noshform.supplement_encounter');
             }
         }
         Session::put('last_page', $request->fullUrl());

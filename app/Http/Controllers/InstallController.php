@@ -404,7 +404,7 @@ class InstallController extends Controller {
             ];
             $items[] = [
                 'name' => 'email',
-                'label' => 'Email',
+                'label' => trans('noshform.email'),
                 'type' => 'email',
                 'required' => true,
                 'default_value' => $email
@@ -419,28 +419,28 @@ class InstallController extends Controller {
                 ];
                 $items[] = [
                     'name' => 'lastname',
-                    'label' => 'Last Name',
+                    'label' => trans('noshform.lastname'),
                     'type' => 'text',
                     'required' => true,
                     'default_value' => $lastname
                 ];
                 $items[] = [
                     'name' => 'firstname',
-                    'label' => 'First Name',
+                    'label' => trans('noshform.firstname'),
                     'type' => 'text',
                     'required' => true,
                     'default_value' => $firstname
                 ];
                 $items[] = [
                     'name' => 'DOB',
-                    'label' => 'Date of Birth',
+                    'label' => trans('noshform.DOB'),
                     'type' => 'date',
                     'required' => true,
                     'default_value' => $dob
                 ];
                 $items[] = [
                     'name' => 'gender',
-                    'label' => 'Gender',
+                    'label' => trans('noshform.sex'),
                     'type' => 'select',
                     'select_items' => $this->array_gender(),
                     'required' => true,
@@ -448,7 +448,7 @@ class InstallController extends Controller {
                 ];
                 $items[] = [
                     'name' => 'address',
-                    'label' => 'Street Address',
+                    'label' => trans('noshform.street_address1'),
                     'type' => 'text',
                     'required' => true,
                     'default_value' => null
@@ -456,28 +456,28 @@ class InstallController extends Controller {
             } else {
                 $items[] = [
                     'name' => 'practice_name',
-                    'label' => 'Practice Name',
+                    'label' => trans('noshform.practice_name'),
                     'type' => 'text',
                     'required' => true,
                     'default_value' => null
                 ];
                 $items[] = [
                     'name' => 'street_address1',
-                    'label' => 'Street Address',
+                    'label' => trans('noshform.street_address1'),
                     'type' => 'text',
                     'required' => true,
                     'default_value' => null
                 ];
                 $items[] = [
                     'name' => 'street_address2',
-                    'label' => 'Street Address Line 2',
+                    'label' => trans('noshform.street_address2'),
                     'type' => 'text',
                     'default_value' => null
                 ];
             }
             $items[] = [
                 'name' => 'country',
-                'label' => 'Country',
+                'label' => trans('noshform.country'),
                 'type' => 'select',
                 'select_items' => $this->array_country(),
                 'required' => true,
@@ -486,14 +486,14 @@ class InstallController extends Controller {
             ];
             $items[] = [
                 'name' => 'city',
-                'label' => 'City',
+                'label' => trans('noshform.city'),
                 'type' => 'text',
                 'required' => true,
                 'default_value' => null
             ];
             $items[] = [
                 'name' => 'state',
-                'label' => 'State',
+                'label' => trans('noshform.state'),
                 'type' => 'select',
                 'select_items' => $this->array_states(),
                 'required' => true,
@@ -502,7 +502,7 @@ class InstallController extends Controller {
             ];
             $items[] = [
                 'name' => 'zip',
-                'label' => 'Zip',
+                'label' => trans('noshform.zip'),
                 'type' => 'text',
                 'required' => true,
                 'default_value' => null
@@ -510,7 +510,7 @@ class InstallController extends Controller {
             if ($type !== 'patient') {
                 $items[] = [
                     'name' => 'phone',
-                    'label' => 'Phone',
+                    'label' => trans('noshform.phone'),
                     'type' => 'text',
                     'phone' => true,
                     'required' => true,
@@ -518,7 +518,7 @@ class InstallController extends Controller {
                 ];
                 $items[] = [
                     'name' => 'fax',
-                    'label' => 'Fax',
+                    'label' => trans('noshform.fax'),
                     'type' => 'text',
                     'phone' => true,
                     'required' => true,
@@ -531,7 +531,7 @@ class InstallController extends Controller {
             }
             $items[] = [
                 'name' => 'documents_dir',
-                'label' => 'Documents Directory',
+                'label' => trans('noshform.documents_dir'),
                 'type' => 'text',
                 'required' => true,
                 'default_value' => $documents_dir
