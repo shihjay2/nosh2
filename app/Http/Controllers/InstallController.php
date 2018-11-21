@@ -1454,7 +1454,5 @@ class InstallController extends Controller {
 
     public function test1(Request $request)
     {
-        // Countries::all()->pluck('name.common');
-        return $this->array_states('Canada');
     }
 }

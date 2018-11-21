@@ -311,7 +311,7 @@ class ChartController extends Controller {
             }
             $return .= $this->result_build($list_array, 'allergies_list');
         } else {
-            $return .= ' No known allergies.';
+            $return .= ' ' . trans('noshform.nkda') . '.';
         }
         $data['content'] = $return;
         $data['allergies_active'] = true;
@@ -339,6 +339,7 @@ class ChartController extends Controller {
                 if (! empty($list_array)) {
                     $allergies_encounter .= implode("\n", array_column($list_array, 'label'));
                 }
+                App::setLocale(Session::get('practice_locale'));
                 $allergies_encounter .= "\n" . trans('noshform.reviewed_by') . ' ' . Session::get('displayname') . ' ' . trans('noshform.on') . ' ' . date('Y-m-d');
                 $encounter_query = DB::table('other_history')->where('eid', '=', Session::get('eid'))->first();
                 $encounter_data['oh_allergies'] = $allergies_encounter;
@@ -352,6 +353,7 @@ class ChartController extends Controller {
                 if ($data['message_action'] !== '') {
                     $data['message_action'] .= '<br>';
                 }
+                App::setLocale(Session::get('user_locale'));
                 $data['message_action'] .= trans('noshform.allergies_message_action_encounter');
             }
         }
@@ -1198,10 +1200,10 @@ class ChartController extends Controller {
             'immunizations' => trans('noshform.immunization') . ' ',
             'alerts' => trans('noshform.alert') . ' ',
             'documents' => trans('noshform.document') . ' ',
-            'tests' => 'Result ',
+            'tests' => trans('noshform.test_result') . ' ',
             'orders' => trans('noshform.order') . ' ',
             'vitals' => 'Vital Signs ',
-            't_messages' => 'Message ',
+            't_messages' => trans('noshform.t_messages_message') . ' ',
             'hippa' => trans('noshform.hippa') . ' ',
             'hippa_request' => trans('noshform.hippa_request') . ' ',
             'billing_core' => trans('noshform.billing') . ' ',
@@ -1581,12 +1583,13 @@ class ChartController extends Controller {
                     $demo_result = DB::table('demographics')->where('pid', '=', Session::get('pid'))->first();
                     $to_result = DB::table('users')->where('id', '=', $data['t_messages_to'])->first();
                     if (Session::get('user_id') !== $data['t_messages_to']) {
+                        App::setLocale(Session::get('practice_locale'));
                         $internal_message_data = [
                             'pid' => Session::get('pid'),
                             'patient_name' => $demo_result->lastname . ', ' . $demo_result->firstname . ' (DOB: ' . date("m/d/Y", strtotime($demo_result->DOB)) . ') (ID: ' . Session::get('pid') . ')',
                             'message_to' => $to_result->displayname,
                             'message_from' => Session::get('user_id'),
-                            'subject' => 'Telephone Message - ' . $data['t_messages_subject'],
+                            'subject' => trans('noshform.t_message') . ' - ' . $data['t_messages_subject'],
                             'body' => $data['t_messages_message'],
                             'status' => 'Sent',
                             't_messages_id' => $row_id1,
@@ -1595,6 +1598,7 @@ class ChartController extends Controller {
                         ];
                         DB::table('messaging')->insert($internal_message_data);
                         $this->audit('Add');
+                        App::setLocale(Session::get('user_locale'));
                         $arr['message'] .= '<br>' . trans('noshform.internal_message_sent');
                     }
                 }
@@ -1841,7 +1845,7 @@ class ChartController extends Controller {
             }
             // FHIR resource post-save handling
             $delete_query = DB::table($table)->where($index, '=', $id)->first();
-            if ($delete_query->label !== '') {
+            if (!empty($delete_query->label)) {
                 $this->uma_resource_process($delete_query->label, $id, $table);
             }
             DB::table($table)->where($index, '=', $id)->delete();
@@ -5412,7 +5416,7 @@ class ChartController extends Controller {
         }
         $return .= '</tbody></table></div>';
         $dropdown_array = [];
-        $dropdown_array['default_button_text'] = '<i class="fa fa-chevron-left fa-fw fa-btn"></i>Back';
+        $dropdown_array['default_button_text'] = '<i class="fa fa-chevron-left fa-fw fa-btn"></i>' . trans('noshform.back');
         if ($eid !== '') {
             $dropdown_array['default_button_text_url'] = route('encounter', [$eid, 'o']);
         } else {
@@ -5421,7 +5425,7 @@ class ChartController extends Controller {
         $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
         $data['content'] = $return;
         $data['encounters_active'] = true;
-        $data['panel_header'] = 'Vital Signs';
+        $data['panel_header'] = trans('noshform.vital_signs');
         $data = array_merge($data, $this->sidebar_build('chart'));
         $data['assets_js'] = $this->assets_js('chart');
         $data['assets_css'] = $this->assets_css('chart');
@@ -5434,9 +5438,9 @@ class ChartController extends Controller {
         $demographics = DB::table('demographics')->where('pid', '=', $pid)->first();
         $vitals_arr = $this->array_vitals();
         $data['graph_y_title'] = $vitals_arr[$type]['name'] . ',' . $vitals_arr[$type]['unit'];
-        $data['graph_x_title'] = 'Date';
+        $data['graph_x_title'] = trans('noshform.date');
         $data['graph_series_name'] = $vitals_arr[$type]['name'];
-        $data['graph_title'] = 'Chart of ' . $vitals_arr[$type]['name'] . ' over time for ' . $demographics->firstname . ' ' . $demographics->lastname . ' as of ' . date("Y-m-d, g:i a", time());
+        $data['graph_title'] = trans('noshform.chart_of') . ' ' . $vitals_arr[$type]['name'] . ' ' . trans('noshform.over_time_for') . ' ' . $demographics->firstname . ' ' . $demographics->lastname . ' ' . trans('noshform.as_of') . ' ' . date("Y-m-d, g:i a", time());
         $query1 = DB::table('vitals')
             ->select($type, 'vitals_date')
             ->where('pid', '=', $pid)
@@ -5456,7 +5460,7 @@ class ChartController extends Controller {
         }
         $edit = $this->access_level('2');
         $dropdown_array = [];
-        $dropdown_array['default_button_text'] = '<i class="fa fa-chevron-left fa-fw fa-btn"></i>Back';
+        $dropdown_array['default_button_text'] = '<i class="fa fa-chevron-left fa-fw fa-btn"></i>' . trans('noshform.back');
         if (Session::has('eid')) {
             $dropdown_array['default_button_text_url'] = route('encounter_vitals_view');
         } else {
@@ -8754,7 +8758,7 @@ class ChartController extends Controller {
             }
             $return .= $this->result_build($list_array, 't_messages_list');
         } else {
-            $return .= ' None.';
+            $return .= ' ' . trans('noshform.none') . '.';
         }
         if ($edit == true) {
             $dropdown_array1 = [
@@ -8763,7 +8767,7 @@ class ChartController extends Controller {
             $items1 = [];
             $items1[] = [
                 'type' => 'item',
-                'label' => 'Add Telephone Visit',
+                'label' => trans('noshform.add_telephone_visit'),
                 'icon' => 'fa-plus',
                 'url' => route('chart_form', ['t_messages', $row_index, '0'])
             ];
@@ -8772,7 +8776,7 @@ class ChartController extends Controller {
         }
         $data['content'] = $return;
         $data['t_messages_active'] = true;
-        $data['panel_header'] = 'Telephone Messages';
+        $data['panel_header'] = trans('noshform.t_messages_list');
         $data = array_merge($data, $this->sidebar_build('chart'));
         Session::put('last_page', $request->fullUrl());
         $data['assets_js'] = $this->assets_js('chart');
@@ -8795,11 +8799,11 @@ class ChartController extends Controller {
             }
         }
         $return = '';
-        $return .= '<div style="margin-bottom:15px;"><input type="text" id="encounter_tags" class="nosh-tags" value="' . implode(',', $tags_val_arr) . '" data-nosh-add-url="' . route('tag_save', ['t_messages_id', $t_messages_id]) . '" data-nosh-remove-url="' . route('tag_remove', ['t_messages_id', $t_messages_id]) . '" placeholder="Add Tags"/></div>';
+        $return .= '<div style="margin-bottom:15px;"><input type="text" id="encounter_tags" class="nosh-tags" value="' . implode(',', $tags_val_arr) . '" data-nosh-add-url="' . route('tag_save', ['t_messages_id', $t_messages_id]) . '" data-nosh-remove-url="' . route('tag_remove', ['t_messages_id', $t_messages_id]) . '" placeholder="' . trans('noshform.add_tags') . '"/></div>';
         $return .= $this->t_messages_view($t_messages_id);
         $images = DB::table('image')->where('t_messages_id', '=', $t_messages_id)->get();
         if ($images->count()) {
-            $return .= '<br><h5>Images:</h5><div class="list-group gallery">';
+            $return .= '<br><h5>' . trans('noshform.images') . ':</h5><div class="list-group gallery">';
             foreach ($images as $image) {
                 $file_path1 = '/temp/' . time() . '_' . basename($image->image_location);
                 $file_path = public_path() . $file_path1;
@@ -8811,7 +8815,7 @@ class ChartController extends Controller {
             $return .= '</div>';
         }
         $dropdown_array = [];
-        $dropdown_array['default_button_text'] = '<i class="fa fa-chevron-left fa-fw fa-btn"></i>Back';
+        $dropdown_array['default_button_text'] = '<i class="fa fa-chevron-left fa-fw fa-btn"></i>' . trans('noshform.back');
         $dropdown_array['default_button_text_url'] = Session::get('last_page');
         // $items = [];
         // if ($edit == true) {
@@ -8838,7 +8842,7 @@ class ChartController extends Controller {
         $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
         $data['content'] = $return;
         $data['t_messages_active'] = true;
-        $data['panel_header'] = 'Message - ' .  date('Y-m-d', $this->human_to_unix($message->t_messages_dos));
+        $data['panel_header'] = trans('noshform.t_messages_message') . ' - ' .  date('Y-m-d', $this->human_to_unix($message->t_messages_dos));
         $data = array_merge($data, $this->sidebar_build('chart'));
         $data['assets_js'] = $this->assets_js('chart');
         $data['assets_css'] = $this->assets_css('chart');

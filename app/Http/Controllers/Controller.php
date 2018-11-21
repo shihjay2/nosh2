@@ -2594,21 +2594,21 @@ class Controller extends BaseController
         $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
         $return = [
             'weight' => [
-                'name' => 'Weight',
+                'name' => trans('noshform.weight'),
                 'unit' => $practice->weight_unit
             ],
             'height' => [
-                'name' => 'Height',
+                'name' => trans('noshform.height'),
                 'unit' => $practice->height_unit
             ],
             'headcircumference' => [
-                'name' => 'HC',
+                'name' => trans('headcircumference1'),
                 'unit' => $practice->hc_unit
             ],
             'BMI' => [
                 'min' => '19',
                 'max' => '30',
-                'name' => 'BMI',
+                'name' => trans('noshform.BMI'),
                 'unit' => 'kg/m2'
             ],
             'temp' => [
@@ -2620,37 +2620,37 @@ class Controller extends BaseController
                     'F' => '100.4',
                     'C' => '38'
                 ],
-                'name' => 'Temp',
+                'name' => trans('noshform.temp1'),
                 'unit' => $practice->temp_unit
             ],
             'bp_systolic' => [
                 'min' => '80',
                 'max' => '140',
-                'name' => 'SBP',
+                'name' => trans('noshform.bp_systolic1'),
                 'unit' => 'mmHg'
             ],
             'bp_diastolic' => [
                 'min' => '50',
                 'max' => '90',
-                'name' => 'DBP',
+                'name' => trans('noshform.bp_diastolic1'),
                 'unit' => 'mmHg'
             ],
             'pulse' => [
                 'min' => '50',
                 'max' => '140',
-                'name' => 'Pulse',
+                'name' => trans('noshform.pulse'),
                 'unit' => 'bpm'
             ],
             'respirations' => [
                 'min' => '10',
                 'max' => '35',
-                'name' => 'Resp',
+                'name' => trans('noshform.respirations1'),
                 'unit' => 'bpm'
             ],
             'o2_sat' => [
                 'min' => '90',
                 'max' => '100',
-                'name' => 'O2 Sat',
+                'name' => trans('noshform.o2_sat'),
                 'unit' => 'percent'
             ]
         ];
@@ -2660,11 +2660,11 @@ class Controller extends BaseController
     protected function array_vitals1()
     {
         $return = [
-            'wt_percentile' => 'Weight to Age Percentile',
-            'ht_percentile' => 'Height to Age Percentile',
-            'wt_ht_percentile' => 'Weight to Height Percentile',
-            'hc_percentile' => 'Head Circumference to Age Percentile',
-            'bmi_percentile' => 'BMI to Age Percentile'
+            'wt_percentile' => trans('noshform.wt_percentile'),
+            'ht_percentile' => trans('noshform.ht_percentile'),
+            'wt_ht_percentile' => trans('noshform.wt_ht_percentile'),
+            'hc_percentile' => trans('noshform.hc_percentile'),
+            'bmi_percentile' => trans('noshform.bmi_percentile')
         ];
         return $return;
     }
@@ -2674,12 +2674,12 @@ class Controller extends BaseController
         $url = 'http://aha.indicoebm.com/api/RiskCalculatorManager/GetBaselineRiskResult';
         $row = DB::table('demographics')->where('pid', '=', Session::get('pid'))->first();
         $missing_arr = [
-            'Patient race not specified',
-            'Patient tobacco status not specified',
-            'No historical blood pressure readings',
-            'No historical HDL cholesterol values',
-            'No historical LDL cholesterol values',
-            'No historical total cholesterol values'
+            trans('noshform.ascvd_missing_0'),
+            trans('noshform.ascvd_missing_1'),
+            trans('noshform.ascvd_missing_2'),
+            trans('noshform.ascvd_missing_3'),
+            trans('noshform.ascvd_missing_4'),
+            trans('noshform.ascvd_missing_5')
         ];
         $gender_arr = $this->array_gender2();
         $gender = $gender_arr[$row->sex];
@@ -2811,7 +2811,7 @@ class Controller extends BaseController
             $result_arr = json_decode($result, true);
         } else {
             $result_arr['status'] = 'missing';
-            $result_arr['message'] = '<div class="alert alert-danger"><strong>Unable to calculate ASCVD risk score due to missing items:</strong><br><ul>';
+            $result_arr['message'] = '<div class="alert alert-danger"><strong>' . trans('noshform.ascvd_missing') . ':</strong><br><ul>';
             foreach ($missing_arr as $missing_item) {
                 $result_arr['message'] .= '<li>' . $missing_item . '</li>';
             }
@@ -9251,7 +9251,7 @@ class Controller extends BaseController
         }
         $items[] = [
             'name' => 't_messages_subject',
-            'label' => 'Subject',
+            'label' => trans('noshform.t_messages_subject'),
             'type' => 'text',
             'required' => true,
             'typeahead' => route('typeahead', ['table' => $table, 'column' => 't_messages_subject']),
@@ -9259,14 +9259,14 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 't_messages_message',
-            'label' => 'Message',
+            'label' => trans('noshform.t_messages_message'),
             'type' => 'textarea',
             'required' => true,
             'default_value' => $message['t_messages_message']
         ];
         $items[] = [
             'name' => 't_messages_dos',
-            'label' => 'Date of Message',
+            'label' => trans('noshform.t_messages_dos'),
             'type' => 'date',
             'required' => true,
             'default_value' => $message['t_messages_dos']
@@ -9283,21 +9283,21 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 't_messages_to',
-            'label' => 'Assign To',
+            'label' => trans('noshform.t_messages_to'),
             'type' => 'select',
             'select_items' => $this->array_users(),
             'default_value' => $message['t_messages_to']
         ];
         $items[] = [
             'name' => 't_messages_from',
-            'label' => 'From',
+            'label' => trans('noshform.t_messages_from'),
             'type' => 'select',
             'select_items' => $this->array_users('2'),
             'default_value' => $message['t_messages_from']
         ];
         $items[] = [
             'name' => 'label[]',
-            'label' => 'Sensitive Label',
+            'label' => trans('noshform.label'),
             'type' => 'select',
             'select_items' => $this->fhir_scopes_sensitivities(),
             'multiple' => true,
@@ -9402,7 +9402,7 @@ class Controller extends BaseController
         if ($id !== '0') {
             $items[] = [
                 'name' => 'username',
-                'label' => 'Username',
+                'label' => trans('noshform.username'),
                 'type' => 'text',
                 'required' => true,
                 'readonly' => true,
@@ -9411,27 +9411,27 @@ class Controller extends BaseController
         }
         $items[] = [
             'name' => 'firstname',
-            'label' => 'First Name',
+            'label' => trans('noshform.firstname'),
             'type' => 'text',
             'required' => true,
             'default_value' => $data['firstname']
         ];
         $items[] = [
             'name' => 'middle',
-            'label' => 'Middle Name',
+            'label' => trans('noshform.middle'),
             'type' => 'text',
             'default_value' => $data['middle']
         ];
         $items[] = [
             'name' => 'lastname',
-            'label' => 'Last Name',
+            'label' => trans('noshform.lastname'),
             'type' => 'text',
             'required' => true,
             'default_value' => $data['lastname']
         ];
         $items[] = [
             'name' => 'title',
-            'label' => 'Title',
+            'label' => trans('noshform.title'),
             'type' => 'text',
             'default_value' => $data['title']
         ];
@@ -9442,14 +9442,14 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'email',
-            'label' => 'E-mail',
+            'label' => trans('noshform.email'),
             'type' => 'email',
             'required' => true,
             'default_value' => $data['email']
         ];
         $items[] = [
             'name' => 'locale',
-            'label' => 'Locale',
+            'label' => trans('noshform.locale'),
             'type' => 'select',
             'select_items' => $this->array_locale(),
             'default_value' => $data['locale']
@@ -9466,14 +9466,14 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'practice_id',
-            'label' => 'Practice ID',
+            'label' => trans('noshform.practice_id'),
             'type' => 'text',
             'readonly' => true,
             'default_value' => $data['practice_id']
         ];
         $items[] = [
             'name' => 'secure_message_notification',
-            'label' => 'Secure Message Notification',
+            'label' => trans('noshform.secure_message_notification'),
             'type' => 'select',
             'required' => true,
             'select_items' => $secure_arr,
@@ -9609,7 +9609,7 @@ class Controller extends BaseController
         }
         $items[] = [
             'name' => 'imm_immunization',
-            'label' => 'Vaccine',
+            'label' => trans('noshform.imm_immunization'),
             'type' => 'text',
             'required' => true,
             'typeahead' => route('typeahead', ['table' => $table, 'column' => 'imm_immunization']),
@@ -9617,7 +9617,7 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'imm_cvxcode',
-            'label' => 'CVX Code',
+            'label' => trans('noshform.imm_cvxcode'),
             'type' => 'text',
             'readonly' => true,
             'required' => true,
@@ -9625,7 +9625,7 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'imm_manufacturer',
-            'label' => 'Manufacturer',
+            'label' => trans('noshform.imm_manufacturer'),
             'type' => 'text',
             'required' => true,
             'typeahead' => route('typeahead', ['table' => $table, 'column' => 'imm_manufacturer']),
@@ -9633,7 +9633,7 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'imm_brand',
-            'label' => 'Brand',
+            'label' => trans('noshform.imm_brand'),
             'type' => 'text',
             'required' => true,
             'typeahead' => route('typeahead', ['table' => $table, 'column' => 'imm_brand']),
@@ -9641,7 +9641,7 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'imm_lot',
-            'label' => 'Lot Number',
+            'label' => trans('noshform.imm_lot'),
             'type' => 'text',
             'required' => true,
             'typeahead' => route('typeahead', ['table' => $table, 'column' => 'imm_lot']),
@@ -9649,7 +9649,7 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'quantity',
-            'label' => 'Quantity',
+            'label' => trans('noshform.quantity1'),
             'type' => 'text',
             'required' => true,
             'typeahead' => route('typeahead', ['table' => $table, 'column' => 'quantity']),
@@ -9657,7 +9657,7 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'cpt',
-            'label' => 'Procedure Code',
+            'label' => trans('noshform.cpt'),
             'type' => 'text',
             'required' => true,
             'typeahead' => route('typeahead', ['table' => $table, 'column' => 'cpt']),
@@ -9665,14 +9665,14 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'imm_expiration',
-            'label' => 'Expiration Date',
+            'label' => trans('noshform.imm_expiration'),
             'type' => 'date',
             'required' => true,
             'default_value' => $data['imm_expiration']
         ];
         $items[] = [
             'name' => 'date_purchase',
-            'label' => 'Date of Purchase',
+            'label' => trans('noshform.date_purchase'),
             'type' => 'date',
             'required' => true,
             'default_value' => $data['date_purchase']
@@ -9704,14 +9704,14 @@ class Controller extends BaseController
         }
         $items[] = [
             'name' => 'temp',
-            'label' => 'Temperature',
+            'label' => trans('noshform.temp'),
             'type' => 'text',
             'required' => true,
             'default_value' => $data['temp']
         ];
         $items[] = [
             'name' => 'date',
-            'label' => 'Date and Time',
+            'label' => trans('noshform.date_time'),
             'type' => 'text',
             'datetime' => true,
             'required' => true,
@@ -9719,7 +9719,7 @@ class Controller extends BaseController
         ];
         $items[] = [
             'name' => 'action',
-            'label' => 'Action if Out of Range',
+            'label' => trans('noshform.action_range'),
             'type' => 'text',
             'typeahead' => route('typeahead', ['table' => $table, 'column' => 'action']),
             'default_value' => $data['action']
@@ -9736,17 +9736,17 @@ class Controller extends BaseController
     {
         $vitals_arr = $this->array_vitals();
         $temp_method_arr = [
-            '' => 'Pick method',
-            'Oral' => 'Oral',
-            'Axillary' => 'Axillary',
-            'Temporal' => 'Temporal',
-            'Rectal' => 'Rectal'
+            '' => trans('noshform.pick_method'),
+            'Oral' => trans('noshform.oral'),
+            'Axillary' => trans('noshform.axillary'),
+            'Temporal' => trans('noshform.temporal'),
+            'Rectal' => trans('noshform.rectal')
         ];
         $bp_position_arr = [
-            '' => 'Pick position',
-            'Sitting' => 'Sitting',
-            'Standing' => 'Standing',
-            'Supine' => 'Supinee'
+            '' => trans('noshform.pick_position'),
+            'Sitting' => trans('noshform.sitting'),
+            'Standing' => trans('noshform.standing'),
+            'Supine' => trans('noshform.supine')
         ];
         if ($id == '0') {
             $vitals = [
@@ -9785,84 +9785,84 @@ class Controller extends BaseController
         }
         $items[] = [
             'name' => 'weight',
-            'label' => 'Weight (' . $vitals_arr['weight']['unit'] . ')',
+            'label' => trans('noshform.weight') . ' (' . $vitals_arr['weight']['unit'] . ')',
             'type' => 'text',
             'default_value' => $vitals['weight']
         ];
         $items[] = [
             'name' => 'height',
-            'label' => 'Height (' . $vitals_arr['height']['unit'] . ')',
+            'label' => trans('noshform.height') . ' (' . $vitals_arr['height']['unit'] . ')',
             'type' => 'text',
             'default_value' => $vitals['height']
         ];
         if (Session::get('agealldays') < 6574.5) {
             $items[] = [
                 'name' => 'headcircumference',
-                'label' => 'Head Circumference (' . $vitals_arr['headcircumference']['unit'] . ')',
+                'label' => trans('noshform.headcircumference') . ' (' . $vitals_arr['headcircumference']['unit'] . ')',
                 'type' => 'text',
                 'default_value' => $vitals['headcircumference']
             ];
         }
         $items[] = [
             'name' => 'BMI',
-            'label' => 'BMI (' . $vitals_arr['BMI']['unit'] . ')',
+            'label' => trans('noshform.BMI') .' (' . $vitals_arr['BMI']['unit'] . ')',
             'type' => 'text',
             'readonly' => true,
             'default_value' => $vitals['BMI']
         ];
         $items[] = [
             'name' => 'temp',
-            'label' => 'Temperature (' . $vitals_arr['temp']['unit'] . ')',
+            'label' => trans('noshform.temp') . ' (' . $vitals_arr['temp']['unit'] . ')',
             'type' => 'text',
             'default_value' => $vitals['temp']
         ];
         $items[] = [
             'name' => 'temp_method',
-            'label' => 'Temperature Method',
+            'label' => trans('noshform.temp_method'),
             'type' => 'select',
             'select_items' => $temp_method_arr,
             'default_value' => $vitals['temp_method']
         ];
         $items[] = [
             'name' => 'bp_systolic',
-            'label' => 'Systolic BP (' . $vitals_arr['bp_systolic']['unit'] . ')',
+            'label' => trans('noshform.bp_systolic') . ' (' . $vitals_arr['bp_systolic']['unit'] . ')',
             'type' => 'text',
             'default_value' => $vitals['bp_systolic']
         ];
         $items[] = [
             'name' => 'bp_diastolic',
-            'label' => 'Diastolic BP (' . $vitals_arr['bp_diastolic']['unit'] . ')',
+            'label' => trans('noshform.bp_diastolic') . ' (' . $vitals_arr['bp_diastolic']['unit'] . ')',
             'type' => 'text',
             'default_value' => $vitals['bp_diastolic']
         ];
         $items[] = [
             'name' => 'bp_position',
-            'label' => 'BP Position',
+            'label' => trans('noshform.bp_position'),
             'type' => 'select',
             'select_items' => $bp_position_arr,
             'default_value' => $vitals['bp_position']
         ];
         $items[] = [
             'name' => 'pulse',
-            'label' => 'Pulse (' . $vitals_arr['pulse']['unit'] . ')',
+            'label' => trans('noshform.pulse') . ' (' . $vitals_arr['pulse']['unit'] . ')',
             'type' => 'text',
             'default_value' => $vitals['pulse']
         ];
         $items[] = [
             'name' => 'respirations',
-            'label' => 'Respirations (' . $vitals_arr['respirations']['unit'] . ')',
+            'label' => trans('noshform.respirations') . ' (' . $vitals_arr['respirations']['unit'] . ')',
             'type' => 'text',
             'default_value' => $vitals['respirations']
         ];
         $items[] = [
             'name' => 'o2_sat',
-            'label' => 'O2 Saturation (' . $vitals_arr['o2_sat']['unit'] . ')',
+            'label' => trans('noshform.o2_sat') . ' (' . $vitals_arr['o2_sat']['unit'] . ')',
             'type' => 'text',
             'default_value' => $vitals['o2_sat']
         ];
         $items[] = [
             'name' => 'vitals_other',
-            'label' => 'Notes',
+            'label' => trans('noshform.vitals_other'),
             'type' => 'textarea',
             'default_value' => $vitals['vitals_other']
         ];

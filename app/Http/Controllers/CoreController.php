@@ -8313,20 +8313,20 @@ class CoreController extends Controller
         $return = '';
         $type_arr = [
             '2' => [
-                '1' => ['Active Physician', 'fa-user'],
-                '0' => ['Inactive Physician', 'fa-user-times']
+                '1' => [trans('noshform.active') . ' ' . trans('noshform.physician'), 'fa-user'],
+                '0' => [trans('noshform.inactive') . ' ' . trans('noshform.physician'), 'fa-user-times']
             ],
             '3' => [
-                '1' => ['Active Assistant', 'fa-user'],
-                '0' => ['Inactive Assistant', 'fa-user-times']
+                '1' => [trans('noshform.active') . ' ' . trans('noshform.assistant'), 'fa-user'],
+                '0' => [trans('noshform.inactive') . ' ' . trans('noshform.assistant'), 'fa-user-times']
             ],
             '4' => [
-                '1' => ['Active Biller', 'fa-user'],
-                '0' => ['Inactive Biller', 'fa-user-times']
+                '1' => [trans('noshform.active') . ' ' . trans('noshform.biller'), 'fa-user'],
+                '0' => [trans('noshform.inactive') . ' ' . trans('noshform.biller'), 'fa-user-times']
             ],
             '100' => [
-                '1' => ['Active Patient', 'fa-user'],
-                '0' => ['Inactive Patient', 'fa-user-times']
+                '1' => [trans('noshform.active') . ' ' . trans('noshform.patient'), 'fa-user'],
+                '0' => [trans('noshform.inactive') . ' ' . trans('noshform.patient'), 'fa-user-times']
             ]
         ];
         $dropdown_array = [
@@ -8389,7 +8389,7 @@ class CoreController extends Controller
             }
             $return .= $this->result_build($list_array, $type . '_'. $active . '_list');
         } else {
-            $return .= ' None.';
+            $return .= ' ' . trans('noshform.none') . '.';
         }
         $dropdown_array1 = [
             'items_button_icon' => 'fa-plus'
@@ -8397,26 +8397,26 @@ class CoreController extends Controller
         $items1 = [];
         $items1[] = [
             'type' => 'item',
-            'label' => 'Add Physician User',
+            'label' => trans('noshform.add') . ' ' . trans('noshform.physician') . ' ' . trans('noshform.user'),
             'icon' => 'fa-plus',
             'url' => route('core_form', ['users', $row_index, '0', '2'])
         ];
         $items1[] = [
             'type' => 'item',
-            'label' => 'Add Assistant User',
+            'label' => trans('noshform.add') . ' ' . trans('noshform.assistant') . ' ' . trans('noshform.user'),
             'icon' => 'fa-plus',
             'url' => route('core_form', ['users', $row_index, '0', '3'])
         ];
         $items1[] = [
             'type' => 'item',
-            'label' => 'Add Billing User',
+            'label' => trans('noshform.add') . ' ' . trans('noshform.billing') . ' ' . trans('noshform.user'),
             'icon' => 'fa-plus',
             'url' => route('core_form', ['users', $row_index, '0', '4'])
         ];
         $dropdown_array1['items'] = $items1;
         $data['panel_dropdown'] .= '<span class="fa-btn"></span>' . $this->dropdown_build($dropdown_array1);
         $data['content'] = $return;
-        $data['panel_header'] = 'Users';
+        $data['panel_header'] = trans('noshform.users');
         Session::put('last_page', $request->fullUrl());
         if (Session::get('group_id') == '1') {
             if (Session::has('download_ccda_entire')) {
@@ -8457,7 +8457,7 @@ class CoreController extends Controller
             return redirect()->route('dashboard');
         } else {
             $return = '';
-            $status = 'Add your signature:';
+            $status = trans('noshform.add_signature');
             if ($signature) {
                 if ($signature->signature !== '') {
                     if (file_exists($signature->signature)) {
@@ -8465,33 +8465,33 @@ class CoreController extends Controller
                         $temp_path = public_path() .'/temp/' . $name;
                         $url = asset('temp/' . $name);
                         copy($signature->signature, $temp_path);
-                        $return .= '<div class="row"><div class="col-md-3 col-md-offset-4"><h5>Current Signature</h5>';
+                        $return .= '<div class="row"><div class="col-md-3 col-md-offset-4"><h5>' . trans('noshform.current_signature') . '</h5>';
                         $return .= HTML::image($url, 'Signature', ['border' => '0']);
                         $return .= '</div></div>';
-                        $status = 'Update your signature:';
+                        $status = trans('noshform.update_signature');
                     }
                 }
             }
             $items[] = [
                 'name' => 'name',
-                'label' => 'Print your Name for Verification',
+                'label' => trans('noshform.verify_name'),
                 'type' => 'text',
                 'required' => true,
-                'placeholder' => 'First Last',
+                'placeholder' => trans('noshform.first_last'),
                 'default_value' => null
             ];
-            $intro = '<div class="row"><div class="col-md-3 col-md-offset-4"><p class="drawItDesc">'. $status . '</p><ul class="sigNav"><li class="drawIt"><a href="#draw-it">Draw It</a></li><li class="clearButton"><a href="#clear">Clear</a></li></ul>';
+            $intro = '<div class="row"><div class="col-md-3 col-md-offset-4"><p class="drawItDesc">'. $status . '</p><ul class="sigNav"><li class="drawIt"><a href="#draw-it">' . trans('noshform.draw_it') . '</a></li><li class="clearButton"><a href="#clear">' . trans('noshform.clear') . '</a></li></ul>';
             $intro .= '<div class="sig sigWrapper"><div class="typed"></div><canvas class="pad" width="198" height="55"></canvas><input type="hidden" name="output" class="output"></div></div></div><br>';
             $form_array = [
                 'form_id' => 'signature_form',
                 'action' => route('user_signature'),
                 'items' => $items,
-                'save_button_label' => 'Save',
+                'save_button_label' => trans('noshform.save'),
                 'intro' => $intro,
             ];
             $return .= $this->form_build($form_array);
             $data['content'] = $return;
-            $data['panel_header'] = 'Signature';
+            $data['panel_header'] = trans('noshform.signature');
             $data['assets_js'] = $this->assets_js('signature');
             $data['assets_css'] = $this->assets_css('signature');
             return view('core', $data);
@@ -8503,9 +8503,9 @@ class CoreController extends Controller
         $data['message_action'] = Session::get('message_action');
         Session::forget('message_action');
         $type_arr = [
-            'inventory' => ['Vaccine Inventory', 'fa-folder'],
-            'old_inventory' => ['Past Vaccine Inventory', 'fa-folder-o'],
-            'vaccine_temp' => ['Vaccine Temperatures', 'fa-thermometer-half']
+            'inventory' => [trans('noshform.vaccine_inventory'), 'fa-folder'],
+            'old_inventory' => [trans('noshform.past_vaccine_inventory'), 'fa-folder-o'],
+            'vaccine_temp' => [trans('noshform.vaccine_temperatures'), 'fa-thermometer-half']
         ];
         $dropdown_array = [
             'items_button_text' => $type_arr[$type][0]
@@ -8535,7 +8535,7 @@ class CoreController extends Controller
             if ($query->count()) {
                 $list_array = [];
                 foreach ($query as $row) {
-                    $arr['label'] = '<b>' . $row->imm_immunization . '</b><br><br><b>Quantity:</b> ' . $row->quantity . '<br><b>Date Purchased:</b> ' . date('Y-m-d', $this->human_to_unix($row->date_purchase));
+                    $arr['label'] = '<b>' . $row->imm_immunization . '</b><br><br><b>' . trans('noshform.quantity1') . ':</b> ' . $row->quantity . '<br><b>' . trans('noshform.date_purchase') . ':</b> ' . date('Y-m-d', $this->human_to_unix($row->date_purchase));
                     $arr['edit'] = route('core_form', ['vaccine_inventory', $row_index, $row->$row_index]);
                     $arr['inactivate'] = route('core_action', ['table' => 'vaccine_inventory', 'action' => 'inactivate', 'index' => $row_index, 'id' => $row->$row_index]);
                     $arr['delete'] = route('core_action', ['table' => 'vaccine_inventory', 'action' => 'delete', 'index' => $row_index, 'id' => $row->$row_index]);
@@ -8543,7 +8543,7 @@ class CoreController extends Controller
                 }
                 $return .= $this->result_build($list_array, 'vaccine_inventory_list');
             } else {
-                $return .= 'No vaccines.';
+                $return .= trans('noshform.no_vaccines') . '.';
             }
             $dropdown_array1 = [
                 'items_button_icon' => 'fa-plus'
@@ -8569,7 +8569,7 @@ class CoreController extends Controller
             if ($query->count()) {
                 $list_array = [];
                 foreach ($query as $row) {
-                    $arr['label'] = '<b>' . $row->imm_immunization . '</b><br><br><b>Quantity:</b> ' . $row->quantity . '<br><b>Date Purchased:</b> ' . date('Y-m-d', $this->human_to_unix($row->date_purchase));
+                    $arr['label'] = '<b>' . $row->imm_immunization . '</b><br><br><b>' . trans('noshform.quantity1') . ':</b> ' . $row->quantity . '<br><b>' . trans('noshform.date_purchase') . ':</b> ' . date('Y-m-d', $this->human_to_unix($row->date_purchase));
                     $arr['edit'] = route('core_form', ['vaccine_inventory', $row_index, $row->$row_index]);
                     $arr['reactivate'] = route('core_action', ['table' => 'vaccine_inventory', 'action' => 'reactivate', 'index' => $row_index, 'id' => $row->$row_index]);
                     $arr['delete'] = route('core_action', ['table' => 'vaccine_inventory', 'action' => 'delete', 'index' => $row_index, 'id' => $row->$row_index]);
@@ -8577,7 +8577,7 @@ class CoreController extends Controller
                 }
                 $return .= $this->result_build($list_array, 'old_vaccine_inventory_list');
             } else {
-                $return .= 'No vaccines.';
+                $return .= trans('noshform.no_vaccines') . '.';
             }
         }
         if ($type == 'vaccine_temp') {
@@ -8596,9 +8596,9 @@ class CoreController extends Controller
                 }
             }
             $head_arr = [
-                'Date' => 'date',
-                'Temperature' => 'temp',
-                'Action' => 'action',
+                trans('noshform.date') => 'date',
+                trans('noshform.temp') => 'temp',
+                trans('noshform.action') => 'action',
                 '' => 'delete'
             ];
             if (! empty($result)) {
@@ -8624,7 +8624,7 @@ class CoreController extends Controller
                 }
                 $return .= '</tbody></table>';
             } else {
-                $return .= ' No data.';
+                $return .= ' ' . trans('noshform.no_data') . '.';
             }
             $dropdown_array1 = [
                 'items_button_icon' => 'fa-plus'
@@ -8632,7 +8632,7 @@ class CoreController extends Controller
             $items1 = [];
             $items1[] = [
                 'type' => 'item',
-                'label' => 'Add Temperatre',
+                'label' => trans('noshform.add_temperature'),
                 'icon' => 'fa-plus',
                 'url' => route('core_form', ['vaccine_temp', $row_index, '0'])
             ];
@@ -8640,7 +8640,7 @@ class CoreController extends Controller
             $data['panel_dropdown'] .= '<span class="fa-btn"></span>' . $this->dropdown_build($dropdown_array1);
         }
         $data['content'] = $return;
-        $data['panel_header'] = 'Vaccines';
+        $data['panel_header'] = trans('noshform.vaccines');
         Session::put('last_page', $request->fullUrl());
         $data['assets_js'] = $this->assets_js();
         $data['assets_css'] = $this->assets_css();

@@ -46,13 +46,22 @@ class PostAuth
         Session::put('notification_run', 'true');
         $user = DB::table('users')->where('id', '=', Session::get('user_id'))->first();
         $locale = Config::get('app.locale');
+        if ($practice->locale == null) {
+            $practice_data['locale'] = $locale;
+            DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->update($practice_data);
+            $practice_locale = $locale;
+        } else {
+            $practice_locale = $practice->locale;
+        }
         if ($user->locale == null) {
-            $user_data['locale'] = $locale;
+            $user_data['locale'] = $practice_locale;
             DB::table('users')->where('id', '=', Session::get('user_id'))->update($user_data);
         } else {
             $locale = $user->locale;
         }
         App::setLocale($locale);
+        Session::put('user_locale', $locale);
+        Session::put('practice_locale', $practice_locale);
         // Check if pNOSH for provider that patient's demographic supplementary tables exist
         if (Session::get('patient_centric') == 'yp') {
             $relate = DB::table('demographics_notes')->where('pid', '=', Session::get('pid'))->where('practice_id', '=', Session::get('practice_id'))->first();
