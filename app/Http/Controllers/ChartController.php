@@ -881,7 +881,7 @@ class ChartController extends Controller {
                 'fhir_url' => '',
                 'fhir_auth_url' => '',
                 'fhir_token_url' => '',
-                'type' => 'cms_bluebutton_sandbox',
+                'type' => 'cms_bluebutton',
                 'cms_pid' => '',
                 'refresh_token' => ''
             ];
@@ -958,8 +958,8 @@ class ChartController extends Controller {
     public function cms_bluebutton_display(Request $request, $type='Summary')
     {
         $token = Session::get('cms_access_token');
-        $base_url = 'https://sandbox.bluebutton.cms.gov';
-        // $base_url = 'https://api.bluebutton.cms.gov';
+        // $base_url = 'https://sandbox.bluebutton.cms.gov';
+        $base_url = 'https://api.bluebutton.cms.gov';
         $title_array = [
             'Summary' => [trans('noshform.patient_summary'), 'fa-address-card', '/v1/connect/userinfo'],
             'EOB' => [trans('noshform.explanation_of_benefit'), 'fa-money', '/v1/fhir/ExplanationOfBenefit/?patient=' . Session::get('cms_pid')],
