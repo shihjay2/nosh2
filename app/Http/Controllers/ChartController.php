@@ -920,8 +920,8 @@ class ChartController extends Controller {
                 $access_token = $oidc_response1['tokens']['access_token'];
                 $refresh_token = $oidc_response1['tokens']['refresh_token'];
                 $cms_pid = $oidc_response1['tokens']['patient'];
-                $base_url = 'https://sandbox.bluebutton.cms.gov';
-                // $base_url = 'https://api.bluebutton.cms.gov';
+                // $base_url = 'https://sandbox.bluebutton.cms.gov';
+                $base_url = 'https://api.bluebutton.cms.gov';
                 $connected1 = DB::table('refresh_tokens')->where('practice_id', '=', '1')->where('endpoint_uri', '=', $base_url)->first();
                 if (!$connected1) {
                     $refresh = [
