@@ -885,4 +885,5 @@ return [
     "cms_bluebutton_eob_quantity" => "Quantity",
     "cms_bluebutton_eob_diagnosis" => "Diagnosis Code",
     "cms_bluebutton_eob_adjudications" => "Adjudications",
+    "details" => "Details",
 ];

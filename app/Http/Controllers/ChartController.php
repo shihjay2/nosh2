@@ -973,17 +973,20 @@ class ChartController extends Controller {
         ];
         $dropdown_array['items'] = $items;
         $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
-        $data['content'] = json_encode($result);
-        // foreach ($sub[$sequence] as $sub_row) {
-        //     $data['content'] .= '<strong>' . trans('noshform.cms_bluebutton_eob_date') . ': </strong>' . $sub_row['date'] . '<br>';
-        //     $data['content'] .= '<strong>' . trans('noshform.cms_bluebutton_eob_quantity') . ': </strong>' . $sub_row['quantity'] . '<br>';
-        //     $data['content'] .= '<strong>' . trans('noshform.cms_bluebutton_eob_diagnosis') . ': </strong>' . $sub_row['diagnosis'] . '<br>';
-        //     $data['content'] .= '<strong>' . trans('noshform.cms_bluebutton_eob_adjudications') . ': </strong><ul>';
-        //     foreach ($sub_row['adjudications'] as $row) {
-        //         $data['content'] .= '<li>' . $row . '</li>';
-        //     }
-        //     $data['content'] .= '</ul>';
-        // }
+        $data['content'] = '<strong>' . trans('noshform.status') . ':</strong>' . $result['status'] . '<br>';
+        $extension_arr = [];
+        foreach ($result['extension'] as $row) {
+            if (isset($row['valueCoding']['display'])) {
+                if (!in_array($row['valueCoding']['display'], $extension_arr)) {
+                    $extension_arr[] = $row['valueCoding']['display'];
+                }
+            }
+        }
+        $data['content'] .= '<strong>' . trans('noshform.details') . ':</strong><br><ul>';
+        foreach ($extension_arr as $row1) {
+            $data['content'] .= '<li>' . $row1 . '</li>';
+        }
+        $data['content'] .= '</ul>';
         $data['assets_js'] = $this->assets_js('chart');
         $data['assets_css'] = $this->assets_css('chart');
         $data['billing_active'] = true;
