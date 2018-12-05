@@ -1100,6 +1100,9 @@ class ChartController extends Controller {
                                                 $adj_session = [];
                                                 foreach ($sub_row['adjudication'] as $adj_row) {
                                                     $adj_session_text = $adj_row['category']['coding'][0]['code'];
+                                                    if (isset($adj_row['category']['coding'][0]['display'])) {
+                                                        $adj_session_text = $adj_row['category']['coding'][0]['display'];
+                                                    }
                                                     if (isset($adj_row['amount'])) {
                                                         $adj_session_text .= ', ' . $adj_row['amount']['value'] . ' ' . $adj_row['amount']['code'];
                                                     }
