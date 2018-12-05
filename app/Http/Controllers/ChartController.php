@@ -973,7 +973,7 @@ class ChartController extends Controller {
         ];
         $dropdown_array['items'] = $items;
         $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
-        $data['content'] = '<strong>' . trans('noshform.status') . ':</strong>' . $result['status'] . '<br>';
+        $data['content'] = '<strong>' . trans('noshform.status') . ':</strong> ' . ucfirst($result['status']) . '<br>';
         $extension_arr = [];
         foreach ($result['extension'] as $row) {
             if (isset($row['valueCoding']['display'])) {
