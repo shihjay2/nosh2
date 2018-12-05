@@ -955,6 +955,43 @@ class ChartController extends Controller {
         }
     }
 
+    public function cms_bluebutton_coverage(Request $request, $id)
+    {
+        $token = Session::get('cms_access_token');
+        // $base_url = 'https://sandbox.bluebutton.cms.gov';
+        $base_url = 'https://api.bluebutton.cms.gov';
+        $data['panel_header'] = trans('noshform.cms_bluebutton_display') . ' - ' . trans('noshform.coverage');
+        $url = $base_url . '/v1/fhir/Coverage/' . $id;
+        $result = $this->fhir_request($url,false,$token,true);
+        $dropdown_array = [];
+        $items = [];
+        $items[] = [
+            'type' => 'item',
+            'label' => trans('noshform.back'),
+            'icon' => 'fa-chevron-left',
+            'url' => route('cms_bluebutton_display', ['Coverage'])
+        ];
+        $dropdown_array['items'] = $items;
+        $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
+        $data['content'] = json_encode($result);
+        // foreach ($sub[$sequence] as $sub_row) {
+        //     $data['content'] .= '<strong>' . trans('noshform.cms_bluebutton_eob_date') . ': </strong>' . $sub_row['date'] . '<br>';
+        //     $data['content'] .= '<strong>' . trans('noshform.cms_bluebutton_eob_quantity') . ': </strong>' . $sub_row['quantity'] . '<br>';
+        //     $data['content'] .= '<strong>' . trans('noshform.cms_bluebutton_eob_diagnosis') . ': </strong>' . $sub_row['diagnosis'] . '<br>';
+        //     $data['content'] .= '<strong>' . trans('noshform.cms_bluebutton_eob_adjudications') . ': </strong><ul>';
+        //     foreach ($sub_row['adjudications'] as $row) {
+        //         $data['content'] .= '<li>' . $row . '</li>';
+        //     }
+        //     $data['content'] .= '</ul>';
+        // }
+        $data['assets_js'] = $this->assets_js('chart');
+        $data['assets_css'] = $this->assets_css('chart');
+        $data['billing_active'] = true;
+        Session::put('last_page', $request->fullUrl());
+        $data = array_merge($data, $this->sidebar_build('chart'));
+        return view('chart', $data);
+    }
+
     public function cms_bluebutton_display(Request $request, $type='Summary')
     {
         $token = Session::get('cms_access_token');
@@ -1030,6 +1067,7 @@ class ChartController extends Controller {
                                     if ($row1['resource']['status'] == 'active') {
                                         $arr = [];
                                         $arr['label'] = (string) $row1['resource']['type']['coding'][0]['system'] . ' ' . $row1['resource']['type']['coding'][0]['code'] . ', ID: ' . $row1['resource']['id'];
+                                        $arr['view'] = route('cms_bluebutton_coverage', [$row1['resource']['id']]);
                                         $list_array[] = $arr;
                                     }
                                 }
