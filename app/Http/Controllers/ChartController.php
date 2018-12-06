@@ -908,7 +908,8 @@ class ChartController extends Controller {
                 if ($as !== '') {
                     $practice = DB::table('practiceinfo')->where('practice_id', '=', '1')->first();
                     if (!empty($practice->uma_uri)) {
-                        return redirect($practice->uma_uri);
+                        $html = 'Error: ' . $oidc_response1['message'] . '<br><a href="' . $practice->uma_uri . '">Click here to return to your authorization server</a>';
+                        return $html;
                     }
                 }
                 Session::put('message_action', $oidc_response['message']);
@@ -949,7 +950,8 @@ class ChartController extends Controller {
                 if ($as !== '') {
                     $practice = DB::table('practiceinfo')->where('practice_id', '=', '1')->first();
                     if (!empty($practice->uma_uri)) {
-                        return redirect($practice->uma_uri);
+                        $html = 'Error: ' . $oidc_response1['message'] . '<br><a href="' . $practice->uma_uri . '">Click here to return to your authorization server</a>';
+                        return $html;
                     }
                 }
                 Session::put('message_action', $oidc_response1['message']);
