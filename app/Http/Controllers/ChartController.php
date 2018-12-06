@@ -905,6 +905,7 @@ class ChartController extends Controller {
                 Session::put('oidc_relay', $oidc_response['state']);
                 return redirect($oidc_response['url']);
             } else {
+                return 'Error1';
                 if ($as !== '') {
                     $practice = DB::table('practiceinfo')->where('practice_id', '=', '1')->first();
                     if (!empty($practice->uma_uri)) {
