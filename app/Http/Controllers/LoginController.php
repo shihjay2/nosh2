@@ -1253,13 +1253,15 @@ class LoginController extends Controller {
         if ($connected->count()) {
             foreach ($connected as $connect_row) {
                 if ($connect_row->pnosh !== null && $connect_row->pnosh !== '') {
-                    if ($connect_row->pnosh == 'Medicare Benefits' && $connect_row->endpoint_uri !== 'https://sandbox.bluebutton.cms.gov') {
-                        $connected_arr[] = [
-                            'org_name' => $connect_row->pnosh,
-                            'endpoint_uri' => route('cms_bluebutton'),
-                            'endpoint_uri_raw' => $connect_row->endpoint_uri,
-                            'client_id' => $connect_row->client_id
-                        ];
+                    if ($connect_row->pnosh == 'Medicare Benefits') {
+                        if ($connect_row->endpoint_uri !== 'https://sandbox.bluebutton.cms.gov') {
+                            $connected_arr[] = [
+                                'org_name' => $connect_row->pnosh,
+                                'endpoint_uri' => route('cms_bluebutton'),
+                                'endpoint_uri_raw' => $connect_row->endpoint_uri,
+                                'client_id' => $connect_row->client_id
+                            ];
+                        }
                     } else {
                         $id = array_search($connect_row->endpoint_uri, array_column($result_array['Entries'], 'FHIRPatientFacingURI'));
                         $client_id = $practice->openepic_client_id;
