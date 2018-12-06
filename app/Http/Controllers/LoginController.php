@@ -1257,7 +1257,7 @@ class LoginController extends Controller {
                         if ($connect_row->endpoint_uri !== 'https://sandbox.bluebutton.cms.gov') {
                             $connected_arr[] = [
                                 'org_name' => $connect_row->pnosh,
-                                'endpoint_uri' => route('cms_bluebutton'),
+                                'endpoint_uri' => route('cms_bluebutton', ['y']),
                                 'endpoint_uri_raw' => $connect_row->endpoint_uri,
                                 'client_id' => $connect_row->client_id
                             ];
