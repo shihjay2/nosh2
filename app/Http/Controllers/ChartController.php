@@ -874,6 +874,8 @@ class ChartController extends Controller {
         $data['panel_header'] = 'Connect to CMS Bluebutton';
         $data['message_action'] = Session::get('message_action');
         Session::forget('message_action');
+        $base_url = 'https://api.bluebutton.cms.gov';
+        $connected1 = DB::table('refresh_tokens')->where('practice_id', '=', '1')->where('endpoint_uri', '=', $base_url)->first();
         if (! Session::has('oidc_relay')) {
             $param = [
                 'origin_uri' => route('cms_bluebutton', [$as]),
@@ -895,6 +897,9 @@ class ChartController extends Controller {
             //     'cms_pid' => '',
             //     'refresh_token' => ''
             // ];
+            if ($connected1) {
+                $param['refresh_token'] = $connected1->refresh_token;
+            }
             $oidc_response = $this->oidc_relay($param);
             if ($oidc_response['message'] == 'OK') {
                 Session::put('oidc_relay', $oidc_response['state']);
@@ -921,8 +926,6 @@ class ChartController extends Controller {
                 $refresh_token = $oidc_response1['tokens']['refresh_token'];
                 $cms_pid = $oidc_response1['tokens']['patient'];
                 // $base_url = 'https://sandbox.bluebutton.cms.gov';
-                $base_url = 'https://api.bluebutton.cms.gov';
-                $connected1 = DB::table('refresh_tokens')->where('practice_id', '=', '1')->where('endpoint_uri', '=', $base_url)->first();
                 if (!$connected1) {
                     $refresh = [
                         'refresh_token' => $refresh_token,
