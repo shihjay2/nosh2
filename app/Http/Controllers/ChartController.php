@@ -7267,6 +7267,12 @@ class ChartController extends Controller {
                 'url' => route('chart_form', ['demographics', 'pid', Session::get('pid'), 'cc'])
             ];
         }
+        $items1[] = [
+            'type' => 'item',
+            'label' => trans('nosh.medicare_connect'),
+            'icon' => 'fa-plug',
+            'url' => route('cms_bluebutton')
+        ];
         $dropdown_array1['items'] = $items1;
         $data['panel_dropdown'] .= '<span class="fa-btn"></span>' . $this->dropdown_build($dropdown_array1);
         Session::put('last_page', $request->fullUrl());
