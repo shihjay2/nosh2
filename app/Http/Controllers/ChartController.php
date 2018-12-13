@@ -981,17 +981,19 @@ class ChartController extends Controller {
         $data['content'] = '<strong>' . trans('noshform.type') . ':</strong> ' . $result['grouping']['subGroup'] . ' ' . $result['grouping']['subPlan'] . '<br>';
         $data['content'] .= '<strong>' . trans('noshform.insurance_id_num') . ':</strong> ' . $result['id'] . '<br>';
         $data['content'] .= '<strong>' . trans('noshform.status') . ':</strong> ' . ucfirst($result['status']) . '<br>';
-        $extension_arr = [];
-        foreach ($result['extension'] as $row) {
-            if (isset($row['valueCoding']['display'])) {
-                if (!in_array($row['valueCoding']['display'], $extension_arr)) {
-                    $extension_arr[] = $row['valueCoding']['display'];
+        if (isset($result['extension'])) {
+            $extension_arr = [];
+            foreach ($result['extension'] as $row) {
+                if (isset($row['valueCoding']['display'])) {
+                    if (!in_array($row['valueCoding']['display'], $extension_arr)) {
+                        $extension_arr[] = $row['valueCoding']['display'];
+                    }
                 }
             }
-        }
-        $data['content'] .= '<strong>' . trans('noshform.details') . ':</strong><br><ul>';
-        foreach ($extension_arr as $row1) {
-            $data['content'] .= '<li>' . $row1 . '</li>';
+            $data['content'] .= '<strong>' . trans('noshform.details') . ':</strong><br><ul>';
+            foreach ($extension_arr as $row1) {
+                $data['content'] .= '<li>' . $row1 . '</li>';
+            }
         }
         $data['content'] .= '</ul>';
         $data['assets_js'] = $this->assets_js('chart');
