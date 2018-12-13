@@ -393,12 +393,6 @@ class CoreController extends Controller
                 'icon' => 'fa-shopping-basket',
                 'url' => route('billing_list', ['misc', $pid])
             ];
-            $items[] = [
-                'type' => 'item',
-                'label' => 'CMS Bluebutton Data',
-                'icon' => 'fa-money',
-                'url' => route('cms_bluebutton')
-            ];
         } else {
             $others = DB::table('billing_core')->where('pid', '=', $pid)->where('eid', '=', '0')->where('payment', '=', '0')->where('practice_id', '=', Session::get('practice_id'))->orderBy('dos_f', 'desc')->get();
             if ($others->count()) {

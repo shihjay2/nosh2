@@ -1000,10 +1000,22 @@ class ChartController extends Controller {
         $data['content'] .= '<div id="json_coverage" class="collapse">' . json_encode($result, JSON_PRETTY_PRINT) . '</div>';
         $data['assets_js'] = $this->assets_js('chart');
         $data['assets_css'] = $this->assets_css('chart');
-        $data['billing_active'] = true;
+        $data['payors_active'] = true;
         Session::put('last_page', $request->fullUrl());
         $data = array_merge($data, $this->sidebar_build('chart'));
         return view('chart', $data);
+    }
+
+    public function cms_bluebutton_disconnect(Request $request)
+    {
+        $base_url = 'https://api.bluebutton.cms.gov';
+        $connected1 = DB::table('refresh_tokens')->where('practice_id', '=', '1')->where('endpoint_uri', '=', $base_url)->first();
+        if ($connected1) {
+            DB::table('refresh_tokens')->where('id', '=', $connected1->id)->delete();
+            $this->audit('Delete');
+            Session::put('message_action', 'Disconnected from Medicare');
+        }
+        return redirect()->route('payors_list', ['active']);
     }
 
     public function cms_bluebutton_display(Request $request, $type='Summary')
@@ -1157,7 +1169,7 @@ class ChartController extends Controller {
         $data['content'] .= '<div id="json_coverage" class="collapse">' . json_encode($result, JSON_PRETTY_PRINT) . '</div>';
         $data['assets_js'] = $this->assets_js('chart');
         $data['assets_css'] = $this->assets_css('chart');
-        $data['billing_active'] = true;
+        $data['payors_active'] = true;
         Session::put('last_page', $request->fullUrl());
         $data = array_merge($data, $this->sidebar_build('chart'));
         return view('chart', $data);
@@ -1190,7 +1202,7 @@ class ChartController extends Controller {
         }
         $data['assets_js'] = $this->assets_js('chart');
         $data['assets_css'] = $this->assets_css('chart');
-        $data['billing_active'] = true;
+        $data['payors_active'] = true;
         Session::put('last_page', $request->fullUrl());
         $data = array_merge($data, $this->sidebar_build('chart'));
         return view('chart', $data);
@@ -7227,6 +7239,7 @@ class ChartController extends Controller {
         $connected1 = DB::table('refresh_tokens')->where('practice_id', '=', '1')->where('endpoint_uri', '=', $base_url)->first();
         $arr_medicare['label'] = '<b>Connected to Medicare</b>';
         $arr_medicare['edit'] = route('cms_bluebutton');
+        $arr_medicare['delete'] = route('cms_bluebutton_disconnect');
         if ($result->count()) {
             $list_array = [];
             foreach ($result as $row) {
