@@ -7250,16 +7250,16 @@ class ChartController extends Controller {
             }
             $return .= $this->result_build($list_array, 'payors_list');
         } else {
+            $list_array1 = [];
             if ($type == 'active' && $cc_active == true) {
-                $list_array1 = [];
                 $arr2['label'] = '<b>Credit Card</b> - ' . $query1->creditcard_type . ' - ' . decrypt($query1->creditcard_number);
                 $arr2['edit'] = route('chart_form', ['demographics', 'pid', Session::get('pid'), 'cc']);
                 $list_array1[] = $arr2;
-                $return .= $this->result_build($list_array1, 'payors_list');
             }
             if ($connected1) {
-                $list_array[] = $arr_medicare;
+                $list_array1[] = $arr_medicare;
             }
+            $return .= $this->result_build($list_array1, 'payors_list');
         }
         $data['content'] = $return;
         $data['payors_active'] = true;
