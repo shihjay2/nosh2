@@ -7220,6 +7220,11 @@ class ChartController extends Controller {
         $return = '';
         $columns = Schema::getColumnListing('insurance');
         $row_index = $columns[0];
+        // Medicare Bluebutton
+        $base_url = 'https://api.bluebutton.cms.gov';
+        $connected1 = DB::table('refresh_tokens')->where('practice_id', '=', '1')->where('endpoint_uri', '=', $base_url)->first();
+        $arr_medicare['label'] = '<b>Connected to Medicare</b>';
+        $arr_medicare['edit'] = route('cms_bluebutton');
         if ($result->count()) {
             $list_array = [];
             foreach ($result as $row) {
@@ -7240,6 +7245,9 @@ class ChartController extends Controller {
                 $arr1['edit'] = route('chart_form', ['demographics', 'pid', Session::get('pid'), 'cc']);
                 $list_array[] = $arr1;
             }
+            if ($connected1) {
+                $list_array[] = $arr_medicare;
+            }
             $return .= $this->result_build($list_array, 'payors_list');
         } else {
             if ($type == 'active' && $cc_active == true) {
@@ -7248,6 +7256,9 @@ class ChartController extends Controller {
                 $arr2['edit'] = route('chart_form', ['demographics', 'pid', Session::get('pid'), 'cc']);
                 $list_array1[] = $arr2;
                 $return .= $this->result_build($list_array1, 'payors_list');
+            }
+            if ($connected1) {
+                $list_array[] = $arr_medicare;
             }
         }
         $data['content'] = $return;
