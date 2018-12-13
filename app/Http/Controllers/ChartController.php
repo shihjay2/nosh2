@@ -997,7 +997,7 @@ class ChartController extends Controller {
             $data['content'] .= '</ul>';
         }
         $data['content'] .= '<br><button data-toggle="collapse" data-target="#json_coverage">JSON</button>';
-        $data['content'] .= '<div id="json_coverage">' . json_encode($result, JSON_PRETTY_PRINT) . '</div>';
+        $data['content'] .= '<div id="json_coverage" class="collapse">' . json_encode($result, JSON_PRETTY_PRINT) . '</div>';
         $data['assets_js'] = $this->assets_js('chart');
         $data['assets_css'] = $this->assets_css('chart');
         $data['billing_active'] = true;
