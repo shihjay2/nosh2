@@ -610,11 +610,11 @@ class AjaxSearchController extends Controller {
         $reader = Excel::load(resource_path() . '/cvx.txt');
         $arr = $reader->noHeading()->get()->toArray();
         foreach ($arr as $row) {
-            if ($row[4] == 'Active') {
+            if ($row[6] == 'Active') {
                 $pre[] = [
-                    'cvx' => rtrim($row[0]),
+                    'cvx' => rtrim($row[2]),
                     'short_desc' => $row[1],
-                    'long_desc' => ucfirst($row[2])
+                    'long_desc' => ucfirst($row[0])
                 ];
             }
         }
@@ -629,7 +629,13 @@ class AjaxSearchController extends Controller {
                     return true;
                 }
             });
-            $result1 = array_merge($result1a, $result1b);
+            $result1c = array_where($pre, function($value, $key) use ($q) {
+                if (stripos($value['short_desc'] , $q) !== false) {
+                    return true;
+                }
+            });
+            $result1d = array_merge($result1a, $result1b);
+            $result1 = array_merge($result1d, $result1c);
         } else {
             $result1 = array_where($pre, function($value, $key) use ($pos1) {
                 if ($this->striposa($value['long_desc'] , $pos1) !== false) {
@@ -642,8 +648,8 @@ class AjaxSearchController extends Controller {
             foreach ($result1 as $row1) {
                 if (array_search($row1['cvx'], array_column($data['message'], 'cvx')) === false) {
                     $data['message'][] = [
-                        'label' => $row1['short_desc'],
-                        'value' => $row1['long_desc'],
+                        'label' => $row1['short_desc'] . ', AKA ' . $row1['long_desc'],
+                        'value' => $row1['short_desc'],
                         'cvx' => $row1['cvx']
                     ];
                 }

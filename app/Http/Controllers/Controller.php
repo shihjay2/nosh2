@@ -3937,9 +3937,9 @@ class Controller extends BaseController
         $arr = $reader->noHeading()->get()->toArray();
         $return = '';
         foreach ($arr as $row) {
-            if ($row[4] == 'Active') {
-                if (rtrim($row[0]) == $code) {
-                    $return = ucfirst($row[2]);
+            if ($row[6] == 'Active') {
+                if (rtrim($row[2]) == $code) {
+                    $return = ucfirst($row[0]);
                     break;
                 }
 
