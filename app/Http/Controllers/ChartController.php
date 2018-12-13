@@ -1078,12 +1078,14 @@ class ChartController extends Controller {
                         if ($result['total'] > 0) {
                             foreach ($result['entry'] as $row1) {
                                 if (isset($row1['resource']['status'])) {
-                                    if ($row1['resource']['status'] == 'active') {
-                                        $arr = [];
-                                        $arr['label'] = (string) $row1['resource']['type']['coding'][0]['system'] . ' ' . $row1['resource']['type']['coding'][0]['code'] . ', ID: ' . $row1['resource']['id'];
-                                        $arr['view'] = route('cms_bluebutton_coverage', [$row1['resource']['id']]);
-                                        $list_array[] = $arr;
+                                    $arr = [];
+                                    $arr['label'] = (string) $row1['resource']['type']['coding'][0]['system'] . ' ' . $row1['resource']['type']['coding'][0]['code'] . ', ID: ' . $row1['resource']['id'];
+                                    $arr['label'] .= ', Status: ' . cfirst($row1['resource']['status']);
+                                    $arr['view'] = route('cms_bluebutton_coverage', [$row1['resource']['id']]);
+                                    if ($row1['resource']['status'] !== 'active') {
+                                        $arr['danger'] = true;
                                     }
+                                    $list_array[] = $arr;
                                 }
                             }
                         }
