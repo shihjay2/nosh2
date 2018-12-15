@@ -1362,6 +1362,8 @@ class InstallController extends Controller {
 
     public function update_system(Request $request, $type='')
     {
+        $current_version = File::get(base_path() . "/.version");
+        $composer = false;
         if ($type !== '') {
             if ($type == 'composer_install') {
                 $install = new Process("/usr/local/bin/composer install");
@@ -1428,9 +1430,7 @@ class InstallController extends Controller {
                 $return = "Wrong version number";
             }
         } else {
-            $current_version = File::get(base_path() . '/.version');
             $result = $this->github_all();
-            $composer = false;
             if ($current_version != $result[0]['sha']) {
                 $arr = [];
                 foreach ($result as $row) {
