@@ -3128,7 +3128,6 @@ class ChartController extends Controller {
     public function document_upload(Request $request)
     {
         ini_set('memory_limit','196M');
-        ini_set('upload_max_filesize', '512M');
         ini_set('max_execution_time', '300');
         if ($request->isMethod('post')) {
             $pid = Session::get('pid');
