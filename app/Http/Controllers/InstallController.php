@@ -1362,6 +1362,8 @@ class InstallController extends Controller {
 
     public function update_system(Request $request, $type='')
     {
+        ini_set('memory_limit','196M');
+        ini_set('max_execution_time', '300');
         $current_version = File::get(base_path() . "/.version");
         $composer = false;
         if ($type !== '') {

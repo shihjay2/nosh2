@@ -199,7 +199,7 @@ APACHE_CONF="$APACHE_CONF
 	RewriteCond %{HTTPS} !=on
 	RewriteCond %{HTTP_HOST} !=localhost
 	RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
-	<IfModule mod_php5.c>
+	<IfModule mod_php7.c>
 		php_value upload_max_filesize 512M
 		php_value post_max_size 512M
 		php_flag magic_quotes_gpc off
