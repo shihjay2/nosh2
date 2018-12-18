@@ -1398,7 +1398,7 @@ class LoginController extends Controller {
                 }
             }
             setcookie("login_attempts", 0, time()+900, '/');
-            return redirect(Session::get('url.intended'));
+            return redirect(Session::get('url.intended', url('/')));
         } else {
             $practice_npi = $npi;
             // $practice_id = false;
@@ -1502,7 +1502,7 @@ class LoginController extends Controller {
             Session::put('uma_auth_access_token', $access_token);
             Session::put('uport_id', $uport_id);
             setcookie("login_attempts", 0, time()+900, '/');
-            return redirect(Session::get('url.intended'));
+            return redirect(Session::get('url.intended', url('/')));
         }
     }
 
