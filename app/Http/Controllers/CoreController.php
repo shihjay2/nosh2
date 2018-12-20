@@ -8104,7 +8104,7 @@ class CoreController extends Controller
                 'label' => "URL of Patient's Authorization Server",
                 'type' => 'text',
                 'required' => true,
-                'default_value' => null
+                'default_value' => 'https://'
             ];
             $form_array = [
                 'form_id' => 'uma_list_form',
@@ -8141,7 +8141,7 @@ class CoreController extends Controller
         $oidc->startSession();
         $oidc->setSessionName('nosh');
         $oidc->setRedirectURL(route('uma_register_auth'));
-        $oidc->setSessionName('pnosh');
+        // $oidc->setSessionName('pnosh');
         $oidc->setUMA(true);
         $oidc->setUMAType('client');
         $oidc->authenticate();
