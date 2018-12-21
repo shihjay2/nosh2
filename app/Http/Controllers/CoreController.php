@@ -8027,13 +8027,14 @@ class CoreController extends Controller
                 }
             }
         }
-        if (Session::get('uma_pid') == Session::get('pid')) {
-            $data = array_merge($data, $this->sidebar_build('chart'));
-            $data['assets_js'] = $this->assets_js('chart');
-            $data['assets_css'] = $this->assets_css('chart');
-        } else {
-            $data['assets_js'] = $this->assets_js();
-            $data['assets_css'] = $this->assets_css();
+        $data['assets_js'] = $this->assets_js();
+        $data['assets_css'] = $this->assets_css();
+        if (Session::has('uma_pid') || Session::has('pid')) {
+            if (Session::get('uma_pid') == Session::get('pid')) {
+                $data = array_merge($data, $this->sidebar_build('chart'));
+                $data['assets_js'] = $this->assets_js('chart');
+                $data['assets_css'] = $this->assets_css('chart');
+            }
         }
         return view('core', $data);
     }
