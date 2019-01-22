@@ -68,7 +68,7 @@ collation_server = 'utf8_general_ci'" >> /etc/mysql/my.cnf
 # Configure Maria Remote Access
 sed -i '/^bind-address/s/bind-address.*=.*/bind-address = 0.0.0.0/' /etc/mysql/my.cnf
 mysql --user="root" --password="$MYSQL_PASSWORD" -e "GRANT ALL ON *.* TO root@'0.0.0.0' IDENTIFIED BY '$MYSQL_PASSWORD' WITH GRANT OPTION;"
-mysql --user="root" --password="$MYSQL_PASSWORD" -e "CREATE USER '$MYSQL_USERNAME'@'0.0.0.0' IDENTIFIED BY '$MYSQL_PASSWORD';"
+mysql --user="root" --password="$MYSQL_PASSWORD" -e "CREATE OR REPLACE USER '$MYSQL_USERNAME'@'0.0.0.0' IDENTIFIED BY '$MYSQL_PASSWORD';"
 mysql --user="root" --password="$MYSQL_PASSWORD" -e "GRANT ALL ON *.* TO '$MYSQL_USERNAME'@'0.0.0.0' IDENTIFIED BY '$MYSQL_PASSWORD' WITH GRANT OPTION;"
 mysql --user="root" --password="$MYSQL_PASSWORD" -e "GRANT ALL ON *.* TO '$MYSQL_USERNAME'@'%' IDENTIFIED BY '$MYSQL_PASSWORD' WITH GRANT OPTION;"
 mysql --user="root" --password="$MYSQL_PASSWORD" -e "FLUSH PRIVILEGES;"
