@@ -8,6 +8,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesResources;
 
+use App;
 use App\Libraries\Phaxio;
 use Cezpdf;
 use Config;
@@ -178,17 +179,18 @@ class Controller extends BaseController
             $query = DB::table('rx_list')->where('pid', '=', $pid)->where('rxl_date_inactive', '=', '0000-00-00 00:00:00')->where('rxl_date_old', '=', '0000-00-00 00:00:00')->first();
         }
         if($query) {
+            App::setLocale(Session::get('practice_locale'));
             $query1 = DB::table('alerts')
                 ->where('pid', '=', $pid)
                 ->where('alert_date_complete', '=', '0000-00-00 00:00:00')
                 ->where('alert_reason_not_complete', '=', '')
-                ->where('alert', '=', 'Medication Therapy Management')
+                ->where('alert', '=', trans('noshform.alert_mtm'))
                 ->where('practice_id', '=', $practice_id)
                 ->first();
             if (!$query1) {
                 $data = [
-                    'alert' => 'Medication Therapy Management',
-                    'alert_description' => 'Medication therapy management is needed due to more than 2 active medications or issues.',
+                    'alert' => trans('noshform.alert_mtm'),
+                    'alert_description' => trans('noshform.alert_mtm1'),
                     'alert_date_active' => date('Y-m-d H:i:s', time()),
                     'alert_date_complete' => '',
                     'alert_reason_not_complete' => '',
@@ -198,6 +200,7 @@ class Controller extends BaseController
                 DB::table('alerts')->insert($data);
                 $this->audit('Add');
             }
+            App::setLocale(Session::get('user_locale'));
         }
         return true;
     }
@@ -1501,6 +1504,30 @@ class Controller extends BaseController
         return $ethnicity;
     }
 
+    protected function array_family()
+    {
+        $family = [
+            '' => '',
+            'Father' => trans('noshform.father'),
+            'Mother' => trans('noshform.mother'),
+            'Brother' => trans('noshform.brother'),
+            'Sister' => trans('noshform.sister'),
+            'Son' => trans('noshform.son'),
+            'Daughter' => trans('noshform.daughter'),
+            'Spouse' => trans('noshform.spouse'),
+            'Partner' => trans('noshform.partner'),
+            'Paternal Uncle' => trans('noshform.paternal_uncle'),
+            'Paternal Aunt' => trans('noshform.paternal_aunt'),
+            'Maternal Uncle' => trans('noshform.maternal_uncle'),
+            'Maternal Aunt' => trans('noshform.maternal_aunt'),
+            'Maternal Grandfather' => trans('noshform.maternal_grandfather'),
+            'Maternal Grandmother' => trans('noshform.maternal_grandmother'),
+            'Paternal Grandfather' => trans('noshform.paternal_grandfather'),
+            'Paternal Grandmother' => trans('noshform.paternal_grandmother')
+        ];
+        return $family;
+    }
+
     protected function array_gender()
     {
         $gender = [
@@ -1598,27 +1625,27 @@ class Controller extends BaseController
     protected function array_labs()
     {
         $ua = [
-            'labs_ua_urobili' => 'Urobilinogen',
-            'labs_ua_bilirubin' => 'Bilirubin',
-            'labs_ua_ketones' => 'Ketones',
-            'labs_ua_glucose' => 'Glucose',
-            'labs_ua_protein' => 'Protein',
-            'labs_ua_nitrites' => 'Nitrites',
-            'labs_ua_leukocytes' => 'Leukocytes',
-            'labs_ua_blood' => 'Blood',
-            'labs_ua_ph' => 'pH',
-            'labs_ua_spgr' => 'Specific Gravity',
-            'labs_ua_color' => 'Color',
-            'labs_ua_clarity'=> 'Clarity'
+            'labs_ua_urobili' => trans('noshform.labs_ua_urobili'),
+            'labs_ua_bilirubin' => trans('noshform.labs_ua_bilirubin'),
+            'labs_ua_ketones' => trans('noshform.labs_ua_ketones'),
+            'labs_ua_glucose' => trans('noshform.labs_ua_glucose'),
+            'labs_ua_protein' => trans('noshform.labs_ua_protein'),
+            'labs_ua_nitrites' => trans('noshform.labs_ua_nitrites'),
+            'labs_ua_leukocytes' => trans('noshform.labs_ua_leukocytes'),
+            'labs_ua_blood' => trans('noshform.labs_ua_blood'),
+            'labs_ua_ph' => trans('noshform.labs_ua_ph'),
+            'labs_ua_spgr' => trans('noshform.labs_ua_spgr'),
+            'labs_ua_color' => trans('noshform.labs_ua_color'),
+            'labs_ua_clarity'=> trans('noshform.labs_ua_clarity')
         ];
         $single = [
-            'labs_upt' => 'Urine HcG',
-            'labs_strep' => 'Rapid Strep',
-            'labs_mono' => 'Mono Spot',
-            'labs_flu' => 'Rapid Influenza',
-            'labs_microscope' => 'Micrscopy',
-            'labs_glucose' => 'Fingerstick Glucose',
-            'labs_other' => 'Other'
+            'labs_upt' => trans('noshform.labs_upt'),
+            'labs_strep' => trans('noshform.labs_strep'),
+            'labs_mono' => trans('noshform.labs_mono'),
+            'labs_flu' => trans('noshform.labs_flu'),
+            'labs_microscope' => trans('noshform.labs_microscope'),
+            'labs_glucose' => trans('noshform.labs_glucose'),
+            'labs_other' => trans('noshform.labs_other')
         ];
         $return = [
             'ua' => $ua,
@@ -1879,23 +1906,23 @@ class Controller extends BaseController
     protected function array_oh()
     {
         $return = [
-            'oh_pmh' => 'Past Medical History',
-            'oh_psh' => 'Past Surgical History',
-            'oh_fh' => 'Family History',
-            'oh_sh' => 'Social History',
-            'oh_diet' => 'Diet',
-            'oh_physical_activity' => 'Physical Activity',
-            'oh_etoh' => 'Alcohol Use',
-            'oh_tobacco' => 'Tobacco Use',
-            'oh_drugs' => 'Illicit Drug Use',
-            'oh_employment' => 'Employment/School',
-            'oh_psychosocial' => 'Psychosocial History',
-            'oh_developmental' => 'Developmental History',
-            'oh_medtrials' => 'Past Medication Trials',
-            'oh_meds' => 'Medications',
-            'oh_supplements' => 'Supplements',
-            'oh_allergies' => 'Allergies',
-            'oh_results' => 'Reveiwed Results'
+            'oh_pmh' => trans('noshform.oh_pmh'),
+            'oh_psh' => trans('noshform.oh_psh'),
+            'oh_fh' => trans('noshform.oh_fh'),
+            'oh_sh' => trans('noshform.oh_sh'),
+            'oh_diet' => trans('noshform.oh_diet'),
+            'oh_physical_activity' => trans('noshform.oh_physical_activity'),
+            'oh_etoh' => trans('noshform.oh_etoh'),
+            'oh_tobacco' => trans('noshform.oh_tobacco'),
+            'oh_drugs' => trans('noshform.oh_drugs'),
+            'oh_employment' => trans('noshform.oh_employment'),
+            'oh_psychosocial' => trans('noshform.oh_psychosocial'),
+            'oh_developmental' => trans('noshform.oh_developmental'),
+            'oh_medtrials' => trans('noshform.oh_medtrials'),
+            'oh_meds' => trans('noshform.oh_meds'),
+            'oh_supplements' => trans('noshform.oh_supplements'),
+            'oh_allergies' => trans('noshform.oh_allergies'),
+            'oh_results' => trans('noshform.oh_results')
         ];
         return $return;
     }
@@ -1919,10 +1946,10 @@ class Controller extends BaseController
         }
         $result = $query->orderBy('displayname', 'asc')->get();
         if ($type == 'Referral') {
-            $return[''] = 'Select Provider';
+            $return[''] = trans('noshform.select_provider');
         }
         if ($type == 'Pharmacy') {
-            $return[''] = 'Select Pharmacy';
+            $return[''] = trans('noshform.select_pharamcy');
         }
         if ($result->count()) {
             foreach ($result as $row) {
@@ -1948,16 +1975,39 @@ class Controller extends BaseController
         return $data;
     }
 
-    protected function array_payment_year()
+    protected function array_payment_year($all=false)
     {
         $data = [];
         $query = DB::table('billing_core')->where('practice_id', '=', Session::get('practice_id'))->select('dos_f')->distinct()->get();
         if ($query->count()) {
             foreach ($query as $row) {
-                $date_array = explode("/", $row->dos_f);
-                if (isset($date_array[2])) {
-                    if (array_search($date_array[2], $data) === false) {
-                        $data[$date_array[2]] = $date_array[2];
+                if (substr_count($row->dos_f, '-') == 0) {
+                    $date_array = explode("/", $row->dos_f);
+                    if (isset($date_array[2]) && isset($date_array[0])) {
+                        if ($all == false) {
+                            if (array_search($date_array[2], $data) === false) {
+                                $data[$date_array[2]] = $date_array[2];
+                            }
+                        } else {
+                            $val = $date_array[2] . '-' . $date_array[0];
+                            if (array_search($val, $data) === false) {
+                                $data[$val] = $val;
+                            }
+                        }
+                    }
+                } else {
+                    $date_array1 = explode("-", $row->dos_f);
+                    if (isset($date_array1[0]) && isset($date_array1[1])) {
+                        if ($all == false) {
+                            if (array_search($date_array1[0], $data) === false) {
+                                $data[$date_array1[0]] = $date_array1[0];
+                            }
+                        } else {
+                            $val1 = $date_array1[0] . '-' . $date_array1[1];
+                            if (array_search($val1, $data) === false) {
+                                $data[$val1] = $val1;
+                            }
+                        }
                     }
                 }
             }
@@ -2040,11 +2090,11 @@ class Controller extends BaseController
     protected function array_plan()
     {
         $return = [
-            'plan' => 'Recommendations',
-            'followup' => 'Followup',
-            'goals' => 'Goals/Measures',
-            'tp' => 'Treatment Plan Notes',
-            'duration' => 'Counseling and face-to-face time consists of more than 50 percent of the visit.  Total face-to-face time is '
+            'plan' => trans('noshform.recommendations'),
+            'followup' => trans('noshform.followup'),
+            'goals' => trans('noshform.goals'),
+            'tp' => trans('noshform.tp'),
+            'duration' => trans('noshform.duration1')
         ];
         return $return;
 
@@ -2121,10 +2171,10 @@ class Controller extends BaseController
     protected function array_procedure()
     {
         $return = [
-            'proc_type' => 'Procedure',
-            'proc_description' => 'Description of Procedure',
-            'proc_complications' => 'Complications',
-            'proc_ebl' => 'Estimated Blood Loss'
+            'proc_type' => trans('noshform.proc_type'),
+            'proc_description' => trans('noshform.proc_description'),
+            'proc_complications' => trans('noshform.proc_complications'),
+            'proc_ebl' => trans('noshform.proc_ebl')
         ];
         return $return;
     }
@@ -2263,9 +2313,9 @@ class Controller extends BaseController
     protected function array_rx()
     {
         $return = [
-            'rx_rx' => 'Prescriptions Given',
-            'rx_supplements' => 'Supplements Recommended',
-            'rx_immunizations' => 'Immunizations Given'
+            'rx_rx' => trans('noshform.rx_rx'),
+            'rx_supplements' => trans('noshform.rx_supplements'),
+            'rx_immunizations' => trans('noshform.rx_immunizations')
         ];
         return $return;
     }
@@ -2407,8 +2457,8 @@ class Controller extends BaseController
             $pid = Session::get('pid');
             $patient = DB::table('demographics')->where('pid', '=', $pid)->first();
             $gender_arr = [
-                'm' => 'he',
-                'f' => 'she',
+                'm' => trans('noshform.he'),
+                'f' => trans('noshform.she'),
                 'u' => $patient->firstname
             ];
             $lastvisit = "";
@@ -2418,71 +2468,72 @@ class Controller extends BaseController
                 ->orderBy('eid', 'desc')
                 ->first();
             if ($encounter) {
-                $lastvisit =  $patient->firstname . ' was last seen by me on ' . date('F jS, Y', strtotime($encounter->encounter_DOS));
+                $lastvisit =  $patient->firstname . ' ' . trans('noshform.last_seen') . ' ' . date('F jS, Y', strtotime($encounter->encounter_DOS));
             }
-            $problem = 'Active Issues:';
+            $problem = trans('noshform.active_issues') . ':';
             $problems = DB::table('issues')->where('pid', '=', $pid)->where('issue_date_inactive', '=', '0000-00-00 00:00:00')->get();
             if ($problems) {
                 foreach ($problems as $problems_row) {
                     $problem .= "\n". $problems_row->issue;
                 }
             } else {
-                $problem .= ' None.';
+                $problem .= ' ' . trans('noshform.none') . '.';
             }
-            $med = 'Active Medications:';
+            $med = trans('noshform.active_medications') . ':';
             $meds = DB::table('rx_list')->where('pid', '=', $pid)->where('rxl_date_inactive', '=', '0000-00-00 00:00:00')->where('rxl_date_old', '=', '0000-00-00 00:00:00')->get();
             if ($meds) {
                 foreach ($meds as $meds_row) {
                     if ($meds_row->rxl_sig == '') {
-                        $med .= "\n" . $meds_row->rxl_medication . ' ' . $meds_row->rxl_dosage . ' ' . $meds_row->rxl_dosage_unit . ', ' . $meds_row->rxl_instructions . ' for ' . $meds_row->rxl_reason;
+                        $med .= "\n" . $meds_row->rxl_medication . ' ' . $meds_row->rxl_dosage . ' ' . $meds_row->rxl_dosage_unit . ', ' . $meds_row->rxl_instructions . ' ' . trans('noshform.for') . ' ' . $meds_row->rxl_reason;
                     } else {
-                        $med .= "\n" . $meds_row->rxl_medication . ' ' . $meds_row->rxl_dosage . ' ' . $meds_row->rxl_dosage_unit . ', ' . $meds_row->rxl_sig . ', ' . $meds_row->rxl_route . ', ' . $meds_row->rxl_frequency . ' for ' . $meds_row->rxl_reason;
+                        $med .= "\n" . $meds_row->rxl_medication . ' ' . $meds_row->rxl_dosage . ' ' . $meds_row->rxl_dosage_unit . ', ' . $meds_row->rxl_sig . ', ' . $meds_row->rxl_route . ', ' . $meds_row->rxl_frequency . ' ' . trans('noshform.for');
+                        $med .= ' ' . $meds_row->rxl_reason;
                     }
                 }
             } else {
-                $meds .= ' None.';
+                $meds .= ' ' . trans('noshform.none') . '.';
             }
-            $imm = 'Immunizations:';
+            $imm = trans('noshform.immunizations') . ':';
             $imms = DB::table('immunizations')->where('pid', '=', $pid)->orderBy('imm_immunization', 'asc')->orderBy('imm_sequence', 'asc')->get();
             if ($imms) {
                 foreach ($imms as $imms_row) {
                     $sequence = '';
                     if ($imms_row->imm_sequence == '1') {
-                        $sequence = ', first,';
+                        $sequence = ', ' . lcfirst(trans('noshform.first')) . ',';
                     }
                     if ($imms_row->imm_sequence == '2') {
-                        $sequence = ', second,';
+                        $sequence = ', ' . lcfirst(trans('noshform.second')) . ',';
                     }
                     if ($imms_row->imm_sequence == '3') {
-                        $sequence = ', third,';
+                        $sequence = ', ' . lcfirst(trans('noshform.third')) . ',';
                     }
                     if ($imms_row->imm_sequence == '4') {
-                        $sequence = ', fourth,';
+                        $sequence = ', ' . lcfirst(trans('noshform.fourth')) . ',';
                     }
                     if ($imms_row->imm_sequence == '5') {
-                        $sequence = ', fifth,';
+                        $sequence = ', ' . lcfirst(trans('noshform.fifth')) . ',';
                     }
-                    $imm .= "\n" . $imms_row->imm_immunization . $sequence . ' given on ' . date('F jS, Y', $this->human_to_unix($imms_row->imm_date));
+                    $imm .= "\n" . $imms_row->imm_immunization . $sequence . ' ' . trans('noshform.given_on') . ' ' . date('F jS, Y', $this->human_to_unix($imms_row->imm_date));
                 }
             } else {
-                $imm .= ' None.';
+                $imm .= ' ' . trans('noshform.none') . '.';
             }
-            $allergy = 'Allergies:';
+            $allergy = trans('noshform.allergies') . ':';
             $allergies = DB::table('allergies')->where('pid', '=', $pid)->where('allergies_date_inactive', '=', '0000-00-00 00:00:00')->get();
             if ($allergies) {
                 foreach ($allergies as $allergies_row) {
                     $allergy .= "\n" . $allergies_row->allergies_med . ' - ' . $allergies_row->allergies_reaction;
                 }
             } else {
-                $allergy .= ' No known allergies.';
+                $allergy .= ' ' . trans('noshform.nkda') . '.';
             }
             $data = [
-                '*~patient~*' => $patient->firstname . ' ' . $patient->lastname . ' (Date of Birth: ' . date('F jS, Y', $this->human_to_unix($patient->DOB)) . ')',
+                '*~patient~*' => $patient->firstname . ' ' . $patient->lastname . ' (' . trans('noshform.DOB') . ': ' . date('F jS, Y', $this->human_to_unix($patient->DOB)) . ')',
                 '*~firstname~*' => $patient->firstname,
                 '*~fullname~*' => $patient->firstname . ' ' . $patient->lastname,
                 '*~he/she~*' => $gender_arr[$patient->sex],
                 '*~He/She~*' => ucfirst($gender_arr[$patient->sex]),
-                '*~letterintro~*' => 'This letter is in regards to ' . $patient->firstname . ' ' . $patient->lastname . ' (Date of Birth: ' . date('F jS, Y', $this->human_to_unix($patient->DOB)) . '), who is a patient of mine.' . $lastvisit,
+                '*~letterintro~*' => trans('noshform.letter1') . ' ' . $patient->firstname . ' ' . $patient->lastname . ' (' . trans('noshform.DOB') . ': ' . date('F jS, Y', $this->human_to_unix($patient->DOB)) . '), ' . trans('noshform.letter2') . '.' . $lastvisit,
                 '*~problems~*' => $problem,
                 '*~meds~*' => $med,
                 '*~allergies~*' => $allergy,
@@ -2496,24 +2547,24 @@ class Controller extends BaseController
     {
         $test_arr = [
             '' => '',
-            'L' => 'Below low normal',
-            'H' => 'Above high normal',
-            'LL' => 'Below low panic limits',
-            'HH' => 'Above high panic limits',
-            '<' => 'Below absolute low-off instrument scale',
-            '>' => 'Above absolute high-off instrument scale',
-            'N' => 'Normal',
-            'A' => 'Abnormal',
-            'AA' => 'Very abnormal',
-            'U' => 'Significant change up',
-            'D' => 'Significant change down',
-            'B' => 'Better',
-            'W' => 'Worse',
-            'S' => 'Susceptible',
-            'R' => 'Resistant',
-            'I' => 'Intermediate',
-            'MS' => 'Moderately susceptible',
-            'VS' => 'Very susceptible'
+            'L' => trans('noshform.test_flag_L'),
+            'H' => trans('noshform.test_flag_H'),
+            'LL' => trans('noshform.test_flag_LL'),
+            'HH' => trans('noshform.test_flag_HH'),
+            '<' => trans('noshform.test_flag_below'),
+            '>' => trans('noshform.test_flag_above'),
+            'N' => trans('noshform.test_flag_N'),
+            'A' => trans('noshform.test_flag_A'),
+            'AA' => trans('noshform.test_flag_AA'),
+            'U' => trans('noshform.test_flag_U'),
+            'D' => trans("noshform.test_flag_D"),
+            'B' => trans('noshform.test_flag_B'),
+            'W' => trans('noshform.test_flag_W'),
+            'S' => trans('noshform.test_flag_S'),
+            'R' => trans('noshform.test_flag_R'),
+            'I' => trans('noshform.test_flag_I'),
+            'MS' => trans('noshform.test_flag_MS'),
+            'VS' => trans('noshform.test_flag_VS')
         ];
         return $test_arr;
     }
@@ -2961,7 +3012,7 @@ class Controller extends BaseController
             $data_encounter['bill_submitted'] = 'Done';
             DB::table('encounters')->where('eid', '=', $eid)->update($data_encounter);
             $this->audit('Update');
-            return 'Billing Saved!';
+            return trans('noshform.billing_saved');
             exit ( 0 );
         }
         $data_encounter['bill_submitted'] = 'No';
@@ -3307,15 +3358,16 @@ class Controller extends BaseController
                 unset($cpt_final[5]);
             }
         } else {
-            return "No CPT charges filed. Billing not saved.";
+            return trans('noshform.billing_saved1');
             exit (0);
         }
-        return 'Billing saved and waiting to be submitted!';
+        return trans('noshform.billing_saved2');
     }
 
     protected function birthday_reminder($practice_id)
     {
         $practice = DB::table('practiceinfo')->where('practice_id', '=', $practice_id)->first();
+        App::setLocale($practice->locale);
         if ($practice->timezone != null) {
             date_default_timezone_set($practice->timezone);
         }
@@ -3339,9 +3391,9 @@ class Controller extends BaseController
                     $data_message['birthday_message'] = $practice->birthday_message;
                     $data_message['patientname'] = $row->firstname;
                     if ($row->reminder_method == 'Cellular Phone') {
-                        $this->send_mail(array('text' => 'emails.birthdayremindertext'), $data_message, 'Happy Birthday, ' . $row->firstname, $to, $practice_id);
+                        $this->send_mail(array('text' => 'emails.birthdayremindertext'), $data_message, trans('noshform.happy_birthday') . ', ' . $row->firstname, $to, $practice_id);
                     } else {
-                        $this->send_mail('emails.birthdayreminder', $data_message, 'Happy Birthday, ' . $row->firstname, $to, $practice_id);
+                        $this->send_mail('emails.birthdayreminder', $data_message, trans('noshform.happy_birthday') . ', ' . $row->firstname, $to, $practice_id);
                     }
                     $i++;
                 }
@@ -3511,7 +3563,7 @@ class Controller extends BaseController
             }
         }
         if ($description == '') {
-            return $code . ', Code unknown';
+            return $code . ', ' . trans('noshform.code_unknown');
         } else {
             return $description;
         }
@@ -3715,16 +3767,48 @@ class Controller extends BaseController
         $n = $number % 10;               /* Ones */
         $res = "";
         if ($Gn) {
-            $res .= $this->convert_number($Gn) . " Million";
+            $res .= $this->convert_number($Gn) . " " . trans('noshform.million');
         }
         if ($kn) {
-            $res .= (empty($res) ? "" : " ") . $this->convert_number($kn) . " Thousand";
+            $res .= (empty($res) ? "" : " ") . $this->convert_number($kn) . " " . trans('noshform.thousand');
         }
         if ($Hn) {
-            $res .= (empty($res) ? "" : " ") . $this->convert_number($Hn) . " Hundred";
+            $res .= (empty($res) ? "" : " ") . $this->convert_number($Hn) . " " . trans('noshform.hundred');
         }
-        $ones = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
-        $tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
+        $ones = [
+            "",
+            trans('noshform.one'),
+            trans('noshform.two'),
+            trans('noshform.three'),
+            trans('noshform.four'),
+            trans('noshform.five'),
+            trans('noshform.six'),
+            trans('noshform.seven'),
+            trans('noshform.eight'),
+            trans('noshform.nine'),
+            trans('noshform.ten'),
+            trans('noshform.eleven'),
+            trans('noshform.twelve'),
+            trans('noshform.thirteen'),
+            trans('noshform.fourteen'),
+            trans('noshform.fifteen'),
+            trans('noshform.sixteen'),
+            trans('noshform.seventeen'),
+            trans('noshform.eighteen'),
+            trans('noshform.nineteen')
+        ];
+        $tens = [
+            "",
+            "",
+            trans('noshform.twenty'),
+            trans('noshform.thirty'),
+            trans('noshform.forty'),
+            trans('noshform.fifty'),
+            trans('noshform.sixty'),
+            trans('noshform.seventy'),
+            trans('noshform.eighty'),
+            trans('noshform.ninety')
+        ];
         if ($Dn || $n) {
             if (!empty($res)) {
                 $res .= " and ";
@@ -3739,7 +3823,7 @@ class Controller extends BaseController
             }
         }
         if (empty($res)) {
-            $res = "zero";
+            $res = trans('noshform.zero');
         }
         return $res;
     }
@@ -3902,7 +3986,7 @@ class Controller extends BaseController
                 DB::table('hpi')->insert($data);
                 $this->audit('Add');
             }
-            $message = 'Form results copied to encounter';
+            $message = trans('noshform.copy_form');
         }
         return $message;
     }
@@ -4039,6 +4123,11 @@ class Controller extends BaseController
 
     protected function encounters_view($eid, $pid, $practice_id, $modal=false, $addendum=false)
     {
+        if ($modal == false) {
+            App::setLocale(Session::get('practice_locale'));
+        } else {
+            App::setLocale(Session::get('user_locale'));
+        }
         $encounterInfo = DB::table('encounters')->where('eid', '=', $eid)->first();
         $data['patientInfo'] = DB::table('demographics')->where('pid', '=', $pid)->first();
         $data['eid'] = $eid;
@@ -4070,24 +4159,24 @@ class Controller extends BaseController
         $hpiInfo = DB::table('hpi')->where('eid', '=', $eid)->first();
         if ($hpiInfo) {
             if (!is_null($hpiInfo->hpi) && $hpiInfo->hpi !== '') {
-                $data['hpi'] = '<br><h4>History of Present Illness:</h4><p class="view">';
+                $data['hpi'] = '<br><h4>' . trans('noshform.hpi') . ':</h4><p class="view">';
                 $data['hpi'] .= nl2br($hpiInfo->hpi);
                 $data['hpi'] .= '</p>';
             }
             if (!is_null($hpiInfo->situation) && $hpiInfo->situation !== '') {
-                $data['hpi'] = '<br><h4>Situation:</h4><p class="view">';
+                $data['hpi'] = '<br><h4>' . trans('noshform.situation') . ':</h4><p class="view">';
                 $data['hpi'] .= nl2br($hpiInfo->situation);
                 $data['hpi'] .= '</p>';
             }
             if (!is_null($hpiInfo->forms) && $hpiInfo->forms !== '') {
-                $data['hpi'] .= '<br><h4>Form Responses:</h4><p class="view">';
+                $data['hpi'] .= '<br><h4>' . trans('noshform.form_responses') . ':</h4><p class="view">';
                 $data['hpi'] .= nl2br($hpiInfo->forms);
                 $data['hpi'] .= '</p>';
             }
         }
         $rosInfo = DB::table('ros')->where('eid', '=', $eid)->first();
         if ($rosInfo) {
-            $data['ros'] = '<br><h4>Review of Systems:</h4><p class="view">';
+            $data['ros'] = '<br><h4>' . trans('noshform.ros') . ':</h4><p class="view">';
             $ros_arr = $this->array_ros();
             foreach ($ros_arr as $ros_k => $ros_v) {
                 if ($rosInfo->{$ros_k} !== '' && $rosInfo->{$ros_k} !== null) {
@@ -4103,7 +4192,7 @@ class Controller extends BaseController
         $ohInfo = DB::table('other_history')->where('eid', '=', $eid)->first();
         if ($ohInfo) {
             $oh_arr = $this->array_oh();
-            $data['oh'] = '<br><h4>Other Pertinent History:</h4><p class="view">';
+            $data['oh'] = '<br><h4>' . trans('noshform.other_history') . ':</h4><p class="view">';
             foreach ($oh_arr as $oh_k => $oh_v) {
                 if ($ohInfo->{$oh_k} !== '' && $ohInfo->{$oh_k} !== null) {
                     $data['oh'] .= '<strong>' . $oh_v . ': </strong>';
@@ -4120,8 +4209,8 @@ class Controller extends BaseController
         if ($vitalsInfo) {
             $vitals_arr = $this->array_vitals();
             $vitals_arr1 = $this->array_vitals1();
-            $data['vitals'] = '<br><h4>Vital Signs:</h4><p class="view">';
-            $data['vitals'] .= '<strong>Date/Time:</strong>';
+            $data['vitals'] = '<br><h4>' . trans('noshform.vital_signs') . ':</h4><p class="view">';
+            $data['vitals'] .= '<strong>' . trans('noshform.date_time') . ':</strong>';
             $data['vitals'] .= $vitalsInfo->vitals_date . '<br>';
             foreach ($vitals_arr as $vitals_k => $vitals_v) {
                 if (!empty($vitalsInfo->{$vitals_k})) {
@@ -4133,7 +4222,7 @@ class Controller extends BaseController
                             $data['vitals'] .= $vitalsInfo->{$vitals_k} . ' ' . $vitals_v['unit'] . '<br>';
                         }
                     } elseif ($vitals_k == 'bp_systolic') {
-                        $data['vitals'] .= '<strong>Blood Pressure: </strong>';
+                        $data['vitals'] .= '<strong>' . trans('noshform.blood_pressure') . ': </strong>';
                         $data['vitals'] .= $vitalsInfo->bp_systolic . '/' . $vitalsInfo->bp_diastolic . ' mmHg, ' . $vitalsInfo->bp_position . '<br>';
                     }
                 }
@@ -4145,7 +4234,7 @@ class Controller extends BaseController
                 }
             }
             if (!empty($vitalsInfo->vitals_other)) {
-                $data['vitals'] .= '<strong>Notes: </strong>';
+                $data['vitals'] .= '<strong>' . trans('noshform.vitals_other') . ': </strong>';
                 $data['vitals'] .= nl2br($vitalsInfo->vitals_other) . '<br>';
             }
             $data['vitals'] .= '</p>';
@@ -4153,7 +4242,7 @@ class Controller extends BaseController
         $peInfo = DB::table('pe')->where('eid', '=', $eid)->first();
         if ($peInfo) {
             $pe_arr = $this->array_pe();
-            $data['pe'] = '<br><h4>Physical Exam:</h4><p class="view">';
+            $data['pe'] = '<br><h4>' . trans('noshform.pe') . ':</h4><p class="view">';
             foreach ($pe_arr as $pe_k => $pe_v) {
                 if ($peInfo->{$pe_k} !== '' && $peInfo->{$pe_k} !== null) {
                     if ($pe_k !== 'pe') {
@@ -4168,7 +4257,7 @@ class Controller extends BaseController
         $imagesInfo = DB::table('image')->where('eid', '=', $eid)->get();
         $html = '';
         if ($imagesInfo->count()) {
-            $data['images'] = '<br><h4>Images:</h4><p class="view">';
+            $data['images'] = '<br><h4>' . trans('noshform.images') . ':</h4><p class="view">';
             $k = 0;
             foreach ($imagesInfo as $imagesInfo_row) {
                 $directory = $practiceInfo->documents_dir . $pid . "/";
@@ -4190,9 +4279,9 @@ class Controller extends BaseController
         $labsInfo = DB::table('labs')->where('eid', '=', $eid)->first();
         if ($labsInfo) {
             $labs_arr = $this->array_labs();
-            $data['labs'] = '<br><h4>Laboratory Testing:</h4><p class="view">';
+            $data['labs'] = '<br><h4>' . trans('noshform.laboratory_testing') . ':</h4><p class="view">';
             if ($labsInfo->labs_ua_urobili != '' || $labsInfo->labs_ua_bilirubin != '' || $labsInfo->labs_ua_ketones != '' || $labsInfo->labs_ua_glucose != '' || $labsInfo->labs_ua_protein != '' || $labsInfo->labs_ua_nitrites != '' || $labsInfo->labs_ua_leukocytes != '' || $labsInfo->labs_ua_blood != '' || $labsInfo->labs_ua_ph != '' || $labsInfo->labs_ua_spgr != '' || $labsInfo->labs_ua_color != '' || $labsInfo->labs_ua_clarity != ''){
-                $data['labs'] .= '<strong>Dipstick Urinalysis:</strong><br /><table>';
+                $data['labs'] .= '<strong>' . trans('noshform.dipstick_ua') . ':</strong><br /><table>';
                 foreach ($labs_arr['ua'] as $labs_ua_k => $labs_ua_v) {
                     if ($labsInfo->{$labs_ua_k} !== '' && $labsInfo->{$labs_ua_k} !== null) {
                         $data['labs'] .= '<tr><th align=\"left\">' . $labs_ua_v . ':</th><td align=\"left\">' . $labsInfo->{$labs_ua_k} . '</td></tr>';
@@ -4212,7 +4301,7 @@ class Controller extends BaseController
         $assessmentInfo = DB::table('assessment')->where('eid', '=', $eid)->first();
         if ($assessmentInfo) {
             $assessment_arr = $this->array_assessment();
-            $data['assessment'] = '<br><h4>Assessment:</h4><p class="view">';
+            $data['assessment'] = '<br><h4>' . trans('noshform.assessment') . ':</h4><p class="view">';
             for ($l = 1; $l <= 12; $l++) {
                 $col0 = 'assessment_' . $l;
 				// GYN 20181006: Add ICD code to assessment display
@@ -4244,13 +4333,13 @@ class Controller extends BaseController
         $procedureInfo = DB::table('procedure')->where('eid', '=', $eid)->first();
         if ($procedureInfo) {
             $procedure_arr = $this->array_procedure();
-            $data['procedure'] = '<br><h4>Procedures:</h4><p class="view">';
+            $data['procedure'] = '<br><h4>' . trans('noshform.procedures') . ':</h4><p class="view">';
             foreach ($procedure_arr as $procedure_k => $procedure_v) {
                 if ($procedureInfo->{$procedure_k} !== '' && $procedureInfo->{$procedure_k} !== null) {
                     if ($procedure_k == 'proc_description') {
                         if ($this->yaml_check($procedureInfo->{$procedure_k})) {
                             $proc_search_arr = ['code:', 'timestamp:', 'procedure:', 'type:', '---' . "\n", '|'];
-                            $proc_replace_arr = ['<b>Procedure Code:</b>', '<b>When:</b>', '<b>Procedure Description:</b>', '<b>Type:</b>', '', ''];
+                            $proc_replace_arr = ['<b>' . trans('noshform.procedure_code') . ':</b>', '<b>When:</b>', '<b>' . trans('noshform.procedure_description') . ':</b>', '<b>Type:</b>', '', ''];
                             $data['procedure'] .= nl2br(str_replace($proc_search_arr, $proc_replace_arr, $procedureInfo->{$procedure_k}));
                         } else {
                             $data['procedure'] .= '<strong>' . $procedure_v . ': </strong>';
@@ -4268,7 +4357,7 @@ class Controller extends BaseController
         }
         $ordersInfo1 = DB::table('orders')->where('eid', '=', $eid)->get();
         if ($ordersInfo1->count()) {
-            $data['orders'] = '<br><h4>Orders:</h4><p class="view">';
+            $data['orders'] = '<br><h4>' . trans('noshform.orders') . ':</h4><p class="view">';
             $orders_lab_array = [];
             $orders_radiology_array = [];
             $orders_cp_array = [];
@@ -4284,38 +4373,38 @@ class Controller extends BaseController
                     $orders_displayname = 'Unknown';
                 }
                 if ($ordersInfo->orders_labs != '') {
-                    $orders_lab_array[] = 'Orders sent to ' . $orders_displayname . ': '. nl2br($ordersInfo->orders_labs) . '<br />';
+                    $orders_lab_array[] = trans('noshform.orders_sent_to') . ' ' . $orders_displayname . ': '. nl2br($ordersInfo->orders_labs) . '<br />';
                 }
                 if ($ordersInfo->orders_radiology != '') {
-                    $orders_radiology_array[] = 'Orders sent to ' . $orders_displayname . ': '. nl2br($ordersInfo->orders_radiology) . '<br />';
+                    $orders_radiology_array[] = trans('noshform.orders_sent_to') . ' ' . $orders_displayname . ': '. nl2br($ordersInfo->orders_radiology) . '<br />';
                 }
                 if ($ordersInfo->orders_cp != '') {
-                    $orders_cp_array[] = 'Orders sent to ' . $orders_displayname . ': '. nl2br($ordersInfo->orders_cp) . '<br />';
+                    $orders_cp_array[] = trans('noshform.orders_sent_to') . ' ' . $orders_displayname . ': '. nl2br($ordersInfo->orders_cp) . '<br />';
                 }
                 if ($ordersInfo->orders_referrals != '') {
-                    $orders_referrals_array[] = 'Referral sent to ' . $orders_displayname . ': '. nl2br($ordersInfo->orders_referrals) . '<br />';
+                    $orders_referrals_array[] = trans('noshform.referral_sent_to') . ' ' . $orders_displayname . ': '. nl2br($ordersInfo->orders_referrals) . '<br />';
                 }
             }
             if (! empty($orders_lab_array)) {
-                $data['orders'] .= '<strong>Labs: </strong><br>';
+                $data['orders'] .= '<strong>' . trans('noshform.laboratory') . ': </strong><br>';
                 foreach ($orders_lab_array as $lab_item) {
                     $data['orders'] .= $lab_item;
                 }
             }
             if (! empty($orders_radiology_array)) {
-                $data['orders'] .= '<strong>Imaging: </strong><br>';
+                $data['orders'] .= '<strong>' . trans('noshform.imaging') . ': </strong><br>';
                 foreach ($orders_radiology_array as $radiology_item) {
                     $data['orders'] .= $radiology_item;
                 }
             }
             if (! empty($orders_cp_array)) {
-                $data['orders'] .= '<strong>Cardiopulmonary: </strong><br>';
+                $data['orders'] .= '<strong>' . trans('noshform.cardiopulmonary') . ': </strong><br>';
                 foreach ($orders_cp_array as $cp_item) {
                     $data['orders'] .= $cp_item;
                 }
             }
             if (! empty($orders_referrals_array)) {
-                $data['orders'] .= '<strong>Referrals: </strong><br>';
+                $data['orders'] .= '<strong>' . trans('noshform.referrals') . ': </strong><br>';
                 foreach ($orders_referrals_array as $referrals_item) {
                     $data['orders'] .= $referrals_item;
                 }
@@ -4325,13 +4414,13 @@ class Controller extends BaseController
         $rxInfo = DB::table('rx')->where('eid', '=', $eid)->first();
         if ($rxInfo) {
             $rx_arr = $this->array_rx();
-            $data['rx'] = '<br><h4>Prescriptions and Immunizations:</h4><p class="view">';
+            $data['rx'] = '<br><h4>' . trans('noshform.prescriptions_imm') . ':</h4><p class="view">';
             foreach ($rx_arr as $rx_k => $rx_v) {
                 if ($rxInfo->{$rx_k} !== '' && $rxInfo->{$rx_k} !== null) {
                     $data['rx'] .= '<strong>' . $rx_v . ': </strong><br>';
                     $data['rx'] .= nl2br($rxInfo->{$rx_k});
                     if ($rx_k == 'rx_immunizations') {
-                        $data['rx'] .= 'CDC Vaccine Information Sheets given for each immunization and consent obtained.<br />';
+                        $data['rx'] .= trans('noshform.imm_disclaimer') . '.<br />';
                     }
                     $data['rx'] .= '<br /><br />';
                 }
@@ -4341,13 +4430,13 @@ class Controller extends BaseController
         $planInfo = DB::table('plan')->where('eid', '=', $eid)->first();
         if ($planInfo) {
             $plan_arr = $this->array_plan();
-            $data['plan'] = '<br><h4>Plan:</h4><p class="view">';
+            $data['plan'] = '<br><h4>' . trans('noshform.plan') . ':</h4><p class="view">';
             foreach ($plan_arr as $plan_k => $plan_v) {
                 if ($planInfo->{$plan_k} !== '' && $planInfo->{$plan_k} !== null) {
                     $data['plan'] .= '<strong>' . $plan_v . ': </strong>';
                     $data['plan'] .= nl2br($planInfo->{$plan_k});
                     if ($plan_k == 'duration') {
-                        $data['plan'] .= '  minutes';
+                        $data['plan'] .= ' ' . lcfirst(trans('noshform.minutes'));
                     }
                     $data['plan'] .= '<br /><br />';
                 }
@@ -4362,23 +4451,24 @@ class Controller extends BaseController
                 if ($billing_count > 0) {
                     $data['billing'] .= ',' . $billing_row->cpt;
                 } else {
-                    $data['billing'] .= '<strong>CPT Codes: </strong>';
+                    $data['billing'] .= '<strong>' . trans('noshform.cpt_codes') . ': </strong>';
                     $data['billing'] .= $billing_row->cpt;
                 }
                 $billing_count++;
             }
             if ($encounterInfo->bill_complex != '') {
-                $data['billing'] .= '<br><strong>Medical Complexity: </strong>';
+                $data['billing'] .= '<br><strong>' . trans('noshform.bill_complex') . ': </strong>';
                 $data['billing'] .= nl2br($encounterInfo->bill_complex);
                 $data['billing'] .= '<br /><br />';
             }
             $data['billing'] .= '</p>';
         }
         if ($encounterInfo->encounter_signed == 'No') {
-            $data['status']    = 'Draft';
+            $data['status']    = trans('noshform.draft');
         } else {
-            $data['status'] = 'Signed on ' . date('F jS, Y', $this->human_to_unix($encounterInfo->date_signed)) . '.';
+            $data['status'] = trans('noshform.signed_on') . ' ' . date('F jS, Y', $this->human_to_unix($encounterInfo->date_signed)) . '.';
         }
+        App::setLocale(Session::get('user_locale'));
         if ($modal == true) {
             if ($addendum == true) {
                 $data['addendum'] = true;
@@ -4435,12 +4525,12 @@ class Controller extends BaseController
         $gender_arr = $this->array_gender();
         if ($type == 'Patient') {
             $data['content'] = '<div class="alert alert-success">';
-            $data['content'] .= '<strong>Name:</strong> ' . $result['name'][0]['given'][0] . ' ' . $result['name'][0]['family'][0];
-            $data['content'] .= '<br><strong>Date of Birth:</strong> ' . date('Y-m-d', strtotime($result['birthDate']));
+            $data['content'] .= '<strong>' . trans('noshform.name') . ':</strong> ' . $result['name'][0]['given'][0] . ' ' . $result['name'][0]['family'][0];
+            $data['content'] .= '<br><strong>' . trans('noshform.DOB') . ':</strong> ' . date('Y-m-d', strtotime($result['birthDate']));
             if (in_array(strtolower(substr($result['gender'],0,1)), $gender_arr)) {
-                $data['content'] .= '<br><strong>Gender:</strong> ' . $gender_arr[strtolower(substr($result['gender'],0,1))];
+                $data['content'] .= '<br><strong>' . trans('noshform.sex') . ':</strong> ' . $gender_arr[strtolower(substr($result['gender'],0,1))];
             } else {
-                $data['content'] .= '<br><strong>Gender:</strong> ' . $result['gender'];
+                $data['content'] .= '<br><strong>' . trans('noshform.sex') . ':</strong> ' . $result['gender'];
             }
             $data['content'] .= '</div>';
             $data['content'] .= '<div class="list-group">';
@@ -4496,11 +4586,11 @@ class Controller extends BaseController
                 }
                 if ($type == 'Immunization') {
                     $seq_array = [
-                        '1' => ', first',
-                        '2' => ', second',
-                        '3' => ', third',
-                        '4' => ', fourth',
-                        '5' => ', fifth'
+                        '1' => ', ' . lcfirst(trans('noshform.first')),
+                        '2' => ', ' . lcfirst(trans('noshform.second')),
+                        '3' => ', ' . lcfirst(trans('noshform.third')),
+                        '4' => ', ' . lcfirst(trans('noshform.fourth')),
+                        '5' => ', ' . lcfirst(trans('noshform.fifth'))
                     ];
                     foreach ($result1 as $row1) {
                         $arr = [];
@@ -4683,7 +4773,7 @@ class Controller extends BaseController
                 }
             }
             $data['content'] = '<div class="alert alert-success">';
-            $data['content'] .= '<h5>Rows in red come from the patient portal and need to be reconciled.  Click on the row to accept.</h5>';
+            $data['content'] .= '<h5>' . trans('noshform.fhir_display1') . '</h5>';
             $data['content'] .= '</div>';
             $data['content'] .= $this->result_build($list_array, $type . '_reconcile_list');
             // $data['content'] .= $result;
@@ -4783,55 +4873,55 @@ class Controller extends BaseController
         $return = [
             'Condition' => [
                 'icon' => 'fa-bars',
-                'name' => 'Conditions',
+                'name' => trans('noshform.conditions'),
                 'table' => 'issues',
                 'order' => 'issue'
             ],
             'MedicationStatement' => [
                 'icon' => 'fa-eyedropper',
-                'name' => 'Medications',
+                'name' => trans('noshform.medications'),
                 'table' => 'rx_list',
                 'order' => 'rxl_medication'
             ],
             'AllergyIntolerance' => [
                 'icon' => 'fa-exclamation-triangle',
-                'name' => 'Allergies',
+                'name' => trans('noshform.allergies'),
                 'table' => 'allergies',
                 'order' => 'allergies_med'
             ],
             'Immunization' => [
                 'icon' => 'fa-magic',
-                'name' => 'Immunizations',
+                'name' => trans('noshform.immunizations'),
                 'table' => 'immunizations',
                 'order' => 'imm_immunization'
             ],
             'Patient' => [
                 'icon' => 'fa-user',
-                'name' => 'Patient Information',
+                'name' => trans('noshform.patient_summary'),
                 'table' => 'demographics',
                 'order' => 'pid'
             ],
             'Encounter' => [
                 'icon' => 'fa-stethoscope',
-                'name' => 'Encounters',
+                'name' => trans('noshform.encounters'),
                 'table' => 'encounters',
                 'order' => 'encounter_cc'
             ],
             'FamilyHistory' => [
                 'icon' => 'fa-sitemap',
-                'name' => 'Family History',
+                'name' => trans('noshform.family_history'),
                 'table' => 'other_history',
                 'order' => 'oh_fh'
             ],
             'Binary' => [
                 'icon' => 'fa-file-text',
-                'name' => 'Documents',
+                'name' => trans('noshform.documents'),
                 'table' => 'documents',
                 'order' => 'documents_desc'
             ],
             'Observation' => [
                 'icon' => 'fa-flask',
-                'name' => 'Observations',
+                'name' => trans('noshform.observations'),
                 'table' => 'tests',
                 'order' => 'test_name'
             ]
@@ -4918,31 +5008,31 @@ class Controller extends BaseController
     protected function fhir_scopes_sensitivities()
     {
         $arr = [
-            'sens/ETH' => 'Substance abuse',
-            'sens/PSY' => 'Psychiatry',
-            'sens/GDIS' => 'Genetic disease',
-            'sens/HIV' => 'HIV/AIDS',
-            'sens/SCA' => 'Sickle cell anemia',
-            'sens/SOC' => 'Social services',
-            'sens/SDV' => 'Sexual assault, abuse, or domestic violence',
-            'sens/SEX' => 'Sexuality and reproductive health',
-            'sens/STD' => 'Sexually transmitted disease',
-            'sens/DEMO' => 'All demographic information',
-            'sens/DOB' => 'Date of birth',
-            'sens/GENDER' => 'Gender and sexual orientation',
-            'sens/LIVARG' => 'Living arrangement',
-            'sens/MARST' => 'Marital status',
-            'sens/RACE' => 'Race',
-            'sens/REL' => 'Religion',
-            'sens/B' => 'Business information',
-            'sens/EMPL' => 'Employer',
-            'sens/LOCIS' => 'Location',
-            'sens/SSP' => 'Sensitive service provider',
-            'sens/ADOL' => 'Adolescent',
-            'sens/CEL' => 'Celebrity',
-            'sens/DIAG' => 'Diagnosis',
-            'sens/DRGIS' => 'Drug information',
-            'sens/EMP' => 'Employee'
+            'sens/ETH' => trans('noshform.fhir_sens_eth'),
+            'sens/PSY' => trans('noshform.fhir_sens_psy'),
+            'sens/GDIS' => trans('noshform.fhir_sens_gdis'),
+            'sens/HIV' => trans('noshform.fhir_sens_hiv'),
+            'sens/SCA' => trans('noshform.fhir_sens_sca'),
+            'sens/SOC' => trans('noshform.fhir_sens_soc'),
+            'sens/SDV' => trans('noshform.fhir_sens_sdv'),
+            'sens/SEX' => trans('noshform.fhir_sens_sex'),
+            'sens/STD' => trans('noshform.fhir_sens_std'),
+            'sens/DEMO' => trans('noshform.fhir_sens_demo'),
+            'sens/DOB' => trans('noshform.fhir_sens_dob'),
+            'sens/GENDER' => trans('noshform.fhir_sens_gender'),
+            'sens/LIVARG' => trans('noshform.fhir_sens_livarg'),
+            'sens/MARST' => trans('noshform.fhir_sens_marst'),
+            'sens/RACE' => trans('noshform.fhir_sens_race'),
+            'sens/REL' => trans('noshform.fhir_sens_rel'),
+            'sens/B' => trans('noshform.fhir_sens_b'),
+            'sens/EMPL' => trans('noshform.fhir_sens_empl'),
+            'sens/LOCIS' => trans('noshform.fhir_sens_locis'),
+            'sens/SSP' => trans('noshform.fhir_sens_ssp'),
+            'sens/ADOL' => trans('noshform.fhir_sens_adol'),
+            'sens/CEL' => trans('noshform.fhir_sens_cel'),
+            'sens/DIAG' => trans('noshform.fhir_sens_diag'),
+            'sens/DRGIS' => trans('noshform.fhir_sens_drgis'),
+            'sens/EMP' => trans('noshform.fhir_sens_emp')
         ];
         return $arr;
     }
@@ -6377,25 +6467,6 @@ class Controller extends BaseController
 
     protected function form_family_history($result, $arr, $id)
     {
-        $rel_arr = [
-            '' => '',
-            'Father' => trans('noshform.father'),
-            'Mother' => trans('noshform.mother'),
-            'Brother' => trans('noshform.brother'),
-            'Sister' => trans('noshform.sister'),
-            'Son' => trans('noshform.son'),
-            'Daughter' => trans('noshform.daughter'),
-            'Spouse' => trans('noshform.spouse'),
-            'Partner' => trans('noshform.partner'),
-            'Paternal Uncle' => trans('noshform.paternal_uncle'),
-            'Paternal Aunt' => trans('noshform.paternal_aunt'),
-            'Maternal Uncle' => trans('noshform.maternal_uncle'),
-            'Maternal Aunt' => trans('noshform.maternal_aunt'),
-            'Maternal Grandfather' => trans('noshform.maternal_grandfather'),
-            'Maternal Grandmother' => trans('noshform.maternal_grandmother'),
-            'Paternal Grandfather' => trans('noshform.paternal_grandfather'),
-            'Paternal Grandmother' => trans('noshform.paternal_grandmother')
-        ];
         $status_arr = [
             'Alive' => trans('noshform.alive'),
             'Deceased' => trans('noshform.deceased')
@@ -6418,7 +6489,7 @@ class Controller extends BaseController
             'name' => 'relationship',
             'label' => trans('noshform.relationship'),
             'type' => 'select',
-            'select_items' => $rel_arr,
+            'select_items' => $this->array_family(),
             'required' => true,
             'default_value' => $result['relationship']
         ];
@@ -6602,7 +6673,7 @@ class Controller extends BaseController
                 trans('noshform.history_physical') => trans('noshform.history_physical'),
                 trans('noshform.medications_therapy') => trans('noshform.medications_therapy'),
                 trans('noshform.lab_report') => 'Lab, Imaging, or Cardiopulmonary Report',
-                trans('noshform.operative_report') => trans('noshform_operative_report'),
+                trans('noshform.operative_report') => trans('noshform.operative_report'),
                 trans('noshform.accident_injury') => trans('noshform.accident_injury'),
                 trans('noshform.immunizations') => trans('noshform.immunizations'),
                 trans('noshform.other') => trans('noshform.other')
@@ -9320,7 +9391,12 @@ class Controller extends BaseController
     protected function form_users($result, $table, $id, $subtype)
     {
         $users_arr = $this->array_groups();
-        $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
+        $practice_id = Session::get('practice_id');
+        if (Session::has('users_practice_id')) {
+            $practice_id = Session::get('users_practice_id');
+            Session::forget('users_practice_id');
+        }
+        $practice = DB::table('practiceinfo')->where('practice_id', '=', $practice_id)->first();
         $secure_arr = [
             '0' => 'No',
             '1' => 'Yes'
@@ -9336,7 +9412,7 @@ class Controller extends BaseController
                 'email' => null,
                 'group_id' => $subtype,
                 'active' => '1',
-                'practice_id' => Session::get('practice_id'),
+                'practice_id' => $practice_id,
                 'locale' => null,
                 'secure_message_notification' => '0'
             ];
@@ -9355,7 +9431,7 @@ class Controller extends BaseController
                     'rcopia_username' => null,
                     'schedule_increment' => null,
                     'peacehealth_id' => null,
-                    'practice_id' => Session::get('practice_id'),
+                    'practice_id' => $practice_id,
                     'schedule_notification' => null
                 ];
             }
@@ -9894,7 +9970,7 @@ class Controller extends BaseController
             $data['P90'][] = (float) $row['p90'];
             $data['P95'][] = (float) $row['p95'];
         }
-        $data['graph_x_title'] = 'Age (days)';
+        $data['graph_x_title'] = trans('noshform.age_days');
         $val = end($data['patient']);
         $age = round($val[0]);
         $x = $val[1];
@@ -9994,7 +10070,7 @@ class Controller extends BaseController
             $data['P90'][] = (float) $row['p90'];
             $data['P95'][] = (float) $row['p95'];
         }
-        $data['graph_x_title'] = 'Age (days)';
+        $data['graph_x_title'] = trans('noshform.age_days');
         $val = end($data['patient']);
         $age = round($val[0]);
         $x = $val[1];
@@ -10078,7 +10154,7 @@ class Controller extends BaseController
             $data['P90'][] = (float) $row['p90'];
             $data['P95'][] = (float) $row['p95'];
         }
-        $data['graph_x_title'] = 'Age (days)';
+        $data['graph_x_title'] = trans('noshform.age_days');
         $val = end($data['patient']);
         $age = round($val[0]);
         $x = $val[1];
@@ -10222,7 +10298,7 @@ class Controller extends BaseController
             $data['P90'][] = (float) $row['p90'];
             $data['P95'][] = (float) $row['p95'];
         }
-        $data['graph_x_title'] = 'Age (days)';
+        $data['graph_x_title'] = trans('noshform.age_days');
         $val = end($data['patient']);
         $age = round($val[0]);
         $x = $val[1];
@@ -11245,8 +11321,8 @@ class Controller extends BaseController
             if ($footer == 'footerpdf') {
                 $footer_html = '<div style="border-top: 1px solid #000000; text-align: center; padding-top: 3mm; font-size: 8px;">Page ' . $pdf->getAliasNumPage();
                 $footer_html .= ' of ' . $pdf->getAliasNbPages() . '</div><p style="text-align:center; font-size: 8px;">';
-                $footer_html .= "CONFIDENTIALITY NOTICE: The information contained in this document or facsimile transmission is intended for the recipient named above. If you are not the intended recipient or the intended recipient's agent, you are hereby notified that dissemination, copying, or distribution of the information contained in the transmission is prohibited. If you are not the intended recipient, please notify us immediately by telephone and return the documents to us by mail. Thank you.</p>";
-                $footer_html .= '<p style="text-align:center; font-size: 8px;">This document was generated by NOSH ChartingSystem</p>';
+                $footer_html .= trans('noshform.footer') . "</p>";
+                $footer_html .= '<p style="text-align:center; font-size: 8px;">' . trans('noshform.footer1') . '</p>';
             }
             if ($footer == 'mtmfooterpdf') {
                 $footer_html = '<div style="border-top: 1px solid #000000; font-family: Arial, Helvetica, sans-serif; font-size: 7;">';
@@ -13593,7 +13669,7 @@ class Controller extends BaseController
 
     protected function healthwise_view($link)
     {
-        $return = 'Having trouble getting materials.  Try again';
+        $return = trans('noshform.healthwise_view');
         $core_url = 'https://myhealth.alberta.ca';
         $url = $core_url . $link;
         $ch = curl_init();
@@ -13908,7 +13984,7 @@ class Controller extends BaseController
                 $data['insuranceInfo'] .= $row_in->insurance_plan_name . '; ID: ' . $row_in->insurance_id_num . '; Group: ' . $row_in->insurance_group . '; ' . $row_in->insurance_insu_lastname . ', ' . $row_in->insurance_insu_firstname . '<br><br>';
             }
         }
-        $body = 'Active Issues:<br />';
+        $body = trans('noshform.active_issues') . ':<br />';
         $query = DB::table('issues')->where('pid', '=', $pid)->where('issue_date_inactive', '=', '0000-00-00 00:00:00')->get();
         if ($query) {
             $body .= '<ul>';
@@ -13917,9 +13993,9 @@ class Controller extends BaseController
             }
             $body .= '</ul>';
         } else {
-            $body .= 'None.';
+            $body .= trans('noshform.none') . '.';
         }
-        $body .= '<hr />Active Medications:<br />';
+        $body .= '<hr />' . trans('noshform.active_medications') . ':<br />';
         $query1 = DB::table('rx_list')->where('pid', '=', $pid)->where('rxl_date_inactive', '=', '0000-00-00 00:00:00')->where('rxl_date_old', '=', '0000-00-00 00:00:00')->get();
         if ($query1) {
             $body .= '<ul>';
@@ -13932,36 +14008,36 @@ class Controller extends BaseController
             }
             $body .= '</ul>';
         } else {
-            $body .= 'None.';
+            $body .= trans('noshform.none') . '.';
         }
-        $body .= '<hr />Immunizations:<br />';
+        $body .= '<hr />' . trans('noshform.immunizations') . ':<br />';
         $query2 = DB::table('immunizations')->where('pid', '=', $pid)->orderBy('imm_immunization', 'asc')->orderBy('imm_sequence', 'asc')->get();
         if ($query2) {
             $body .= '<ul>';
             foreach ($query2 as $row2) {
                 $sequence = '';
                 if ($row2->imm_sequence == '1') {
-                    $sequence = ', first,';
+                    $sequence = ', ' . lcfirst(trans('noshform.first')) . ',';;
                 }
                 if ($row2->imm_sequence == '2') {
-                    $sequence = ', second,';
+                    $sequence = ', ' . lcfirst(trans('noshform.second')) . ',';;
                 }
                 if ($row2->imm_sequence == '3') {
-                    $sequence = ', third,';
+                    $sequence = ', ' . lcfirst(trans('noshform.third')) . ',';;
                 }
                 if ($row2->imm_sequence == '4') {
-                    $sequence = ', fourth,';
+                    $sequence = ', ' . lcfirst(trans('noshform.fourth')) . ',';;
                 }
                 if ($row2->imm_sequence == '5') {
-                    $sequence = ', fifth,';
+                    $sequence = ', ' . lcfirst(trans('noshform.fifth')) . ',';;
                 }
-                $body .= '<li>' . $row2->imm_immunization . $sequence . ' given on ' . date('F jS, Y', $this->human_to_unix($row2->imm_date)) . '</li>';
+                $body .= '<li>' . $row2->imm_immunization . $sequence . ' ' . trans('noshform.given_on') . ' ' . date('F jS, Y', $this->human_to_unix($row2->imm_date)) . '</li>';
             }
             $body .= '</ul>';
         } else {
-            $body .= 'None.';
+            $body .= trans('noshform.none') . '.';
         }
-        $body .= '<hr />Allergies:<br />';
+        $body .= '<hr />' . trans('noshform.allergies') . ':<br />';
         $query3 = DB::table('allergies')->where('pid', '=', $pid)->where('allergies_date_inactive', '=', '0000-00-00 00:00:00')->get();
         if ($query3) {
             $body .= '<ul>';
@@ -13970,9 +14046,9 @@ class Controller extends BaseController
             }
             $body .= '</ul>';
         } else {
-            $body .= 'No known allergies.';
+            $body .= trans('noshform.nkda') . '.';
         }
-        $body .= '<br />Printed by ' . Session::get('displayname') . '.';
+        $body .= '<br />' . trans('noshform.printed_by') . ' ' . Session::get('displayname') . '.';
         $data['letter'] = $body;
         return view('pdf.ccr_page',$data);
     }
@@ -14002,7 +14078,7 @@ class Controller extends BaseController
             $data['practiceInfo1'] .= ', ' . $practice->street_address2;
         }
         $data['practiceInfo2'] = $practice->city . ', ' . $practice->state . ' ' . $practice->zip;
-        $data['practiceInfo3'] = 'Phone: ' . $practice->phone . ', Fax: ' . $practice->fax;
+        $data['practiceInfo3'] = trans('noshform.phone') . ': ' . $practice->phone . ', ' . trans('noshform.fax') . ': ' . $practice->fax;
         $patient = DB::table('demographics')->where('pid', '=', $pid)->first();
         $data['patientInfo1'] = $patient->firstname . ' ' . $patient->lastname;
         $data['patientInfo2'] = $patient->address;
@@ -14016,7 +14092,7 @@ class Controller extends BaseController
 
     protected function page_financial_results($results)
     {
-        $body = '<br><br><table style="width:100%"><tr><th>Date</th><th>Last Name</th><th>First Name</th><th>Amount</th><th>Type</th></tr>';
+        $body = '<br><br><table style="width:100%"><tr><th>' . trans('noshform.date') . '</th><th>' . trans('noshform.lastname') . '</th><th>' . trans('noshform.first_name') . '</th><th>' . trans('noshform.amount') . '</th><th>' . trans('noshform.type') . '</th></tr>';
         setlocale(LC_MONETARY, 'en_US.UTF-8');
         foreach ($results as $results_row1) {
             $body .= "<tr><td>" . $results_row1['dos_f'] . "</td><td>" . $results_row1['lastname'] . "</td><td>" . $results_row1['firstname'] . "</td><td>" . money_format('%n', $results_row1['amount']) . "</td><td>" . $results_row1['type'] . "</td></tr>";
@@ -14027,6 +14103,7 @@ class Controller extends BaseController
 
     protected function page_hippa_request($id, $pid)
     {
+        App::setLocale(Session::get('practice_locale'));
         $result = DB::table('hippa_request')->where('hippa_request_id', '=', $id)->first();
         $row = DB::table('demographics')->where('pid', '=', $pid)->first();
         $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
@@ -14039,47 +14116,47 @@ class Controller extends BaseController
         }
         $data['practiceInfo'] .= '<br />';
         $data['practiceInfo'] .= $practice->city . ', ' . $practice->state . ' ' . $practice->zip . '<br />';
-        $data['practiceInfo'] .= 'Phone: ' . $practice->phone . ', Fax: ' . $practice->fax . '<br />';
+        $data['practiceInfo'] .= trans('noshform.phone') . ': ' . $practice->phone . ', ' . trans('noshform.fax') . ': ' . $practice->fax . '<br />';
         $data['patientInfo1'] = $row->firstname . ' ' . $row->lastname;
         $data['patientInfo2'] = $row->address;
         $data['patientInfo3'] = $row->city . ', ' . $row->state . ' ' . $row->zip;
         $data['patientInfo'] = $row;
         $dob = $this->human_to_unix($row->DOB);
         $data['dob'] = date('m/d/Y', $dob);
-        $data['signature_title'] = 'PATIENT SIGNATURE';
+        $data['signature_title'] = trans('noshform.page_hippa_request1');
         $data['signature_text'] = '';
         if ($dob >= $this->age_calc(18, 'year')) {
-            $data['signature_title'] = 'SIGNATURE OF PATIENT REPRESENTATIVE';
-            $data['signature_text'] = '<br>Relationship of Representative:<br><br><br>';
+            $data['signature_title'] = trans('noshform.page_hippa_request2');
+            $data['signature_text'] = '<br>' . trans('noshform.page_hippa_request3') . ':<br><br><br>';
         }
         $data['ss'] = '';
         if ($row->ss != '') {
-            $data['ss'] = 'Social Security Number: ' . $row->ss . '<br>';
+            $data['ss'] = trans('noshform.page_hippa_request4') . ': ' . $row->ss . '<br>';
         }
         $data['phone'] = '';
         if ($row->phone_home != '') {
-            $data['phone'] = 'Phone Number: ' . $row->phone_home;
+            $data['phone'] = trans('noshform.page_hippa_request5') . ': ' . $row->phone_home;
         } elseif ($row->phone_cell != '') {
-            $data['phone'] = 'Phone Number: ' . $row->phone_cell;
+            $data['phone'] = trans('noshform.page_hippa_request5') . ': ' . $row->phone_cell;
         }
-        $data['title'] = "AUTHORIZATION TO RELEASE MEDICAL RECORDS";
+        $data['title'] = trans('noshform.page_hippa_request10');
         $data['date'] = date('F jS, Y', time());
         $data['reason'] = $result->request_reason;
         $data['type'] = $result->request_type;
-        if ($result->request_reason == 'General Medical Records') {
-            $data['type'] .= ' - excluding protected records: (Copies of medical records will be limited to two years of information including lab, x-ray unless otherwise requested.)<br>';
+        if ($result->request_reason == trans('noshform.general_medical_records')) {
+            $data['type'] .= trans('noshform.page_hippa_request6') . '<br>';
         }
         if ($result->history_physical != '') {
-            $data['type'] .= ' dated ' . $result->history_physical . '.<br>';
+            $data['type'] .= ' ' . lcfirst(trans('noshform.page_hippa_request7')) . ' ' . $result->history_physical . '.<br>';
         }
         if ($result->lab_type != '') {
-            $data['type'] .= '<br>' . $result->lab_type . ', Dated ' . $result->lab_date . '.<br>';
+            $data['type'] .= '<br>' . $result->lab_type . ', ' . trans('noshform.page_hippa_request7') . ' ' . $result->lab_date . '.<br>';
         }
         if ($result->op != '') {
-            $data['type'] .= ' for ' . $result->op . '.<br>';
+            $data['type'] .= ' ' . trans('noshform.for') . ' ' . $result->op . '.<br>';
         }
         if ($result->accident_f != '') {
-            $data['type'] .= ' dated from ' . $result->accident_f . ' to ' . $result->accdient_t . '.<br>';
+            $data['type'] .= ' ' . trans('noshform.page_hippa_request8') . ' ' . $result->accident_f . ' ' . trans('noshform.page_hippa_request9') . ' ' . $result->accdient_t . '.<br>';
         }
         if ($result->other != '') {
             $data['type'] .= '<br>' . $result->other . '<br>';
@@ -14096,19 +14173,23 @@ class Controller extends BaseController
                 $data['from'] .= $address->phone .'<br>';
             }
         }
+        App::setLocale(Session::get('user_locale'));
         return view('pdf.hippa_request', $data);
     }
 
     protected function page_immunization_list()
     {
+        if (Session::has('patient_locale')) {
+            App::setLocale(Session::get('patient_locale'));
+        }
         $data = $this->page_default();
         $data['body'] = 'Immunizations for ' . $data['firstname'] . ' ' . $data['lastname'] . ':<br />';
         $seq_arr = [
-            '1' => 'first',
-            '2' => 'second',
-            '3' => 'third',
-            '4' => 'fourth',
-            '5' => 'fifth'
+            '1' => lcfirst(trans('noshform.first')),
+            '2' => lcfirst(trans('noshform.second')),
+            '3' => lcfirst(trans('noshform.third')),
+            '4' => lcfirst(trans('noshform.fourth')),
+            '5' => lcfirst(trans('noshform.fifth'))
         ];
         $query = DB::table('immunizations')->where('pid', '=', Session::get('pid'))->orderBy('imm_immunization', 'asc')->orderBy('imm_sequence', 'asc')->get();
         if ($query->count()) {
@@ -14118,18 +14199,22 @@ class Controller extends BaseController
                 if (in_array($row->imm_sequence, $seq_arr)) {
                     $sequence = ', ' . $seq_arr[$row->imm_sequence];
                 }
-                $data['body'] .= '<li>' . $row->imm_immunization . $sequence . ', given on ' . date('F jS, Y', $this->human_to_unix($row->imm_date)) . '</li>';
+                $data['body'] .= '<li>' . $row->imm_immunization . $sequence . ', ' . trans('noshform.given_on') . ' ' . date('F jS, Y', $this->human_to_unix($row->imm_date)) . '</li>';
             }
             $data['body'] .= '</ul>';
         } else {
-            $data['body'] .= 'None.';
+            $data['body'] .= trans('noshform.none') . '.';
         }
-        $data['body'] .= '<br />Printed by ' . Session::get('displayname') . '.';
+        $data['body'] .= '<br />' . trans('noshform.printed_by') . ' ' . Session::get('displayname') . '.';
+        App::setLocale(Session::get('user_locale'));
         return view('pdf.letter_page', $data);
     }
 
     protected function page_intro($title, $practice_id)
     {
+        if (Session::has('patient_locale')) {
+            App::setLocale(Session::get('patient_locale'));
+        }
         $practice = DB::table('practiceinfo')->where('practice_id', '=', $practice_id)->first();
         $data['practiceName'] = $practice->practice_name;
         $data['website'] = $practice->website;
@@ -14139,14 +14224,18 @@ class Controller extends BaseController
         }
         $data['practiceInfo'] .= '<br />';
         $data['practiceInfo'] .= $practice->city . ', ' . $practice->state . ' ' . $practice->zip . '<br />';
-        $data['practiceInfo'] .= 'Tel: ' . $practice->phone . ', Fax: ' . $practice->fax . '<br />';
+        $data['practiceInfo'] .= trans('noshform..phone') . ': ' . $practice->phone . ', ' . trans('noshform.fax') . ': ' . $practice->fax . '<br />';
         $data['practiceLogo'] = $this->practice_logo($practice_id);
         $data['title'] = $title;
+        App::setLocale(Session::get('user_locale'));
         return view('pdf.intro', $data);
     }
 
     protected function page_invoice1($eid)
     {
+        if (Session::has('patient_locale')) {
+            App::setLocale(Session::get('patient_locale'));
+        }
         $encounterInfo = DB::table('encounters')->where('eid', '=', $eid)->first();
         $pid = $encounterInfo->pid;
         $assessmentInfo = DB::table('assessment')->where('eid', '=', $eid)->first();
@@ -14162,12 +14251,12 @@ class Controller extends BaseController
                 }
             }
         }
-        $data['text'] = 'No procedures.';
+        $data['text'] = trans('noshform.no_procedures') . '.';
         $result1 = DB::table('billing_core')->where('eid', '=', $eid)->orderBy('cpt_charge', 'desc')->get();
         if ($result1->count()) {
             $charge = 0;
             $payment = 0;
-            $data['text'] = '<table style="width:100%"><tr><th style="width:14%">PROCEDURE</th><th style="width:14%">UNITS</th><th style="width:50%">DESCRIPTION</th><th style="width:22%">CHARGE PER UNIT</th></tr>';
+            $data['text'] = '<table style="width:100%"><tr><th style="width:14%">' . strtoupper(trans('noshform.cpt')) . '</th><th style="width:14%">' . strtoupper(trans('noshform.unit')) . '</th><th style="width:50%">' . strtoupper(trans('noshform.cpt_description')) . '</th><th style="width:22%">' . strtoupper(trans('noshform.cpt_charge')) . '</th></tr>';
             foreach ($result1 as $key1 => $value1) {
                 $cpt_charge1[$key1] = $value1->cpt_charge;
                 $result1_arr[$key1] = $value1;
@@ -14184,7 +14273,7 @@ class Controller extends BaseController
                     $data['text'] .= '<tr><td>' . $result1a->cpt . '</td><td>' . $result1a->unit . '</td><td>' . $result2->cpt_description . '</td><td>$' . $result1a->cpt_charge . '</td></tr>';
                     $charge += $result1a->cpt_charge * $result1a->unit;
                 } else {
-                    $data['text'] .= '<tr><td>Date of Payment:</td><td>' . $result1a->dos_f . '</td><td>' . $result1a->payment_type . '</td><td>$(' . $result1a->payment . ')</td></tr>';
+                    $data['text'] .= '<tr><td>' . trans('noshform.dos_f1') . ':</td><td>' . $result1a->dos_f . '</td><td>' . $result1a->payment_type . '</td><td>$(' . $result1a->payment . ')</td></tr>';
                     $payment = $payment + $result1a->payment;
                 }
             }
@@ -14192,7 +14281,7 @@ class Controller extends BaseController
             $charge = number_format($charge, 2, '.', ',');
             $payment = number_format($payment, 2, '.', ',');
             $balance = number_format($balance, 2, '.', ',');
-            $data['text'] .= '<tr><td></td><td></td><td><strong>Total Charges:</strong></td><td><strong>$' . $charge . '</strong></td></tr><tr><td></td><td></td><td><strong>Total Payments:</strong></td><td><strong>$' . $payment . '</strong></td></tr><tr><td></td><td></td><td></td><td><hr/></td></tr><tr><td></td><td></td><td><strong>Remaining Balance:</strong></td><td><strong>$' . $balance . '</strong></td></tr></table>';
+            $data['text'] .= '<tr><td></td><td></td><td><strong>' . trans('noshform.total_charges') . ':</strong></td><td><strong>$' . $charge . '</strong></td></tr><tr><td></td><td></td><td><strong>' . trans('noshform.total_payments') . ':</strong></td><td><strong>$' . $payment . '</strong></td></tr><tr><td></td><td></td><td></td><td><hr/></td></tr><tr><td></td><td></td><td><strong>Remaining Balance:</strong></td><td><strong>$' . $balance . '</strong></td></tr></table>';
         }
         $row = DB::table('demographics')->where('pid', '=', $pid)->first();
         $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
@@ -14202,8 +14291,8 @@ class Controller extends BaseController
             $data['practiceInfo1'] .= ', ' . $practice->street_address2;
         }
         $data['practiceInfo2'] = $practice->city . ', ' . $practice->state . ' ' . $practice->zip;
-        $data['practiceInfo3'] = 'Phone: ' . $practice->phone . ', Fax: ' . $practice->fax;
-        $data['disclaimer'] = '<br>Please send a check payable to ' . $practice->practice_name . ' and mail it to:';
+        $data['practiceInfo3'] = trans('noshform.phone') . ': ' . $practice->phone . ', ' . trans('noshform.fax') . ': ' . $practice->fax;
+        $data['disclaimer'] = '<br>' . trans('noshform.page_invoice1') . ' ' . $practice->practice_name . ' ' . trans('noshform.page_invoice2') . ':';
         $data['disclaimer'] .= '<br>' . $practice->billing_street_address1;
         if ($practice->billing_street_address2 != '') {
             $data['text'] .= ', ' . $practice->billing_street_address2;
@@ -14221,29 +14310,34 @@ class Controller extends BaseController
         $data['insuranceInfo'] = '';
         if ($query1->count()) {
             foreach ($query1 as $row1) {
-                $data['insuranceInfo'] .= $row1->insurance_plan_name . '; ID: ' . $row1->insurance_id_num . '; Group: ' . $row1->insurance_group . '; ' . $row1->insurance_insu_lastname . ', ' . $row1->insurance_insu_firstname . '<br><br>';
+                $data['insuranceInfo'] .= $row1->insurance_plan_name . '; ID: ' . $row1->insurance_id_num . '; ' . trans('noshform.group') . ': ' . $row1->insurance_group . '; ' . $row1->insurance_insu_lastname . ', ' . $row1->insurance_insu_firstname . '<br><br>';
             }
         }
-        $data['title'] = "INVOICE";
+        $data['title'] = strtoupper(trans('noshform.page_invoice3'));
         $data['date'] = date('F jS, Y', time());
         $result = DB::table('demographics_notes')->where('pid', '=', $pid)->where('practice_id', '=', Session::get('practice_id'))->first();
+        App::setLocale(Session::get('practice_locale'));
         if (is_null($result->billing_notes) || $result->billing_notes == '') {
-            $billing_notes = 'Invoice for encounter (Date of Service: ' . $data['encounter_DOS'] . ') printed on ' . $data['date'] . '.';
+            $billing_notes = trans('noshform.page_invoice4') . ' (' . trans('noshform.encounter_DOS') . ': ' . $data['encounter_DOS'] . ') ' . trans('noshform.page_invoice5') . ' ' . $data['date'] . '.';
         } else {
-            $billing_notes = $result->billing_notes . "\n" . 'Invoice for encounter (Date of Service: ' . $data['encounter_DOS'] . ') printed on ' . $data['date'] . '.';
+            $billing_notes = $result->billing_notes . "\n" . trans('noshform.page_invoice4') . ' (' . trans('noshform.encounter_DOS') . ': ' . $data['encounter_DOS'] . ') ' . trans('noshform.page_invoice5') . ' ' . $data['date'] . '.';
         }
         $billing_notes_data['billing_notes'] = $billing_notes;
         DB::table('demographics_notes')->where('pid', '=', $pid)->where('practice_id', '=', Session::get('practice_id'))->update($billing_notes_data);
         $this->audit('Update');
+        App::setLocale(Session::get('user_locale'));
         return view('pdf.invoice_page', $data);
     }
 
     protected function page_invoice2($id, $pid)
     {
-        $data['text'] = 'No procedures.';
+        if (Session::has('patient_locale')) {
+            App::setLocale(Session::get('patient_locale'));
+        }
+        $data['text'] = trans('noshform.no_procedures') . '.';
         $result1 = DB::table('billing_core')->where('other_billing_id', '=', $id)->where('payment', '=', '0')->first();
         if ($result1) {
-            $data['text'] = '<table style="width:100%"><tr><th style="width:14%">DATE</th><th style="width:14%">UNITS</th><th style="width:50%">DESCRIPTION</th><th style="width:22%">CHARGE PER UNIT</th></tr>';
+            $data['text'] = '<table style="width:100%"><tr><th style="width:14%">' . strtoupper(trans('noshform.date')) . '</th><th style="width:14%">' . strtoupper(trans('noshform.unit')) . '</th><th style="width:50%">' . strtoupper(trans('noshform.cpt_description')) . '</th><th style="width:22%">' . strtoupper(trans('noshform.cpt_charge')) . '</th></tr>';
             $charge = 0;
             $payment = 0;
             $data['text'] .= '<tr><td>' . $result1->dos_f . '</td><td>' . $result1->unit . '</td><td>' . $result1->reason . '</td><td>$' . $result1->cpt_charge . '</td></tr>';
@@ -14251,7 +14345,7 @@ class Controller extends BaseController
             $query2 = DB::table('billing_core')->where('other_billing_id', '=', $result1->billing_core_id)->where('payment', '!=', '0')->get();
             if ($query2->count()) {
                 foreach ($query2 as $row2) {
-                    $data['text'] .= '<tr><td>Date of Payment:</td><td>' . $row2->dos_f . '</td><td>' . $row2->payment_type . '</td><td>$(' . $row2->payment . ')</td></tr>';
+                    $data['text'] .= '<tr><td>' . trans('noshform.dos_f1') . ':</td><td>' . $row2->dos_f . '</td><td>' . $row2->payment_type . '</td><td>$(' . $row2->payment . ')</td></tr>';
                     $payment += $row2->payment;
                 }
             }
@@ -14259,7 +14353,7 @@ class Controller extends BaseController
             $charge = number_format($charge, 2, '.', ',');
             $payment = number_format($payment, 2, '.', ',');
             $balance = number_format($balance, 2, '.', ',');
-            $data['text'] .= '<tr><td></td><td></td><td><strong>Total Charges:</strong></td><td><strong>$' . $charge . '</strong></td></tr><tr><td></td><td></td><td><strong>Total Payments:</strong></td><td><strong>$' . $payment . '</strong></td></tr><tr><td></td><td></td><td></td><td><hr/></td></tr><tr><td></td><td></td><td><strong>Remaining Balance:</strong></td><td><strong>$' . $balance . '</strong></td></tr></table>';
+            $data['text'] .= '<tr><td></td><td></td><td><strong>' . trans('noshform.total_charges') . ':</strong></td><td><strong>$' . $charge . '</strong></td></tr><tr><td></td><td></td><td><strong>' . trans('noshform.total_payments') . ':</strong></td><td><strong>$' . $payment . '</strong></td></tr><tr><td></td><td></td><td></td><td><hr/></td></tr><tr><td></td><td></td><td><strong>' . trans('noshform.remaining_balance') . ':</strong></td><td><strong>$' . $balance . '</strong></td></tr></table>';
         }
         $row = DB::table('demographics')->where('pid', '=', $pid)->first();
         $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
@@ -14269,8 +14363,8 @@ class Controller extends BaseController
             $data['practiceInfo1'] .= ', ' . $practice->street_address2;
         }
         $data['practiceInfo2'] = $practice->city . ', ' . $practice->state . ' ' . $practice->zip;
-        $data['practiceInfo3'] = 'Phone: ' . $practice->phone . ', Fax: ' . $practice->fax;
-        $data['disclaimer'] = '<br>Please send a check payable to ' . $practice->practice_name . ' and mail it to:';
+        $data['practiceInfo3'] = trans('noshform.phone') . ': ' . $practice->phone . ', ' . trans('noshform.fax') . ': ' . $practice->fax;
+        $data['disclaimer'] = '<br>' . trans('noshform.page_invoice1') . ' ' . $practice->practice_name . ' ' . trans('noshform.page_invoice2') . ':';
         $data['disclaimer'] .= '<br>' . $practice->billing_street_address1;
         if ($practice->billing_street_address2 != '') {
             $data['disclaimer'] .= ', ' . $practice->billing_street_address2;
@@ -14281,39 +14375,43 @@ class Controller extends BaseController
         $data['patientInfo3'] = $row->city . ', ' . $row->state . ' ' . $row->zip;
         $data['patientInfo'] = $row;
         $data['dob'] = date('m/d/Y', $this->human_to_unix($row->DOB));
-        $data['title'] = "INVOICE";
+        $data['title'] = strtoupper(trans('noshform.page_invoice3'));
         $data['date'] = date('F jS, Y', time());
         $result = DB::table('demographics_notes')->where('pid', '=', $pid)->where('practice_id', '=', Session::get('practice_id'))->first();
+        App::setLocale(Session::get('practice_locale'));
         if (is_null($result->billing_notes) || $result->billing_notes == '') {
-            $billing_notes = 'Invoice for ' . $result1->reason . ' (Date of Bill: ' . $result1->dos_f . ') printed on ' . $data['date'] . '.';
+            $billing_notes = trans('noshform.page_invoice3') . ' ' . trans('noshform.for') . ' ' . $result1->reason . ' (' . trans('noshform.page_invoice6') . ': ' . $result1->dos_f . ') ' . trans('noshform.page_invoice5') . ' ' . $data['date'] . '.';
         } else {
-            $billing_notes = $result->billing_notes . "\n" . 'Invoice for ' . $result1->reason . ' (Date of Bill: ' . $result1->dos_f . ') printed on ' . $data['date'] . '.';
+            $billing_notes = $result->billing_notes . "\n" . trans('noshform.page_invoice3') . ' ' . trans('noshform.for') . ' ' . $result1->reason . ' (' . trans('noshform.page_invoice6') . ': ' . $result1->dos_f . ') ' . trans('noshform.page_invoice5');
+            $billing_notes .= ' ' . $data['date'] . '.';
         }
         $billing_notes_data['billing_notes'] = $billing_notes;
         DB::table('demographics_notes')->where('pid', '=', $pid)->where('practice_id', '=', Session::get('practice_id'))->update($billing_notes_data);
         $this->audit('Update');
+        App::setLocale(Session::get('user_locale'));
         return view('pdf.invoice_page2', $data);
     }
 
     protected function page_medication($rxl_id, $pid)
     {
+        App::setLocale(Session::get('practice_locale'));
         $rx = DB::table('rx_list')->where('rxl_id', '=', $rxl_id)->first();
         $data['rx'] = $rx;
         $quantity = $rx->rxl_quantity;
         $refill = $rx->rxl_refill;
         $quantity_words = strtoupper($this->convert_number($quantity));
         $refill_words = strtoupper($this->convert_number($refill));
-        $data['rx_item'] = '<table style="width:100%"><thead><tr><th style="width:78%">MEDICATION</th><th style="width:22%">DATE</th></tr></thead><tbody>';
+        $data['rx_item'] = '<table style="width:100%"><thead><tr><th style="width:78%">' . strtoupper(trans('noshform.medication')) . '</th><th style="width:22%">' . strtoupper(trans('noshform.date')) . '</th></tr></thead><tbody>';
 		$data['rx_item'] .= '<tr><td style="width:78%">' . $rx->rxl_medication. ' ' . $rx->rxl_dosage . ' ' . $rx->rxl_dosage_unit . '</td><td style="width:22%">' . date('m/d/Y', $this->human_to_unix($rx->rxl_date_prescribed)) . '</td></tr></tbody></table><br>';
-		$data['rx_item'] .= '<table style="width:100%"><thead><tr><th style="width:56%">INSTRUCTIONS</th><th style="width:22%">QUANTITY</th><th style="width:22%">REFILLS</th></tr></thead><tbody>';
+		$data['rx_item'] .= '<table style="width:100%"><thead><tr><th style="width:56%">' . strtoupper(trans('noshform.instructions')) . '</th><th style="width:22%">' . strtoupper(trans('noshform.rxl_quantity')) . '</th><th style="width:22%">' . strtoupper(trans('noshform.rxl_refill')) . '</th></tr></thead><tbody>';
 		$data['rx_item'] .= '<tr><td style="width:56%">';
         if ($rx->rxl_instructions != '') {
-            $data['rx_item'] .= $rx->rxl_instructions . ' for ' . $rx->rxl_reason;
+            $data['rx_item'] .= $rx->rxl_instructions . ' ' . trans('noshform.for') . ' ' . $rx->rxl_reason;
         } else {
-            $data['rx_item'] .= $rx->rxl_sig . ' ' . $rx->rxl_route . ' ' . $rx->rxl_frequency . ' for ' . $rx->rxl_reason;
+            $data['rx_item'] .= $rx->rxl_sig . ' ' . $rx->rxl_route . ' ' . $rx->rxl_frequency . ' ' . trans('noshform.for') . ' ' . $rx->rxl_reason;
         }
         $data['rx_item'] .= '</td><td style="width:22%">***' . $rx->rxl_quantity . '*** ' . $quantity_words . '</td><td style="width:22%">***' . $rx->rxl_refill . '*** ' . $refill_words . '</td></tr></tbody></table>';
-		$data['rx_item'] .= '<table style="width:100%"><thead><tr><th style="width:100%">SPECIAL INSTRUCTIONS</th></tr></thead><tbody><tr><td>';
+		$data['rx_item'] .= '<table style="width:100%"><thead><tr><th style="width:100%">' . strtoupper(trans('noshform.rxl_instructions')) . '</th></tr></thead><tbody><tr><td>';
         if ($rx->rxl_daw != '') {
             $data['rx_item'] .= $rx->rxl_daw . '<br>';
         }
@@ -14328,7 +14426,7 @@ class Controller extends BaseController
         }
         $data['practiceInfo'] .= '<br />';
         $data['practiceInfo'] .= $practice->city . ', ' . $practice->state . ' ' . $practice->zip . '<br />';
-        $data['practiceInfo'] .= 'Phone: ' . $practice->phone . ', Fax: ' . $practice->fax . '<br />';
+        $data['practiceInfo'] .= trans('noshform.phone') . ': ' . $practice->phone . ', ' . trans('noshform.fax') . ': ' . $practice->fax . '<br />';
         $data['patientInfo'] = DB::table('demographics')->where('pid', '=', $pid)->first();
         $data['practiceLogo'] = $this->practice_logo($provider->practice_id, '40px');
         $rxicon = HTML::image(asset('assets/images/rxicon.png'), 'Practice Logo', array('border' => '0', 'height' => '30', 'width' => '30'));
@@ -14338,7 +14436,7 @@ class Controller extends BaseController
         $data['insuranceInfo'] = '';
         if ($query1->count()) {
             foreach ($query1 as $row) {
-                $data['insuranceInfo'] .= $row->insurance_plan_name . '; ID: ' . $row->insurance_id_num . '; Group: ' . $row->insurance_group . '; ' . $row->insurance_insu_lastname . ', ' . $row->insurance_insu_firstname . '<br><br>';
+                $data['insuranceInfo'] .= $row->insurance_plan_name . '; ID: ' . $row->insurance_id_num . '; ' . trans('noshform.group') . ': ' . $row->insurance_group . '; ' . $row->insurance_insu_lastname . ', ' . $row->insurance_insu_firstname . '<br><br>';
             }
         }
         $query2 = DB::table('allergies')->where('pid', '=', $pid)->where('allergies_date_inactive', '=', '0000-00-00 00:00:00')->get();
@@ -14350,14 +14448,16 @@ class Controller extends BaseController
             }
             $data['allergyInfo'] .= '</ul>';
         } else {
-            $data['allergyInfo'] .= 'No known allergies.';
+            $data['allergyInfo'] .= trans('noshform.nkda') . '.';
         }
         $data['signature'] = $this->signature($rx->id);
+        App::setLocale(Session::get('user_locale'));
         return view('pdf.prescription_page', $data);
     }
 
     protected function page_medication_combined($pid, $arr, $provider_id)
     {
+        App::setLocale(Session::get('practice_locale'));
         $data['rx_item'] = '';
         foreach ($arr as $rxl_id) {
             $rx = DB::table('rx_list')->where('rxl_id', '=', $rxl_id)->first();
@@ -14366,17 +14466,17 @@ class Controller extends BaseController
             $refill = $rx->rxl_refill;
             $quantity_words = strtoupper($this->convert_number($quantity));
             $refill_words = strtoupper($this->convert_number($refill));
-            $data['rx_item'] .= '<table style="width:100%"><thead><tr><th style="width:78%">MEDICATION</th><th style="width:22%">DATE</th></tr></thead><tbody>';
+            $data['rx_item'] .= '<table style="width:100%"><thead><tr><th style="width:78%">' . strtoupper(trans('noshform.medication')) . '</th><th style="width:22%">' . strtoupper(trans('noshform.date')) . '</th></tr></thead><tbody>';
     		$data['rx_item'] .= '<tr><td style="width:78%">' . $rx->rxl_medication. ' ' . $rx->rxl_dosage . ' ' . $rx->rxl_dosage_unit . '</td><td style="width:22%">' . date('m/d/Y', $this->human_to_unix($rx->rxl_date_prescribed)) . '</td></tr></tbody></table><br>';
-    		$data['rx_item'] .= '<table style="width:100%"><thead><tr><th style="width:56%">INSTRUCTIONS</th><th style="width:22%">QUANTITY</th><th style="width:22%">REFILLS</th></tr></thead><tbody>';
+    		$data['rx_item'] .= '<table style="width:100%"><thead><tr><th style="width:56%">' . strtoupper(trans('noshform.instructions')) . '</th><th style="width:22%">' . strtoupper(trans('noshform.rxl_quantity')) . '</th><th style="width:22%">' . strtoupper(trans('noshform.rxl_refill')) . '</th></tr></thead><tbody>';
     		$data['rx_item'] .= '<tr><td style="width:56%">';
             if ($rx->rxl_instructions != '') {
-                $data['rx_item'] .= $rx->rxl_instructions . ' for ' . $rx->rxl_reason;
+                $data['rx_item'] .= $rx->rxl_instructions . ' ' . trans('noshform.for') . ' ' . $rx->rxl_reason;
             } else {
-                $data['rx_item'] .= $rx->rxl_sig . ' ' . $rx->rxl_route . ' ' . $rx->rxl_frequency . ' for ' . $rx->rxl_reason;
+                $data['rx_item'] .= $rx->rxl_sig . ' ' . $rx->rxl_route . ' ' . $rx->rxl_frequency . ' ' . trans('noshform.for') . ' ' . $rx->rxl_reason;
             }
             $data['rx_item'] .= '</td><td style="width:22%">***' . $rx->rxl_quantity . '*** ' . $quantity_words . '</td><td style="width:22%">***' . $rx->rxl_refill . '*** ' . $refill_words . '</td></tr></tbody></table>';
-    		$data['rx_item'] .= '<table style="width:100%"><thead><tr><th style="width:100%">SPECIAL INSTRUCTIONS</th></tr></thead><tbody><tr><td>';
+    		$data['rx_item'] .= '<table style="width:100%"><thead><tr><th style="width:100%">' . strtoupper(trans('noshform.rxl_instructions')) . '</th></tr></thead><tbody><tr><td>';
             if ($rx->rxl_daw != '') {
                 $data['rx_item'] .= $rx->rxl_daw . '<br>';
             }
@@ -14393,7 +14493,7 @@ class Controller extends BaseController
         }
         $data['practiceInfo'] .= '<br />';
         $data['practiceInfo'] .= $practice->city . ', ' . $practice->state . ' ' . $practice->zip . '<br />';
-        $data['practiceInfo'] .= 'Phone: ' . $practice->phone . ', Fax: ' . $practice->fax . '<br />';
+        $data['practiceInfo'] .= trans('noshform.phone') . ': ' . $practice->phone . ', ' . trans('noshform.fax') . ': ' . $practice->fax . '<br />';
         $data['patientInfo'] = DB::table('demographics')->where('pid', '=', $pid)->first();
         $data['practiceLogo'] = $this->practice_logo($provider->practice_id, '40px');
         $rxicon = HTML::image(asset('assets/images/rxicon.png'), 'Practice Logo', array('border' => '0', 'height' => '30', 'width' => '30'));
@@ -14403,7 +14503,7 @@ class Controller extends BaseController
         $data['insuranceInfo'] = '';
         if ($query1->count()) {
             foreach ($query1 as $row) {
-                $data['insuranceInfo'] .= $row->insurance_plan_name . '; ID: ' . $row->insurance_id_num . '; Group: ' . $row->insurance_group . '; ' . $row->insurance_insu_lastname . ', ' . $row->insurance_insu_firstname . '<br><br>';
+                $data['insuranceInfo'] .= $row->insurance_plan_name . '; ID: ' . $row->insurance_id_num . '; ' . trans('noshform.group') . ': ' . $row->insurance_group . '; ' . $row->insurance_insu_lastname . ', ' . $row->insurance_insu_firstname . '<br><br>';
             }
         }
         $query2 = DB::table('allergies')->where('pid', '=', $pid)->where('allergies_date_inactive', '=', '0000-00-00 00:00:00')->get();
@@ -14415,14 +14515,18 @@ class Controller extends BaseController
             }
             $data['allergyInfo'] .= '</ul>';
         } else {
-            $data['allergyInfo'] .= 'No known allergies.';
+            $data['allergyInfo'] .= trans('noshform.nkda') . '.';
         }
         $data['signature'] = $this->signature($provider_id);
+        App::setLocale(Session::get('user_locale'));
         return view('pdf.prescription_page', $data);
     }
 
     protected function page_letter($letter_to, $letter_body, $address_id)
     {
+        if (Session::has('patient_locale')) {
+            App::setLocale(Session::get('patient_locale'));
+        }
         $body = '';
         if ($address_id != '') {
             $row = DB::table('addressbook')->where('address_id', '=', $address_id)->first();
@@ -14437,26 +14541,34 @@ class Controller extends BaseController
         $body .= '<br><br>';
         $body .= nl2br($letter_body);
         $sig = $this->signature(Session::get('user_id'));
-        $body .= '<br><br>Sincerely,<br>' . $sig;
+        $body .= '<br><br>' . trans('noshform.results_reply4') . ',<br>' . $sig;
         $body .= '</body></html>';
+        App::setLocale(Session::get('user_locale'));
         return $body;
     }
 
     protected function page_results($pid, $results, $patient_name, $from)
     {
+        if (Session::has('patient_locale')) {
+            App::setLocale(Session::get('patient_locale'));
+        }
         $body = '';
-        $body .= "<br>Test results for " . $patient_name . "<br><br>";
-        $body .= "<table style='table-layout:fixed;width:800px'><tr><th style='width:100px'>Date</th><th style='width:200px'>Test</th><th style='width:300px'>Result</th><th style='width:50px'>Units</th><th style='width:100px'>Range</th><th style='width:50px'>Flags</th></tr>";
+        $body .= "<br>" . trans('noshform.page_results1') . " " . $patient_name . "<br><br>";
+        $body .= "<table style='table-layout:fixed;width:800px'><tr><th style='width:100px'>" . trans('noshform.date') . "</th><th style='width:200px'>" . trans('noshform.test') . "</th><th style='width:300px'>" . trans('noshform.test_result') . "</th><th style='width:50px'>" . trans('noshform.unit') . "</th><th style='width:100px'>" . trans('noshform.range') . "</th><th style='width:50px'>" . trans('noshform.flags') . "</th></tr>";
         foreach ($results as $results_row1) {
             $body .= "<tr><td>" . $results_row1['test_datetime'] . "</td><td>" . $results_row1['test_name'] . "</td><td>" . $results_row1['test_result'] . "</td><td>" . $results_row1['test_units'] . "</td><td>" . $results_row1['test_reference'] . "</td><td>" . $results_row1['test_flags'] . "</td></tr>";
         }
         $body .= "</table><br>" . $from;
         $body .= '</body></html>';
+        App::setLocale(Session::get('user_locale'));
         return $body;
     }
 
     protected function page_letter_reply($body)
     {
+        if (Session::has('patient_locale')) {
+            App::setLocale(Session::get('patient_locale'));
+        }
         $row = DB::table('demographics')->where('pid', '=', Session::get('pid'))->first();
         $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
         $data['practiceName'] = $practice->practice_name;
@@ -14465,19 +14577,23 @@ class Controller extends BaseController
             $data['practiceInfo1'] .= ', ' . $practice->street_address2;
         }
         $data['practiceInfo2'] = $practice->city . ', ' . $practice->state . ' ' . $practice->zip;
-        $data['practiceInfo3'] = 'Phone: ' . $practice->phone . ', Fax: ' . $practice->fax;
+        $data['practiceInfo3'] = trans('noshform.phone') . ': ' . $practice->phone . ', ' . trans('noshform.fax') . ': ' . $practice->fax;
         $data['patientInfo1'] = $row->firstname . ' ' . $row->lastname;
         $data['patientInfo2'] = $row->address;
         $data['patientInfo3'] = $row->city . ', ' . $row->state . ' ' . $row->zip;
         $data['firstname'] = $row->firstname;
-        $data['body'] = nl2br($body) . "<br><br>Please contact me if you have any questions.";
+        $data['body'] = nl2br($body) . "<br><br>" . trans('noshform.page_letter_reply1');
         $data['signature'] = $this->signature(Session::get('user_id'));
         $data['date'] = date('F jS, Y');
+        App::setLocale(Session::get('user_locale'));
         return view('pdf.letter_page', $data);
     }
 
     protected function page_results_list($id)
     {
+        if (Session::has('patient_locale')) {
+            App::setLocale(Session::get('patient_locale'));
+        }
         $data = $this->page_default();
         $test_arr = $this->test_flag_arr();
         $row0 = DB::table('tests')->where('tests_id', '=', $id)->first();
@@ -14486,9 +14602,9 @@ class Controller extends BaseController
             ->where('pid', '=', Session::get('pid'))
             ->orderBy('test_datetime', 'asc')
             ->get();
-        $data['body'] = $row0->test_name . ' Results for ' . $data['firstname'] . ' ' . $data['lastname'] . ':<br />';
+        $data['body'] = $row0->test_name . ' ' . trans('noshform.page_results2') . ' ' . $data['firstname'] . ' ' . $data['lastname'] . ':<br />';
         if ($query1->count()) {
-            $data['body'] .= '<table border="1" cellpadding="5"><thead><tr><th>Date</th><th>Result</th><th>Unit</th><th>Range</th><th>Flag</th></thead><tbody>';
+            $data['body'] .= '<table border="1" cellpadding="5"><thead><tr><th>' . trans('noshform.date') . '</th><th>' . trans('noshform.test_result') . '</th><th>' . trans('noshform.unit') . '</th><th>' . trans('noshform.range') . '</th><th>' . trans('noshform.flags') . '</th></thead><tbody>';
             foreach ($query1 as $row1) {
                 $data['body'] .= '<tr><td>' . date('Y-m-d', $this->human_to_unix($row1->test_datetime)) . '</td>';
                 $data['body'] .= '<td>' . $row1->test_result . '</td>';
@@ -14498,40 +14614,42 @@ class Controller extends BaseController
             }
             $data['body'] .= '</tbody></table>';
         }
-        $data['body'] .= '<br />Printed by ' . Session::get('displayname') . '.';
+        $data['body'] .= '<br />' . trans('noshform.printed_by') . ' ' . Session::get('displayname') . '.';
         $data['date'] = date('F jS, Y');
         $data['signature'] = $this->signature(Session::get('user_id'));
+        App::setLocale(Session::get('user_locale'));
         return view('pdf.letter_page', $data);
     }
 
     protected function page_orders($orders_id, $pid)
     {
+        App::setLocale(Session::get('practice_locale'));
         $data['orders'] = DB::table('orders')->where('orders_id', '=', $orders_id)->first();
         if ($data['orders']->orders_labs != '') {
-            $data['title'] = "LABORATORY ORDER";
-            $data['title1'] = "LABORATORY PROVIDER";
-            $data['title2'] = "ORDER";
+            $data['title'] = strtoupper(trans('noshform.laboratory_order'));
+            $data['title1'] = strtoupper(trans('noshform.laboratory_provider'));
+            $data['title2'] = strtoupper(trans('noshform.order'));
             $data['dx'] = nl2br($data['orders']->orders_labs_icd);
             $data['text'] = nl2br($data['orders']->orders_labs) . "<br><br>" . nl2br($data['orders']->orders_labs_obtained);
         }
         if ($data['orders']->orders_radiology != '') {
-            $data['title'] = "IMAGING ORDER";
-            $data['title1'] = "IMAGING PROVIDER";
-            $data['title2'] = "ORDER";
+            $data['title'] = strtoupper(trans('noshform.imaging_order'));
+            $data['title1'] = strtoupper(trans('noshform.imaging_provider'));
+            $data['title2'] = strtoupper(trans('noshform.order'));
             $data['dx'] = nl2br($data['orders']->orders_radiology_icd);
             $data['text'] = nl2br($data['orders']->orders_radiology);
         }
         if ($data['orders']->orders_cp != '') {
-            $data['title'] = "CARDIOPULMONARY ORDER";
-            $data['title1'] = "CARDIOPULMONARY PROVIDER";
-            $data['title2'] = "ORDER";
+            $data['title'] = strtoupper(trans('noshform.cardiopulmonary_order'));
+            $data['title1'] = strtoupper(trans('noshform.cardiopulmonary_provider'));
+            $data['title2'] = strtoupper(trans('noshform.order'));
             $data['dx'] = nl2br($data['orders']->orders_cp_icd);
             $data['text'] = nl2br($data['orders']->orders_cp);
         }
         if ($data['orders']->orders_referrals != '') {
-            $data['title'] = "REFERRAL/GENERAL ORDERS";
-            $data['title1'] = "REFERRAL PROVIDER";
-            $data['title2'] = "DETAILS";
+            $data['title'] = strtoupper(trans('noshform.referral_order'));
+            $data['title1'] = strtoupper(trans('noshform.referral_provider'));
+            $data['title2'] = strtoupper(trans('noshform.details'));
             $data['dx'] = nl2br($data['orders']->orders_referrals_icd);
             $data['text'] = nl2br($data['orders']->orders_referrals);
         }
@@ -14545,7 +14663,7 @@ class Controller extends BaseController
         }
         $data['practiceInfo'] .= '<br />';
         $data['practiceInfo'] .= $practice->city . ', ' . $practice->state . ' ' . $practice->zip . '<br />';
-        $data['practiceInfo'] .= 'Phone: ' . $practice->phone . ', Fax: ' . $practice->fax . '<br />';
+        $data['practiceInfo'] .= trans('noshform.phone') . ': ' . $practice->phone . ', ' . trans('noshform.fax') . ': ' . $practice->fax . '<br />';
         $data['practiceLogo'] = $this->practice_logo(Session::get('practice_id'));
         $data['patientInfo'] = DB::table('demographics')->where('pid', '=', $pid)->first();
         $data['dob'] = date('m/d/Y', $this->human_to_unix($data['patientInfo']->DOB));
@@ -14554,26 +14672,30 @@ class Controller extends BaseController
         $data['orders_date'] = date('m/d/Y', $this->human_to_unix($data['orders']->orders_date));
         $data['insuranceInfo'] = nl2br($data['orders']->orders_insurance);
         $data['signature'] = $this->signature($data['orders']->id);
-        $data['top'] = 'Physician Order';
+        $data['top'] = trans('noshform.physician_order');
         if ($data['orders']->orders_referrals != '') {
-            $data['top'] = 'Physician Referral';
+            $data['top'] = trans('noshform.physician_referral');
         }
+        App::setLocale(Session::get('user_locale'));
         return view('pdf.order_page', $data);
     }
 
     protected function page_plan($eid)
     {
+        if (Session::has('patient_locale')) {
+            App::setLocale(Session::get('patient_locale'));
+        }
         $pid = Session::get('pid');
         $ordersInfo = DB::table('orders')->where('eid', '=', $eid)->first();
         if ($ordersInfo) {
-            $data['orders'] = '<br><h4>Orders:</h4><p class="view">';
+            $data['orders'] = '<br><h4>' . trans('noshform.orders') . ':</h4><p class="view">';
             $ordersInfo_labs_query = DB::table('orders')->where('eid', '=', $eid)->where('orders_labs', '!=', '')->get();
             if ($ordersInfo_labs_query->count()) {
-                $data['orders'] .= '<strong>Labs: </strong>';
+                $data['orders'] .= '<strong>' . trans('noshform.laboratory') . ': </strong>';
                 foreach ($ordersInfo_labs_query as $ordersInfo_labs_result) {
                     $text1 = nl2br($ordersInfo_labs_result->orders_labs);
                     $address_row1 = DB::table('addressbook')->where('address_id', '=', $ordersInfo_labs_result->address_id)->first();
-                    $data['orders'] .= 'Orders sent to ' . $address_row1->displayname . ': '. $text1 . '<br />';
+                    $data['orders'] .= trans('noshform.orders_sent_to') . ' ' . $address_row1->displayname . ': '. $text1 . '<br />';
                     $data['orders'] .= $address_row1->street_address1 . '<br />';
                     if ($address_row1->street_address2 != '') {
                         $data['orders'] .= $address_row1->street_address2 . '<br />';
@@ -14584,11 +14706,11 @@ class Controller extends BaseController
             }
             $ordersInfo_rad_query = DB::table('orders')->where('eid', '=', $eid)->where('orders_radiology', '!=', '')->get();
             if ($ordersInfo_rad_query->count()) {
-                $data['orders'] .= '<strong>Imaging: </strong>';
+                $data['orders'] .= '<strong>' . trans('noshform.imaging') . ': </strong>';
                 foreach ($ordersInfo_rad_query as $ordersInfo_rad_result) {
                     $text2 = nl2br($ordersInfo_rad_result->orders_radiology);
                     $address_row2 = DB::table('addressbook')->where('address_id', '=', $ordersInfo_rad_result->address_id)->first();
-                    $data['orders'] .= 'Orders sent to ' . $address_row2->displayname . ': '. $text2 . '<br />';
+                    $data['orders'] .= trans('noshform.orders_sent_to') . ' ' . $address_row2->displayname . ': '. $text2 . '<br />';
                     $data['orders'] .= $address_row2->street_address1 . '<br />';
                     if ($address_row2->street_address2 != '') {
                         $data['orders'] .= $address_row2->street_address2 . '<br />';
@@ -14599,11 +14721,11 @@ class Controller extends BaseController
             }
             $ordersInfo_cp_query = DB::table('orders')->where('eid', '=', $eid)->where('orders_cp', '!=', '')->get();
             if ($ordersInfo_cp_query->count()) {
-                $data['orders'] .= '<strong>Cardiopulmonary: </strong>';
+                $data['orders'] .= '<strong>' . trans('noshform.cardiopulmonary') . ': </strong>';
                 foreach ($ordersInfo_cp_query as $ordersInfo_cp_result) {
                     $text3 = nl2br($ordersInfo_cp_result->orders_cp);
                     $address_row3 = DB::table('addressbook')->where('address_id', '=', $ordersInfo_cp_result->address_id)->first();
-                    $data['orders'] .= 'Orders sent to ' . $address_row3->displayname . ': '. $text3 . '<br />';
+                    $data['orders'] .= trans('noshform.orders_sent_to') . ' ' . $address_row3->displayname . ': '. $text3 . '<br />';
                     $data['orders'] .= $address_row3->street_address1 . '<br />';
                     if ($address_row3->street_address2 != '') {
                         $data['orders'] .= $address_row3->street_address2 . '<br />';
@@ -14614,10 +14736,10 @@ class Controller extends BaseController
             }
             $ordersInfo_ref_query = DB::table('orders')->where('eid', '=', $eid)->where('orders_referrals', '!=', '')->get();
             if ($ordersInfo_ref_query->count()) {
-                $data['orders'] .= '<strong>Referrals: </strong>';
+                $data['orders'] .= '<strong>' . trans('noshform.referrals') . ': </strong>';
                 foreach ($ordersInfo_ref_query as $ordersInfo_ref_result) {
                     $address_row4 = DB::table('addressbook')->where('address_id', '=', $ordersInfo_ref_result->address_id)->first();
-                    $data['orders'] .= 'Orders sent to ' . $address_row4->displayname . '<br />';
+                    $data['orders'] .= trans('noshform.orders_sent_to') . ' ' . $address_row4->displayname . '<br />';
                     $data['orders'] .= $address_row4->street_address1 . '<br />';
                     if ($address_row4->street_address2 != '') {
                         $data['orders'] .= $address_row4->street_address2 . '<br />';
@@ -14632,19 +14754,19 @@ class Controller extends BaseController
         }
         $rxInfo = DB::table('rx')->where('eid', '=', $eid)->first();
         if ($rxInfo) {
-            $data['rx'] = '<br><h4>Prescriptions and Immunizations:</h4><p class="view">';
+            $data['rx'] = '<br><h4>' . trans('noshform.prescriptions_imm') . ':</h4><p class="view">';
             if ($rxInfo->rx_rx!= '') {
-                $data['rx'] .= '<strong>Medications: </strong>';
+                $data['rx'] .= '<strong>' . trans('noshform.medications') . ': </strong>';
                 $data['rx'] .= nl2br($rxInfo->rx_orders_summary);
                 $data['rx'] .= '<br /><br />';
             }
             if ($rxInfo->rx_supplements!= '') {
-                $data['rx'] .= '<strong>Supplements to take: </strong>';
+                $data['rx'] .= '<strong>' . trans('noshform.supplements') . ': </strong>';
                 $data['rx'] .= nl2br($rxInfo->rx_supplements_orders_summary);
                 $data['rx'] .= '<br /><br />';
             }
             if ($rxInfo->rx_immunizations != '') {
-                $data['rx'] .= '<strong>Immunizations: </strong>';
+                $data['rx'] .= '<strong>' . trans('noshform.immunizations') . ': </strong>';
                 $data['rx'] .= 'CDC Vaccine Information Sheets given for each immunization and consent obtained.<br />';
                 $data['rx'] .= nl2br($rxInfo->rx_immunizations);
                 $data['rx'] .= '<br /><br />';
@@ -14655,14 +14777,14 @@ class Controller extends BaseController
         }
         $planInfo = DB::table('plan')->where('eid', '=', $eid)->first();
         if ($planInfo) {
-            $data['plan'] = '<br><h4>Plan:</h4><p class="view">';
+            $data['plan'] = '<br><h4>' . trans('noshform.plan') . ':</h4><p class="view">';
             if ($planInfo->plan!= '') {
-                $data['plan'] .= '<strong>Recommendations: </strong>';
+                $data['plan'] .= '<strong>' . trans('noshform.recommendations') . ': </strong>';
                 $data['plan'] .= nl2br($planInfo->plan);
                 $data['plan'] .= '<br /><br />';
             }
             if ($planInfo->followup != '') {
-                $data['plan'] .= '<strong>Followup: </strong>';
+                $data['plan'] .= '<strong>' .trans('noshform.followup') . ': </strong>';
                 $data['plan'] .= nl2br($planInfo->followup);
                 $data['plan'] .= '<br /><br />';
             }
@@ -14692,6 +14814,7 @@ class Controller extends BaseController
                 $data['insuranceInfo'] .= $row->insurance_plan_name . '; ID: ' . $row->insurance_id_num . '; Group: ' . $row->insurance_group . '; ' . $row->insurance_insu_lastname . ', ' . $row->insurance_insu_firstname . '<br><br>';
             }
         }
+        App::setLocale(Session::get('user_locale'));
         return view('pdf.instruction_page', $data);
     }
 
@@ -14713,7 +14836,7 @@ class Controller extends BaseController
                         $elements = explode($element_delimiter, $line);
                         if ($elements[0] == 'ISA') {
                             if ($return['loop_id'] != '') {
-                                $return['error'][] = 'Unexpected ISA segment for ' . $return['loop_id'];
+                                $return['error'][] = trans('noshform.unexpected') . ' ISA ' . trans('noshform.segment') . ' ' . $return['loop_id'];
                             } else {
                                 $return['isa_sender_id'] = trim($elements[6]);
                                 $return['isa_receiver_id'] = trim($elements[8]);
@@ -14721,7 +14844,7 @@ class Controller extends BaseController
                             }
                         } elseif ($elements[0] == 'GS') {
                             if ($return['loop_id'] != '') {
-                                $return['error'][] = 'Unexpected GS segment for ' . $return['loop_id'];
+                                $return['error'][] = trans('noshform.unexpected') . ' GS ' . trans('noshform.segment') . ' ' . $return['loop_id'];
                             } else {
                                 $return['gs_date'] = trim($elements[4]);
                                 $return['gs_time'] = trim($elements[5]);
@@ -14729,7 +14852,7 @@ class Controller extends BaseController
                             }
                         } elseif ($elements[0] == 'ST') {
                             if ($return['loop_id'] != '') {
-                                $return['error'][] = 'Unexpected ST segment for ' . $return['loop_id'];
+                                $return['error'][] = trans('noshform.unexpected') . ' ST ' . trans('noshform.segment') . ' ' . $return['loop_id'];
                             } else {
                                 //$this->parse_era_2100($return, $cb);
                                 $return['st_control_number'] = trim($elements[2]);
@@ -14737,14 +14860,14 @@ class Controller extends BaseController
                             }
                         } elseif ($elements[0] == 'BPR') {
                             if ($return['loop_id'] != '') {
-                                $return['error'][] = 'Unexpected BPR segment for ' . $return['loop_id'];
+                                $return['error'][] = trans('noshform.unexpected') . ' BPR ' . trans('noshform.segment') . ' ' . $return['loop_id'];
                             } else {
                                 $return['check_amount'] = trim($elements[2]);
                                 $return['check_date'] = strtotime(trim($elements[16])); // converted to unix time
                             }
                         } elseif ($elements[0] == 'TRN') {
                             if ($return['loop_id'] != '') {
-                                $return['error'][] = 'Unexpected TRN segment for ' . $return['loop_id'];
+                                $return['error'][] = trans('noshform.unexpected') . ' TRN ' . trans('noshform.segment') . ' ' . $return['loop_id'];
                             } else {
                                 $return['check_number'] = trim($elements[2]);
                                 $return['payer_tax_id'] = substr($elements[3], 1); // converted to 9 digits
@@ -14754,13 +14877,13 @@ class Controller extends BaseController
                             }
                         } elseif ($elements[0] == 'DTM' && $elements[1] == '405') {
                             if ($return['loop_id'] != '') {
-                                $return['error'][] = 'Unexpected DTM/405 segment for ' . $return['loop_id'];
+                                $return['error'][] = trans('noshform.unexpected') . ' DTM/405 ' . trans('noshform.segment') . ' ' . $return['loop_id'];
                             } else {
                                 $return['production_date'] = strtotime(trim($elements[2])); // converted to unix time
                             }
                         } elseif ($elements[0] == 'N1' && $elements[1] == 'PR') {
                             if ($return['loop_id'] != '') {
-                                $return['error'][] = 'Unexpected N1|PR segment for ' . $return['loop_id'];
+                                $return['error'][] = trans('noshform.unexpected') . ' N1|PR ' . trans('noshform.segment') . ' ' . $return['loop_id'];
                             } else {
                                 $return['loop_id'] = '1000A';
                                 $return['payer_name'] = trim($elements[2]);
@@ -14773,7 +14896,7 @@ class Controller extends BaseController
                             $return['payer_zip'] = trim($elements[3]);
                         } elseif ($elements[0] == 'N1' && $elements[1] == 'PE') {
                             if ($return['loop_id'] != '1000A') {
-                                $return['error'][] = 'Unexpected N1|PE segment for ' . $return['loop_id'];
+                                $return['error'][] = trans('noshform.unexpected') . ' N1|PE ' . trans('noshform.segment') . ' ' . $return['loop_id'];
                             } else {
                                 $return['loop_id'] = '1000B';
                                 $return['payee_name'] = trim($elements[2]);
@@ -14787,14 +14910,14 @@ class Controller extends BaseController
                             $return['payee_zip']   = trim($elements[3]);
                         } elseif ($elements[0] == 'LX') {
                             if (!$return['loop_id']) {
-                                $return['error'][] = 'Unexpected LX segment for ' . $return['loop_id'];
+                                $return['error'][] = trans('noshform.unexpected') . ' LX ' . trans('noshform.segment') . ' ' . $return['loop_id'];
                             } else {
                                 //$this->parse_era_2100($return, $cb);
                                 $return['loop_id'] = '2000';
                             }
                         } elseif ($elements[0] == 'CLP') {
                             if (!$return['loop_id']) {
-                                $return['error'][] = 'Unexpected CLP segment for ' . $return['loop_id'];
+                                $return['error'][] = trans('noshform.unexpected') . ' CLP ' . trans('noshform.segment') . ' ' . $return['loop_id'];
                             } else {
                                 //$this->parse_era_2100($return, $cb);
                                 $return['loop_id'] = '2100';
@@ -14849,7 +14972,7 @@ class Controller extends BaseController
                             $return['claim'][$claim_num]['payer_insurance'] = trim($elements[2]);
                         } else if ($elements[0] == 'SVC') {
                             if (!$return['loop_id']) {
-                                $return['error'][] = 'Unexpected SVC segment for ' . $return['loop_id'];
+                                $return['error'][] = trans('noshform.unexpected') . ' SVC ' . trans('noshform.segment') . ' ' . $return['loop_id'];
                             } else {
                                 $return['loop_id'] = '2110';
                                 if (isset($elements[6])) {
@@ -14858,7 +14981,7 @@ class Controller extends BaseController
                                     $item = explode($sub_element_delimiter, $elements[1]);
                                 }
                                 if ($item[0] != 'HC') {
-                                    $return['error'][] = 'item segment has unexpected qualifier';
+                                    $return['error'][] = trans('noshform.parse_era1');
                                 }
                                 if (isset($return['claim'][$claim_num]['item'])) {
                                     $l = count($return['claim'][$claim_num]['item']);
@@ -14905,49 +15028,49 @@ class Controller extends BaseController
                         } elseif ($elements[0] == 'PLB') {
                             for ($r = 3; $r < 15; $r += 2) {
                                 if (!$elements[$r]) break;
-                                $return['plb'] .= 'PROVIDER LEVEL ADJUSTMENT (not claim-specific): $' .
+                                $return['plb'] .= trans('noshform.parse_era2') . ': $' .
                                     sprintf('%.2f', $elements[$r+1]) . " with reason cpt " . $elements[$r] . "\n";
                             }
                         } elseif ($elements[0] == 'SE') {
                             //$this->parse_era_2100($return, $cb);
                             $return['loop_id'] = '';
                             if ($return['st_control_number'] != trim($elements[2])) {
-                                return 'Ending transaction set control number mismatch';
+                                return trans('noshform.parse_era3');
                             }
                             if (($return['st_segment_count'] + 1) != trim($elements[1])) {
-                                return 'Ending transaction set segment count mismatch';
+                                return trans('noshform.parse_era4');
                             }
                         } elseif ($elements[0] == 'GE') {
                             if ($return['loop_id']) {
-                                $return['error'][] = 'Unexpected GE segment';
+                                $return['error'][] = trans('noshform.unexpected') . ' GE ' . trans('noshform.segment1');
                             }
                             if ($return['gs_control_number'] != trim($elements[2])) {
-                                $return['error'][] = 'Ending functional group control number mismatch';
+                                $return['error'][] = trans('noshform.parse_era5');
                             }
                         } elseif ($elements[0] == 'IEA') {
                             if ($return['loop_id']) {
-                                $return['error'][] = 'Unexpected IEA segment';
+                                $return['error'][] = trans('noshform.unexpected') . ' IEA ' . trans('noshform.segment1');
                             }
                             if ($return['isa_control_number'] != trim($elements[2])) {
-                                $return['error'][] = 'Ending interchange control number mismatch';
+                                $return['error'][] = trans('noshform.parse_era6');
                             }
                         } else {
-                            $return['error'][] = 'Unknown or unexpected segment ID ' . $elements[0];
+                            $return['error'][] = trans('noshform.parse_era7') . ' ' . $elements[0];
                         }
                     } else {
                         $error_line = $return['st_segment_count'] + 1;
-                        $return['error'][] = 'Error reading line ' . $error_line;
+                        $return['error'][] = trans('noshform.parse_era8') . ' ' . $error_line;
                     }
                     $return['st_segment_count']++;
                 }
                 if ($elements[0] != 'IEA') {
-                    $return['error'][] = 'Premature end of ERA file';
+                    $return['error'][] = trans('noshform.parse_era9');
                 }
             } else {
-                $return['invalid'] = 'First line is not an ISA segment, unable to read the file.';
+                $return['invalid'] = trans('noshform.parse_era10');
             }
         } else {
-            $return['invalid'] = 'This is not a valid EDI 835 file!';
+            $return['invalid'] = trans('noshform.parse_era_11');
         }
         return $return;
     }
@@ -14987,8 +15110,8 @@ class Controller extends BaseController
             if ($rx_row) {
                 $rx_row_parts = explode("\n\n", $rx_row->rx_rx);
                 foreach($rx_row_parts as $rx_row_part) {
-                    if (strpos($rx_row_part, "PRESCRIBED MEDICATIONS:") !== false) {
-                        $arr1 = explode("\n", str_replace("PRESCRIBED MEDICATIONS:  ", "", $rx_row_part));
+                    if (strpos($rx_row_part, trans('noshform.plan_build1')) !== false) {
+                        $arr1 = explode("\n", str_replace(trans('noshform.plan_build1') . "  ", "", $rx_row_part));
                         $arr1 = array_where($arr1, function($value, $key) {
                             if ($value !== '') {
                                 return true;
@@ -14996,8 +15119,8 @@ class Controller extends BaseController
                         });
                         $rx_prescribe_text_arr = array_merge($rx_prescribe_text_arr, $arr1);
                     }
-                    if (strpos($rx_row_part, "ENTERED MEDICATIONS IN ERROR:") !== false) {
-                        $arr2 = explode("\n", str_replace("ENTERED MEDICATIONS IN ERROR:  ", "", $rx_row_part));
+                    if (strpos($rx_row_part, trans('noshform.plan_build2')) !== false) {
+                        $arr2 = explode("\n", str_replace(trans('noshform.plan_build2') . "  ", "", $rx_row_part));
                         $arr2 = array_where($arr2, function($value, $key) {
                             if ($value !== '') {
                                 return true;
@@ -15005,8 +15128,8 @@ class Controller extends BaseController
                         });
                         $rx_eie_text_arr = array_merge($rx_eie_text_arr, $arr2);
                     }
-                    if (strpos($rx_row_part, "DISCONTINUED MEDICATIONS:") !== false) {
-                        $arr3 = explode("\n", str_replace("DISCONTINUED MEDICATIONS:  ", "", $rx_row_part));
+                    if (strpos($rx_row_part, trans('noshform.plan_build3')) !== false) {
+                        $arr3 = explode("\n", str_replace(trans('noshform.plan_build3') . "  ", "", $rx_row_part));
                         $arr3 = array_where($arr3, function($value, $key) {
                             if ($value !== '') {
                                 return true;
@@ -15014,8 +15137,8 @@ class Controller extends BaseController
                         });
                         $rx_inactivate_text_arr = array_merge($rx_inactivate_text_arr, $arr3);
                     }
-                    if (strpos($rx_row_part, "REINSTATED MEDICATIONS:") !== false) {
-                        $arr4 = explode("\n", str_replace("REINSTATED MEDICATIONS:  ", "", $rx_row_part));
+                    if (strpos($rx_row_part, trans('noshform.plan_build4')) !== false) {
+                        $arr4 = explode("\n", str_replace(trans('noshform.plan_build4') . "  ", "", $rx_row_part));
                         $arr4 = array_where($arr4, function($value, $key) {
                             if ($value !== '') {
                                 return true;
@@ -15026,19 +15149,19 @@ class Controller extends BaseController
                 }
             }
             if(! empty($rx_prescribe_text_arr)) {
-                array_unshift($rx_prescribe_text_arr, "PRESCRIBED MEDICATIONS:  ");
+                array_unshift($rx_prescribe_text_arr, trans('noshform.plan_build1') . "  ");
                 $rx_rx_arr[] = implode("\n", $rx_prescribe_text_arr);
             }
             if(! empty($rx_eie_text_arr)) {
-                array_unshift($rx_eie_text_arr, "ENTERED MEDICATIONS IN ERROR:  ");
+                array_unshift($rx_eie_text_arr, trans('noshform.plan_build2') . "  ");
                 $rx_rx_arr[]= implode("\n", $rx_eie_text_arr);
             }
             if(! empty($rx_inactivate_text_arr)) {
-                array_unshift($rx_inactivate_text_arr, "DISCONTINUED MEDICATIONS:  ");
+                array_unshift($rx_inactivate_text_arr, trans('noshform.plan_build3') . "  ");
                 $rx_rx_arr[] = implode("\n", $rx_inactivate_text_arr);
             }
             if(! empty($rx_reactivate_text_arr)) {
-                array_unshift($rx_reactivate_text_arr, "REINSTATED MEDICATIONS:  ");
+                array_unshift($rx_reactivate_text_arr, trans('noshform.plan_build4') . "  ");
                 $rx_rx_arr[] = implode("\n", $rx_reactivate_text_arr);
             }
             if(! empty($rx_rx_arr)) {
@@ -15056,12 +15179,12 @@ class Controller extends BaseController
                 DB::table('rx')->where('eid', '=', $eid)->update($rx_data);
                 $this->audit('Update');
                 // $this->api_data('update', 'rx', 'eid', $eid);
-                $return = 'Medication Orders Updated';
+                $return = trans('noshform.plan_build5');
             } else {
                 DB::table('rx')->insert($rx_data);
                 $this->audit('Add');
                 // $this->api_data('update', 'rx', 'eid', $eid);
-                $return = 'Medication Orders Added';
+                $return = trans('noshform.plan_build6');
             }
         }
         if ($type == 'imm') {
@@ -15086,12 +15209,12 @@ class Controller extends BaseController
                 DB::table('rx')->where('eid', '=', $eid)->update($imm_data);
                 $this->audit('Update');
                 // $this->api_data('update', 'rx', 'eid', $eid);
-                $return = 'Immunization Orders Updated';
+                $return = trans('noshform.plan_build7');
             } else {
                 DB::table('rx')->insert($imm_data);
                 $this->audit('Add');
                 // $this->api_data('update', 'rx', 'eid', $eid);
-                $return = 'Immunization Orders Added';
+                $return = trans('noshform.plan_build8');
             }
         }
         if ($type == 'sup') {
@@ -15120,8 +15243,8 @@ class Controller extends BaseController
             if ($rx_row) {
                 $sup_row_parts = explode("\n\n", $rx_row->rx_supplements);
                 foreach($sup_row_parts as $sup_row_part) {
-                    if (strpos($sup_row_part, "SUPPLEMENTS ADVISED:") !== false) {
-                        $arr5 = explode("\n", str_replace("SUPPLEMENTS ADVISED:  ", "", $sup_row_part));
+                    if (strpos($sup_row_part, trans('noshform.plan_build9')) !== false) {
+                        $arr5 = explode("\n", str_replace(trans('noshform.plan_build9') . "  ", "", $sup_row_part));
                         $arr5 = array_where($arr5, function($value, $key) {
                             if ($value !== '') {
                                 return true;
@@ -15129,8 +15252,8 @@ class Controller extends BaseController
                         });
                         $sup_order_text_arr = array_merge($sup_order_text_arr, $arr5);
                     }
-                    if (strpos($sup_row_part, "SUPPLEMENTS PURCHASED BY PATIENT:") !== false) {
-                        $arr6 = explode("\n", str_replace("ENTERED MEDICATIONS IN ERROR:  ", "", $sup_row_part));
+                    if (strpos($sup_row_part, trans('noshform.plan_build10')) !== false) {
+                        $arr6 = explode("\n", str_replace(trans('noshform.plan_build10') . "  ", "", $sup_row_part));
                         $arr6 = array_where($arr6, function($value, $key) {
                             if ($value !== '') {
                                 return true;
@@ -15138,8 +15261,8 @@ class Controller extends BaseController
                         });
                         $sup_purchase_text_arr = array_merge($sup_purchase_text_arr, $arr6);
                     }
-                    if (strpos($sup_row_part, "DISCONTINUED SUPPLEMENTS:") !== false) {
-                        $arr7 = explode("\n", str_replace("DISCONTINUED SUPPLEMENTS:  ", "", $sup_row_part));
+                    if (strpos($sup_row_part, trans('noshform.plan_build11')) !== false) {
+                        $arr7 = explode("\n", str_replace(trans('noshform.plan_build11') . "  ", "", $sup_row_part));
                         $arr7 = array_where($arr7, function($value, $key) {
                             if ($value !== '') {
                                 return true;
@@ -15147,8 +15270,8 @@ class Controller extends BaseController
                         });
                         $sup_inactivate_text_arr = array_merge($sup_inactivate_text_arr, $arr7);
                     }
-                    if (strpos($sup_row_part, "REINSTATED SUPPLEMENTS:") !== false) {
-                        $arr8 = explode("\n", str_replace("REINSTATED SUPPLEMENTS:  ", "", $sup_row_part));
+                    if (strpos($sup_row_part, trans('noshform.plan_build12')) !== false) {
+                        $arr8 = explode("\n", str_replace(trans('noshform.plan_build12') . "  ", "", $sup_row_part));
                         $arr8 = array_where($arr8, function($value, $key) {
                             if ($value !== '') {
                                 return true;
@@ -15159,19 +15282,19 @@ class Controller extends BaseController
                 }
             }
             if(! empty($sup_order_text_arr)) {
-                array_unshift($sup_order_text_arr, "SUPPLEMENTS ADVISED:  ");
+                array_unshift($sup_order_text_arr, trans('noshform.plan_build9') . "  ");
                 $rx_supplements_arr[] = implode("\n", $sup_order_text_arr);
             }
             if(! empty($sup_purchase_text_arr)) {
-                array_unshift($sup_purchase_text_arr, "SUPPLEMENTS PURCHASED BY PATIENT:  ");
+                array_unshift($sup_purchase_text_arr, trans('noshform.plan_build10') . "  ");
                 $rx_supplements_arr[]= implode("\n", $sup_purchase_text_arr);
             }
             if(! empty($sup_inactivate_text_arr)) {
-                array_unshift($sup_inactivate_text_arr, "DISCONTINUED SUPPLEMENTS:  ");
+                array_unshift($sup_inactivate_text_arr, trans('noshform.plan_build11') . "  ");
                 $rx_supplements_arr[] = implode("\n", $sup_inactivate_text_arr);
             }
             if(! empty($sup_reactivate_text_arr)) {
-                array_unshift($sup_reactivate_text_arr, "REINSTATED SUPPLEMENTS:  ");
+                array_unshift($sup_reactivate_text_arr, trans('noshform.plan_build12') . "  ");
                 $rx_supplements_arr[] = implode("\n", $sup_reactivate_text_arr);
             }
             if(! empty($rx_supplements_arr)) {
@@ -15189,12 +15312,12 @@ class Controller extends BaseController
                 DB::table('rx')->where('eid', '=', $eid)->update($sup_data);
                 $this->audit('Update');
                 // $this->api_data('update', 'rx', 'eid', $eid);
-                $return = 'Supplement Orders Updated';
+                $return = trans('noshform.plan_build13');
             } else {
                 DB::table('rx')->insert($sup_data);
                 $this->audit('Add');
                 // $this->api_data('update', 'rx', 'eid', $eid);
-                $return = 'Supplement Orders Added';
+                $return = trans('noshform.plan_build14');
             }
         }
         return $return;
@@ -15209,10 +15332,12 @@ class Controller extends BaseController
             $dob = date('m/d/Y', strtotime($patient->DOB));
             $name = $patient->lastname . ', ' . $patient->firstname . ' (DOB: ' . $dob . ')';
             if ($providers->count()) {
-                $data_message['item'] = 'There is a new health update for ' . $name . '.  For more details, click here: ' . route('dashboard');
                 foreach ($providers as $provider) {
-                    $this->send_mail('emails.blank', $data_message, 'Health Update', $provider->email, '1');
+                    App::setLocale($provider->locale);
+                    $data_message['item'] = trans('noshform.pnosh_notification1') . ' ' . $name . '.  ' . trans('noshform.pnosh_notification2') . ', <a href="' . route('dashboard') . '" target="_blank">' . trans('noshform.pnosh_notification3') . '</a>';
+                    $this->send_mail('emails.blank', $data_message, trans('noshform.pnosh_notification'), $provider->email, '1');
                 }
+                App::setLocale(Session::get('user_locale'));
             }
         }
         return true;
@@ -15287,10 +15412,10 @@ class Controller extends BaseController
             ->where('demographics.DOB', '<', $b1)
             ->get();
         $num3 = count($query4);
-        $html = '<h4>Age Distribution of Patients in the Practice:</h4><ul>';
-        $html .= '<li><b>0-18 years of age:</b> ' . round($num1/$total*100) . "% of patients</li>";
-        $html .= '<li><b>19-64 years of age:</b> ' . round($num2/$total*100) . "% of patients</li>";
-        $html .= '<li><b>65+ years of age:</b> ' . round($num3/$total*100) . "% of patients</li></ul>";
+        $html = '<h4>' . trans('noshform.practice_stats1') . ':</h4><ul>';
+        $html .= '<li><b>' . trans('noshform.practice_stats2') . ':</b> ' . round($num1/$total*100) . trans('noshform.practice_stats5') . "</li>";
+        $html .= '<li><b>' . trans('noshform.practice_stats3') . ':</b> ' . round($num2/$total*100) . trans('noshform.practice_stats5') . "</li>";
+        $html .= '<li><b>' . trans('noshform.practice_stats4') . ':</b> ' . round($num3/$total*100) . trans('noshform.practice_stats5') . "</li></ul>";
         return $html;
     }
 
@@ -15298,6 +15423,7 @@ class Controller extends BaseController
     {
         $row = DB::table('demographics')->where('pid', '=', Session::get('pid'))->first();
         $row2 = DB::table('practiceinfo')->where('practice_id', '=',Session::get('practice_id'))->first();
+        App::setLocale(Session::get('patient_locale'));
         if ($to == '') {
             $to = $row->reminder_to;
             $reminder_method = $row->reminder_method;
@@ -15311,14 +15437,16 @@ class Controller extends BaseController
         if ($to !== '' && $to !== null) {
             $link = route('prescription_view', [$id]);
             if ($reminder_method == 'Cellular Phone') {
-                $data_message['item'] = 'New Medication: ' . $link;
+                $data_message['item'] = trans('noshform.prescription_notification1') . ': ' . $link;
                 $message = view('emails.blank', $data_message)->render();
                 $this->textbelt($to, $message, $row2->practice_id);
             } else {
-                $data_message['item'] = 'You have a new medication prescribed to you.  For more details, click here: ' . $link;
-                $this->send_mail('emails.blank', $data_message, 'New Medication', $to, Session::get('practice_id'));
+                $data_message['item'] = trans('noshform.prescription_notification2') . ', <a href="' . $link . '" target="_blank">' . trans('noshform.prescription_notification3') . '</a>';
+                $this->send_mail('emails.blank', $data_message, trans('noshform.prescription_notification1'), $to, Session::get('practice_id'));
             }
         }
+        App::setLocale(Session::get('user_locale'));
+        return true;
     }
 
     /**
@@ -15331,6 +15459,7 @@ class Controller extends BaseController
     protected function print_chart($hippa_id, $pid, $type)
     {
         ini_set('memory_limit','196M');
+        App::setLocale(Session::get('practice_locale'));
         $result = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
         $patient = DB::table('demographics')->where('pid', '=', $pid)->first();
         $lastname = str_replace(' ', '_', $patient->lastname);
@@ -15402,13 +15531,13 @@ class Controller extends BaseController
                 ->get();
         }
         if ($query1->count()) {
-            $html .= '<table width="100%" style="font-size:1em"><tr><th style="background-color: gray;color: #FFFFFF;">ENCOUNTERS</th></tr></table>';
+            $html .= '<table width="100%" style="font-size:1em"><tr><th style="background-color: gray;color: #FFFFFF;">' . strtoupper(trans('noshform.encounters')) . '</th></tr></table>';
             foreach ($query1 as $row1) {
                 $html .= $this->encounters_view($row1->eid, $pid, Session::get('practice_id'));
             }
         }
         if ($query2->count()) {
-            $html .= '<pagebreak /><table width="100%" style="font-size:1em"><tr><th style="background-color: gray;color: #FFFFFF;">MESSAGES</th></tr></table>';
+            $html .= '<pagebreak /><table width="100%" style="font-size:1em"><tr><th style="background-color: gray;color: #FFFFFF;">' . strtoupper(trans('noshform.t_messages')) . '</th></tr></table>';
             foreach ($query2 as $row2) {
                 $html .= $this->t_messages_view($row2->t_messages_id, true);
             }
@@ -15418,7 +15547,7 @@ class Controller extends BaseController
         $pdf_arr[] = $file_path_enc;
         // Generate CCR
         $file_path_ccr = public_path() . '/temp/' . time() . '_' . $filename_string . '_ccr.pdf';
-        $html_ccr = $this->page_intro('Continuity of Care Record', Session::get('practice_id'));
+        $html_ccr = $this->page_intro(trans('noshform.ccr_description'), Session::get('practice_id'));
         $html_ccr .= $this->page_ccr($pid);
         $this->generate_pdf($html_ccr, $file_path_ccr, 'footerpdf', $header, '2');
         $pdf_arr[] = $file_path_ccr;
@@ -15441,6 +15570,7 @@ class Controller extends BaseController
         $file_path = public_path() . '/temp/' . time() . '_' . $filename_string . '_' . $pid . '_printchart_final.pdf';
         $pdf->merge();
         $pdf->save($file_path);
+        App::setLocale(Session::get('user_locale'));
         return $file_path;
     }
 
@@ -16582,68 +16712,74 @@ class Controller extends BaseController
                 $return .= '><span>' . $item['label'] . '</span><span class="pull-right">';
                 if ($viewfirst == true) {
                     if (isset($item['view'])) {
-                        $return .= '<a href="' . $item['view'] . '" class="btn fa-btn" data-toggle="tooltip" title="View"><i class="fa fa-eye fa-lg"></i></a>';
+                        $return .= '<a href="' . $item['view'] . '" class="btn fa-btn" data-toggle="tooltip" title="' . trans('noshform.view') . '"><i class="fa fa-eye fa-lg"></i></a>';
                     }
                     if (isset($item['edit'])) {
-                        $return .= '<a href="' . $item['edit'] . '" class="btn fa-btn" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil fa-lg"></i></a>';
+                        $return .= '<a href="' . $item['edit'] . '" class="btn fa-btn" data-toggle="tooltip" title="' . trans('noshform.edit') . '"><i class="fa fa-pencil fa-lg"></i></a>';
                     }
                 } else {
                     if (isset($item['edit'])) {
-                        $return .= '<a href="' . $item['edit'] . '" class="btn fa-btn" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil fa-lg"></i></a>';
+                        $return .= '<a href="' . $item['edit'] . '" class="btn fa-btn" data-toggle="tooltip" title="' . trans('noshform.edit') . '"><i class="fa fa-pencil fa-lg"></i></a>';
                     }
                     if (isset($item['view'])) {
-                        $return .= '<a href="' . $item['view'] . '" class="btn fa-btn" data-toggle="tooltip" title="View"><i class="fa fa-eye fa-lg"></i></a>';
+                        $return .= '<a href="' . $item['view'] . '" class="btn fa-btn" data-toggle="tooltip" title="' . trans('noshform.view') . '"><i class="fa fa-eye fa-lg"></i></a>';
                     }
                 }
                 if (isset($item['refill'])) {
-                    $return .= '<a href="' . $item['refill'] . '" class="btn fa-btn" data-toggle="tooltip" title="Refill"><i class="fa fa-repeat fa-lg"></i></a>';
+                    $return .= '<a href="' . $item['refill'] . '" class="btn fa-btn" data-toggle="tooltip" title="' . trans('noshform.refill') . '"><i class="fa fa-repeat fa-lg"></i></a>';
                 }
                 if (isset($item['eie'])) {
-                    $return .= '<a href="' . $item['eie'] . '" class="btn fa-btn" data-toggle="tooltip" title="Entered in Error/Undo"><i class="fa fa-undo fa-lg"></i></a>';
+                    $return .= '<a href="' . $item['eie'] . '" class="btn fa-btn" data-toggle="tooltip" title="' . trans('noshform.eie') . '"><i class="fa fa-undo fa-lg"></i></a>';
                 }
                 if (isset($item['reply'])) {
-                    $return .= '<a href="' . $item['reply'] . '" class="btn fa-btn" data-toggle="tooltip" title="Reply to Patient"><i class="fa fa-reply fa-lg"></i></a>';
+                    $return .= '<a href="' . $item['reply'] . '" class="btn fa-btn" data-toggle="tooltip" title="' . trans('noshform.reply1') . '"><i class="fa fa-reply fa-lg"></i></a>';
                 }
                 if (isset($item['complete'])) {
-                    $return .= '<a href="' . $item['complete'] . '" class="btn fa-btn" data-toggle="tooltip" title="Complete"><i class="fa fa-check fa-lg"></i></a>';
+                    $return .= '<a href="' . $item['complete'] . '" class="btn fa-btn" data-toggle="tooltip" title="' . trans('noshform.complete') . '"><i class="fa fa-check fa-lg"></i></a>';
                 }
                 if (isset($item['reactivate'])) {
-                    $return .= '<a href="' . $item['reactivate'] . '" class="btn fa-btn" data-toggle="tooltip" title="Reactivate"><i class="fa fa-plus-circle fa-lg"></i></a>';
+                    $return .= '<a href="' . $item['reactivate'] . '" class="btn fa-btn" data-toggle="tooltip" title="' . trans('noshform.reactivate') . '"><i class="fa fa-plus-circle fa-lg"></i></a>';
                 }
                 if (isset($item['inactivate'])) {
-                    $return .= '<a href="' . $item['inactivate'] . '" class="btn fa-btn" data-toggle="tooltip" title="Inactivate"><i class="fa fa-minus-circle fa-lg"></i></a>';
+                    $return .= '<a href="' . $item['inactivate'] . '" class="btn fa-btn" data-toggle="tooltip" title="' . trans('noshform.inactivate') . '"><i class="fa fa-minus-circle fa-lg"></i></a>';
                 }
                 if (isset($item['delete'])) {
-                    $return .= '<a href="' . $item['delete'] . '" class="btn fa-btn nosh-delete" data-toggle="tooltip" title="Delete"><i class="fa fa-trash fa-lg"></i></a>';
+                    $return .= '<a href="' . $item['delete'] . '" class="btn fa-btn nosh-delete" data-toggle="tooltip" title="' . trans('noshform.delete') . '"><i class="fa fa-trash fa-lg"></i></a>';
                 }
                 if (isset($item['move_mh'])) {
-                    $return .= '<a href="' . $item['move_mh'] . '" class="btn fa-btn" data-toggle="tooltip" title="Move to Medical History"><i class="fa fa-share-square fa-lg"></i></a>';
+                    $return .= '<a href="' . $item['move_mh'] . '" class="btn fa-btn" data-toggle="tooltip" title="' . trans('noshform.move_mh') . '"><i class="fa fa-share-square fa-lg"></i></a>';
                 }
                 if (isset($item['move_sh'])) {
-                    $return .= '<a href="' . $item['move_sh'] . '" class="btn fa-btn" data-toggle="tooltip" title="Move to Surgical History"><i class="fa fa-share-square fa-lg" style="color:red"></i></a>';
+                    $return .= '<a href="' . $item['move_sh'] . '" class="btn fa-btn" data-toggle="tooltip" title="' . trans('noshform.move_sh') . '"><i class="fa fa-share-square fa-lg" style="color:red"></i></a>';
                 }
                 if (isset($item['move_pl'])) {
-                    $return .= '<a href="' . $item['move_pl'] . '" class="btn fa-btn" data-toggle="tooltip" title="Move to Problem List"><i class="fa fa-share-square fa-lg" style="color:green"></i></a>';
+                    $return .= '<a href="' . $item['move_pl'] . '" class="btn fa-btn" data-toggle="tooltip" title="' . trans('noshform.move_pl') . '"><i class="fa fa-share-square fa-lg" style="color:green"></i></a>';
                 }
                 if (isset($item['move_down'])) {
-                    $return .= '<a href="' . $item['move_down'] . '" class="btn fa-btn" data-toggle="tooltip" title="Move Down"><i class="fa fa-chevron-down fa-lg"></i></a>';
+                    $return .= '<a href="' . $item['move_down'] . '" class="btn fa-btn" data-toggle="tooltip" title="' . trans('noshform.move_down') . '"><i class="fa fa-chevron-down fa-lg"></i></a>';
                 }
                 if (isset($item['move_up'])) {
-                    $return .= '<a href="' . $item['move_up'] . '" class="btn fa-btn" data-toggle="tooltip" title="Move Up"><i class="fa fa-chevron-up fa-lg"></i></a>';
+                    $return .= '<a href="' . $item['move_up'] . '" class="btn fa-btn" data-toggle="tooltip" title="' . trans('noshform.move_up') . '"><i class="fa fa-chevron-up fa-lg"></i></a>';
                 }
                 if (isset($item['encounter'])) {
-                    $return .= '<a href="' . $item['encounter'] . '" class="btn fa-btn" data-toggle="tooltip" title="Copy To Encounter"><i class="fa fa-clone fa-lg"></i></a>';
+                    $return .= '<a href="' . $item['encounter'] . '" class="btn fa-btn" data-toggle="tooltip" title="' . trans('noshform.copy_encounter') . '"><i class="fa fa-clone fa-lg"></i></a>';
                 }
                 if (isset($item['reset'])) {
-                    $return .= '<a href="' . $item['reset'] . '" class="btn fa-btn" data-toggle="tooltip" title="Reset Password"><i class="fa fa-repeat fa-lg"></i></a>';
+                    $return .= '<a href="' . $item['reset'] . '" class="btn fa-btn" data-toggle="tooltip" title="' . trans('noshform.reset_password') . '"><i class="fa fa-repeat fa-lg"></i></a>';
                 }
                 if (isset($item['jump'])) {
-                    $return .= '<a href="' . $item['jump'] . '" target="_blank" class="btn fa-btn" data-toggle="tooltip" title="Open Chart"><i class="fa fa-hand-o-right fa-lg"></i></a>';
+                    $return .= '<a href="' . $item['jump'] . '" target="_blank" class="btn fa-btn" data-toggle="tooltip" title="' . trans('noshform.jump') . '"><i class="fa fa-hand-o-right fa-lg"></i></a>';
                 }
 				// GYN 20181007: Add Assessment Copy to Problem List
 				if (isset($item['problem_list'])) {
-                    $return .= '<a href="' . $item['problem_list'] . '" class="btn fa-btn" data-toggle="tooltip" title="Copy to Problem List"><i class="fa fa-share-square fa-lg" style="color:green"></i></a>';
+                    $return .= '<a href="' . $item['problem_list'] . '" class="btn fa-btn" data-toggle="tooltip" title="' . trans('noshform.copy_problem_list') . '"><i class="fa fa-share-square fa-lg" style="color:green"></i></a>';
 				}
+                if (isset($item['users'])) {
+                    $return .= '<a href="' . $item['users'] . '" class="btn fa-btn" data-toggle="tooltip" title="' . trans('noshform.manage_users') . '"><i class="fa fa-users fa-lg"></i></a>';
+                }
+                if (isset($item['user_copy'])) {
+                    $return .= '<a href="' . $item['user_copy'] . '" class="btn fa-btn" data-toggle="tooltip" title="' . trans('noshform.user_copy') . '"><i class="fa fa-clone fa-lg"></i></a>';
+                }
                 $return .= '</span></li>';
             }
         }
@@ -16800,6 +16936,13 @@ class Controller extends BaseController
             $user = DB::table('users')->where('id', '=', $appt->provider_id)->first();
             if ($appt->start > time()) {
                 if ($patient->reminder_to !== '') {
+                    $relate = DB::table('demographics_relate')->where('pid', '=', $appt->pid)->where('practice_id', '=', Session::get('practice_id'))->first();
+                    if (!empty($relate->id)) {
+                        $user = DB::table('users')->where('id', '=', $relate->id)->first();
+                        App::setLocale($user->locale);
+                    } else {
+                        App::setLocale(Session::get('practice_locale'));
+                    }
                     $data_message['startdate'] = date("F j, Y, g:i a", $appt->start);
                     $data_message['startdate1'] = date("Y-m-d, g:i a", $appt->start);
                     $data_message['displayname'] = $user->displayname;
@@ -16810,21 +16953,25 @@ class Controller extends BaseController
                         $message = view('emails.remindertext', $data_message)->render();
                         $this->textbelt($patient->reminder_to, $message, Session::get('practice_id'));
                     } else {
-                        $this->send_mail('emails.reminder', $data_message, 'Appointment Reminder', $patient->reminder_to, Session::get('practice_id'));
+                        $this->send_mail('emails.reminder', $data_message, trans('noshform.schedule_notification1'), $patient->reminder_to, Session::get('practice_id'));
                     }
                     if (Session::get('group_id') == '100') {
                         $provider = DB::table('providers')->where('id', '=', $appt->provider_id)->first();
+                        $provider_user = DB::table('users')->where('id', '=', $$appt->provider_id)->first();
+                        App::setLocale($provider_user->locale);
                         if (!empty($provider->schedule_notification)) {
                             $arr = explode(';', $provider->schedule_notification);
                             foreach ($arr as $arr_row) {
                                 $user_row = DB::table('users')->where('id', '=', $arr_row)->first();
                                 $link = route('schedule');
-                                $data_message1['item'] = '<p>There is a new appointment made by a patient named ' . $patient->firstname . ' ' . substr($patient->lastname, 0, 1) . ' on ' . $data_message['startdate'] . '.  <a href="' . $link . '"Click here for more details.</a></p>';
-                                $this->send_mail('emails.blank', $data_message1, 'New Appointment by Patient', $user_row->email, Session::get('practice_id'));
+                                $data_message1['item'] = '<p>' . trans('noshform.schedule_notification2') . ' ' . $patient->firstname . ' ' . substr($patient->lastname, 0, 1) . ' on ' . $data_message['startdate'] . '.  <a href="' . $link . '">' . trans('noshform.schedule_notification4');
+                                $data_message1['item'] .= '</a></p>';
+                                $this->send_mail('emails.blank', $data_message1, trans('noshform.schedule_notification3'), $user_row->email, Session::get('practice_id'));
                             }
                         }
                     }
                 }
+                App::setLocale(Session::get('user_locale'));
             }
         }
     }
@@ -16845,12 +16992,12 @@ class Controller extends BaseController
                 $return['name'] .= ' (' . $demographics->nickname . ')';
             }
             $return['demographics_quick'] = '<p style="margin:2px"><strong>DOB: </strong>' . date('F jS, Y', strtotime($demographics->DOB)) . '</p>';
-            $return['demographics_quick'] .= '<p style="margin:2px"><strong>Age: </strong>' . Session::get('age') . '</p>';
-            $return['demographics_quick'] .= '<p style="margin-top:2px; margin-bottom:8px;"><strong>Gender: </strong>' . ucfirst(Session::get('gender')) . '</p>';
+            $return['demographics_quick'] .= '<p style="margin:2px"><strong>' . trans('noshform.sidebar1') . ': </strong>' . Session::get('age') . '</p>';
+            $return['demographics_quick'] .= '<p style="margin-top:2px; margin-bottom:8px;"><strong>' . trans('noshform.sex') . ': </strong>' . ucfirst(Session::get('gender')) . '</p>';
             // Conditions
             $conditions = DB::table('issues')->where('pid', '=', Session::get('pid'))->where('issue_date_inactive', '=', '0000-00-00 00:00:00')->orderBy('issue', 'asc')->get();
             $return['conditions_badge'] = '0';
-            $return['conditions_preview'] = 'None';
+            $return['conditions_preview'] = trans('noshform.none');
             if ($conditions->count()) {
                 $return['conditions_badge'] = count($conditions);
                 $return['conditions_preview'] = '<ul>';
@@ -16862,7 +17009,7 @@ class Controller extends BaseController
             // Medications
             $medications = DB::table('rx_list')->where('pid', '=', Session::get('pid'))->where('rxl_date_inactive', '=', '0000-00-00 00:00:00')->where('rxl_date_old', '=', '0000-00-00 00:00:00')->orderBy('rxl_medication', 'asc')->get();
             $return['medications_badge'] = '0';
-            $return['medications_preview'] = 'None';
+            $return['medications_preview'] = trans('noshform.none');
             if ($medications->count()) {
                 $return['medications_badge'] = count($medications);
                 $return['medications_preview'] = '<ul>';
@@ -16874,7 +17021,7 @@ class Controller extends BaseController
             // Supplements
             $supplements = DB::table('sup_list')->where('pid', '=', Session::get('pid'))->where('sup_date_inactive', '=', '0000-00-00 00:00:00')->orderBy('sup_supplement', 'asc')->get();
             $return['supplements_badge'] = '0';
-            $return['supplements_preview'] = 'None';
+            $return['supplements_preview'] = trans('noshform.none');
             if ($supplements->count()) {
                 $return['supplements_badge'] = count($supplements);
                 $return['supplements_preview'] = '<ul>';
@@ -16886,7 +17033,7 @@ class Controller extends BaseController
             // Allergies
             $allergies = DB::table('allergies')->where('pid', '=', Session::get('pid'))->where('allergies_date_inactive', '=', '0000-00-00 00:00:00')->orderBy('allergies_med', 'asc')->get();
             $return['allergies_badge'] = '0';
-            $return['allergies_preview'] = 'None';
+            $return['allergies_preview'] = trans('noshform.none');
             if ($allergies->count()) {
                 $return['allergies_badge'] = count($allergies);
                 $return['allergies_preview'] = '<ul>';
@@ -16898,7 +17045,7 @@ class Controller extends BaseController
             // Immunizations
             $immunizations = DB::table('immunizations')->where('pid', '=', Session::get('pid'))->orderBy('imm_immunization', 'asc')->orderBy('imm_sequence', 'asc')->get();
             $return['immunizations_badge'] = '0';
-            $return['immunizations_preview'] = 'None';
+            $return['immunizations_preview'] = trans('noshform.none');
             if ($immunizations->count()) {
                 $return['immunizations_badge'] = count($immunizations);
                 $return['immunizations_preview'] = '<ul>';
@@ -16926,17 +17073,17 @@ class Controller extends BaseController
                 $return['active_encounter'] = Session::get('eid');
                 $return['active_encounter_url'] = Session::get('last_page_encounter');
                 $eid = Session::get('eid');
-                $return['encounters_preview'] .= '<strong>Encounter Action Items</strong>';
+                $return['encounters_preview'] .= '<strong>' . trans('noshform.sidebar2') . '</strong>';
                 $procedureInfo = DB::table('procedure')->where('eid', '=', $eid)->first();
                 if ($procedureInfo) {
                     $procedure_arr = $this->array_procedure();
-                    $return['encounters_preview'] .= '<br><h5>Procedures:</h5><p class="view">';
+                    $return['encounters_preview'] .= '<br><h5>' . trans('noshform.procedures') . ':</h5><p class="view">';
                     foreach ($procedure_arr as $procedure_k => $procedure_v) {
                         if ($procedureInfo->{$procedure_k} !== '' && $procedureInfo->{$procedure_k} !== null) {
                             if ($procedure_k == 'proc_description') {
                                 if ($this->yaml_check($procedureInfo->{$procedure_k})) {
                                     $proc_search_arr = ['code:', 'timestamp:', 'procedure:', 'type:', '---' . "\n", '|'];
-                                    $proc_replace_arr = ['<b>Procedure Code:</b>', '<b>When:</b>', '<b>Procedure Description:</b>', '<b>Type:</b>', '', ''];
+                                    $proc_replace_arr = ['<b>' . trans('noshform.procedure_code') . ':</b>', '<b>' . trans('noshform.when') . ':</b>', '<b>' . trans('noshform.procedure_description') . ':</b>', '<b>' . trans('noshform.procedure_type') . ':</b>', '', ''];
                                     $return['encounters_preview'] .= nl2br(str_replace($proc_search_arr, $proc_replace_arr, $procedureInfo->{$procedure_k}));
                                 } else {
                                     $return['encounters_preview'] .= '<strong>' . $procedure_v . ': </strong>';
@@ -16954,7 +17101,7 @@ class Controller extends BaseController
                 }
                 $ordersInfo1 = DB::table('orders')->where('eid', '=', $eid)->get();
                 if ($ordersInfo1->count()) {
-                    $return['encounters_preview'] .= '<br><h5>Orders:</h5><p class="view">';
+                    $return['encounters_preview'] .= '<br><h5>' . trans('noshform.orders') . ':</h5><p class="view">';
                     $orders_lab_array = [];
                     $orders_radiology_array = [];
                     $orders_cp_array = [];
@@ -16967,41 +17114,41 @@ class Controller extends BaseController
                                 $orders_displayname = $address_row1->specialty . ': ' . $address_row1->displayname;
                             }
                         } else {
-                            $orders_displayname = 'Unknown';
+                            $orders_displayname = trans('noshform.unknown');
                         }
                         if ($ordersInfo->orders_labs != '') {
-                            $orders_lab_array[] = 'Orders sent to ' . $orders_displayname . ': '. nl2br($ordersInfo->orders_labs) . '<br />';
+                            $orders_lab_array[] = trans('noshform.orders_sent_to') . ' ' . $orders_displayname . ': '. nl2br($ordersInfo->orders_labs) . '<br />';
                         }
                         if ($ordersInfo->orders_radiology != '') {
-                            $orders_radiology_array[] = 'Orders sent to ' . $orders_displayname . ': '. nl2br($ordersInfo->orders_radiology) . '<br />';
+                            $orders_radiology_array[] = trans('noshform.orders_sent_to') . ' ' . $orders_displayname . ': '. nl2br($ordersInfo->orders_radiology) . '<br />';
                         }
                         if ($ordersInfo->orders_cp != '') {
-                            $orders_cp_array[] = 'Orders sent to ' . $orders_displayname . ': '. nl2br($ordersInfo->orders_cp) . '<br />';
+                            $orders_cp_array[] = trans('noshform.orders_sent_to')  . ' ' . $orders_displayname . ': '. nl2br($ordersInfo->orders_cp) . '<br />';
                         }
                         if ($ordersInfo->orders_referrals != '') {
-                            $orders_referrals_array[] = 'Referral sent to ' . $orders_displayname . ': '. nl2br($ordersInfo->orders_referrals) . '<br />';
+                            $orders_referrals_array[] = trans('noshform.referral_sent_to') . ' ' . $orders_displayname . ': '. nl2br($ordersInfo->orders_referrals) . '<br />';
                         }
                     }
                     if (! empty($orders_lab_array)) {
-                        $return['encounters_preview'] .= '<strong>Labs: </strong><br>';
+                        $return['encounters_preview'] .= '<strong>' . trans('noshform.laboratory') . ': </strong><br>';
                         foreach ($orders_lab_array as $lab_item) {
                             $return['encounters_preview'] .= $lab_item;
                         }
                     }
                     if (! empty($orders_radiology_array)) {
-                        $return['encounters_preview'] .= '<strong>Imaging: </strong><br>';
+                        $return['encounters_preview'] .= '<strong>' . trans('noshform.imaging') . ': </strong><br>';
                         foreach ($orders_radiology_array as $radiology_item) {
                             $return['encounters_preview'] .= $radiology_item;
                         }
                     }
                     if (! empty($orders_cp_array)) {
-                        $return['encounters_preview'] .= '<strong>Cardiopulmonary: </strong><br>';
+                        $return['encounters_preview'] .= '<strong>' . trans('noshform.cardiopulmonary') . ': </strong><br>';
                         foreach ($orders_cp_array as $cp_item) {
                             $return['encounters_preview'] .= $cp_item;
                         }
                     }
                     if (! empty($orders_referrals_array)) {
-                        $return['encounters_preview'] .= '<strong>Referrals: </strong><br>';
+                        $return['encounters_preview'] .= '<strong>' . trans('noshform.referrals') . ': </strong><br>';
                         foreach ($orders_referrals_array as $referrals_item) {
                             $return['encounters_preview'] .= $referrals_item;
                         }
@@ -17011,13 +17158,13 @@ class Controller extends BaseController
                 $rxInfo = DB::table('rx')->where('eid', '=', $eid)->first();
                 if ($rxInfo) {
                     $rx_arr = $this->array_rx();
-                    $return['encounters_preview'] .= '<br><h5>Prescriptions and Immunizations:</h5><p class="view">';
+                    $return['encounters_preview'] .= '<br><h5>' . trans('noshform.prescriptions_imm') . ':</h5><p class="view">';
                     foreach ($rx_arr as $rx_k => $rx_v) {
                         if ($rxInfo->{$rx_k} !== '' && $rxInfo->{$rx_k} !== null) {
                             $return['encounters_preview'] .= '<strong>' . $rx_v . ': </strong><br>';
                             $return['encounters_preview'] .= nl2br($rxInfo->{$rx_k});
                             if ($rx_k == 'rx_immunizations') {
-                                $return['encounters_preview'] .= 'CDC Vaccine Information Sheets given for each immunization and consent obtained.<br />';
+                                $return['encounters_preview'] .= trans('noshform.imm_disclaimer') . '<br />';
                             }
                             $return['encounters_preview'] .= '<br /><br />';
                         }
@@ -17027,13 +17174,13 @@ class Controller extends BaseController
                 $planInfo = DB::table('plan')->where('eid', '=', $eid)->first();
                 if ($planInfo) {
                     $plan_arr = $this->array_plan();
-                    $return['encounters_preview'] .= '<br><h5>Plan:</h5><p class="view">';
+                    $return['encounters_preview'] .= '<br><h5>' . trans('noshform.plan') . ':</h5><p class="view">';
                     foreach ($plan_arr as $plan_k => $plan_v) {
                         if ($planInfo->{$plan_k} !== '' && $planInfo->{$plan_k} !== null) {
                             $return['encounters_preview'] .= '<strong>' . $plan_v . ': </strong>';
                             $return['encounters_preview'] .= nl2br($planInfo->{$plan_k});
                             if ($plan_k == 'duration') {
-                                $return['encounters_preview'] .= '  minutes';
+                                $return['encounters_preview'] .= ' ' . lcfirst(trans('noshform.minutes'));
                             }
                             $return['encounters_preview'] .= '<br /><br />';
                         }
@@ -17076,6 +17223,7 @@ class Controller extends BaseController
 
     protected function send_fax($job_id, $faxnumber, $faxrecipient)
     {
+        App::setLocale(Session::get('practice_locale'));
         $fax_data = DB::table('sendfax')->where('job_id', '=', $job_id)->first();
         $meta = ["(", ")", "-", " "];
         if ($faxnumber != '' && $faxrecipient != '') {
@@ -17092,7 +17240,7 @@ class Controller extends BaseController
         $faxnumber_array = [];
         $recipientlist = DB::table('recipients')->where('job_id', '=', $job_id)->select('faxrecipient', 'faxnumber')->get();
         foreach ($recipientlist as $row) {
-            $faxrecipients .= $row->faxrecipient . ', Fax: ' . $row->faxnumber . "\n";
+            $faxrecipients .= $row->faxrecipient . ', ' . trans('noshform.fax') . ': ' . $row->faxnumber . "\n";
             $faxnumber_array[] = str_replace($meta, "", $row->faxnumber);
         }
         $practice_row = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
@@ -17141,7 +17289,8 @@ class Controller extends BaseController
         DB::table('sendfax')->where('job_id', '=', $job_id)->update($fax_update_data);
         $this->audit('Update');
         Session::forget('job_id');
-        return 'Fax Job ' . $job_id . ' Sent';
+        App::setLocale(Session::get('user_locale'));
+        return trans('noshform.fax_job') . ' ' . $job_id . ' ' . trans('noshform.sent');
     }
 
     protected function send_mail($template, $data_message, $subject, $to, $practice_id)
@@ -17196,7 +17345,8 @@ class Controller extends BaseController
     				->from($practice->email, $practice->practice_name)
     				->subject($subject);
     		});
-		    return "E-mail sent.";
+            App::setLocale(Session::get('user_locale'));
+		    return trans('noshform.email_sent1') . ".";
         }
         return true;
     }
@@ -17209,6 +17359,7 @@ class Controller extends BaseController
     protected function setpatient($pid)
     {
         $row = DB::table('demographics')->where('pid', '=', $pid)->first();
+        $relate = DB::table('demographics_relate')->where('pid', '=', $pid)->where('practice_id', '=', Session::get('practice_id'))->first();
         $date = Date::parse($row->DOB);
         $dob1 = $date->timestamp;
         $age_arr = explode(',', $date->timespan());
@@ -17225,6 +17376,12 @@ class Controller extends BaseController
         Session::put('age', ucwords($age_arr[0] . ' Old'));
         Session::put('agealldays', $date->diffInDays(Date::now()));
         Session::put('ptname', $row->firstname . ' ' . $row->lastname);
+        $locale = Session::get('practice_locale');
+        if (!empty($relate->id)) {
+            $user = DB::table('users')->where('id', '=', $relate->id)->first();
+            $locale = $user->locale;
+        }
+        Session::put('patient_locale', $locale);
         $history = [];
         if (Session::has('history_pid')) {
             $history = Session::get('history_pid');
@@ -17467,6 +17624,37 @@ class Controller extends BaseController
         return 'OK';
     }
 
+    protected function sync_user($id)
+    {
+        $user = DB::table('users')->where('id', '=', $id)->first();
+        $query = DB::table('users')->where('username', '=', $user->username)->where('active', '=', '1')->get();
+        $provider = DB::table('providers')->where('id', '=', $id)->first();
+        $columns = Schema::getColumnListing('users');
+        $columns_provider = Schema::getColumnListing('providers');
+        if ($query->count()) {
+            foreach ($query as $row) {
+                foreach ($columns as $column) {
+                    if ($column !== 'id' && $column !== 'practice_id' && $column !== 'group_id') {
+                        $data[$column] = $row->{$column};
+                    }
+                }
+                DB::table('users')->where('id', '=', $row->id)->update($data);
+                $this->audit('Update');
+                if ($row->group_id == '2') {
+                    if ($provider) {
+                        foreach ($columns_provider as $column_provider) {
+                            if ($column_provider !== 'id' && $column_provider !== 'practice_id') {
+                                $data1[$column_provider] = $provider->{$column_provider};
+                            }
+                        }
+                        DB::table('providers')->where('id', '=', $row->id)->update($data1);
+                        $this->audit('Update');
+                    }
+                }
+            }
+        }
+    }
+
     protected function tables_oboslete()
     {
         $data = [
@@ -17536,7 +17724,7 @@ class Controller extends BaseController
                 $description = '';
                 $procedureInfo = DB::table('procedure')->where('eid', '=', $row0->eid)->first();
                 if ($procedureInfo) {
-                    $description .= '<span class="nosh_bold">Procedures:</span>';
+                    $description .= '<span class="nosh_bold">' . trans('noshform.procedures') . ':</span>';
                     if ($procedureInfo->proc_type != '') {
                         $description .= '<strong>Procedure: </strong>';
                         $description .= nl2br($procedureInfo->proc_type);
@@ -17545,7 +17733,7 @@ class Controller extends BaseController
                 $assessmentInfo = DB::table('assessment')->where('eid', '=', $row0->eid)->first();
                 if ($assessmentInfo) {
                     $assessment_arr = $this->array_assessment();
-                    $description .= '<span class="nosh_bold">Assessment:</span>';
+                    $description .= '<span class="nosh_bold">' . trans('noshform.assessment') . ':</span>';
                     for ($l = 1; $l <= 12; $l++) {
                         $col0 = 'assessment_' . $l;
                         if ($assessmentInfo->{$col0} !== '' && $assessmentInfo->{$col0} !== null) {
@@ -17567,9 +17755,9 @@ class Controller extends BaseController
                 $encounter_status = 'y';
                 if (Session::get('group_id') == '100' && $row0->encounter_signed == 'No') {
                     $encounter_status = 'n';
-                    $description = 'Unsigned encounter';
+                    $description = trans('noshform.unsigned_encounter');
                 }
-                $div0 = $this->timeline_item($row0->eid, 'eid', 'Encounter', $this->human_to_unix($row0->encounter_DOS), 'Encounter: ' . $row0->encounter_cc, $description, $encounter_status);
+                $div0 = $this->timeline_item($row0->eid, 'eid', 'Encounter', $this->human_to_unix($row0->encounter_DOS), trans('noshform.encounter') . ': ' . $row0->encounter_cc, $description, $encounter_status);
                 $json[] = [
                     'div' => $div0,
                     'startDate' => $this->human_to_unix($row0->encounter_DOS)
@@ -17580,7 +17768,7 @@ class Controller extends BaseController
         $query1 = DB::table('t_messages')->where('pid', '=', $pid)->get();
         if ($query1->count()) {
             foreach ($query1 as $row1) {
-                $div1 = $this->timeline_item($row1->t_messages_id, 't_messages_id', 'Telephone Message', $this->human_to_unix($row1->t_messages_dos), 'Telephone Message', substr($row1->t_messages_message, 0, 500) . '...', $row1->t_messages_signed);
+                $div1 = $this->timeline_item($row1->t_messages_id, 't_messages_id', 'Telephone Message', $this->human_to_unix($row1->t_messages_dos), trans('noshform.t_message'), substr($row1->t_messages_message, 0, 500) . '...', $row1->t_messages_signed);
                 $json[] = [
                     'div' => $div1,
                     'startDate' => $this->human_to_unix($row1->t_messages_dos)
@@ -17600,12 +17788,12 @@ class Controller extends BaseController
                         $instructions .= ', ' . $row2->rxl_instructions;
                     }
                 }
-                $description2 = $row2->rxl_medication . ' ' . $row2->rxl_dosage . ' ' . $row2->rxl_dosage_unit . ', ' . $instructions . ' for ' . $row2->rxl_reason;
+                $description2 = $row2->rxl_medication . ' ' . $row2->rxl_dosage . ' ' . $row2->rxl_dosage_unit . ', ' . $instructions . ' ' . trans('noshform.for') . ' ' . $row2->rxl_reason;
                 if ($row2->rxl_date_prescribed == null || $row2->rxl_date_prescribed == '0000-00-00 00:00:00') {
-                    $div2 = $this->timeline_item($row2->rxl_id, 'rxl_id', 'New Medication', $this->human_to_unix($row2->rxl_date_active), 'New Medication', $description2);
+                    $div2 = $this->timeline_item($row2->rxl_id, 'rxl_id', 'New Medication', $this->human_to_unix($row2->rxl_date_active), trans('noshform.new_medication'), $description2);
                 } else {
                     $description2 .= '<br>Status: ' . ucfirst($row2->prescription);
-                    $div2 = $this->timeline_item($row2->rxl_id, 'rxl_id', 'Prescribed Medication', $this->human_to_unix($row2->rxl_date_active), 'Prescribed Medication', $description2);
+                    $div2 = $this->timeline_item($row2->rxl_id, 'rxl_id', 'Prescribed Medication', $this->human_to_unix($row2->rxl_date_active), trans('noshform.prescribed_medication'), $description2);
                 }
                 $json[] = [
                     'div' => $div2,
@@ -17619,18 +17807,21 @@ class Controller extends BaseController
             foreach ($query3 as $row3) {
                 if ($row3->type == 'Problem List') {
                     $title = 'New Problem';
+                    $title1 = trans('noshform.new_problem');
                 }
                 if ($row3->type == 'Medical History') {
                     $title = 'New Medical Event';
+                    $title1 = trans('noshform.new_medical_event');
                 }
                 if ($row3->type == 'Surgical History') {
                     $title = 'New Surgical Event';
+                    $title1 = trans('noshform.new_surgical_event');
                 }
                 $description3 = $row3->issue;
                 if ($row3->notes !== null && $row3->notes !== '') {
                     $description3 .= ', ' . $row3->notes;
                 }
-                $div3 = $this->timeline_item($row3->issue_id, 'issue_id', $title, $this->human_to_unix($row3->issue_date_active), $title, $description3);
+                $div3 = $this->timeline_item($row3->issue_id, 'issue_id', $title, $this->human_to_unix($row3->issue_date_active), $title1, $description3);
                 $json[] = [
                     'div' => $div3,
                     'startDate' => $this->human_to_unix($row3->issue_date_active)
@@ -17641,7 +17832,7 @@ class Controller extends BaseController
         $query4 = DB::table('immunizations')->where('pid', '=', $pid)->get();
         if ($query4->count()) {
             foreach ($query4 as $row4) {
-                $div4 = $this->timeline_item($row4->imm_id, 'imm_id', 'Immunization Given', $this->human_to_unix($row4->imm_date), 'Immunization Given', $row4->imm_immunization);
+                $div4 = $this->timeline_item($row4->imm_id, 'imm_id', 'Immunization Given', $this->human_to_unix($row4->imm_date), trans('noshform.immunization_given'), $row4->imm_immunization);
                 $json[] = [
                     'div' => $div4,
                     'startDate' => $this->human_to_unix($row4->imm_date)
@@ -17661,8 +17852,8 @@ class Controller extends BaseController
                         $instructions5 .= ', ' . $row5->rxl_instructions;
                     }
                 }
-                $description5 = $row5->rxl_medication . ' ' . $row5->rxl_dosage . ' ' . $row5->rxl_dosage_unit . ', ' . $instructions5 . ' for ' . $row5->rxl_reason;
-                $div5 = $this->timeline_item($row5->rxl_id, 'rxl_id', 'Medication Stopped', $this->human_to_unix($row5->rxl_date_inactive), 'Medication Stopped', $description5);
+                $description5 = $row5->rxl_medication . ' ' . $row5->rxl_dosage . ' ' . $row5->rxl_dosage_unit . ', ' . $instructions5 . ' ' . trans('noshform.for') . ' ' . $row5->rxl_reason;
+                $div5 = $this->timeline_item($row5->rxl_id, 'rxl_id', 'Medication Stopped', $this->human_to_unix($row5->rxl_date_inactive), trans('noshform.medication_stopped'), $description5);
                 $json[] = [
                     'div' => $div5,
                     'startDate' => $this->human_to_unix($row5->rxl_date_inactive)
@@ -17677,7 +17868,7 @@ class Controller extends BaseController
                 if ($row6->notes !== null && $row6->notes !== '') {
                     $description6 .= ', ' . $row6->notes;
                 }
-                $div6 = $this->timeline_item($row6->allergies_id, 'allergies_id', 'New Allergy', $this->human_to_unix($row6->allergies_date_active), 'New Allergy', $description6);
+                $div6 = $this->timeline_item($row6->allergies_id, 'allergies_id', 'New Allergy', $this->human_to_unix($row6->allergies_date_active), trans('noshform.new_allergy'), $description6);
                 $json[] = [
                     'div' => $div6,
                     'startDate' => $this->human_to_unix($row6->allergies_date_active)
@@ -17689,7 +17880,7 @@ class Controller extends BaseController
         if ($query7->count()) {
             foreach ($query7 as $row7) {
                 $description7 = $row7->action . ', ' . $row7->from;
-                $div7 = $this->timeline_item($row7->source_id, $row7->source_index, 'Data Sync via FHIR', $this->human_to_unix($row7->created_at), 'Data Sync via FHIR', $description7);
+                $div7 = $this->timeline_item($row7->source_id, $row7->source_index, 'Data Sync via FHIR', $this->human_to_unix($row7->created_at), trans('noshform.data_sync'), $description7);
                 $json[] = [
                     'div' => $div7,
                     'startDate' => $this->human_to_unix($row7->created_at)
@@ -17760,7 +17951,7 @@ class Controller extends BaseController
         ];
         $url = $type_arr[$type];
         if ($status !== 'n') {
-            $div .= '<a href="' . $url . '" class="btn btn-primary cd-read-more" data-nosh-value="' . $value . '" data-nosh-type="' . $type . '" data-nosh-status="' . $status . '">Read more</a>';
+            $div .= '<a href="' . $url . '" class="btn btn-primary cd-read-more" data-nosh-value="' . $value . '" data-nosh-type="' . $type . '" data-nosh-status="' . $status . '">' . trans('noshform.read_more') . '</a>';
         }
         $div .= '<span class="cd-date">' . date('Y-m-d', $date) . '</span>';
         $div .= '</div></div>';
@@ -17781,17 +17972,17 @@ class Controller extends BaseController
         $row = DB::table('t_messages')->where('t_messages_id', '=', $t_messages_id)->first();
         $text = '<table cellspacing="2" style="font-size:0.9em; width:100%;">';
         if ($print == true) {
-            $text .= '<tr><th style="background-color: gray;color: #FFFFFF; text-align: left;">MESSAGE DETAILS</th></tr>';
+            $text .= '<tr><th style="background-color: gray;color: #FFFFFF; text-align: left;">' . strtoupper(trans('noshform.t_messages_view1')) . '</th></tr>';
         }
-        $text .= '<tr><td><h4>Date of Service: </h4>' . date('m/d/Y', $this->human_to_unix($row->t_messages_dos));
-        $text .= '<br><h4>Subject: </h4>' . $row->t_messages_subject;
-        $text .= '<br><h4>Message: </h4>' . $row->t_messages_message;
+        $text .= '<tr><td><h4>' . trans('noshform.t_messages_dos') . ': </h4>' . date('m/d/Y', $this->human_to_unix($row->t_messages_dos));
+        $text .= '<br><h4>' . trans('noshform.t_messages_subject') . ': </h4>' . $row->t_messages_subject;
+        $text .= '<br><h4>' . trans('noshform.t_messages_message') . ': </h4>' . $row->t_messages_message;
         if ($row->actions !== '' && $row->actions !== null) {
             $search_arr = ['action:', 'timestamp:', '---' . "\n"];
-            $replace_arr = ['<b>Action:</b>', '<b>When:</b>', ''];
-            $text .= '<br><h4>Actions: </h4>' . nl2br(str_replace($search_arr, $replace_arr, $row->actions));
+            $replace_arr = ['<b>' . trans('noshform.t_messages_view2'). ':</b>', '<b>' . trans('noshform.t_messages_view3') . ':</b>', ''];
+            $text .= '<br><h4>' . trans('noshform.t_messages_view4') . ': </h4>' . nl2br(str_replace($search_arr, $replace_arr, $row->actions));
         }
-        $text .= '<br><hr />Electronically signed by ' . $row->t_messages_provider . '.';
+        $text .= '<br><hr />' . trans('noshform.electronic_sign') . ' ' . $row->t_messages_provider . '.';
         $text .= '</td></tr></table>';
         return $text;
     }
@@ -17835,12 +18026,12 @@ class Controller extends BaseController
             }
         }
         $total_balance = $balance1 + $balance2;
-        $billing_notes = "None.";
+        $billing_notes = trans('noshform.none') . ".";
         $result = DB::table('demographics_notes')->where('pid', '=', $pid)->where('practice_id', '=', $practice_id)->first();
         if ($result->billing_notes !== '' && $result->billing_notes !== null) {
             $billing_notes = nl2br($result->billing_notes);
         }
-        $note = "<strong>Total Balance: $" .  number_format($total_balance, 2, '.', ',') . "</strong><br><br><strong>Billing Notes: </strong>" . $billing_notes . "<br>";
+        $note = "<strong>" . trans('noshform.total_balance') . ": $" .  number_format($total_balance, 2, '.', ',') . "</strong><br><br><strong>" . trans('noshform.billing_notes') . ": </strong>" . $billing_notes . "<br>";
         return $note;
     }
 
@@ -17974,6 +18165,11 @@ class Controller extends BaseController
             'Spouse',
             'Partner',
         ];
+        $rel_arr2 = $this->array_family();
+        $status_arr = [
+            'Alive' => trans('noshform.alive'),
+            'Deceased' => trans('noshform.deceased')
+        ];
         $patient = DB::table('demographics')->where('pid', '=', Session::get('pid'))->first();
         $parents_arr = [];
         $parents1_arr = [];
@@ -17982,20 +18178,20 @@ class Controller extends BaseController
             if ($arr[$key]['Gender'] == 'Female') {
                 $color = 'rgb(255,125,125)';
             }
-            $nosh_data = '<strong>Name:</strong> ' . $arr[$key]['Name'];
-            $nosh_data = '<br><strong>Relationship to Patient:</strong> ' . $arr[$key]['Relationship'];
-            $nosh_data .= '<br><strong>Status:</strong> ' . $arr[$key]['Status'];
-            $nosh_data .= '<br><strong>Date of Birth:</strong> ' . $arr[$key]['Date of Birth'];
-            $nosh_data .= '<br><strong>Gender:</strong> ' . $arr[$key]['Gender'];
-            $nosh_data .= '<br><strong>Medical History:</strong><ul>';
+            $nosh_data = '<strong>' . trans('noshform.name') . ':</strong> ' . $arr[$key]['Name'];
+            $nosh_data = '<br><strong>' . trans('noshform.relationship_to_patient') . ':</strong> ' . $rel_arr2[$arr[$key]['Relationship']];
+            $nosh_data .= '<br><strong>' . trans('noshform.status') . ':</strong> ' . $status_arr[$arr[$key]['Status']];
+            $nosh_data .= '<br><strong>' . trans('noshform.DOB') . ':</strong> ' . $arr[$key]['Date of Birth'];
+            $nosh_data .= '<br><strong>' . trans('noshform.sex') . ':</strong> ' . $arr[$key]['Gender'];
+            $nosh_data .= '<br><strong>' . trans('noshform.medical_history') . ':</strong><ul>';
             $medical_arr = explode("\n", $arr[$key]['Medical']);
             foreach ($medical_arr as $medical_item) {
                 $nosh_data .= '<li>' . $medical_item . '</li>';
             }
             $nosh_data .= '</ul>';
             $nosh_data .= '<div class="form-group"><div class="col-md-6 col-md-offset-3">';
-            $nosh_data .= '<a href="' . route('family_history_update', [$key]) . '" class="btn btn-success btn-block"><i class="fa fa-btn fa-pencil"></i> Edit</a>';
-            $nosh_data .= '<a href="' . route('family_history_update', ['add']) . '" class="btn btn-info btn-block"><i class="fa fa-btn fa-plus"></i> Add new Entry</a></div></div>';
+            $nosh_data .= '<a href="' . route('family_history_update', [$key]) . '" class="btn btn-success btn-block"><i class="fa fa-btn fa-pencil"></i> ' . trans('noshform.edit') . '</a>';
+            $nosh_data .= '<a href="' . route('family_history_update', ['add']) . '" class="btn btn-info btn-block"><i class="fa fa-btn fa-plus"></i> ' . trans('noshform.add_new_entry') . '</a></div></div>';
             $node = [
                 'id' => $key,
                 'label' => $arr[$key]['Name'],
@@ -18035,11 +18231,11 @@ class Controller extends BaseController
             $oh = DB::table('other_history')->where('pid', '=', Session::get('pid'))->where('eid', '=', '0')->first();
             if ($this->yaml_check($oh->oh_fh)) {
                 $nosh_data = '<div class="form-group"><div class="col-md-6 col-md-offset-3">';
-                $nosh_data .= '<a href="' . route('family_history_update', ['add']) . '" class="btn btn-info btn-block"><i class="fa fa-btn fa-plus"></i> Add new Entry</a></div></div>';
+                $nosh_data .= '<a href="' . route('family_history_update', ['add']) . '" class="btn btn-info btn-block"><i class="fa fa-btn fa-plus"></i> ' . trans('noshform.add_new_entry') . '</a></div></div>';
             } else {
                 $nosh_data = $oh->oh_fh;
                 $nosh_data .= '<div class="form-group"><div class="col-md-6 col-md-offset-3">';
-                $nosh_data .= '<a href="' . route('family_history_update', ['add']) . '" class="btn btn-info btn-block"><i class="fa fa-btn fa-plus"></i> Add new Entry</a></div></div>';
+                $nosh_data .= '<a href="' . route('family_history_update', ['add']) . '" class="btn btn-info btn-block"><i class="fa fa-btn fa-plus"></i> ' . trans('noshform.add_new_entry') . '</a></div></div>';
             }
             $nodes_arr[] = [
                 'id' => 'patient',
@@ -18063,7 +18259,7 @@ class Controller extends BaseController
                     'id' => $this->gen_uuid(),
                     'source' => $father,
                     'target' => $key,
-                    'label' => 'Biological father of',
+                    'label' => trans('noshform.biological_father'),
                     'type' => 'arrow',
                     'size' => 2,
                     'color' => '#bbb'
@@ -18077,7 +18273,7 @@ class Controller extends BaseController
                     // Make node
                     $placeholder_id = 'placeholder_' . $placeholder_count;
                     $nosh_data = '<div class="form-group"><div class="col-md-6 col-md-offset-3">';
-                    $nosh_data .= '<a href="' . route('family_history_update', ['add']) . '" class="btn btn-info btn-block"><i class="fa fa-btn fa-plus"></i> Add new Entry</a></div></div>';
+                    $nosh_data .= '<a href="' . route('family_history_update', ['add']) . '" class="btn btn-info btn-block"><i class="fa fa-btn fa-plus"></i> ' . trans('noshform.add_new_entry') . '</a></div></div>';
                     $nodes_arr[] = [
                         'id' => $placeholder_id,
                         'label' => $parents_arr[0],
@@ -18094,7 +18290,7 @@ class Controller extends BaseController
                     'id' => $this->gen_uuid(),
                     'source' => $placeholder_id,
                     'target' => $key,
-                    'label' => 'Biological father of',
+                    'label' => trans('noshform.biological_father'),
                     'type' => 'arrow',
                     'size' => 2,
                     'color' => '#bbb'
@@ -18105,7 +18301,7 @@ class Controller extends BaseController
                     'id' => $this->gen_uuid(),
                     'source' => $mother,
                     'target' => $key,
-                    'label' => 'Biological mother of',
+                    'label' => trans('noshform.biological_mother'),
                     'type' => 'arrow',
                     'size' => 2,
                     'color' => '#bbb'
@@ -18118,7 +18314,7 @@ class Controller extends BaseController
                     // Make node
                     $placeholder_id = 'placeholder_' . $placeholder_count;
                     $nosh_data = '<div class="form-group"><div class="col-md-6 col-md-offset-3">';
-                    $nosh_data .= '<a href="' . route('family_history_update', ['add']) . '" class="btn btn-info btn-block"><i class="fa fa-btn fa-plus"></i> Add new Entry</a></div></div>';
+                    $nosh_data .= '<a href="' . route('family_history_update', ['add']) . '" class="btn btn-info btn-block"><i class="fa fa-btn fa-plus"></i> ' . trans('noshform.add_new_entry') . '</a></div></div>';
                     $nodes_arr[] = [
                         'id' => $placeholder_id,
                         'label' => $parents_arr[1],
@@ -18135,7 +18331,7 @@ class Controller extends BaseController
                     'id' => $this->gen_uuid(),
                     'source' => $placeholder_id,
                     'target' => $key,
-                    'label' => 'Biological mother of',
+                    'label' => trans('noshform.biological_mother'),
                     'type' => 'arrow',
                     'size' => 2,
                     'color' => '#bbb'
@@ -18148,7 +18344,7 @@ class Controller extends BaseController
                     'id' => $this->gen_uuid(),
                     'source' => 'patient',
                     'target' => $key,
-                    'label' => 'Biological father of',
+                    'label' => trans('noshform.biological_father'),
                     'type' => 'arrow',
                     'size' => 2,
                     'color' => '#bbb'
@@ -18159,7 +18355,7 @@ class Controller extends BaseController
                         'id' => $this->gen_uuid(),
                         'source' => $mother,
                         'target' => $key,
-                        'label' => 'Biological mother of',
+                        'label' => trans('noshform.biological_mother'),
                         'type' => 'arrow',
                         'size' => 2,
                         'color' => '#bbb'
@@ -18171,7 +18367,7 @@ class Controller extends BaseController
                     'id' => $this->gen_uuid(),
                     'source' => 'patient',
                     'target' => $key,
-                    'label' => 'Biological mother of',
+                    'label' => trans('noshform.biological_mother'),
                     'type' => 'arrow',
                     'size' => 2,
                     'color' => '#bbb'
@@ -18182,7 +18378,7 @@ class Controller extends BaseController
                         'id' => $this->gen_uuid(),
                         'source' => $father,
                         'target' => $key,
-                        'label' => 'Biological father of',
+                        'label' => trans('noshform.biological_father'),
                         'type' => 'arrow',
                         'size' => 2,
                         'color' => '#bbb'
@@ -18348,9 +18544,9 @@ class Controller extends BaseController
             if ($return != '') {
                 $return .= '<br>';
             }
-            $return .= '<strong>Vaccines in your inventory that need to be reordered soon:</strong><ul>';
+            $return .= '<strong>' . trans('noshform.vaccine_supplement_alert1') . ':</strong><ul>';
             foreach ($vaccine_alert_query as $vaccine_alert_row) {
-                $return .= '<li>' . $vaccine_alert_row->imm_brand . ', Quantity left: ' . $vaccine_alert_row->quantity . '</li>';
+                $return .= '<li>' . $vaccine_alert_row->imm_brand . ', ' . trans('noshform.quantity_left') . ': ' . $vaccine_alert_row->quantity . '</li>';
             }
             $return .= '</ul>';
         }
@@ -18359,9 +18555,9 @@ class Controller extends BaseController
             if ($return != '') {
                 $return .= '<br>';
             }
-            $return .= '<strong>Vaccines in your inventory that will expire soon:</strong><ul>';
+            $return .= '<strong>' . trans('noshform.vaccine_supplement_alert2') . ':</strong><ul>';
             foreach ($vaccine_alert_query1 as $vaccine_alert_row1) {
-                $return .= '<li>' . $vaccine_alert_row1->imm_brand . ', Expiration date: ' . date('m/d/Y', $this->human_to_unix($vaccine_alert_row1->imm_expiration)) . '</li>';
+                $return .= '<li>' . $vaccine_alert_row1->imm_brand . ', ' . trans('noshform.imm_expiration') . ': ' . date('m/d/Y', $this->human_to_unix($vaccine_alert_row1->imm_expiration)) . '</li>';
             }
             $return .= '</ul>';
         }
@@ -18370,9 +18566,9 @@ class Controller extends BaseController
             if ($return != '') {
                 $return .= '<br>';
             }
-            $return .= '<strong>Supplements/Herbs in your inventory that need to be reordered soon:</strong><ul>';
+            $return .= '<strong>' . trans('noshform.vaccine_supplement_alert3') . ':</strong><ul>';
             foreach ($supplement_alert_query as $supplement_alert_row) {
-                $return .= '<li>' . $supplement_alert_row->sup_description . ', Quantity left: ' . $supplement_alert_row->quantity1 . '</li>';
+                $return .= '<li>' . $supplement_alert_row->sup_description . ', ' . trans('noshform.quantity_left') . ': ' . $supplement_alert_row->quantity1 . '</li>';
             }
             $return .= '</ul>';
         }
@@ -18382,9 +18578,9 @@ class Controller extends BaseController
             if ($return != '') {
                 $return .= '<br>';
             }
-            $return .= '<strong>Supplements/Herbs in your inventory that will expire soon:</strong><ul>';
+            $return .= '<strong>' . trans('noshform.vaccine_supplement_alert4') . ':</strong><ul>';
             foreach ($supplement_alert_query1 as $supplement_alert_row1) {
-                $return .= '<li>' . $supplement_alert_row1->sup_description . ', Expiration date: ' . date('m/d/Y', $this->human_to_unix($supplement_alert_row1->sup_expiration)) . '</li>';
+                $return .= '<li>' . $supplement_alert_row1->sup_description . ', ' . trans('noshform.sup_expiration') . ': ' . date('m/d/Y', $this->human_to_unix($supplement_alert_row1->sup_expiration)) . '</li>';
             }
             $return .= '</ul>';
         }

@@ -1022,7 +1022,7 @@ return [
     "license_state" => "State Licensed",
     "npi_taxonomy" => "NPI Taxonomy",
     "upin" => "UPIN",
-    "dea" => "DEA Number",
+    "dea" => "PRC Number",
     "medicare" => "Medicare Number",
     "tax_id" => "Tax ID Number",
     "rcopia_username" => "rCopia Username",

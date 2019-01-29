@@ -58,7 +58,7 @@ class LoginController extends Controller {
                     }
                     DB::table('users')->where('password', '=', $id)->update($data);
                     $this->audit('Update');
-                    Session::put('message_action', 'Your account has been activated.  Please log in');
+                    Session::put('message_action', trans('noshform.accept_invitation1'));
                     return redirect()->route('login');
                 } else {
                     $data['code'] = $id;
@@ -71,8 +71,7 @@ class LoginController extends Controller {
             //     return $error;
             // }
         } else {
-            $error = 'Your invitation code is invalid';
-            return $error;
+            return trans('noshform.accept_invitation2');
         }
     }
 
@@ -398,6 +397,9 @@ class LoginController extends Controller {
                 if ($practice1) {
                     // Present login page
                     Session::put('version', $practice1->version);
+                    if (!empty($practice1->locale)) {
+                        App::setLocale($practice1->locale);
+                    }
                     $practice_id = Session::get('practice_id');
                     if ($practice_id == FALSE) {
                         $data['practice_id'] = '1';
@@ -435,7 +437,7 @@ class LoginController extends Controller {
                         }
                     }
                     if ((array_key_exists('login_attempts', $_COOKIE)) && ($_COOKIE['login_attempts'] >= 5)){
-                        $data['attempts'] = "You have reached the number of limits to login.  Wait 15 minutes then try again.";
+                        $data['attempts'] = trans('noshform.login1');
                     } else {
                         if (!array_key_exists('login_attempts', $_COOKIE)) {
                             setcookie("login_attempts", 0, time()+900, '/');
@@ -880,17 +882,19 @@ class LoginController extends Controller {
             ]);
             $query = DB::table('users')->where('email', '=', $request->input('email'))->where('active', '=', '1')->first();
             if ($query) {
+                App::setLocale($query->locale);
                 $data['password'] = $this->gen_secret();
                 DB::table('users')->where('id', '=', $query->id)->update($data);
                 $this->audit('Update');
+                $this->sync_user($query->id);
                 $url = route('password_reset_response', [$data['password']]);
-                $data2['message_data'] = 'This message is to notify you that you have reset your password with mdNOSH Gateway.<br>';
-                $data2['message_data'] .= 'To finish this process, please click on the following link or point your web browser to:<br>';
+                $data2['message_data'] = trans('noshform.password_reset1') . '<br>';
+                $data2['message_data'] .= trans('noshform.password_reset2') . ':<br>';
                 $data2['message_data'] .= $url;
                 $this->send_mail('auth.emails.generic', $data2, 'Reset password to NOSH ChartingSystem', $request->input('email'), $query->practice_id);
-                $message = 'Password reset.  Check your email for further instructions';
+                $message = trans('noshform.password_reset4');
             } else {
-                $message = 'Error - Email address provided not known';
+                $message = trans('noshform.error') . ' - ' . trans('noshform.password_email1');
             }
             Session::put('message_action', $message);
             return redirect()->route('login');
@@ -917,10 +921,11 @@ class LoginController extends Controller {
                         $data['password'] = substr_replace(Hash::make($request->input('password')),"$2a",0,3);
                         DB::table('users')->where('id', '=', $query->id)->update($data);
                         $this->audit('Update');
-                        Session::put('message_action', 'Pasword updated.  Please log in');
+                        $this->sync_user($query->id);
+                        Session::put('message_action', trans('noshform.password_reset_response1'));
                         return redirect()->route('login');
                     } else {
-                        return 'Your response is incorrect.';
+                        return trans('noshform.password_reset_response2');
                     }
                 } else {
                     $data['code'] = $id;
@@ -933,7 +938,7 @@ class LoginController extends Controller {
                 // return 'Your code expired.  Contact your administrator to have your password reset again.';
             // }
         } else {
-            return 'Your code is invalid.';
+            return trans('noshform.password_reset_response3');
         }
     }
 

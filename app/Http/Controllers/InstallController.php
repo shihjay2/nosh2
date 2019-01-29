@@ -383,21 +383,21 @@ class InstallController extends Controller {
             $data['panel_header'] = 'NOSH ChartingSystem Installation';
             $items[] = [
                 'name' => 'username',
-                'label' => 'Administrator Username',
+                'label' => trans('noshform.admin_username'),
                 'type' => 'text',
                 'required' => true,
                 'default_value' => 'admin'
             ];
             $items[] = [
                 'name' => 'password',
-                'label' => 'Administrator Password',
+                'label' => trans('noshform.admin_password'),
                 'type' => 'password',
                 'required' => true,
                 'default_value' => null
             ];
             $items[] = [
                 'name' => 'confirm_password',
-                'label' => 'Confirm Password',
+                'label' => trans('noshform.confirm_password'),
                 'type' => 'password',
                 'required' => true,
                 'default_value' => null
@@ -412,7 +412,7 @@ class InstallController extends Controller {
             if ($type == 'patient') {
                 $items[] = [
                     'name' => 'pt_username',
-                    'label' => 'Portal Username',
+                    'label' => trans('noshform.pt_username'),
                     'type' => 'text',
                     'required' => true,
                     'default_value' => $pt_username
@@ -542,7 +542,7 @@ class InstallController extends Controller {
                 'items' => $items,
                 'save_button_label' => 'Install'
             ];
-            $data['content'] = '<p>Please fill out the entries to complete the installation of NOSH ChartingSystem.</p><p>You will need to establish a Google Gmail account to be able to send e-mail from the system for patient appointment reminders, non-Protected Health Information messages, and faxes.</p>';
+            $data['content'] = '<p>' . trans('noshform.install1') . '</p>';
             $data['content'] .= $this->form_build($form_array);
             $data['assets_js'] = $this->assets_js();
             $data['assets_css'] = $this->assets_css();
@@ -571,30 +571,30 @@ class InstallController extends Controller {
                         'DB_PASSWORD=' . env('DB_PASSWORD'), 'DB_PASSWORD='. $db_password, file_get_contents($path)
                     ));
                 }
-                Session::put('message_action', 'Fixed database connection');
+                Session::put('message_action', trans('noshform.install_fix1'));
                 return redirect()->route('dashboard');
             } else {
-                Session::put('message_action', 'Error - Incorrect username/password for your MySQL database.  Try again');
+                Session::put('message_action', trans('noshform.error') . ' - ' . trans('noshform.install_fix2'));
                 return redirect()->route('install_fix');
             }
         } else {
             $items[] = [
                 'name' => 'db_username',
-                'label' => 'Database Username',
+                'label' => trans('noshform.db_username'),
                 'type' => 'text',
                 'required' => true,
                 'default_value' => env('DB_USERNAME')
             ];
             $items[] = [
                 'name' => 'db_password',
-                'label' => 'Database Password',
+                'label' => trans('noshform.db_password'),
                 'type' => 'password',
                 'required' => true,
                 'default_value' => null
             ];
             $items[] = [
                 'name' => 'confirm_db_password',
-                'label' => 'Confirm Password',
+                'label' => trans('noshform.confirm_password'),
                 'type' => 'password',
                 'required' => true,
                 'default_value' => null
@@ -605,7 +605,7 @@ class InstallController extends Controller {
                 'items' => $items,
                 'save_button_label' => 'Save'
             ];
-            $data['panel_header'] = 'Database Connection Fix';
+            $data['panel_header'] = trans('noshform.install_fix3');
             $data['content'] = $this->form_build($form_array);
             $data['assets_js'] = $this->assets_js();
             $data['assets_css'] = $this->assets_css();
@@ -820,21 +820,21 @@ class InstallController extends Controller {
                         $outcome = '';
                         $items[] = [
                             'name' => 'rx_json',
-                            'label' => 'Prescription in FHIR JSON',
+                            'label' => trans('noshform.rx_json'),
                             'type' => 'textarea',
                             // 'readonly' => true,
                             'default_value' => $query->json
                         ];
                         $items[] = [
                             'name' => 'hash',
-                            'label' => 'Prescription Hash',
+                            'label' => trans('noshform.prescription_hash'),
                             'type' => 'text',
                             'readonly' => true,
                             'default_value' => $hash
                         ];
                         $items[] = [
                             'name' => 'tx_hash',
-                            'label' => 'Blockchain Timestamp Receipt',
+                            'label' => trans('noshform.tx_hash'),
                             'type' => 'text',
                             'readonly' => true,
                             'default_value' => $query->transaction
@@ -853,35 +853,35 @@ class InstallController extends Controller {
                             $rx_hash = substr(substr(substr($ret, 18), $bytes), 0, -56);
                             $items[] = [
                                 'name' => 'rx_hash',
-                                'label' => 'Prescription Hash from Blockchain',
+                                'label' => trans('noshform.rx_hash'),
                                 'type' => 'text',
                                 'readonly' => true,
                                 'default_value' => $rx_hash
                             ];
-                            $outcome = '<div class="alert alert-danger"><strong>Presciption Invalid</strong> - It may have been tampered with.</div>';
+                            $outcome = '<div class="alert alert-danger"><strong>' . trans('noshform.prescription_pharmacy_view1') . '</strong> - ' . trans('noshform.prescription_pharmacy_view2') . '.</div>';
                             if ($rx_hash == $items[1]['default_value']) {
-                                $outcome = '<div class="alert alert-success"><strong>Prescription is Signed and Valid</strong></div>';
+                                $outcome = '<div class="alert alert-success"><strong>' . trans('noshform.prescription_pharmacy_view3') . '</strong></div>';
                             }
                         }
                         $form_array = [
                             'form_id' => 'prescription_form',
                             'action' => route('prescription_pharmacy_view', [$id]),
                             'items' => $items,
-                            'save_button_label' => 'Validate',
+                            'save_button_label' => trans('noshform.validate'),
                             'remove_cancel' => true
                         ];
                         $data['content'] .= $this->form_build($form_array);
                     } else {
-                        $outcome = '<div class="alert alert-danger"><strong>Presciption Invalid</strong> - Prescription has not been signed electronically by uPort.</div>';
+                        $outcome = '<div class="alert alert-danger"><strong>' . trans('noshform.prescription_pharmacy_view1') . '</strong> - ' . trans('noshform.prescription_pharmacy_view4') . '.</div>';
                     }
                 } else {
-                    $outcome = '<div class="alert alert-danger"><strong>Presciption Filled</strong> - Prescription has been inactivated.</div>';
+                    $outcome = '<div class="alert alert-danger"><strong>' . trans('noshform.prescription_pharmacy_view5') . '</strong> - ' . trans('noshform.prescription_pharmacy_view6') . '.</div>';
                 }
             } else {
-                $outcome = '<div class="alert alert-danger"><strong>Presciption Invalid</strong> - This medication was never prescribed.</div>';
+                $outcome = '<div class="alert alert-danger"><strong>' . trans('noshform.prescription_pharmacy_view1') . '</strong> - ' . trans('noshform.prescription_pharmacy_view7') . '.</div>';
             }
         } else {
-            $outcome = '<div class="alert alert-danger"><strong>Presciption Invalid</strong> - No prescription exists.</div>';
+            $outcome = '<div class="alert alert-danger"><strong>' . trans('noshform.prescription_pharmacy_view1') . '</strong> - ' . trans('noshform.prescription_pharmacy_view8') . '.</div>';
         }
         $data['content'] .= $outcome;
         $data['assets_js'] = $this->assets_js();
@@ -1029,11 +1029,11 @@ class InstallController extends Controller {
     {
         $data_message['item'] = 'This is a test';
         $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
-        $message_action = 'Check to see in your registered e-mail account if you have recieved it.  If not, please come back to the E-mail Service page and try again.';
+        $message_action = trans('noshform.setup_mail_test1');
         try {
             $this->send_mail('emails.blank', $data_message, 'Test E-mail', $practice->email, Session::get('practice_id'));
         } catch(\Exception $e){
-            $message_action = 'Error - There is an error in your configuration.  Please try again.';
+            $message_action = trans('noshform.error') . ' - ' . trans('noshform.setup_mail_test2');
             Session::put('message_action', $message_action);
             return redirect()->route('setup_mail');
         }
@@ -1284,14 +1284,14 @@ class InstallController extends Controller {
                 $this->audit('Update');
                 return redirect()->route('uma_patient_centric');
             } else {
-                Session::put('message_action', 'Error - The URL you entered is not valid.');
+                Session::put('message_action', trans('noshform.error') . ' - ' . trans('noshform.uma_patient_centric_designate1') . '.');
                 return redirect()->back();
             }
         } else {
-            $data['panel_header'] = 'HIE of One Authorization Server Registration';
+            $data['panel_header'] = trans('noshform.uma_patient_centric_designate2');
             $items[] = [
                 'name' => 'uri',
-                'label' => 'URL of your HIE of One Authorization Server',
+                'label' => trans('noshform.uri'),
                 'type' => 'text',
                 'required' => true,
                 'value' => 'https://',
@@ -1301,9 +1301,9 @@ class InstallController extends Controller {
                 'form_id' => 'uma_form',
                 'action' => route('uma_patient_centric_designate'),
                 'items' => $items,
-                'save_button_label' => 'Submit'
+                'save_button_label' => trans('noshform.submit')
             ];
-            $data['content'] = '<p>An Authorization Server has not been found in the same domain as your NOSH ChartingSystem installation.</p><p>You will need to designate the URL of your Authorization Server to proceed with using NOSH ChartingSystem</p>';
+            $data['content'] = '<p>' . trans('noshform.uma_patient_centric_designate3') . '</p><p>' . trans('noshform.uma_patient_centric_designate4') . '</p>';
             $data['content'] .= $this->form_build($form_array);
             $data['assets_js'] = $this->assets_js();
             $data['assets_css'] = $this->assets_css();
@@ -1366,6 +1366,9 @@ class InstallController extends Controller {
         ini_set('max_execution_time', '300');
         $current_version = File::get(base_path() . "/.version");
         $composer = false;
+        if (Session::has('user_locale')) {
+            App::setLocale(Session::get('user_locale'));
+        }
         if ($type !== '') {
             if ($type == 'composer_install') {
                 $install = new Process("/usr/local/bin/composer install");
@@ -1414,7 +1417,7 @@ class InstallController extends Controller {
                 }
                 define('STDIN',fopen("php://stdin","r"));
                 File::put(base_path() . "/.version", $type);
-                $return = "System Updated with version " . $type . " from " . $current_version;
+                $return = trans('noshform.update_system1') . " " . $type . " " . trans('noshform.from1') . " " . $current_version;
                 $migrate = new Process("php artisan migrate --force");
                 $migrate->setWorkingDirectory(base_path());
                 $migrate->setTimeout(null);
@@ -1429,7 +1432,7 @@ class InstallController extends Controller {
                     $return .= '<br>' .nl2br($install->getOutput());
                 }
             } else {
-                $return = "Wrong version number";
+                $return = trans('noshform.update_system2');
             }
         } else {
             $result = $this->github_all();
@@ -1477,7 +1480,7 @@ class InstallController extends Controller {
                 }
                 define('STDIN',fopen("php://stdin","r"));
                 File::put(base_path() . '/.version', $result[0]['sha']);
-                $return = "System Updated with version " . $result[0]['sha'] . " from " . $current_version;
+                $return = trans('noshform.update_system1') . " " . $result[0]['sha'] . " " . trans('noshform.from1') . " " . $current_version;
                 $migrate = new Process("php artisan migrate --force");
                 $migrate->setWorkingDirectory(base_path());
                 $migrate->setTimeout(null);
@@ -1492,7 +1495,7 @@ class InstallController extends Controller {
                     $return .= '<br>' . nl2br($install->getOutput());
                 }
             } else {
-                $return = "No update needed";
+                $return = trans('noshform.update_system3');
             }
         }
         if (Auth::guest()) {

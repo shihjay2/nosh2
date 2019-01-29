@@ -16,7 +16,7 @@
                     <div id="datetimepicker"></div>
                     <form class="form-horizontal" role="form">
                          <div class="form-group">
-                             <label for="provider_list" class="col-md-4 control-label">Provider</label>
+                             <label for="provider_list" class="col-md-4 control-label">{{ trans('noshform.provider') }}</label>
                              <div class="col-md-8">
                                  <select id="provider_list" class="form-control" name="provider_list" value="@if (isset($provider_id)){{ $provider_id }}@endif">
                                      {!! $provider_list !!}
@@ -25,9 +25,9 @@
                          </div>
                     </form>
                     @if (isset($colorlegend))
-                        <div style="margin:5px;"><i style="color:green;" class="fa fa-square-o fa-lg"></i> Attended</div>
-                        <div style="margin:5px;"><i style="color:black;" class="fa fa-square-o fa-lg"></i> DNKA</div>
-                        <div style="margin:5px;"><i style="color:red;" class="fa fa-square-o fa-lg"></i> LMC</div>
+                        <div style="margin:5px;"><i style="color:green;" class="fa fa-square-o fa-lg"></i> {{ trans('noshform.attended') }}</div>
+                        <div style="margin:5px;"><i style="color:black;" class="fa fa-square-o fa-lg"></i> {{ trans('noshform.dnka1') }}</div>
+                        <div style="margin:5px;"><i style="color:red;" class="fa fa-square-o fa-lg"></i> {{ trans('noshform.lmc1') }}</div>
                     @endif
                     <div style="margin:15px;">
                         <button type="button" id="schedule_view_button" class="btn btn-default btn-block"></button>
@@ -49,11 +49,11 @@
             <!-- Modal content-->
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="scheduleModal_title">Choose a type of event</h5>
+                    <h5 class="modal-title" id="scheduleModal_title">{{ trans('noshform.scheduleModal_title') }}</h5>
                 </div>
                 <div class="modal-body">
-                    <button type="button" id="appointment_button" class="btn btn-default">Patient Appointment</button>
-                    <button type="button" id="event_button" class="btn btn-default">Other Event</button>
+                    <button type="button" id="appointment_button" class="btn btn-default">{{ trans('noshform.appointment_button') }}</button>
+                    <button type="button" id="event_button" class="btn btn-default">{{ trans('noshform.event_button') }}</button>
                 </div>
             </div>
         </div>
@@ -93,27 +93,27 @@
                         </div> -->
                         @if (Session::get('group_id') != '100')
                             <div class="form-group nosh-appt" id="patient_name_div">
-                                <label class="col-md-3 control-label">Patient</label>
+                                <label class="col-md-3 control-label">{{ trans('noshform.patient') }}</label>
                                 <div class="col-md-8">
                                     <p class="form-control-static" id="patient_name"></p>
                                 </div>
                             </div>
                         @endif
                         <div class="form-group nosh-appt nosh-appt-old">
-                            <label for="status" class="col-md-3 control-label">Status</label>
+                            <label for="status" class="col-md-3 control-label">{{ trans('noshform.status') }}</label>
                             <div class="col-md-8">
                                 <select id="status" class="form-control" name="status" value="">
-                                    <option value="">None</option>
-                                    <option value="Pending">Pending</option>
-                                    <option value="Reminder Sent">Reminder Sent</option>
-                                    <option value="Attended">Attended</option>
-                                    <option value="LMC">Last Minute Cancellation</option>
-                                    <option value="DNKA">Did Not Keep Appointment</option>
+                                    <option value="">{{ trans('noshform.none') }}</option>
+                                    <option value="Pending">{{ trans('noshform.pending') }}</option>
+                                    <option value="Reminder Sent">{{ trans('noshform.reminder_sent') }}</option>
+                                    <option value="Attended">{{ trans('noshform.attended') }}</option>
+                                    <option value="LMC">{{ trans('noshform.lmc2') }}</option>
+                                    <option value="DNKA">{{ trans('noshform.dnka2') }}</option>
                                 </select>
                             </div>
                         </div>
                         <div class="form-group nosh-appt nosh-event nosh-pt-appt">
-                            <label for="start_date" class="col-md-3 control-label">Start Date</label>
+                            <label for="start_date" class="col-md-3 control-label">{{ trans('noshform.start_date') }}</label>
                             <div class="col-md-8">
                                 @if (Session::get('group_id') != '100')
                                     <input type="date" id="start_date" class="form-control" name="start_date" value="" required>
@@ -123,7 +123,7 @@
                             </div>
                         </div>
                         <div class="form-group nosh-appt nosh-event nosh-pt-appt">
-                            <label for="start_time" class="col-md-3 control-label">Start Time</label>
+                            <label for="start_time" class="col-md-3 control-label">{{ trans('noshform.start_time') }}</label>
                             <div class="col-md-8">
                                 @if (Session::get('group_id') != '100')
                                     <input type="text" id="start_time" class="form-control nosh-time1" name="start_time" value="" required>
@@ -133,13 +133,13 @@
                             </div>
                         </div>
                         <div class="form-group nosh-appt nosh-event" id="end_div">
-                            <label for="end" class="col-md-3 control-label">End Time</label>
+                            <label for="end" class="col-md-3 control-label">{{ trans('noshform.end_time') }}</label>
                             <div class="col-md-8">
                                 <input type="text" id="end" class="form-control nosh-time1" name="end" value="">
                             </div>
                         </div>
                         <div class="form-group nosh-appt nosh-pt-appt">
-                            <label for="visit_type" class="col-md-3 control-label">Visit Type</label>
+                            <label for="visit_type" class="col-md-3 control-label">{{ trans('noshform.visit_type') }}</label>
                             <div class="col-md-8">
                                 <select id="visit_type" class="form-control" name="visit_type" value="" required>
                                     {!! $visit_type !!}
@@ -147,47 +147,47 @@
                             </div>
                         </div>
                         <div class="form-group nosh-appt nosh-event nosh-pt-appt">
-                            <label for="reason" class="col-md-3 control-label">Reason</label>
+                            <label for="reason" class="col-md-3 control-label">{{ trans('noshform.schedule_reason') }}</label>
                             <div class="col-md-8">
                                 <textarea id="reason" class="form-control" name="reason" value="" rows="5"></textarea>
                             </div>
                         </div>
                         <div class="form-group nosh-appt">
-                            <label for="notes" class="col-md-3 control-label">Notes/Tasks</label>
+                            <label for="notes" class="col-md-3 control-label">{{ trans('noshform.schedule_notes') }}</label>
                             <div class="col-md-8">
                                 <textarea id="notes" class="form-control" name="notes" value="" rows="5"></textarea>
                             </div>
                         </div>
                         <div class="form-group nosh-event">
-                            <label for="repeat" class="col-md-3 control-label">Repeat</label>
+                            <label for="repeat" class="col-md-3 control-label">{{ trans('noshform.repeat') }}</label>
                             <div class="col-md-8">
                                 <select id="repeat" class="form-control" name="repeat" value="">
-                                    <option value="">None</option>
-                                    <option value="86400">Every Day</option>
-                                    <option value="604800">Every Week</option>
-                                    <option value="1209600">Every Other Week</option>
+                                    <option value="">{{ trans('noshform.none') }}</option>
+                                    <option value="86400">{{ trans('noshform.every_day') }}</option>
+                                    <option value="604800">{{ trans('noshform.every_week') }}</option>
+                                    <option value="1209600">{{ trans('noshform.every_other_week') }}</option>
                                 </select>
                             </div>
                         </div>
                         <div class="form-group nosh-event" id="until_div">
-                            <label for="until" class="col-md-3 control-label">Until</label>
+                            <label for="until" class="col-md-3 control-label">{{ trans('noshform.until') }}</label>
                             <div class="col-md-8">
-                                <input type="date" id="until" class="form-control" name="until" value="" placeholder="Leave blank if repeat goes on forever">
+                                <input type="date" id="until" class="form-control" name="until" value="" placeholder="{{ trans('noshform.until_placeholder') }}">
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="col-md-11 col-md-offset-1">
                                 <button type="submit" class="btn btn-success" style="margin:10px">
-                                    <i class="fa fa-btn fa-save"></i> Save
+                                    <i class="fa fa-btn fa-save"></i> {{ trans('noshform.save') }}
                                 </button>
                                 <button type="button" class="btn btn-success" style="margin:10px" id="event_encounter">
-                                    <i class="fa fa-btn fa-forward"></i> Encounter
+                                    <i class="fa fa-btn fa-forward"></i> {{ trans('noshform.encounter') }}
                                 </button>
                                 <button type="button" class="btn btn-danger" style="margin:10px" id="event_cancel">
-                                    <i class="fa fa-btn fa-ban"></i> Cancel
+                                    <i class="fa fa-btn fa-ban"></i> {{ trans('noshform.cancel') }}
                                 </button>
                                 <button type="button" class="btn btn-danger" style="margin:10px" id="event_delete">
-                                    <i class="fa fa-btn fa-ban"></i> Delete
+                                    <i class="fa fa-btn fa-ban"></i> {{ trans('noshform.delete') }}
                                 </button>
                             </div>
                         </div>
@@ -474,7 +474,7 @@
             }
         });
         if (noshdata.message_action !== '') {
-            if (noshdata.message_action.search('Error - ') == -1) {
+            if (noshdata.message_action.search(noshdata.error_text) == -1) {
                 toastr.success(noshdata.message_action);
             } else {
                 toastr.error(noshdata.message_action);

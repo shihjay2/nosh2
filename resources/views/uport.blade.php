@@ -146,7 +146,7 @@
     $(document).ready(function() {
         // Core
         if (noshdata.message_action !== '') {
-            if (noshdata.message_action.search('Error - ') == -1) {
+            if (noshdata.message_action.search(noshdata.error_text) == -1) {
                 toastr.success(noshdata.message_action);
             } else {
                 toastr.error(noshdata.message_action);

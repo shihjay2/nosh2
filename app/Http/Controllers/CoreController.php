@@ -79,28 +79,28 @@ class CoreController extends Controller
         } else {
             $items[] = [
                 'name' => 'lastname',
-                'label' => 'Last Name',
+                'label' => trans('noshform.lastname'),
                 'type' => 'text',
                 'required' => true,
                 'default_value' => null
             ];
             $items[] = [
                 'name' => 'firstname',
-                'label' => 'First Name',
+                'label' => trans('noshform.firstname'),
                 'type' => 'text',
                 'required' => true,
                 'default_value' => null
             ];
             $items[] = [
                 'name' => 'DOB',
-                'label' => 'Date of Birth',
+                'label' => trans('noshform.DOB'),
                 'type' => 'date',
                 'required' => true,
                 'default_value' => null
             ];
             $items[] = [
                 'name' => 'sex',
-                'label' => 'Gender',
+                'label' => trans('noshform.sex'),
                 'type' => 'select',
                 'required' => true,
                 'select_items' => $this->array_gender(),
@@ -110,9 +110,9 @@ class CoreController extends Controller
                 'form_id' => 'add_patient_form',
                 'action' => route('add_patient'),
                 'items' => $items,
-                'save_button_label' => 'Save'
+                'save_button_label' => trans('noshform.save')
             ];
-            $data['panel_header'] = 'Add New Patient';
+            $data['panel_header'] = trans('noshform.add_patient');
             $data['content'] = $this->form_build($form_array);
             $data['message_action'] = Session::get('message_action');
             Session::forget('message_action');
@@ -128,7 +128,7 @@ class CoreController extends Controller
         Session::forget('message_action');
         $return = '';
         $type_arr = [
-            'all' => ['All', 'fa-globe']
+            'all' => [trans('noshform.all'), 'fa-globe']
         ];
         $type_query = DB::table('addressbook')->select('specialty')->distinct()->orderBy('specialty', 'asc')->get();
         if ($type_query->count()) {
@@ -176,7 +176,7 @@ class CoreController extends Controller
         if (! empty($list_array)) {
             $return .= $this->result_build($list_array, $type . '_list');
         } else {
-            $return .= ' None.';
+            $return .= ' ' . trans('noshform.none') . '.';
         }
         $dropdown_array1 = [
             'items_button_icon' => 'fa-plus'
@@ -184,14 +184,14 @@ class CoreController extends Controller
         $items1 = [];
         $items1[] = [
             'type' => 'item',
-            'label' => 'New Entry',
+            'label' => trans('noshform.new_entry'),
             'icon' => 'fa-plus',
             'url' => route('core_form', ['addressbook', $row_index, '0'])
         ];
         $dropdown_array1['items'] = $items1;
         $data['panel_dropdown'] .= '<span class="fa-btn"></span>' . $this->dropdown_build($dropdown_array1);
         $data['content'] = $return;
-        $data['panel_header'] = 'Address Book';
+        $data['panel_header'] = trans('noshform.addressbook');
         Session::put('last_page', $request->fullUrl());
         if (Session::has('download_now')) {
             $data['download_now'] = route('download_now');
@@ -240,13 +240,13 @@ class CoreController extends Controller
         			if ($result !== 'No') {
         				$url_check = true;
         			} else {
-        				$url_reason = 'mdNOSH is not set up to accept API connections.  Please update the mdNOSH installation.';
+        				$url_reason = trans('noshform.api_practice_error1');
         			}
         		}
         		if ($url_check == false) {
         			$status = 'n';
         			//$data_message['temp_url'] = rtrim($patient_portal->patient_portal, '/') . '/practiceregister/' . $register_code;
-        			$message = 'Error: Problem with contacting the URL problem for NOSH integration.  Please check if you have NOSH and that the URL provided is correct.';
+        			$message = trans('noshform. error') . ' - ' . trans('noshform.api_practice_error2');
         			if ($url_reason != '') {
         				$message .= '  ' . $url_reason;
         			}
@@ -267,8 +267,8 @@ class CoreController extends Controller
         			// Send API key to mdNOSH;
         			$result = $this->api_data_send($url1, $register_data, '', '');
         			$status = 'y';
-        			$message = 'Practice added with mdNOSH integration.';
-        			$message .= '  Response from server: ' . $result['status'];
+        			$message = trans('noshform.api_practice_yes');
+        			$message .= '  ' . trans('noshform.api_practice_yes1') . ': ' . $result['status'];
         		}
     		    //$this->send_mail('emails.apiregister', $data_message, 'NOSH ChartingSystem API Registration', $request->input('email'), '1');
             } else {
@@ -276,7 +276,7 @@ class CoreController extends Controller
                 DB::table('practiceinfo')->where('practice_id', '=', $practice_id)->update($data);
                 $this->audit('Update');
                 $status = 'y';
-                $message = 'No mdNOSH integration set.';
+                $message = trans('noshform.api_practice_no');
             }
             Session::put('message_action', $message);
             if ($status == 'n') {
@@ -285,10 +285,10 @@ class CoreController extends Controller
                 return route('pnosh_provider_redirect');
             }
         } else {
-            $data['panel_header'] = 'Integrate with your Practice NOSH (mdNOSH)';
+            $data['panel_header'] = trans('noshform.api_practice');
             $items[] = [
                 'name' => 'practice_url',
-                'label' => 'URL of Practice NOSH (mdNOSH)',
+                'label' => trans('noshform.practice_url'),
                 'type' => 'text',
                 'default_value' => null
             ];
@@ -296,14 +296,14 @@ class CoreController extends Controller
                 'form_id' => 'api_practice',
                 'action' => route('api_practice'),
                 'items' => $items,
-                'save_button_label' => 'Save',
+                'save_button_label' => trans('noshform.save'),
                 'add_save_button' => [
-                    'no_sync' => 'No Integration'
+                    'no_sync' => trans('noshform.no_sync')
                 ]
             ];
-            $data['content'] = '<div class="alert alert-success"><h5>Integration Tips</h5><ul>';
-            $data['content'] .= '<li>If this patient does not exist in your Practice NOSH, the patient will be added.</li>';
-            $data['content'] .= '<li>If the patient already exsits, this will link the this Patient NOSH to your Practice NOSH</li>';
+            $data['content'] = '<div class="alert alert-success"><h5>' . trans('noshform.api_practice1') . '</h5><ul>';
+            $data['content'] .= '<li>' . trans('noshform.api_practice2') . '</li>';
+            $data['content'] .= '<li>' . trans('nosfhorm.api_practice3') . '</li>';
             $data['content'] .= '</ul></div>';
             $data['content'] .= $this->form_build($form_array);
             $data['message_action'] = Session::get('message_action');
@@ -327,10 +327,10 @@ class CoreController extends Controller
             $return = $this->result_build($list_array, 'audit_list');
             $return .= $query->links();
         } else {
-            $return = 'None.';
+            $return = ' ' . trans('noshform.none') . '.';
         }
         $data['saas_admin'] = 'y';
-        $data['panel_header'] = 'Audit Logs';
+        $data['panel_header'] = trans('noshform.audit_logs');
         $data['content'] = $return;
         $data['assets_js'] = $this->assets_js();
         $data['assets_css'] = $this->assets_css();
@@ -353,13 +353,13 @@ class CoreController extends Controller
             $encounters = DB::table('encounters')->where('pid', '=', $pid)->where('addendum', '=', 'n')->where('practice_id', '=', Session::get('practice_id'))->orderBy('encounter_DOS', 'desc')->get();
             if ($encounters->count()) {
                 foreach ($encounters as $encounter) {
-                    $action = '<a href="' . route('billing_payment_history', [$encounter->eid, 'eid']) . '" class="btn fa-btn" role="button" data-toggle="tooltip" title="Payment History"><i class="fa fa-history fa-lg"></i></a>';
-                    $action .= '<a href="' . route('billing_make_payment', [$encounter->eid, 'eid']) . '" class="btn fa-btn" role="button" data-toggle="tooltip" title="Make Payment"><i class="fa fa-usd fa-lg"></i></a>';
+                    $action = '<a href="' . route('billing_payment_history', [$encounter->eid, 'eid']) . '" class="btn fa-btn" role="button" data-toggle="tooltip" title="' . trans('noshform.billing_payment_history') . '"><i class="fa fa-history fa-lg"></i></a>';
+                    $action .= '<a href="' . route('billing_make_payment', [$encounter->eid, 'eid']) . '" class="btn fa-btn" role="button" data-toggle="tooltip" title="' . trans('noshform.billing_make_payment') . '"><i class="fa fa-usd fa-lg"></i></a>';
                     $billing = DB::table('billing')->where('eid', '=', $encounter->eid)->first();
                     if ($billing) {
                         $insurance_id_1 = $billing->insurance_id_1;
                         $insurance_id_2 = $billing->insurance_id_2;
-                        $action .= '<a href="' . route('print_invoice1', [$encounter->eid, $billing->insurance_id_1, $billing->insurance_id_2]) . '" class="btn fa-btn nosh-no-load" role="button" data-toggle="tooltip" title="Print Invoice"><i class="fa fa-print fa-lg"></i></a>';
+                        $action .= '<a href="' . route('print_invoice1', [$encounter->eid, $billing->insurance_id_1, $billing->insurance_id_2]) . '" class="btn fa-btn nosh-no-load" role="button" data-toggle="tooltip" title="' . trans('noshform.print_invoice') . '"><i class="fa fa-print fa-lg"></i></a>';
                     }
                     $arr = [
                         'id' => $encounter->eid,
@@ -385,11 +385,11 @@ class CoreController extends Controller
                 }
             }
             $dropdown_array = [
-                'items_button_text' => 'Encounters'
+                'items_button_text' => trans('noshform.encounters')
             ];
             $items[] = [
                 'type' => 'item',
-                'label' => 'Miscellaneous Bills',
+                'label' => trans('noshform.misc_bills'),
                 'icon' => 'fa-shopping-basket',
                 'url' => route('billing_list', ['misc', $pid])
             ];
@@ -397,10 +397,10 @@ class CoreController extends Controller
             $others = DB::table('billing_core')->where('pid', '=', $pid)->where('eid', '=', '0')->where('payment', '=', '0')->where('practice_id', '=', Session::get('practice_id'))->orderBy('dos_f', 'desc')->get();
             if ($others->count()) {
                 foreach ($others as $other) {
-                    $action = '<a href="' . route('billing_payment_history', [$other->other_billing_id, 'other_billing_id']) . '" class="btn fa-btn" role="button" data-toggle="tooltip" title="Payment History"><i class="fa fa-history fa-lg"></i></a>';
-                    $action .= '<a href="' . route('billing_make_payment', [$other->other_billing_id, 'other_billing_id']) . '" class="btn fa-btn" role="button" data-toggle="tooltip" title="Make Payment"><i class="fa fa-usd fa-lg"></i></a>';
-                    $action .= '<a href="' . route('print_invoice2', [$other->other_billing_id, $pid]) . '" class="btn fa-btn nosh-no-load" role="button" data-toggle="tooltip" title="Print Invoice"><i class="fa fa-print fa-lg"></i></a>';
-                    $action .= '<a href="' . route('billing_delete_invoice', [$other->billing_core_id]) . '" class="btn btn-danger fa-btn nosh-delete" role="button" data-toggle="tooltip" title="Delete Invoice"><i class="fa fa-trash fa-lg"></i></a>';
+                    $action = '<a href="' . route('billing_payment_history', [$other->other_billing_id, 'other_billing_id']) . '" class="btn fa-btn" role="button" data-toggle="tooltip" title="' . trans('noshform.billing_payment_history') . '"><i class="fa fa-history fa-lg"></i></a>';
+                    $action .= '<a href="' . route('billing_make_payment', [$other->other_billing_id, 'other_billing_id']) . '" class="btn fa-btn" role="button" data-toggle="tooltip" title="' . trans('noshform.billing_make_payment') . '"><i class="fa fa-usd fa-lg"></i></a>';
+                    $action .= '<a href="' . route('print_invoice2', [$other->other_billing_id, $pid]) . '" class="btn fa-btn nosh-no-load" role="button" data-toggle="tooltip" title="' . trans('noshform.print_invoice') . '"><i class="fa fa-print fa-lg"></i></a>';
+                    $action .= '<a href="' . route('billing_delete_invoice', [$other->billing_core_id]) . '" class="btn btn-danger fa-btn nosh-delete" role="button" data-toggle="tooltip" title="' . trans('noshform.billing_delete_invoice') . '"><i class="fa fa-trash fa-lg"></i></a>';
                     $arr = [
                         'id' => $other->other_billing_id,
                         'date' => date('Y-m-d', $this->human_to_unix($other->dos_f)),
@@ -424,17 +424,17 @@ class CoreController extends Controller
                 }
             }
             $dropdown_array = [
-                'items_button_text' => 'Miscellaneous Bills'
+                'items_button_text' => trans('noshform.misc_bills')
             ];
             $items[] = [
                 'type' => 'item',
-                'label' => 'Encounters',
+                'label' => trans('noshform.encounters'),
                 'icon' => 'fa-stethoscope',
                 'url' => route('billing_list', ['encounters', $pid])
             ];
             $items[] = [
                 'type' => 'item',
-                'label' => 'CMS Bluebutton Data',
+                'label' => trans('noshform.cms_bluebutton_display'),
                 'icon' => 'fa-money',
                 'url' => route('cms_bluebutton')
             ];
@@ -445,15 +445,15 @@ class CoreController extends Controller
         $edit = $this->access_level('1');
         if (! empty($result)) {
             $head_arr = [
-                'Date' => 'date',
-                'Reason' => 'reason',
-                'Charge' => 'charges',
-                'Balance' => 'balance',
-                'Action' => 'action'
+                trans('noshform.date') => 'date',
+                trans('noshform.misc_reason') => 'reason',
+                trans('noshform.billing_charge') => 'charges',
+                trans('noshform.billing_balance') => 'balance',
+                trans('noshform.action') => 'action'
             ];
             $return .= '<div class="alert alert-success">';
             $return .= $this->total_balance($pid);
-            $return .= '<h5>Click on a row to get details of the invoice.</h5></div>';
+            $return .= '<h5>' . trans('noshform.billing_list1') . '</h5></div>';
             $return .= '<div class="table-responsive"><table class="table table-striped"><thead><tr>';
             foreach ($head_arr as $head_row_k => $head_row_v) {
                 $return .= '<th>' . $head_row_k . '</th>';
@@ -462,7 +462,7 @@ class CoreController extends Controller
             foreach ($result as $row) {
                 $return .= '<tr>';
                 foreach ($head_arr as $head_row_k => $head_row_v) {
-                    if ($head_row_k !== 'Action') {
+                    if ($head_row_k !== trans('noshform.action')) {
                         $return .= '<td class="nosh-click" data-nosh-click="' . $row['click'] . '">' . $row[$head_row_v] . '</td>';
                     } else {
                         $return .= '<td>' . $row[$head_row_v] . '</td>';
@@ -472,10 +472,10 @@ class CoreController extends Controller
             }
             $return .= '</tbody></table>';
         } else {
-            $return .= ' No invoices.';
+            $return .= ' ' . trans('noshform.no_invoices') . '.';
         }
         $data['content'] = $return;
-        $data['panel_header'] = 'Billing';
+        $data['panel_header'] = trans('noshform.billing_list');
         $data = array_merge($data, $this->sidebar_build('chart'));
         if ($edit == true) {
             if ($type == 'misc') {
@@ -485,13 +485,13 @@ class CoreController extends Controller
                 $items1 = [];
                 $items1[] = [
                     'type' => 'item',
-                    'label' => 'Add Miscellanous Bill',
+                    'label' => trans('noshform.billing_add_misc'),
                     'icon' => 'fa-plus',
                     'url' => route('billing_details', ['new'])
                 ];
                 $items1[] = [
                     'type' => 'item',
-                    'label' => 'Edit Billing Notes',
+                    'label' => trans('noshform.edit_billing_notes'),
                     'icon' => 'fa-pencil',
                     'url' => route('billing_notes')
                 ];
@@ -504,7 +504,7 @@ class CoreController extends Controller
                 $items1 = [];
                 $items1[] = [
                     'type' => 'item',
-                    'label' => 'Edit Billing Notes',
+                    'label' => trans('noshform.edit_billing_notes'),
                     'icon' => 'fa-pencil',
                     'url' => route('billing_notes')
                 ];
@@ -532,14 +532,14 @@ class CoreController extends Controller
             'dos_t'
         ];
         $table_message_arr = [
-            'addressbook' => 'Address Book Entry ',
-            'vaccine_inventory' => 'Vaccine ',
-            'messaging' => 'Message Sent and ',
-            'recipients' => 'Recipient ',
-            'providers' => 'Provider Entry ',
-            'users' => 'User ',
-            'practiceinfo' => 'Practice Setting ',
-            'calendar' => 'Visit Type '
+            'addressbook' => trans('noshform.addressbook_action') . ' ',
+            'vaccine_inventory' => trans('noshform.vaccine') . ' ',
+            'messaging' => trans('noshform.messaging_action') . ' ',
+            'recipients' => trans('noshform.faxrecipient') . ' ',
+            'providers' => trans('noshform.providers_action') . ' ',
+            'users' => trans('noshform.user') . ' ',
+            'practiceinfo' => trans('noshform.practiceinfo_action') . ' ',
+            'calendar' => trans('noshform.visit_type') . ' '
         ];
         $multiple_select_arr = [
             'message_to',
@@ -702,27 +702,34 @@ class CoreController extends Controller
                                 if (!file_exists($new_photo_file_path)) {
                                     File::move($photo_file_path, $new_photo_file_path);
                                 }
+                                App::setLocale(Session::get('practice_locale'));
                                 $image_data = [
                                     'image_location' => $new_photo_file_path,
                                     'pid' => $data['pid'],
                                     'message_id' => $send_id,
-                                    'image_description' => 'Photo Uploaded ' . date('F jS, Y'),
+                                    'image_description' => trans('noshform.photo_uploaded') . ' ' . date('F jS, Y'),
                                     'id' => Session::get('user_id')
                                 ];
+                                App::setLocale(Session::get('user_locale'));
                                 $image_id = DB::table('image')->insertGetId($image_data);
                                 $this->audit('Add');
                             }
                         }
                         $user_row = DB::table('users')->where('id', '=',$mailbox_row)->first();
+                        App::setLocale(Session::get('practice_locale'));
+                        if (!empty($user_row->locale)) {
+                            App::setLocale($user_row->locale);
+                        }
                         if ($user_row->group_id === '100') {
                             $data_message['patient_portal'] = $practice->patient_portal;
-                            $this->send_mail('emails.newmessage', $data_message, 'New Message in your Patient Portal', $user_row->email, Session::get('practice_id'));
+                            $this->send_mail('emails.newmessage', $data_message, trans('noshform.new_message_notify'), $user_row->email, Session::get('practice_id'));
                         }
                         if ($user_row->secure_message_notification !== 0) {
                             $link = route('messaging', ['inbox']);
-                            $data_message1['item'] = '<p>You have a new message in your secure inbox.  <a href="' . $link . '"Click here</a></p>';
-                            $this->send_mail('emails.blank', $data_message1, 'New Message', $user_row->email, Session::get('practice_id'));
+                            $data_message1['item'] = '<p>' . trans('noshform.messaging_notify') . '  <a href="' . $link . '">' . trans('noshform.messaging_click_here') . '</a></p>';
+                            $this->send_mail('emails.blank', $data_message1, trans('noshform.new_message'), $user_row->email, Session::get('practice_id'));
                         }
+                        App::setLocale(Session::get('user_locale'));
                     }
                 }
                 if (isset($data['t_messages_id'])) {
@@ -730,7 +737,8 @@ class CoreController extends Controller
                         $row = DB::table('users')->where('id', '=', $data['message_from'])->first();
                         $displayname = $row->displayname . ' (' . $row->id . ')';
                         $t_message = DB::table('t_messages')->where('t_messages_id', '=', $data['t_messages_id'])->first();
-                        $message = $t_message->t_messages_message . "\n\r" . 'On ' . date('Y-m-d', $this->human_to_unix($data['date'])) . ', ' . $displayname . ' wrote:' . "\n---------------------------------\n" . $data['body'];
+                        $message = $t_message->t_messages_message . "\n\r" . trans('noshform.t_message_on') . ' ' . date('Y-m-d', $this->human_to_unix($data['date'])) . ', ' . $displayname . ' ' . trans('noshform.t_message_wrote') . ':';
+                        $message .= "\n---------------------------------\n" . $data['body'];
                         $data1 = [
                             't_messages_message' => $message,
                             't_messages_to' => ''
@@ -797,8 +805,10 @@ class CoreController extends Controller
                     $data['password'] = $this->gen_secret();
                     $data['created_at'] = date('Y-m-d H:i:s');
                     $url = URL::to('accept_invitation') . '/' . $data['password'];
-                    $email['message_data'] = 'You are invited to use the NOSH ChartingSystem for ' . $practice->practice_name . '.<br>Go to ' . $url . ' to get registered.';
+                    App::setLocale(Session::get('practice_locale'));
+                    $email['message_data'] = trans('noshform.new_user_message') . ' ' . $practice->practice_name . '.<br>' . trans('noshform.new_user_message1') . ' ' . $url . ' ' . trans('noshform.new_user_message2');
                     $this->send_mail('auth.emails.generic', $email, 'Invitation to NOSH ChartingSystem', $data['email'], Session::get('practice_id'));
+                    App::setLocale(Session::get('user_locale'));
                 }
                 $data['displayname'] = $data['firstname'] . " " . $data['lastname'];
                 if ($data['title'] !== ''){
@@ -819,12 +829,12 @@ class CoreController extends Controller
                 unset($data[$index]);
                 $row_id1 = DB::table($table)->insertGetId($data);
                 $this->audit('Add');
-                $arr['message'] = $message . 'added!';
+                $arr['message'] = $message . trans('noshform.added') . '!';
                 if ($table == 'messaging') {
                     if ($data['status'] == 'Draft') {
-                        $arr['message'] = 'Message saved as draft';
+                        $arr['message'] = trans('noshform.message_messaging1');
                     } else {
-                        $arr['message'] = 'Message saved and sent';
+                        $arr['message'] = trans('noshform.message_messaging2');
                     }
                     if (Session::has('messaging_add_photo')) {
                         $message_add_photo_arr = Session::get('messaging_add_photo');
@@ -840,15 +850,17 @@ class CoreController extends Controller
                             if (!file_exists($new_photo_file_path)) {
                                 File::move($photo_file_path, $new_photo_file_path);
                             }
+                            App::setLocale(Session::get('practice_locale'));
                             $image_data = [
                                 'image_location' => $new_photo_file_path,
                                 'pid' => $data['pid'],
                                 'message_id' => $row_id1,
-                                'image_description' => 'Photo Uploaded ' . date('F jS, Y'),
+                                'image_description' => trans('noshform.photo_uploaded') . ' ' . date('F jS, Y'),
                                 'id' => Session::get('user_id')
                             ];
                             $image_id = DB::table('image')->insertGetId($image_data);
                             $this->audit('Add');
+                            App::setLocale(Session::get('user_locale'));
                         }
                     }
                 }
@@ -859,16 +871,19 @@ class CoreController extends Controller
             } else {
                 DB::table($table)->where($index, '=', $id)->update($data);
                 $this->audit('Update');
-                $arr['message'] = $message . 'updated!';
+                $arr['message'] = $message . trans('noshform.updated') . '!';
                 if ($table == 'messaging') {
                     if ($data['status'] == 'Draft') {
-                        $arr['message'] = 'Message saved as draft';
+                        $arr['message'] = trans('noshform.message_messaging1');
                     } else {
-                        $arr['message'] = 'Message saved and sent';
+                        $arr['message'] = trans('noshform.message_messaging2');
                     }
                 }
                 if ($subtype == '2') {
                     DB::table('providers')->where('id', '=', $id)->update($provider_data);
+                }
+                if ($table == 'users') {
+                    $this->sync_user($id);
                 }
             }
         }
@@ -892,7 +907,7 @@ class CoreController extends Controller
             //         $this->api_data('update', $table, $index, $id);
             //     }
             // }
-            $arr['message'] = $message . 'inactivated!';
+            $arr['message'] = $message . trans('noshform.inactivated') . '!';
         }
         if ($action == 'reactivate') {
             if ($table == 'vaccine_inventory') {
@@ -914,7 +929,7 @@ class CoreController extends Controller
             //         $this->api_data('update', $table, $index, $id);
             //     }
             // }
-            $arr['message'] = $message . 'reactivated!';
+            $arr['message'] = $message . trans('noshform.reactivated') . '!';
         }
         if ($action == 'delete') {
             if ($table == 'received') {
@@ -946,7 +961,7 @@ class CoreController extends Controller
             //         $this->api_data('delete', $table, $index, $id);
             //     }
             // }
-            $arr['message'] = $message . 'deleted!';
+            $arr['message'] = $message . trans('noshform.deleted') . '!';
         }
         if ($action == 'complete') {
             if ($table == 'alerts') {
@@ -969,7 +984,7 @@ class CoreController extends Controller
             }
             DB::table($table)->where($index, '=', $id)->update($data6);
             $this->audit('Update');
-            $arr['message'] = $message . 'marked as completed!';
+            $arr['message'] = $message . trans('noshform.marked_completed') . '!';
         }
         $arr['response'] = 'OK';
         Session::put('message_action', $arr['message']);
@@ -979,9 +994,9 @@ class CoreController extends Controller
         if ($table == 'addressbook' && $subtype == 'Referral') {
             return redirect(Session::get('addressbook_last_page'));
         }
-        if ($table == 'practiceinfo') {
-            return redirect()->route('setup');
-        }
+        // if ($table == 'practiceinfo') {
+        //     return redirect()->route('setup');
+        // }
         return redirect(Session::get('last_page'));
     }
 
@@ -1026,18 +1041,26 @@ class CoreController extends Controller
         $items = array_merge($items, $this->{$form_function}($result, $table, $id, $subtype));
         // Address Book
         if ($table == 'addressbook') {
+            $address_label = [
+                'Referral' => trans('noshform.referral'),
+                'Laboratory' => trans('noshform.laboratory'),
+                'Radiology' => trans('noshform.radiology'),
+                'Cardiopulmonary' => trans('noshform.cardiopulmonary'),
+                'Pharmacy' => trans('noshform.pharmacy'),
+                'Insurance' => trans('noshform.insurance'),
+            ];
             if ($subtype == 'Referral') {
                 $data['search_specialty'] = 'specialty';
             }
             if ($id == '0') {
-                $data['panel_header'] = 'Add Address Book Entry';
+                $data['panel_header'] = trans('noshform.addressbook_panel_header1');
                 if ($subtype !== '') {
-                    $data['panel_header'] = 'Add ' . $subtype . ' Entry';
+                    $data['panel_header'] = trans('noshform.add') . ' ' . $address_label[$subtype] . ' ' . trans('noshform.entry');
                 }
             } else {
-                $data['panel_header'] = 'Edit Address Book Entry';
+                $data['panel_header'] = trans('noshform.addressbook_panel_header2');
                 if ($subtype !== '') {
-                    $data['panel_header'] = 'Edit ' . $subtype . ' Entry';
+                    $data['panel_header'] = trans('noshform.edit') . ' ' . $address_label[$subtype] . ' ' . trans('noshform.entry');
                 }
             }
         }
@@ -1046,16 +1069,16 @@ class CoreController extends Controller
             $data['search_immunization'] = 'imm_immunization';
             $data['search_cpt'] = 'cpt';
             if ($id == '0') {
-                $data['panel_header'] = 'Add Vaccine Entry';
+                $data['panel_header'] = trans('noshform.add') . ' ' . trans('noshform.vaccine') . ' ' . trans('noshform.entry');
             } else {
-                $data['panel_header'] = 'Edit Vaccine Entry';
+                $data['panel_header'] = trans('noshform.edit') . ' ' . trans('noshform.vaccine') . ' ' . trans('noshform.entry');
             }
         }
         if ($table == 'vaccine_temp') {
             if ($id == '0') {
-                $data['panel_header'] = 'Add Temperature';
+                $data['panel_header'] = trans('noshform.add') . ' ' . trans('noshform.temp');
             } else {
-                $data['panel_header'] = 'Edit Temperature';
+                $data['panel_header'] = trans('noshform.edit') . ' ' . trans('noshform.temp');
             }
         }
         // Supplements inventory
@@ -1063,9 +1086,9 @@ class CoreController extends Controller
             $data['search_immunization'] = 'imm_immunization';
             $data['search_cpt'] = 'cpt';
             if ($id == '0') {
-                $data['panel_header'] = 'Add Supplement Entry';
+                $data['panel_header'] = trans('noshform.add') . ' ' . trans('noshform.supplement') . ' ' . trans('noshform.entry');
             } else {
-                $data['panel_header'] = 'Edit Supplement Entry';
+                $data['panel_header'] = trans('noshform.edit') . ' ' . trans('noshform.supplement') . ' ' . trans('noshform.entry');
             }
         }
         // Messaging
@@ -1073,9 +1096,9 @@ class CoreController extends Controller
             $data['template_content'] = 'test';
             $data['search_patient1'] = 'pid';
             if ($id == '0') {
-                $data['panel_header'] = 'New Message';
+                $data['panel_header'] = trans('noshform.new') . ' ' . trans('noshform.message');
             } else {
-                $data['panel_header'] = 'Edit Message';
+                $data['panel_header'] = trans('noshform.edit') . ' ' . trans('noshform.message');
             }
             $dropdown_array = [
                'items_button_icon' => 'fa-plus'
@@ -1083,7 +1106,7 @@ class CoreController extends Controller
             $items1 = [];
             $items1[] = [
                'type' => 'item',
-               'label' => 'Add Photo/Image',
+               'label' => trans('noshform.messaging_add_photo'),
                'icon' => 'fa-camera',
                'url' => route('messaging_add_photo', [$id]),
                'id' => 'nosh_messaging_add_photo'
@@ -1096,32 +1119,32 @@ class CoreController extends Controller
         if ($table == 'recipients') {
             $data['search_addressbook'] = 'faxnumber';
             if ($id == '0') {
-                $data['panel_header'] = 'New Fax Recipient';
+                $data['panel_header'] = trans('noshform.new') . ' ' . trans('noshform.fax') . ' ' . trans('noshform.faxrecipient');
             } else {
-                $data['panel_header'] = 'Edit Fax Recipient';
+                $data['panel_header'] = trans('noshform.edit') . ' ' . trans('noshform.fax') . ' ' . trans('noshform.faxrecipient');
             }
         }
         // Providers
         if ($table == 'providers') {
             $data['search_specialty'] = 'specialty';
-            $data['panel_header'] = 'My Information';
+            $data['panel_header'] = trans('noshform.my_information');
         }
         // Practice information
         if ($table == 'practiceinfo') {
             if ($subtype == 'information') {
-                $data['panel_header'] = 'Practice Information';
+                $data['panel_header'] = trans('noshform.practice_information');
             }
             if ($subtype == 'settings') {
-                $data['panel_header'] = 'Practice Settings';
+                $data['panel_header'] = trans('noshform.practice_settings');
             }
             if ($subtype == 'billing') {
-                $data['panel_header'] = 'Billing';
+                $data['panel_header'] = trans('noshform.billing');
             }
             if ($subtype == 'extensions') {
-                $data['panel_header'] = 'Extensions';
+                $data['panel_header'] = trans('noshform.extensions');
             }
             if ($subtype == 'schedule') {
-                $data['panel_header'] = 'Schedule Setup';
+                $data['panel_header'] = trans('noshform.schedule_setup');
             }
         }
         // Users
@@ -1131,40 +1154,40 @@ class CoreController extends Controller
                 $data['search_specialty'] = 'specialty';
             }
             if ($id == '0') {
-                $data['panel_header'] = 'New ' . $user_arr[$subtype]. ' User';
+                $data['panel_header'] = trans('noshform.new') . ' ' . $user_arr[$subtype]. ' ' . trans('noshform.user');
             } else {
-                $data['panel_header'] = 'Edit ' . $user_arr[$subtype] . ' User';
+                $data['panel_header'] = trans('noshform.edit') . ' ' . $user_arr[$subtype] . ' ' . trans('noshform.user');
             }
         }
         // Visit Types
         if ($table == 'calendar') {
             if ($id == '0') {
-                $data['panel_header'] = 'New Visit Type';
+                $data['panel_header'] = trans('noshform.new') . ' ' . trans('noshform.visit_type');
             } else {
-                $data['panel_header'] = 'Edit Visit Type';
+                $data['panel_header'] = trans('noshform.edit') . ' ' . trans('noshform.visit_type');
             }
         }
         // Schedule Exeptions
         if ($table == 'repeat_schedule') {
             if ($id == '0') {
-                $data['panel_header'] = 'New Schedule Exemption';
+                $data['panel_header'] = trans('noshform.new') . ' ' . trans('noshform.schedule_exemption');
             } else {
-                $data['panel_header'] = 'Edit Schedule Exemption';
+                $data['panel_header'] = trans('noshform.edit') . ' ' . trans('noshform.schedule_exemption');
             }
         }
         $form_array = [
             'form_id' => $table . '_form',
             'action' => route('core_action', ['table' => $table, 'action' => 'save', 'index' => $index, 'id' => $id]),
             'items' => $items,
-            'save_button_label' => 'Save'
+            'save_button_label' => trans('noshform.save')
         ];
         if (Session::has('addressbook_last_page')) {
             $form_array['origin'] = Session::get('addressbook_last_page');
             Session::forget('addressbook_last_page');
         }
         if ($table == 'messaging') {
-            $form_array['save_button_label'] = 'Send';
-            $form_array['add_save_button'] = ['draft' => 'Save as Draft'];
+            $form_array['save_button_label'] = trans('noshform.send');
+            $form_array['add_save_button'] = ['draft' => trans('noshform.save_as_draft')];
             if ($subtype !== '') {
                 $form_array['action'] = route('core_action', ['table' => $table, 'action' => 'save', 'index' => $index, 'id' => '0']);
             }
@@ -1183,7 +1206,7 @@ class CoreController extends Controller
                 $images1 = Session::get('messaging_add_photo');
             }
             if ($images->count() || count($images1) > 0) {
-                $data['content'] .= '<br><h5>Images:</h5><div class="list-group gallery">';
+                $data['content'] .= '<br><h5>' . trans('noshform.images') . ':</h5><div class="list-group gallery">';
                 if ($images->count()) {
                     foreach ($images as $image) {
                         $file_path1 = '/temp/' . time() . '_' . basename($image->image_location);
@@ -1230,7 +1253,7 @@ class CoreController extends Controller
         $formatter1 = Formatter::make($array, Formatter::ARR);
         $data1['forms'] = $formatter1->toYaml();
         DB::table('users')->where('id', '=', Session::get('user_id'))->update($data1);
-        Session::put('message_action', 'Form deleted');
+        Session::put('message_action', trans('noshform.form_deleted'));
         return redirect()->route('configure_form_list');
     }
 
@@ -1241,8 +1264,10 @@ class CoreController extends Controller
         $formatter = Formatter::make($user->forms, Formatter::YAML);
         $array = $formatter->toArray();
         if ($request->isMethod('post')) {
+            $message = trans('noshform.form_updated');
             if ($type == '0') {
                 $type = $request->input('forms_title');
+                $message = trans('noshform.form_added');
             }
             if ($type !== $request->input('forms_title')) {
                 $old_type = $type;
@@ -1264,10 +1289,10 @@ class CoreController extends Controller
             $formatter1 = Formatter::make($array, Formatter::ARR);
             $data['forms'] = $formatter1->toYaml();
             DB::table('users')->where('id', '=', $id)->update($data);
-            Session::put('message_action', 'Form added');
+            Session::put('message_action', $message);
             return redirect()->route('configure_form_show', [$type]);
         } else {
-            $data['panel_header'] = 'Configure Form';
+            $data['panel_header'] = trans('noshform.configure_form');
             $data['content'] = '';
             $gender = null;
             $age = null;
@@ -1284,7 +1309,7 @@ class CoreController extends Controller
                     $age = $array[$type]['age'];
                 }
                 if (isset($array[$type]['scoring'])) {
-                    $data['content'] .= '<div class="alert alert-success"><h5>Scoring Algorithm</h5><ul>';
+                    $data['content'] .= '<div class="alert alert-success"><h5>' . trans('noshform.scoring_algorithm') . '</h5><ul>';
                     $forms_scoring_arr = [];
                     foreach ($array[$type]['scoring'] as $score_row_k=>$score_row_v) {
                         $data['content'] .= '<li>' . $score_row_k . ': ' . $score_row_v . '</li>';
@@ -1293,33 +1318,33 @@ class CoreController extends Controller
                 }
             }
             $gender_arr = [
-                '' => 'All Genders',
-                'm' => 'Male Only',
-                'f' => 'Female Only',
-                'u' => 'Undifferentiated Only'
+                '' => trans('noshform.form_gender1'),
+                'm' => trans('noshform.form_gender2'),
+                'f' => trans('noshform.form_gender3'),
+                'u' => trans('noshform.form_gender4')
             ];
             $age_arr = [
-                '' => 'All Ages',
-                'adult' => 'Adult Only',
-                'child' => 'Child Only'
+                '' => trans('noshform.form_age1'),
+                'adult' => trans('noshform.form_age2'),
+                'child' => trans('noshform.form_age3')
             ];
             $items[] = [
                 'name' => 'forms_title',
-                'label' => 'Form Title',
+                'label' => trans('noshform.forms_title'),
                 'type' => 'text',
                 'required' => true,
                 'default_value' => $forms_title
             ];
             $items[] = [
                 'name' => 'gender',
-                'label' => 'Gender Association',
+                'label' => trans('noshform.forms_gender'),
                 'type' => 'select',
                 'select_items' => $gender_arr,
                 'default_value' => $gender
             ];
             $items[] = [
                 'name' => 'age',
-                'label' => 'Age Association',
+                'label' => trans('noshform.forms_age'),
                 'type' => 'select',
                 'select_items' => $age_arr,
                 'default_value' => $age
@@ -1328,7 +1353,7 @@ class CoreController extends Controller
                 'form_id' => 'patient_form_item',
                 'action' => route('configure_form_details', [$type]),
                 'items' => $items,
-                'save_button_label' => 'Save'
+                'save_button_label' => trans('noshform.save')
             ];
             $data['content'] .= $this->form_build($form_array);
             $dropdown_array1 = [
@@ -1337,7 +1362,7 @@ class CoreController extends Controller
             $items1 = [];
             $items1[] = [
                'type' => 'item',
-               'label' => 'Configure Scoring Algorithm',
+               'label' => trans('noshform.configure_form_scoring_list'),
                'icon' => 'fa-cog',
                'url' => route('configure_form_scoring_list', [$type])
             ];
@@ -1368,10 +1393,10 @@ class CoreController extends Controller
             }
             if ($item == 'new') {
                 $array[$type][] = $data;
-                $message = 'Form item added';
+                $message = trans('noshform.configure_form_edit1');
             } else {
                 $array[$type][$item] = $data;
-                $message = 'Form item updated';
+                $message = trans('noshform.configure_form_edit2');
             }
             $formatter1 = Formatter::make($array, Formatter::ARR);
             $data1['forms'] = $formatter1->toYaml();
@@ -1381,11 +1406,11 @@ class CoreController extends Controller
         } else {
             $form_options = null;
             if ($item == 'new') {
-                $data['panel_header'] = 'Add Form Item';
+                $data['panel_header'] = trans('noshform.configure_form_edit3');
                 $form_label = null;
                 $form_type = null;
             } else {
-                $data['panel_header'] = 'Edit Form Item';
+                $data['panel_header'] = trans('noshform.configure_form_edit4');
                 $form_label = $array[$type][$item]['text'];
                 $form_type = $array[$type][$item]['input'];
                 if (isset($array[$type][$item]['options'])) {
@@ -1393,27 +1418,27 @@ class CoreController extends Controller
                 }
             }
             $type_arr = [
-                'text' => 'Text Input',
-                'select' => 'Dropdown List',
-                'checkbox' => 'Checkbox',
-                'radio' => 'Radio Button'
+                'text' => trans('noshform.form_text'),
+                'select' => trans('noshform.form_select'),
+                'checkbox' => trans('noshform.form_checkbox'),
+                'radio' => trans('noshform.form_radio')
             ];
             $items[] = [
                 'name' => 'form_label',
-                'label' => 'Form Label',
+                'label' => trans('noshform.form_label'),
                 'type' => 'text',
                 'default_value' => $form_label
             ];
             $items[] = [
                 'name' => 'form_type',
-                'label' => 'Input Type',
+                'label' => trans('noshform.form_type'),
                 'type' => 'select',
                 'select_items' => $type_arr,
                 'default_value' => $form_type
             ];
             $items[] = [
                 'name' => 'form_options',
-                'label' => 'Options',
+                'label' => trans('noshform.form_options'),
                 'type' => 'text',
                 'default_value' => $form_options
             ];
@@ -1421,11 +1446,11 @@ class CoreController extends Controller
                 'form_id' => 'patient_form_item',
                 'action' => route('configure_form_edit', [$type, $item]),
                 'items' => $items,
-                'save_button_label' => 'Save'
+                'save_button_label' => trans('noshform.save')
             ];
-            $data['content'] = '<div class="alert alert-success"><h5>Scoring Tips</h5><ul>';
-            $data['content'] .= '<li>Scoring of each response only applies to the checkbox and radio button input types</li>';
-            $data['content'] .= '<li>The first listed option has a scoring value of 0, the second listed option has a scoring value of 1, etc.</li>';
+            $data['content'] = '<div class="alert alert-success"><h5>' . trans('noshform.configure_form_edit5') . '</h5><ul>';
+            $data['content'] .= '<li>' . trans('noshform.configure_form_edit6') . '</li>';
+            $data['content'] .= '<li>' . trans('noshform.configure_form_edit7') . '</li>';
             $data['content'] .= '</ul></div>';
             $data['content'] .= $this->form_build($form_array);
             $data['message_action'] = Session::get('message_action');
@@ -1441,7 +1466,7 @@ class CoreController extends Controller
         $list_array = [];
         $return = '';
         $user = DB::table('users')->where('id', '=', Session::get('user_id'))->first();
-        $data['panel_header'] = 'My Forms';
+        $data['panel_header'] = trans('noshform.configure_form_list');
         if ($user->forms == null || $user->forms == '') {
             $data1['forms'] = File::get(resource_path() . '/forms.yaml');
             DB::table('users')->where('id', '=', Session::get('user_id'))->update($data1);
@@ -1461,7 +1486,7 @@ class CoreController extends Controller
         if (! empty($list_array)) {
             $return .= $this->result_build($list_array, 'forms_list');
         } else {
-            $return .= ' None.';
+            $return .= ' ' . trans('noshform.none') . '.';
         }
         $dropdown_array1 = [
            'items_button_icon' => 'fa-plus'
@@ -1469,7 +1494,7 @@ class CoreController extends Controller
         $items1 = [];
         $items1[] = [
            'type' => 'item',
-           'label' => 'Add Form',
+           'label' => trans('noshform.forms_add'),
            'icon' => 'fa-plus',
            'url' => route('configure_form_details', ['0'])
         ];
@@ -1491,7 +1516,7 @@ class CoreController extends Controller
         $formatter1 = Formatter::make($array, Formatter::ARR);
         $data1['forms'] = $formatter1->toYaml();
         DB::table('users')->where('id', '=', Session::get('user_id'))->update($data1);
-        Session::put('message_action', 'Form item removed');
+        Session::put('message_action', trans('noshform.configure_form_remove'));
         return redirect()->route('configure_form_show', [$type]);
     }
 
@@ -1508,12 +1533,12 @@ class CoreController extends Controller
             ]);
             $new_item = $request->input('min') . '-' . $request->input('max');
             if ($item == 'new') {
-                $message = 'Scoring item added';
+                $message = trans('noshform.configure_form_scoring1');
             } else {
                 if ($item !== $new_item) {
                     unset($array[$type]['scoring'][$item]);
                 }
-                $message = 'Scoring item updated';
+                $message = trans('noshform.configure_form_scoring2');
             }
             $array[$type]['scoring'][$new_item] = $request->input('description');
             $formatter1 = Formatter::make($array, Formatter::ARR);
@@ -1533,21 +1558,21 @@ class CoreController extends Controller
             }
             $items[] = [
                 'name' => 'min',
-                'label' => 'Minimum Value',
+                'label' => trans('noshform.form_min'),
                 'type' => 'text',
                 'required' => true,
                 'default_value' => $min
             ];
             $items[] = [
                 'name' => 'max',
-                'label' => 'Maximum Value',
+                'label' => trans('noshform.form_max'),
                 'type' => 'text',
                 'required' => true,
                 'default_value' => $max
             ];
             $items[] = [
                 'name' => 'description',
-                'label' => 'Description',
+                'label' => trans('noshform.form_description'),
                 'type' => 'text',
                 'default_value' => $description
             ];
@@ -1555,9 +1580,9 @@ class CoreController extends Controller
                 'form_id' => 'patient_form_scoring',
                 'action' => route('configure_form_scoring', [$type, $item]),
                 'items' => $items,
-                'save_button_label' => 'Save'
+                'save_button_label' => trans('noshform.save')
             ];
-            $data['panel_header'] = 'Edit Scoring Algorithm';
+            $data['panel_header'] = trans('noshform.configure_form_scoring');
             $data['content'] = $this->form_build($form_array);
             $data['message_action'] = Session::get('message_action');
             Session::forget('message_action');
@@ -1577,14 +1602,14 @@ class CoreController extends Controller
         $formatter1 = Formatter::make($array, Formatter::ARR);
         $data1['forms'] = $formatter1->toYaml();
         DB::table('users')->where('id', '=', $id)->update($data1);
-        Session::put('message_action', $message);
+        Session::put('message_action', trans('noshform.configure_form_scoring_delete'));
         return redirect()->route('configure_form_scoring_list', [$type]);
     }
 
     public function configure_form_scoring_list(Request $request, $type)
     {
         $return = '';
-        $data['panel_header'] = 'Configure Scoring Algorithm';
+        $data['panel_header'] = trans('noshform.configure_form_scoring_list');
         $id = Session::get('user_id');
         $user = DB::table('users')->where('id', '=', $id)->first();
         $formatter = Formatter::make($user->forms, Formatter::YAML);
@@ -1600,10 +1625,10 @@ class CoreController extends Controller
             }
             $return .= $this->result_build($list_array, 'scoring_list');
         } else {
-            $return .= ' None.';
+            $return .= ' ' . trans('noshform.none') . '.';
         }
         $dropdown_array = [
-            'default_button_text' => '<i class="fa fa-chevron-left fa-fw fa-btn"></i>Back',
+            'default_button_text' => '<i class="fa fa-chevron-left fa-fw fa-btn"></i>' . trans('noshform.back'),
             'default_button_text_url' => Session::get('last_page')
         ];
         $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
@@ -1661,28 +1686,28 @@ class CoreController extends Controller
             'form_id' => 'patient_form',
             'action' => route('configure_form_list'),
             'items' => $items,
-            'save_button_label' => 'Save',
+            'save_button_label' => trans('noshform.save'),
             'origin' => route('configure_form_list')
         ];
-        $data['content'] = '<div class="alert alert-success"><h5>Scoring Tips</h5><ul>';
-        $data['content'] .= '<li>Scoring of each response only applies to the checkbox and radio button input types</li>';
-        $data['content'] .= '<li>The first listed option has a scoring value of 0, the second listed option has a scoring value of 1, etc.</li>';
+        $data['content'] = '<div class="alert alert-success"><h5>' . trans('noshform.configure_form_edit5') . '</h5><ul>';
+        $data['content'] .= '<li>' . trans('noshform.configure_form_edit6') . '</li>';
+        $data['content'] .= '<li>' . trans('noshform.configure_form_edit7') . '</li>';
         $data['content'] .= '</ul></div>';
         $data['content'] .= $this->form_build($form_array, true, $type);
         $dropdown_array = [
-            'default_button_text' => 'Add Form Element',
+            'default_button_text' => trans('noshform.add_form_element'),
             'default_button_text_url' => route('configure_form_edit', [$type, 'new']),
             'default_button_id' => 'add_form_element'
         ];
         $items1[] = [
             'type' => 'item',
-            'label' => 'Configure Form',
+            'label' => trans('noshform.configure_form'),
             'icon' => 'fa-cog',
             'url' => route('configure_form_details', [$type])
         ];
         $dropdown_array['items'] = $items1;
         $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
-        $data['panel_header'] = 'Form Editor';
+        $data['panel_header'] = trans('noshform.configure_form_show');
         $data['message_action'] = Session::get('message_action');
         Session::forget('message_action');
         Session::put('last_page', $request->fullUrl());
@@ -1743,7 +1768,8 @@ class CoreController extends Controller
                     ->orWhere('alerts.alert', '=', 'Radiology results pending - NEED TO OBTAIN')
                     ->orWhere('alerts.alert', '=', 'Cardiopulmonary results pending - NEED TO OBTAIN')
                     ->orWhere('alerts.alert', '=', 'Reminder')
-                    ->orWhere('alerts.alert', '=', 'REMINDER');
+                    ->orWhere('alerts.alert', '=', 'REMINDER')
+                    ->orWhere('alerts.results', '=', 1);;
                 })
                 ->count();
             $data['number_bills'] = DB::table('encounters')->where('bill_submitted', '=', 'No')->where('user_id', '=', $user_id)->count();
@@ -1763,7 +1789,7 @@ class CoreController extends Controller
             } else {
                 $data['mtm_alerts_status'] = "n";
             }
-            $data['panel_header'] = 'Inventory Alerts';
+            $data['panel_header'] = trans('noshform.inventory_alerts');
             $data['content'] = $this->vaccine_supplement_alert($practice_id);
         }
         if (Session::get('group_id') == '3') {
@@ -1791,12 +1817,13 @@ class CoreController extends Controller
                     ->orWhere('alerts.alert', '=', 'Radiology results pending - NEED TO OBTAIN')
                     ->orWhere('alerts.alert', '=', 'Cardiopulmonary results pending - NEED TO OBTAIN')
                     ->orWhere('alerts.alert', '=', 'Reminder')
-                    ->orWhere('alerts.alert', '=', 'REMINDER');
+                    ->orWhere('alerts.alert', '=', 'REMINDER')
+                    ->orWhere('alerts.results', '=', 1);;
                 })
                 ->count();
             $data['number_bills'] = DB::table('encounters')->where('bill_submitted', '=', 'No')->where('user_id', '=', $user_id)->count();
             $data['number_tests'] = DB::table('tests')->whereNull('pid')->where('practice_id', '=', $practice_id)->count();
-            $data['panel_header'] = 'Inventory Alerts';
+            $data['panel_header'] = trans('noshform.inventory_alerts');
             $data['content'] = $this->vaccine_supplement_alert($practice_id);
         }
         if (Session::get('group_id') == '4') {
@@ -1854,9 +1881,9 @@ class CoreController extends Controller
                 $return = $this->result_build($list_array, 'audit_list');
                 $return .= $query->links();
             } else {
-                $return = 'None.';
+                $return = trans('noshform.none') . '.';
             }
-            $data['panel_header'] = 'Audit Logs';
+            $data['panel_header'] = trans('noshform.audit_logs');
             $data['content'] = $return;
         }
         $data['weekends'] = 'false';
@@ -1898,18 +1925,19 @@ class CoreController extends Controller
             $encounter_type = $this->array_encounter_type();
             foreach ($query as $row) {
                 $arr = [];
-                $arr['label'] = '<b>' . date('Y-m-d', $this->human_to_unix($row->encounter_DOS)) . '</b> - ' . $encounter_type[$row->encounter_template] . ' - ' . $row->encounter_cc . '<br>Patient: ' . $row->firstname . ' ' . $row->lastname . ' (DOB: ' . date('m/d/Y', strtotime($row->DOB)) . ')';
+                $arr['label'] = '<b>' . date('Y-m-d', $this->human_to_unix($row->encounter_DOS)) . '</b> - ' . $encounter_type[$row->encounter_template] . ' - ' . $row->encounter_cc . '<br>' . trans('noshform.patient') . ': ';
+                $arr['label'] .= $row->firstname . ' ' . $row->lastname . ' (DOB: ' . date('m/d/Y', strtotime($row->DOB)) . ')';
                 $arr['edit'] = route('superquery_patient', ['encounter', $row->pid, $row->eid]);
                 $list_array[] = $arr;
             }
             $return = $this->result_build($list_array, 'encounters_list');
         } else {
-            $return = 'None.';
+            $return = trans('noshform.none') . '.';
         }
         $data['content'] = $return;
-        $data['panel_header'] = 'Encounters to be Completed';
+        $data['panel_header'] = trans('noshform.dashboard_encounters');
         $dropdown_array = [
-            'default_button_text' => '<i class="fa fa-chevron-left fa-fw fa-btn"></i>Back',
+            'default_button_text' => '<i class="fa fa-chevron-left fa-fw fa-btn"></i>' . trans('noshform.back'),
             'default_button_text_url' => route('dashboard')
         ];
         $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
@@ -1934,25 +1962,27 @@ class CoreController extends Controller
                 ->orWhere('alerts.alert', '=', 'Radiology results pending - NEED TO OBTAIN')
                 ->orWhere('alerts.alert', '=', 'Cardiopulmonary results pending - NEED TO OBTAIN')
                 ->orWhere('alerts.alert', '=', 'Reminder')
-                ->orWhere('alerts.alert', '=', 'REMINDER');
+                ->orWhere('alerts.alert', '=', 'REMINDER')
+                ->orWhere('alerts.results', '=', 1);
             })
             ->get();
         if ($query->count()) {
             $list_array = [];
             foreach ($query as $row) {
                 $arr = [];
-                $arr['label'] = $row->alert . ' (Due ' . date('m/d/Y', $this->human_to_unix($row->alert_date_active)) . ') - ' . $row->alert_description . '<br>Patient: '  .$row->firstname . ' ' . $row->lastname . ' (DOB: ' . date('m/d/Y', strtotime($row->DOB)) . ')';
+                $arr['label'] = $row->alert . ' (' . trans('noshform.due') . ' ' . date('m/d/Y', $this->human_to_unix($row->alert_date_active)) . ') - ' . $row->alert_description . '<br>' . trans('noshform.patient') . ': ';
+                $arr['label'] .= $row->firstname . ' ' . $row->lastname . ' (DOB: ' . date('m/d/Y', strtotime($row->DOB)) . ')';
                 $arr['view'] = route('superquery_patient', ['chart_form', $row->pid, 'alerts', 'alert_id', $row->alert_id]);
                 $list_array[] = $arr;
             }
             $return = $this->result_build($list_array, 'reminders_list');
         } else {
-            $return = 'None.';
+            $return = trans('noshform.none') . '.';
         }
         $data['content'] = $return;
-        $data['panel_header'] = 'Reminders';
+        $data['panel_header'] = trans('noshform.dashboard_reminders');
         $dropdown_array = [
-            'default_button_text' => '<i class="fa fa-chevron-left fa-fw fa-btn"></i>Back',
+            'default_button_text' => '<i class="fa fa-chevron-left fa-fw fa-btn"></i>' . trans('noshform.back'),
             'default_button_text_url' => route('dashboard')
         ];
         $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
@@ -1980,12 +2010,12 @@ class CoreController extends Controller
             }
             $return = $this->result_build($list_array, 'results_list');
         } else {
-            $return = 'None.';
+            $return = trans('noshform.none') . '.';
         }
         $data['content'] = $return;
-        $data['panel_header'] = 'Test Results to be Reviewed';
+        $data['panel_header'] = trans('noshform.dashboard_tests');
         $dropdown_array = [
-            'default_button_text' => '<i class="fa fa-chevron-left fa-fw fa-btn"></i>Back',
+            'default_button_text' => '<i class="fa fa-chevron-left fa-fw fa-btn"></i>' . trans('noshform.back'),
             'default_button_text_url' => route('dashboard')
         ];
         $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
@@ -2047,9 +2077,11 @@ class CoreController extends Controller
             if (Session::get('group_id') == '3') {
                 $provider_row = DB::table('users')->where('id', '=', $provider_id)->first();
                 $provider_name = $provider_row->firstname . " " . $provider_row->lastname . ", " . $provider_row->title . " (" . $provider_id . ")";
-                $body = "Test results for " . $patient_name . "\n\n";
+                App::setLocale(Session::get('practice_locale'));
+                $body = trans('noshform.test_results_for') . " " . $patient_name . "\n\n";
                 foreach ($results as $results_row1) {
-                    $body .= $results_row1['test_name'] . ": " . $results_row1['test_result'] . ", Units: " . $results_row1['test_units'] . ", Normal reference range: " . $results_row1['test_reference'] . ", Date: " . $results_row1['test_datetime'] . "\n";
+                    $body .= $results_row1['test_name'] . ": " . $results_row1['test_result'] . ", " . trans('noshform.test_units1') . ": " . $results_row1['test_units'] . ", " . trans('noshform.test_reference') . ": " . $results_row1['test_reference'];
+                    $body .= ", " . trans('noshform.date') . ": " . $results_row1['test_datetime'] . "\n";
                 }
                 $body .= "\n" . $from;
                 $data_message = [
@@ -2066,16 +2098,18 @@ class CoreController extends Controller
                 ];
                 DB::table('messaging')->insert($data_message);
                 $this->audit('Add');
-                $message = 'Tests reconciled, saved in patient chart, and provider alerted';
+                App::setLocale(Session::get('user_locale'));
+                $message = trans('noshform.dashboard_tests_reconcile1');
             }
-            $message = 'Tests reconciled and saved in patient chart';
+            $message = trans('noshform.dashboard_tests_reconcile2');
             Session::put('message_action', $message);
             return redirect()->route('dashboard_tests');
         } else {
             $data['message_action'] = Session::get('message_action');
             Session::forget('message_action');
             $test_arr = $this->array_test_flag();
-            $return = '<div class="table-responsive"><table class="table table-striped"><thead><tr><th>Date</th><th>Patient</th><th>Test</th><th>Result</th><th>Unit</th><th>Range</th><th>Flag</th></thead><tbody>';
+            $return = '<div class="table-responsive"><table class="table table-striped"><thead><tr><th>' . trans('noshform.date') . '</th><th>' . trans('noshform.patient') . '</th><th>' . trans('nosfhorm.test');
+            $return .= '</th><th>' . trans('noshform.test_result') . '</th><th>' . trans('noshform.test_unit') . '</th><th>' . trans('noshform.test_range') . '</th><th>' . trans('noshform.test_flags') . '</th></thead><tbody>';
             $return .= '<tr';
             $class_arr = [];
             if ($test->test_flags == "HH" || $test->test_flags == "LL" || $test->test_flags == "H" || $test->test_flags == "L") {
@@ -2121,7 +2155,7 @@ class CoreController extends Controller
                 $dob = date('m/d/Y', strtotime($row->DOB));
                 $patient_name = $row->lastname . ', ' . $row->firstname . ' (DOB: ' . $dob . ') (ID: ' . $row->pid . ')';
             }
-            $intro = '<div class="form-group" id="patient_name_div"><label class="col-md-3 control-label">Patient</label><div class="col-md-8"><p class="form-control-static" id="patient_name">' . $patient_name . '</p></div></div>';
+            $intro = '<div class="form-group" id="patient_name_div"><label class="col-md-3 control-label">' . trans('noshform.patient') . '</label><div class="col-md-8"><p class="form-control-static" id="patient_name">' . $patient_name . '</p></div></div>';
             $items[] = [
                 'name' => 'pid',
                 'type' => 'hidden',
@@ -2133,11 +2167,11 @@ class CoreController extends Controller
                 'action' => route('dashboard_tests_reconcile', [$id]),
                 'items' => $items,
                 'intro' => $intro,
-                'save_button_label' => 'Save'
+                'save_button_label' => trans('noshform.save')
             ];
             $return .= $this->form_build($form_array);
             $data['content'] = $return;
-            $data['panel_header'] = 'Reconcile' . $test->test_name;
+            $data['panel_header'] = trans('noshform.reconcile') . ' ' . $test->test_name;
             $data['assets_js'] = $this->assets_js();
             $data['assets_css'] = $this->assets_css();
             return view('core', $data);
@@ -2156,18 +2190,19 @@ class CoreController extends Controller
             $list_array = [];
             foreach ($query as $row) {
                 $arr = [];
-                $arr['label'] = '<b>' . date('Y-m-d', $this->human_to_unix($row->t_messages_dos)) . '</b> - ' . $row->t_messages_subject . '<br>Patient: '  .$row->firstname . ' ' . $row->lastname . ' (DOB: ' . date('m/d/Y', strtotime($row->DOB)) . ')';
+                $arr['label'] = '<b>' . date('Y-m-d', $this->human_to_unix($row->t_messages_dos)) . '</b> - ' . $row->t_messages_subject . '<br>' . trans('noshform.patient') . ': '  .$row->firstname . ' ' . $row->lastname;
+                $arr['label'] .= ' (DOB: ' . date('m/d/Y', strtotime($row->DOB)) . ')';
                 $arr['edit'] = route('superquery_patient', ['chart_form', $row->pid, 't_messages', 't_messages_id', $row->t_messages_id]);
                 $list_array[] = $arr;
             }
             $return = $this->result_build($list_array, 't_messages_list');
         } else {
-            $return = 'None.';
+            $return = trans('noshform.none') . '.';
         }
         $data['content'] = $return;
-        $data['panel_header'] = 'Telephone Messages to be Completed';
+        $data['panel_header'] = trans('noshform.dashboard_t_messages');
         $dropdown_array = [
-            'default_button_text' => '<i class="fa fa-chevron-left fa-fw fa-btn"></i>Back',
+            'default_button_text' => '<i class="fa fa-chevron-left fa-fw fa-btn"></i>' . trans('noshform.back'),
             'default_button_text_url' => route('dashboard')
         ];
         $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
@@ -2706,7 +2741,7 @@ class CoreController extends Controller
             $file = $request->input('backup');
             $command = "mysql -u " . env('DB_USERNAME') . " -p". env('DB_PASSWORD') . " " . env('DB_DATABASE') . " < " . $file;
             system($command);
-            $message = "Restoring backup database successful";
+            $message = trans('noshform.database_import1');
             Session::put('message_action', $message);
             return redirect(Session::get('last_page'));
         } else {
@@ -2722,7 +2757,7 @@ class CoreController extends Controller
 			}
             $items[] = [
                 'name' => 'backup',
-                'label' => 'Select Backup Database to Restore',
+                'label' => trans('noshform.backup'),
                 'type' => 'select',
                 'select_items' => $backups_arr,
                 'required' => true,
@@ -2732,13 +2767,13 @@ class CoreController extends Controller
                 'form_id' => 'database_form',
                 'action' => route('database_import'),
                 'items' => $items,
-                'save_button_label' => 'Backup'
+                'save_button_label' => trans('noshform.backup1')
             ];
             $data['content'] = $this->form_build($form_array);
             $data['saas_admin'] = 'y';
             $data['panel_header'] = trans('nosh.database_import');
             $data['document_upload'] = route('database_import');
-            $dropdown_array['default_button_text'] = '<i class="fa fa-chevron-left fa-fw fa-btn"></i>Back';
+            $dropdown_array['default_button_text'] = '<i class="fa fa-chevron-left fa-fw fa-btn"></i>' . trans('noshform.back');
             $dropdown_array['default_button_text_url'] = Session::get('last_page');
             $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
             $data['assets_js'] = $this->assets_js();
@@ -2769,13 +2804,13 @@ class CoreController extends Controller
                     $zip->extractTo(Session::get('documents_dir'));
                     $zip->close();
                     unlink($directory . '/' . $file->getClientOriginalName());
-                    $message = "Upload and importing NOSH export file successful!";
+                    $message = trans('noshform.database_import_cloud1');
                 } else {
                     unlink($directory . '/' . $file->getClientOriginalName());
-                    $message = "Error - This is not a proper ZIP file.  Missing SQL file";
+                    $message = trans('noshform.error') . " - " . trans('noshform.database_import_cloud2');
                 }
             } else {
-                $message = 'Error - Unable to open ZIP file.';
+                $message = trans('noshform.error') . ' - ' . trans('noshform.database_import_cloud3');
             }
             Session::put('message_action', $message);
             return redirect(Session::get('last_page'));
@@ -2784,7 +2819,7 @@ class CoreController extends Controller
             $data['document_upload'] = route('database_import_cloud');
             $type_arr = ['zip'];
             $data['document_type'] = json_encode($type_arr);
-            $dropdown_array['default_button_text'] = '<i class="fa fa-chevron-left fa-fw fa-btn"></i>Back';
+            $dropdown_array['default_button_text'] = '<i class="fa fa-chevron-left fa-fw fa-btn"></i>' . trans('noshform.back');
             $dropdown_array['default_button_text_url'] = Session::get('last_page');
             $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
             $data['assets_js'] = $this->assets_js('document_upload');
@@ -2805,7 +2840,7 @@ class CoreController extends Controller
             $command = "mysql -u " . env('DB_USERNAME') . " -p". env('DB_PASSWORD') . " " . env('DB_DATABASE') . " < " . $new_file;
             system($command);
             unlink($new_file);
-            $message = "Restoring backup database successful";
+            $message = trans('noshform.database_import1');
             Session::put('message_action', $message);
             return redirect(Session::get('last_page'));
         } else {
@@ -2814,7 +2849,7 @@ class CoreController extends Controller
             $data['document_upload'] = route('database_import_file');
             $type_arr = ['sql'];
             $data['document_type'] = json_encode($type_arr);
-            $dropdown_array['default_button_text'] = '<i class="fa fa-chevron-left fa-fw fa-btn"></i>Back';
+            $dropdown_array['default_button_text'] = '<i class="fa fa-chevron-left fa-fw fa-btn"></i>' . trans('noshform.back');
             $dropdown_array['default_button_text_url'] = Session::get('last_page');
             $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
             $data['assets_js'] = $this->assets_js('document_upload');
@@ -3034,7 +3069,7 @@ class CoreController extends Controller
             DB::table('encounters')->where('eid', '=', $eid)->update($data3);
             $this->audit('Update');
             // $this->api_data('update', 'encounters', 'eid', $eid);
-            Session::put('message_action', 'Encounter created.');
+            Session::put('message_action', trans('noshform.encounter_created'));
             return redirect()->route('superquery_patient', ['encounter', $query1->pid, $eid]);
         }
     }
@@ -3048,28 +3083,30 @@ class CoreController extends Controller
             'rx_list' => [
                 'function' => 'print_medication',
                 'index' => 'rxl_id',
-                'message' => 'Prescription faxed',
-                'title' => 'Prescription/Refill Authorization'
+                'message' => trans('noshform.fax_action_message1')
             ],
             'orders' => [
                 'function' => 'print_orders',
                 'index' => 'orders_id',
-                'message' => 'Order faxed',
-                'title' => 'Order'
+                'message' => trans('noshform.fax_action_message2')
             ],
             'hippa' => [
                 'function' => 'print_chart',
                 'index' => 'hippa_id',
-                'message' => 'Patient chart faxed',
-                'title' => 'Patient Chart'
+                'message' => trans('noshform.fax_action_message3')
             ],
             'hippa_request' => [
                 'function' => 'print_chart_request_action',
                 'index' => 'hippa_request_id',
-                'message' => 'Records release request faxed',
-                'title' => 'Records Relase Request'
+                'message' => trans('noshform.fax_action_message4')
             ]
         ];
+        App::setLocale(Session::get('practice_locale'));
+        $action_arr['rx_list']['title'] = trans('noshform.fax_action_title1');
+        $action_arr['orders']['title'] = trans('noshform.fax_action_title2');
+        $action_arr['hippa']['title'] = trans('noshform.fax_action_title3');
+        $action_arr['hippa_request']['title'] = trans('noshform.fax_action_title4');
+        App::setLocale(Session::get('user_locale'));
         if ($subtype !== '') {
             $file_path = $this->{$action_arr[$action]['function']}($id, $pid, $subtype);
         } else {
@@ -3079,18 +3116,20 @@ class CoreController extends Controller
         $address_id = $query->address_id;
         $row2 = DB::table('addressbook')->where('address_id', '=', $address_id)->first();
         if ($action == 'orders') {
+            App::setLocale(Session::get('practice_locale'));
             if ($query->orders_labs !== '') {
-                $action_arr[$action]['title'] = "Laboratory Order";
+                $action_arr[$action]['title'] = trans('noshform.laboratory_order');
             }
             if ($query->orders_radiology !== '') {
-                $action_arr[$action]['title'] = "Imaging Order";
+                $action_arr[$action]['title'] = trans('noshform.imaging_order');
             }
             if ($print_orders->orders_cp !== '') {
-                $action_arr[$action]['title'] = "Cardiopulmonary Order";
+                $action_arr[$action]['title'] = trans('noshform.cardiopulmonary_order');
             }
             if ($print_orders->orders_referrals !== '') {
-                $action_arr[$action]['title'] = "Referral Order";
+                $action_arr[$action]['title'] = trans('noshform.referral');
             }
+            App::setLocale(Session::get('user_locale'));
         }
         if ($row2) {
             if ($row2->fax !== '' && $row2->fax !== null) {
@@ -3120,7 +3159,7 @@ class CoreController extends Controller
             $fix[] = $address_id;
             Session::put('fax_queue', $new_arr);
             Session::put('fax_queue_count', count($new_arr));
-            $message_arr[] = 'Error - Recipient in your fax does not have a fax number.';
+            $message_arr[] = trans('noshform.error') . ' - ' . trans('noshform.fax_action_error');
         }
         $message = implode('<br>', $message_arr);
         Session::put('message_action', $message);
@@ -3177,33 +3216,41 @@ class CoreController extends Controller
                     $group_arr[$item['address_id']]['pid'] = $item['pid'];
                     $group_arr[$item['address_id']]['function'] = $item['function'];
                     if ($item['function'] == 'print_medication') {
-                        $group_arr[$item['address_id']]['title'] = 'Prescription/Refill Authorization';
-                        $group_arr[$item['address_id']]['message'] = 'Prescription faxed';
+                        App::setLocale(Session::get('practice_locale'));
+                        $group_arr[$item['address_id']]['title'] = trans('noshform.fax_action_title1');
+                        App::setLocale(Session::get('user_locale'));
+                        $group_arr[$item['address_id']]['message'] = trans('noshform.fax_action_message1');
 
                     }
                     if ($item['function'] == 'print_orders') {
+                        App::setLocale(Session::get('practice_locale'));
                         $print_orders = DB::table('orders')->where('orders_id', '=', $item['id'])->first();
                         if ($print_orders->orders_labs !== '') {
-                            $group_arr[$item['address_id']]['title'] = "Laboratory Order";
+                            $group_arr[$item['address_id']]['title'] = trans('noshform.laboratory_order');
                         }
                         if ($print_orders->orders_radiology !== '') {
-                            $group_arr[$item['address_id']]['title'] = "Imaging Order";
+                            $group_arr[$item['address_id']]['title'] = trans('noshform.imaging_order');
                         }
                         if ($print_orders->orders_cp !== '') {
-                            $group_arr[$item['address_id']]['title'] = "Cardiopulmonary Order";
+                            $group_arr[$item['address_id']]['title'] = trans('noshform.cardiopulmonary_order');
                         }
                         if ($print_orders->orders_referrals !== '') {
-                            $group_arr[$item['address_id']]['title'] = "Referral Order";
+                            $group_arr[$item['address_id']]['title'] = trans('noshform.referral');
                         }
-                        $group_arr[$item['address_id']]['message'] = 'Order faxed';
+                        App::setLocale(Session::get('user_locale'));
+                        $group_arr[$item['address_id']]['message'] = trans('noshform.fax_action_message2');
                     }
                     if ($item['function'] == 'print_chart') {
-                        $group_arr[$item['address_id']]['title'] = "Patient Chart";
-                        $group_arr[$item['address_id']]['message'] = 'Patient chart faxed';
+                        App::setLocale(Session::get('practice_locale'));
+                        $group_arr[$item['address_id']]['title'] = trans('noshform.fax_action_title3');
+                        App::setLocale(Session::get('user_locale'));
+                        $group_arr[$item['address_id']]['message'] = trans('noshform.fax_action_message3');
                     }
                     if ($item['function'] == 'print_chart_request') {
-                        $group_arr[$item['address_id']]['title'] = "Record Request";
-                        $group_arr[$item['address_id']]['message'] = 'Record request faxed';
+                        App::setLocale(Session::get('practice_locale'));
+                        $group_arr[$item['address_id']]['title'] = trans('noshform.fax_action_title4');
+                        App::setLocale(Session::get('user_locale'));
+                        $group_arr[$item['address_id']]['message'] = trans('noshform.fax_action_message4');
                     }
                 }
                 if ($med_count > 0) {
@@ -3248,7 +3295,7 @@ class CoreController extends Controller
                     $fix[] = $address_id;
                     Session::put('fax_queue', $new_arr);
                     Session::put('fax_queue_count', count($new_arr));
-                    $message_arr[] = 'Error - Recipient in your fax queue does not have a fax number.';
+                    $message_arr[] = trans('noshform.error') . ' - ' . trans('noshform.fax_action_error');
                 }
             }
             $message = implode('<br>', $message_arr);
@@ -3270,7 +3317,7 @@ class CoreController extends Controller
                         'type' => $subtype
                     ],
                     'index' => 'rxl_id',
-                    'message' => 'Prescription sent to fax queue'
+                    'message' => trans('noshform.fax_queue_message1')
                 ],
                 'orders' => [
                     'url' => [
@@ -3279,7 +3326,7 @@ class CoreController extends Controller
                         'pid' => $pid
                     ],
                     'index' => 'orders_id',
-                    'message' => 'Order sent to fax queue'
+                    'message' => trans('noshform.fax_queue_message2')
                 ],
                 'hippa' => [
                     'url' => [
@@ -3289,7 +3336,7 @@ class CoreController extends Controller
                         'type' => $subtype
                     ],
                     'index' => 'hippa_id',
-                    'message' => 'Chart sent to fax queue'
+                    'message' => trans('noshform.fax_queue_message3')
                 ],
                 'hippa_request' => [
                     'url' => [
@@ -3298,7 +3345,7 @@ class CoreController extends Controller
                         'pid' => $pid
                     ],
                     'index' => 'hippa_request_id',
-                    'message' => 'Records request sent to fax queue'
+                    'message' => trans('noshform.fax_queue_message4')
                 ]
             ];
             $query = DB::table($action)->where($action_arr[$action]['index'], '=', $id)->first();
@@ -3323,14 +3370,14 @@ class CoreController extends Controller
         Session::forget('message_action');
         $return = '';
         $type_arr = [
-            'queue' => ['Bills to Submit', 'fa-list'],
-            'processed' => ['Processed Bills', 'fa-check'],
-            'outstanding' => ['Outstanding Balances', 'fa-exclamation'],
-            'era' => ['ERA 835', 'fa-refresh'],
-            'monthly_report' => ['Monthly Financial Report', 'fa-table'],
-            'yearly_report' => ['Yearly Financial Report', 'fa-table'],
-            'query_payment' => ['Custom Report by Payment Type', 'fa-question'],
-            'query_cpt' => ['Custom Report by Procedure Code', 'fa-question']
+            'queue' => [trans('noshform.financial1'), 'fa-list'],
+            'processed' => [trans('noshform.financial2'), 'fa-check'],
+            'outstanding' => [trans('noshform.financial3'), 'fa-exclamation'],
+            'era' => [trans('noshform.financial4'), 'fa-refresh'],
+            'monthly_report' => [trans('noshform.financial5'), 'fa-table'],
+            'yearly_report' => [trans('noshform.financial6'), 'fa-table'],
+            'query_payment' => [trans('noshform.financial7'), 'fa-question'],
+            'query_cpt' => [trans('noshform.financial8'), 'fa-question']
         ];
         $dropdown_array = [
             'items_button_text' => $type_arr[$type][0]
@@ -3349,13 +3396,13 @@ class CoreController extends Controller
         $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
         $result = [];
         $signed_arr = [
-            'No' => 'Draft',
-            'Yes' => 'Signed'
+            'No' => trans('noshform.draft'),
+            'Yes' => trans('noshform.signed')
         ];
         $batch_arr = [
-            'No' => 'None',
-            'Pend' => 'Print Image',
-            'HCFA' => 'HCFA-1500'
+            'No' => trans('noshform.none'),
+            'Pend' => trans('noshform.print_image'),
+            'HCFA' => trans('noshform.hcfa')
         ];
         if ($type == 'queue') {
             $query = DB::table('encounters')
@@ -3367,10 +3414,10 @@ class CoreController extends Controller
                 ->get();
             if ($query->count()) {
                 foreach ($query as $row) {
-                    $action = '<a href="' . route('financial_queue', ['Pend', $row->eid]) . '" class="btn fa-btn" role="button" data-toggle="tooltip" title="Add to Print Image Queue"><i class="fa fa-plus-square fa-lg"></i></a>';
-                    $action .= '<a href="' . route('financial_queue', ['HCFA', $row->eid]) . '" class="btn fa-btn" role="button" data-toggle="tooltip" title="Add to HCFA-1500 Queue"><i class="fa fa-plus-circle fa-lg"></i></a>';
-                    $action .= '<a href="' . route('printimage_single', [$row->eid]) . '" class="btn fa-btn nosh-no-load" role="button" data-toggle="tooltip" title="Print Image"><i class="fa fa-file-image-o fa-lg"></i></a>';
-                    $action .= '<a href="' . route('generate_hcfa', [$row->eid]) . '" class="btn fa-btn nosh-no-load" role="button" data-toggle="tooltip" title="Print HCFA-1500"><i class="fa fa-file-text-o fa-lg"></i></a>';
+                    $action = '<a href="' . route('financial_queue', ['Pend', $row->eid]) . '" class="btn fa-btn" role="button" data-toggle="tooltip" title="' . trans('noshform.add_print_image_queue') . '"><i class="fa fa-plus-square fa-lg"></i></a>';
+                    $action .= '<a href="' . route('financial_queue', ['HCFA', $row->eid]) . '" class="btn fa-btn" role="button" data-toggle="tooltip" title="' . trans('noshform.add_hcfa_queue') . '"><i class="fa fa-plus-circle fa-lg"></i></a>';
+                    $action .= '<a href="' . route('printimage_single', [$row->eid]) . '" class="btn fa-btn nosh-no-load" role="button" data-toggle="tooltip" title="' . trans('noshform.print_image') . '"><i class="fa fa-file-image-o fa-lg"></i></a>';
+                    $action .= '<a href="' . route('generate_hcfa', [$row->eid]) . '" class="btn fa-btn nosh-no-load" role="button" data-toggle="tooltip" title="' . trans('noshform.print_hcfa') . '"><i class="fa fa-file-text-o fa-lg"></i></a>';
                     $result[] = [
                         'date' => date('Y-m-d', $this->human_to_unix($row->encounter_DOS)),
                         'signed' => $signed_arr[$row->encounter_signed],
@@ -3384,13 +3431,13 @@ class CoreController extends Controller
                 }
             }
             $head_arr = [
-                'Date of Service' => 'date',
-                'Status' => 'signed',
-                'Batch Type' => 'batch_type',
-                'Last Name' => 'lastname',
-                'First Name' => 'firstname',
-                'Chief Complaint' => 'encounter_cc',
-                'Action' => 'action'
+                [trans('noshform.encounter_DOS'), 'date'],
+                [trans('noshform.status'), 'signed'],
+                [trans('noshform.batch_type'), 'batch_type'],
+                [trans('noshform.lastname'), 'lastname'],
+                [trans('noshform.firstname'), 'firstname'],
+                [trans('noshform.encounter_cc'), 'encounter_cc'],
+                [trans('noshform.action'), 'action']
             ];
             $batch = 0;
             $batch_query1 = DB::table('encounters')
@@ -3418,7 +3465,7 @@ class CoreController extends Controller
                     if ($batch_query1->count()) {
                         $items1[] = [
                             'type' => 'item',
-                            'label' => 'Print Print Image from Queue',
+                            'label' => trans('noshform.print_image_queue'),
                             'icon' => 'fa-file-image-o',
                             'url' => route('print_batch', ['Pend'])
                         ];
@@ -3426,7 +3473,7 @@ class CoreController extends Controller
                     if ($batch_query2->count()) {
                         $items1[] = [
                             'type' => 'item',
-                            'label' => 'Print HCFA-1500 from Queue',
+                            'label' => trans('noshform.print_hcfa_queue'),
                             'icon' => 'fa-file-text-o',
                             'url' => route('print_batch', ['HCFA'])
                         ];
@@ -3475,13 +3522,13 @@ class CoreController extends Controller
                 }
             }
             $head_arr = [
-                'Date of Service' => 'date',
-                'Last Name' => 'lastname',
-                'First Name' => 'firstname',
-                'Chief Complaint' => 'encounter_cc',
-                'Charges' => 'charges',
-                'Total Balance' => 'balance',
-                'Action' => 'action'
+                [trans('noshform.encounter_DOS'), 'date'],
+                [trans('noshform.lastname'), 'lastname'],
+                [trans('noshform.firstname'), 'firstname'],
+                [trans('noshform.encounter_cc'), 'encounter_cc'],
+                [trans('noshform.charges'), 'charges'],
+                [trans('noshform.total_balance'), 'balance'],
+                [trans('noshform.action'), 'action']
             ];
         }
         if ($type == 'outstanding') {
@@ -3541,10 +3588,10 @@ class CoreController extends Controller
                 }
             }
             $head_arr = [
-                'ID' => 'pid',
-                'Last Name' => 'lastname',
-                'First Name' => 'firstname',
-                'Balance' => 'balance',
+                [trans('noshform.id'), 'pid'],
+                [trans('noshform.lastname'), 'lastname'],
+                [trans('noshform.firstname'), 'firstname'],
+                [trans('nosfhorm.billing_balance'), 'balance'],
                 // 'Notes' => 'billing_notes'
             ];
         }
@@ -3560,8 +3607,8 @@ class CoreController extends Controller
                 }
             }
             $head_arr = [
-                'ID' => 'id',
-                'Date' => 'date'
+                [trans('noshform.id'), 'id'],
+                [trans('noshform.date'), 'date']
             ];
             $dropdown_array1 = [
                 'items_button_icon' => 'fa-plus'
@@ -3569,7 +3616,7 @@ class CoreController extends Controller
             $items1 = [];
             $items1[] = [
                 'type' => 'item',
-                'label' => 'Upload ERA 835',
+                'label' => trans('noshform.financial_upload_era'),
                 'icon' => 'fa-upload',
                 'url' => route('financial_upload_era')
             ];
@@ -3636,12 +3683,12 @@ class CoreController extends Controller
                 }
             }
             $head_arr = [
-                'Month' => 'month',
-                'Patients Seen' => 'patients_seen',
-                'Total Billed' => 'total_billed',
-                'Total Payments' => 'total_payments',
-                'DNKA' => 'dnka',
-                'LMC' => 'lmc'
+                [trans('noshform.month'), 'month'],
+                [trans('noshform.patients_seen'), 'patients_seen'],
+                [trans('noshform.total_billed'), 'total_billed'],
+                [trans('noshform.total_payments'), 'total_payments'],
+                [trans('noshform.dnka1'), 'dnka'],
+                [trans('noshform.lmc1'), 'lmc']
             ];
         }
         if ($type == 'yearly_report') {
@@ -3699,12 +3746,12 @@ class CoreController extends Controller
                 }
             }
             $head_arr = [
-                'Year' => 'year',
-                'Patients Seen' => 'patients_seen',
-                'Total Billed' => 'total_billed',
-                'Total Payments' => 'total_payments',
-                'DNKA' => 'dnka',
-                'LMC' => 'lmc'
+                [trans('noshform.year'), 'year'],
+                [trans('noshform.patients_seen'), 'patients_seen'],
+                [trans('noshform.total_billed'), 'total_billed'],
+                [trans('noshform.total_payments'), 'total_payments'],
+                [trans('noshform.dnka1'), 'dnka'],
+                [taans('noshform.lmc1'), 'lmc']
             ];
         }
         if ($type == 'query_payment' || $type == 'query_cpt') {
@@ -3733,7 +3780,7 @@ class CoreController extends Controller
                 ];
                 $items3[] = [
                     'name' => 'variables[]',
-                    'label' => 'Variables',
+                    'label' => trans('noshform.variables'),
                     'type' => 'select',
                     'required' => true,
                     'select_items' => $this->array_procedure_codes(),
@@ -3744,10 +3791,20 @@ class CoreController extends Controller
             }
             $items3[] = [
                 'name' => 'year[]',
-                'label' => 'Year',
+                'label' => trans('noshform.year'),
                 'type' => 'select',
-                'required' => true,
+                // 'required' => true,
                 'select_items' => $this->array_payment_year(),
+                'multiple' => true,
+                'selectpicker' => true,
+                'default_value' => null
+            ];
+            $items3[] = [
+                'name' => 'year_month[]',
+                'label' => trans('noshform.year_month'),
+                'type' => 'select',
+                // 'required' => true,
+                'select_items' => $this->array_payment_year(true),
                 'multiple' => true,
                 'selectpicker' => true,
                 'default_value' => null
@@ -3756,33 +3813,33 @@ class CoreController extends Controller
                 'form_id' => 'financial_query_form',
                 'action' => route('financial_query'),
                 'items' => $items3,
-                'save_button_label' => 'Run Report',
+                'save_button_label' => trans('noshform.run_report'),
                 'add_save_button' => [
-                    'print' => 'Print Report'
+                    'print' => trans('noshform.print_report')
                 ]
             ];
             $return .= $this->form_build($form_array);
         }
         if (! empty($result)) {
             if ($type == 'monthly_report' || $type == 'yearly_report') {
-                $return .= '<div class="alert alert-success"><h5>Click on a row to get the insurance specifics for each time period.</h5></div>';
+                $return .= '<div class="alert alert-success"><h5>'. trans('noshform.report_alert') . '</h5></div>';
             }
             $return .= '<div class="table-responsive"><table class="table table-striped"><thead><tr>';
-            foreach ($head_arr as $head_row_k => $head_row_v) {
-                $return .= '<th>' . $head_row_k . '</th>';
+            foreach ($head_arr as $head_row) {
+                $return .= '<th>' . $head_row[0] . '</th>';
             }
             $return .= '</tr></thead><tbody>';
             foreach ($result as $row) {
                 $return .= '<tr>';
-                foreach ($head_arr as $head_row_k => $head_row_v) {
-                    if ($head_row_k !== 'Action') {
+                foreach ($head_arr as $head_row1) {
+                    if ($head_row1[1] !== 'action') {
                         if (isset($row['click'])) {
-                            $return .= '<td class="nosh-click" data-nosh-click="' . $row['click'] . '">' . $row[$head_row_v] . '</td>';
+                            $return .= '<td class="nosh-click" data-nosh-click="' . $row['click'] . '">' . $row[$head_row1[1]] . '</td>';
                         } else {
-                            $return .= '<td>' . $row[$head_row_v] . '</td>';
+                            $return .= '<td>' . $row[$head_row1[1]] . '</td>';
                         }
                     } else {
-                        $return .= '<td>' . $row[$head_row_v] . '</td>';
+                        $return .= '<td>' . $row[$head_row1[1]] . '</td>';
                     }
                 }
                 $return .= '</tr>';
@@ -3790,11 +3847,11 @@ class CoreController extends Controller
             $return .= '</tbody></table>';
         } else {
             if ($type !== 'query_cpt' && $type !== 'query_payment') {
-                $return .= ' No data.';
+                $return .= ' ' . trans('noshform.no_data') . '.';
             }
         }
         $data['content'] = $return;
-        $data['panel_header'] = 'Financial';
+        $data['panel_header'] = trans('noshform.financial');
         Session::put('last_page', $request->fullUrl());
         if (Session::has('download_now')) {
             $data['download_now'] = route('download_now');
@@ -3810,53 +3867,59 @@ class CoreController extends Controller
         $era = DB::table('era')->where('era_id', '=', $era_id)->first();
         $claim = json_decode(unserialize($era->era), true);
         $html = '<div class="table-responsive"><table id="era_grid" class="table table-striped">';
-        $html .= '<thead><tr><th style="width:200px">Check Details</th><th style="width:350px">Payer Details</th><th style="width:350px">Payee Details</th></tr></thead><tbody>';
-        $html .= '<tr><td>Check Amount: ' . money_format('%n', $claim['check_amount']) .'<br><br>Check Number: ' . $claim['check_number'] .'<br><br>Check Date: ' . date('m/d/Y', $claim['check_date']) . '<br><br>Production Date: ' . date('m/d/Y', $claim['production_date']) . '</td>';
-        $html .= '<td>Name: ' . $claim['payer_name'] . '<br><br>Tax ID: ' . $claim['payer_tax_id'] . '<br><br>Address: ' . $claim['payer_street'] . '<br>' . $claim['payer_city'] . ', ' . $claim['payer_state'] . ' ' . $claim['payer_zip'] . '</td>';
-        $html .= '<td>Name: ' . $claim['payee_name'] . '<br><br>Tax ID: ' . $claim['payee_tax_id'] . '<br><br>Address: ' . $claim['payee_street'] . '<br>' . $claim['payee_city'] . ', ' . $claim['payee_state'] . ' ' . $claim['payee_zip'] . '</td></tr></tbody></table>';
+        $html .= '<thead><tr><th style="width:200px">' . trans('noshform.financial_era1') . '</th><th style="width:350px">' . trans('noshform.financial_era2') . '</th><th style="width:350px">' . trans('noshform.financial_era3') . '</th></tr></thead><tbody>';
+        $html .= '<tr><td>' . trans('noshform.financial_era4') . ': ' . money_format('%n', $claim['check_amount']) .'<br><br>' . trans('noshform.financial_era5') . ': ' . $claim['check_number'] .'<br><br>' . trans('noshform.financial_era6');
+        $html .= ': ' . date('m/d/Y', $claim['check_date']) . '<br><br>' . trans('noshform.financial_era7') . ': ' . date('m/d/Y', $claim['production_date']) . '</td>';
+        $html .= '<td>' . trans('noshform.financial_era10') . ': ' . $claim['payer_name'] . '<br><br>' . trans('noshform.financial_era8') . ': ' . $claim['payer_tax_id'] . '<br><br>' . trans('noshform.financial_era9');
+        $html .= ': ' . $claim['payer_street'] . '<br>' . $claim['payer_city'] . ', ' . $claim['payer_state'] . ' ' . $claim['payer_zip'] . '</td>';
+        $html .= '<td>' . trans('noshform.financial_era10') . ': ' . $claim['payee_name'] . '<br><br>' . trans('noshform.financial_era8') . ': ' . $claim['payee_tax_id'] . '<br><br>' . trans('noshform.financial_era9');
+        $html .= ': ' . $claim['payee_street'] . '<br>' . $claim['payee_city'] . ', ' . $claim['payee_state'] . ' ' . $claim['payee_zip'] . '</td></tr></tbody></table>';
         if (! empty($claim['claim'])) {
             $i = 0;
             $html .= '<br><table id="era_grid_' . $i .'" class="table table-striped">';
-            $html .= '<thead><tr><th style="width:200px">Claim Details</th><th style="width:200px">Patient Details</th><th>Line Item Details</th></tr></thead><tbody>';
+            $html .= '<thead><tr><th style="width:200px">Claim Details</th><th style="width:200px">' . trans('noshform.financial_era11') . '</th><th>' . trans('noshform.financial_era12') . '</th></tr></thead><tbody>';
             foreach ($claim['claim'] as $row) {
                 if ($row['claim_status_code'] == '1') {
-                    $claim_status_code = 'Processed as primary';
+                    $claim_status_code = trans('noshform.claim_status_code1');
                 } elseif ($row['claim_status_code'] == '2') {
-                    $claim_status_code = 'Processed as secondary';
+                    $claim_status_code = trans('noshform.claim_status_code2');
                 } elseif ($row['claim_status_code'] == '3') {
-                    $claim_status_code = 'Processed as tertiary';
+                    $claim_status_code = trans('noshform.claim_status_code3');
                 } elseif ($row['claim_status_code'] == '22') {
-                    $claim_status_code = 'Reversal of previous payment';
+                    $claim_status_code = trans('noshform.claim_status_code4');
                 } else {
                     $claim_status_code = $row['claim_status_code'];
                 }
                 if ($row['claim_forward'] == 0) {
                     $claim_forward = '';
                 } else {
-                    $claim_forward = '<br>Claim forwarded to another insurer.';
+                    $claim_forward = '<br>' . trans('noshform.financial_era13') . '.';
                 }
-                $html .= '<tr><td>Amount Charged: ' . money_format('%n', $row['amount_charged']);
+                $html .= '<tr><td>' . trans('noshform.financial_era14') . ': ' . money_format('%n', $row['amount_charged']);
                 if ($row['amount_approved'] != '') {
-                    $html .= '<br><br>Amount Approved: ' . money_format('%n', $row['amount_approved']);
+                    $html .= '<br><br>' . trans('noshform.financial_era15') . ': ' . money_format('%n', $row['amount_approved']);
                 }
                 if ($row['amount_patient'] != '') {
-                    $html .= '<br><br>Amount assigned to Patient: ' . money_format('%n', $row['amount_patient']);
+                    $html .= '<br><br>' . trans('noshform.financial_era16') . ': ' . money_format('%n', $row['amount_patient']);
                 }
-                $html .='<br><br>Date of Service: ' . date('m/d/Y', $row['dos']) . '<br><br>Claim Status: ' . $claim_status_code . '<br><br>Claim ID: ' . $row['payer_claim_id'] . $claim_forward . '</td>';
-                $html .= '<td>Patient: ' . $row['patient_lastname'] . ', ' . $row['patient_firstname'] . ' ' . $row['patient_middle'] . '<br><br>Insurance: ' . $row['payer_insurance'] . '<br><br>Patient Member ID: ' . $row['patient_member_id'] . '<br><br>Subscriber: ' . $row['subscriber_lastname'] . ', ' . $row['subscriber_firstname'] . ' ' . $row['subscriber_middle'] .'</td>';
+                $html .='<br><br>' . trans('noshform.financial_era17') . ': ' . date('m/d/Y', $row['dos']) . '<br><br>' . trans('noshform.financial_era18') . ': ' . $claim_status_code . '<br><br>' . trans('noshform.financial_era19');
+                $html .= ': ' . $row['payer_claim_id'] . $claim_forward . '</td>';
+                $html .= '<td>' . trans('noshform.patient') . ': ' . $row['patient_lastname'] . ', ' . $row['patient_firstname'] . ' ' . $row['patient_middle'] . '<br><br>Insurance: ' . $row['payer_insurance'] . '<br><br>' . trans('noshform.financial_era20');
+                $html .= ': ' . $row['patient_member_id'] . '<br><br>' . trans('noshform.financial_era21') . ': ' . $row['subscriber_lastname'] . ', ' . $row['subscriber_firstname'] . ' ' . $row['subscriber_middle'] .'</td>';
                 $html .= '<td><ul>';
                 if (! empty($row['item'])) {
                     foreach ($row['item'] as $row1) {
-                        $html .= '<li>CPT: ' . $row1['cpt'];
+                        $html .= '<li>' . trans('noshform.cpt') . ': ' . $row1['cpt'];
                         if ($row1['modifier'] != '') {
-                            $html .= ', Modifier: ' . $row1['modifier'];
+                            $html .= ', ' . trans('noshform.modifier') . ': ' . $row1['modifier'];
                         }
-                        $html .= ', Charge: ' . money_format('%n', $row1['charge']) . ', Paid: ' . money_format('%n', $row1['paid']) . ', Allowed: ' . money_format('%n', $row1['allowed']);
+                        $html .= ', ' . trans('noshform.billing_charge') . ': ' . money_format('%n', $row1['charge']) . ', ' . trans('noshform.paid') . ': ' . money_format('%n', $row1['paid']) . ', ' . trans('noshform.allowed');
+                        $html .= ': ' . money_format('%n', $row1['allowed']);
                         if (! empty($row1['adjustment'])) {
                             $j = 1;
                             foreach ($row1['adjustment'] as $row2) {
-                                $html .= '<br><br>Adjustment Reason # ' . $j . ': ' . $this->claim_reason_code($row2['reason_cpt']);;
-                                $html .= '<br>Adjustment Amount # ' . $j . ': ' . money_format('%n', $row2['amount']);
+                                $html .= '<br><br>' . trans('noshform.adjustment_reason') . ' # ' . $j . ': ' . $this->claim_reason_code($row2['reason_cpt']);;
+                                $html .= '<br>' . trans('noshform.adjustment_amount') . ' # ' . $j . ': ' . money_format('%n', $row2['amount']);
                                 $j++;
                             }
                         }
@@ -3868,12 +3931,12 @@ class CoreController extends Controller
             $html .= '</tbody></table></div>';
         }
         $dropdown_array = [
-            'default_button_text' => '<i class="fa fa-chevron-left fa-fw fa-btn"></i>Back',
+            'default_button_text' => '<i class="fa fa-chevron-left fa-fw fa-btn"></i>' . trans('noshform.back'),
             'default_button_text_url' => Session::get('last_page')
         ];
         $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
         $data['content'] = $html;
-        $data['panel_header'] = 'ERA 835 Details';
+        $data['panel_header'] = trans('noshform.financial_era');
         $data['assets_js'] = $this->assets_js();
         $data['assets_css'] = $this->assets_css();
         return view('core', $data);
@@ -3887,13 +3950,14 @@ class CoreController extends Controller
                 $era = DB::table('era')->where('era_id', '=', $arr[0]['era_id'])->first();
                 $claim = json_decode(unserialize($era->era), true);
                 $claim_num = $arr[0]['claim_num'];
+                App::setLocale(Session::get('practice_locale'));
                 $data = [
                     'eid' => $request->input('eid'),
                     'other_billing_id' => '',
                     'pid' => $request->input('pid'),
                     'dos_f' => date('m/d/Y', $claim['claim'][$claim_num]['dos']),
                     'payment' => $claim['claim'][$claim_num]['amount_approved'],
-                    'payment_type' => 'Insurance Payment, Check #: ' . $claim['check_number'] . ', ERA #: ' . $arr[0]['era_id'],
+                    'payment_type' => trans('noshform.financial_era_form1') . ' #: ' . $claim['check_number'] . ', ' . trans('noshform.financial_era_form2') . ' #: ' . $arr[0]['era_id'],
                     'practice_id' => Session::get('practice_id')
                 ];
                 DB::table('billing_core')->insert($data);
@@ -3909,13 +3973,14 @@ class CoreController extends Controller
                         'pid' => $request->input('pid'),
                         'dos_f' => date('m/d/Y', $claim['claim'][$claim_num]['dos']),
                         'payment' => $adjtotal,
-                        'payment_type' => 'Insurance Adjustment, ERA #: ' . $arr[0]['era_id'],
+                        'payment_type' => trans('noshform.financial_era_form3') . ' #: ' . $arr[0]['era_id'],
                         'practice_id' => Session::get('practice_id')
                     ];
                     DB::table('billing_core')->insert($data1);
                     $this->audit('Add');
                 }
-                Session::put('message_action', 'Claim associated');
+                App::setLocale(Session::get('user_locale'));
+                Session::put('message_action', trans('noshform.financial_era_form4'));
             }
             unset($arr[0]);
             $arr = array_values($arr);
@@ -3938,31 +4003,31 @@ class CoreController extends Controller
             ];
             $items[] = [
                 'name' => 'eid',
-                'label' => 'Encounter',
+                'label' => trans('noshform.encounter'),
                 'type' => 'select',
                 'required' => true,
-                'select_items' => ['' => 'Search Patient First'],
+                'select_items' => ['' => trans('noshform.select_patient_first')],
                 'default_value' => null
             ];
             $form_array = [
                 'form_id' => 'era_form',
                 'action' => route('financial_era_form'),
                 'items' => $items,
-                'save_button_label' => 'Save',
+                'save_button_label' => trans('noshform.save'),
                 'add_save_button' => [
-                    'ignore' => 'Ignore this Claim'
+                    'ignore' => trans('noshform.ignore_claim')
                 ]
             ];
-            $return = '<div class="alert alert-success"><h5>ERA Details</h5>';
-            $return .= '<strong>First Name:</strong> ' . $arr[0]['patient_firstname'];
-            $return .= '<br><strong>Last Name:</strong>' . $arr[0]['patient_lastname'];
-            $return .= '<br><strong>Date of Service:</strong>' . $arr[0]['dos'];
-            $return .= '<br><strong>Amount Charged:</strong>' . $arr[0]['amount_charged'];
-            $return .= '<br><strong>Amount Approved:</strong>' . $arr[0]['amount_approved'];
+            $return = '<div class="alert alert-success"><h5>' . trans('noshform.financial_era_form5') . '</h5>';
+            $return .= '<strong>' . trans('noshform.firstname') . ':</strong> ' . $arr[0]['patient_firstname'];
+            $return .= '<br><strong>' . trans('noshform.lastname') . ':</strong>' . $arr[0]['patient_lastname'];
+            $return .= '<br><strong>' . trans('noshform.encounter_DOS') . ':</strong>' . $arr[0]['dos'];
+            $return .= '<br><strong>' . trans('noshform.financial_era14') . ':</strong>' . $arr[0]['amount_charged'];
+            $return .= '<br><strong>' . trans('noshform.financial_era15') . ':</strong>' . $arr[0]['amount_approved'];
             $return .= '</div>';
             $return .= $this->form_build($form_array);
             $data['content'] = $return;
-            $data['panel_header'] = 'Reconcile ERA 835 Claim';
+            $data['panel_header'] = trans('noshform.financial_era_form');
             $data['assets_js'] = $this->assets_js();
             $data['assets_css'] = $this->assets_css();
             return view('core', $data);
@@ -3980,10 +4045,10 @@ class CoreController extends Controller
         $id_arr = explode("-", $id);
         if (count($id_arr) > 1) {
             $query->where(DB::raw("YEAR(t3.encounter_DOS)"), '=', $id_arr[0])->where(DB::raw("MONTH(t3.encounter_DOS)"), '=', $id_arr[1]);
-            $data['panel_header'] = 'Monthly Insurance Data';
+            $data['panel_header'] = trans('noshform.financial_insurance1');
         } else {
             $query->where(DB::raw("YEAR(t3.encounter_DOS)"), '=', $id);
-            $data['panel_header'] = 'Yearly Insurance Data';
+            $data['panel_header'] = trans('noshform.financial_insurance2');
         }
         $query->where('t3.addendum', '=', 'n')
             ->where('t3.practice_id', '=', Session::get('practice_id'))
@@ -4001,36 +4066,36 @@ class CoreController extends Controller
             }
         }
         $head_arr = [
-            'Insurance' => 'insurance',
-            'Patients Seen' => 'patients_seen',
+            [trans('noshform.insurance'), 'insurance'],
+            [trans('noshform.patients_seen'), 'patients_seen']
         ];
         if (! empty($result)) {
             $return .= '<div class="table-responsive"><table class="table table-striped"><thead><tr>';
-            foreach ($head_arr as $head_row_k => $head_row_v) {
-                $return .= '<th>' . $head_row_k . '</th>';
+            foreach ($head_arr as $head_row) {
+                $return .= '<th>' . $head_row[0] . '</th>';
             }
             $return .= '</tr></thead><tbody>';
             foreach ($result as $row) {
                 $return .= '<tr>';
-                foreach ($head_arr as $head_row_k => $head_row_v) {
-                    if ($head_row_k !== 'Action') {
+                foreach ($head_arr as $head_row1) {
+                    if ($head_row1[1] !== 'action') {
                         if (isset($row['click'])) {
-                            $return .= '<td class="nosh-click" data-nosh-click="' . $row['click'] . '">' . $row[$head_row_v] . '</td>';
+                            $return .= '<td class="nosh-click" data-nosh-click="' . $row['click'] . '">' . $row[$head_row1[1]] . '</td>';
                         } else {
-                            $return .= '<td>' . $row[$head_row_v] . '</td>';
+                            $return .= '<td>' . $row[$head_row1[1]] . '</td>';
                         }
                     } else {
-                        $return .= '<td>' . $row[$head_row_v] . '</td>';
+                        $return .= '<td>' . $row[$head_row1[1]] . '</td>';
                     }
                 }
                 $return .= '</tr>';
             }
             $return .= '</tbody></table>';
         } else {
-            $return .= ' No data.';
+            $return .= ' ' . trans('noshform.no_data') . '.';
         }
         $dropdown_array = [
-            'default_button_text' => '<i class="fa fa-chevron-left fa-fw fa-btn"></i>Back',
+            'default_button_text' => '<i class="fa fa-chevron-left fa-fw fa-btn"></i>' . trans('noshform.back'),
             'default_button_text_url' => Session::get('last_page')
         ];
         $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
@@ -4070,17 +4135,84 @@ class CoreController extends Controller
             $i++;
         }
         $year_array = $request->input('year');
-        $query_text1->where(function($query_array1) use ($year_array, $j) {
-            foreach ($year_array as $year) {
-                if ($j == 0) {
-                    $query_array1->where('dos_f', 'LIKE', "%$year%");
-                } else {
-                    $query_array1->orWhere('dos_f', 'LIKE', "%$year%");
+        $month_array = $request->input('year_month');
+        $query_text1->where(function($query_array3) use ($year_array, $month_array, $j) {
+            if (!empty($year_array)) {
+                foreach ($year_array as $year) {
+                    $date = Date::parse($year . '-01');
+                    $start = $date->timestamp;
+                    $end = $date->addYear()->timestamp;
+                    if ($j == 0) {
+                        $query_array3->where(function($query_array0) use ($start, $end) {
+                            $query_array0->where(function($query_array1) use ($start, $end) {
+                                $query_array1->whereRaw("UNIX_TIMESTAMP(STR_TO_DATE(dos_f, '%m/%d/%Y')) >= ?", [$start])
+                                ->orWhereRaw("UNIX_TIMESTAMP(STR_TO_DATE(dos_f, '%Y-%m-%d')) >= ?", [$start]);
+                            });
+                            $query_array0->where(function($query_array2) use ($start, $end) {
+                                $query_array2->whereRaw("UNIX_TIMESTAMP(STR_TO_DATE(dos_f, '%m/%d/%Y')) <= ?", [$end])
+                                ->orWhereRaw("UNIX_TIMESTAMP(STR_TO_DATE(dos_f, '%Y-%m-%d')) <= ?", [$end]);
+                            });
+                        });
+                    } else {
+                        $query_array3->orWhere(function($query_array0) use ($start, $end) {
+                            $query_array0->where(function($query_array1) use ($start, $end) {
+                                $query_array1->whereRaw("UNIX_TIMESTAMP(STR_TO_DATE(dos_f, '%m/%d/%Y')) >= ?", [$start])
+                                ->orWhereRaw("UNIX_TIMESTAMP(STR_TO_DATE(dos_f, '%Y-%m-%d')) >= ?", [$start]);
+                            });
+                            $query_array0->where(function($query_array2) use ($start, $end) {
+                                $query_array2->whereRaw("UNIX_TIMESTAMP(STR_TO_DATE(dos_f, '%m/%d/%Y')) <= ?", [$end])
+                                ->orWhereRaw("UNIX_TIMESTAMP(STR_TO_DATE(dos_f, '%Y-%m-%d')) <= ?", [$end]);
+                            });
+                        });
+                    }
+                    $j++;
                 }
-                $j++;
+            }
+            if (!empty($month_array)) {
+                foreach ($month_array as $month) {
+                    $date = Date::parse($month);
+                    $start = $date->timestamp;
+                    $end = $date->addMonth()->timestamp;
+                    if ($j == 0) {
+                        $query_array3->where(function($query_array0) use ($start, $end) {
+                            $query_array0->where(function($query_array1) use ($start, $end) {
+                                $query_array1->whereRaw("UNIX_TIMESTAMP(STR_TO_DATE(dos_f, '%m/%d/%Y')) >= ?", [$start])
+                                ->orWhereRaw("UNIX_TIMESTAMP(STR_TO_DATE(dos_f, '%Y-%m-%d')) >= ?", [$start]);
+                            });
+                            $query_array0->where(function($query_array2) use ($start, $end) {
+                                $query_array2->whereRaw("UNIX_TIMESTAMP(STR_TO_DATE(dos_f, '%m/%d/%Y')) <= ?", [$end])
+                                ->orWhereRaw("UNIX_TIMESTAMP(STR_TO_DATE(dos_f, '%Y-%m-%d')) <= ?", [$end]);
+                            });
+                        });
+                    } else {
+                        $query_array3->orWhere(function($query_array0) use ($start, $end) {
+                            $query_array0->where(function($query_array1) use ($start, $end) {
+                                $query_array1->whereRaw("UNIX_TIMESTAMP(STR_TO_DATE(dos_f, '%m/%d/%Y')) >= ?", [$start])
+                                ->orWhereRaw("UNIX_TIMESTAMP(STR_TO_DATE(dos_f, '%Y-%m-%d')) >= ?", [$start]);
+                            });
+                            $query_array0->where(function($query_array2) use ($start, $end) {
+                                $query_array2->whereRaw("UNIX_TIMESTAMP(STR_TO_DATE(dos_f, '%m/%d/%Y')) <= ?", [$end])
+                                ->orWhereRaw("UNIX_TIMESTAMP(STR_TO_DATE(dos_f, '%Y-%m-%d')) <= ?", [$end]);
+                            });
+                        });
+                    }
+                    $j++;
+                }
+            }
+            if ($j == 0) {
+                $date = Date::now();
+                $start = $date->timestamp;
+                $end = $date->subMonth()->timestamp;
+                $query_array3->where(function($query_array1) use ($start, $end) {
+                    $query_array1->whereRaw("UNIX_TIMESTAMP(STR_TO_DATE(dos_f, '%m/%d/%Y')) >= ?", [$start])
+                    ->orWhereRaw("UNIX_TIMESTAMP(STR_TO_DATE(dos_f, '%Y-%m-%d')) >= ?", [$start]);
+                });
+                $query_array3->where(function($query_array2) use ($start, $end) {
+                    $query_array2->whereRaw("UNIX_TIMESTAMP(STR_TO_DATE(dos_f, '%m/%d/%Y')) <= ?", [$end])
+                    ->orWhereRaw("UNIX_TIMESTAMP(STR_TO_DATE(dos_f, '%Y-%m-%d')) <= ?", [$end]);
+                });
             }
         });
-        $query = $query_text1->get();
         if ($query->count()) {
             foreach ($query as $records_row) {
                 $query2_row = DB::table('demographics')->where('pid', '=', $records_row->pid)->first();
@@ -4088,7 +4220,7 @@ class CoreController extends Controller
                     $type1 = $records_row->payment_type;
                     $amount = $records_row->payment;
                 } else {
-                    $type1 = "CPT code: " . $records_row->cpt;
+                    $type1 = trans('noshform.cpt') . ": " . $records_row->cpt;
                     $amount = $records_row->cpt_charge;
                 }
                 $result[] = [
@@ -4113,35 +4245,35 @@ class CoreController extends Controller
                 Session::put('download_now', $file_path);
                 return redirect(Session::get('last_page'));
             } else {
-                Session::put('message_action', 'Error - no results');
+                Session::put('message_action', trans('noshform.error') . ' - ' . trans('noshform.no_results'));
                 return redirect(Session::get('last_page'));
             }
         } else {
             $head_arr = [
-                'ID' => 'billing_core_id',
-                'Date of Service' => 'dos_f',
-                'Last Name' => 'lastname',
-                'First Name' => 'firstname',
-                'Amount' => 'amount',
-                'Payment Type' => 'type',
+                [trans('noshform.id'), 'billing_core_id'],
+                [trans('noshform.encounter_DOS'), 'dos_f'],
+                [trans('noshform.lastname'), 'lastname'],
+                [trans('noshform.firstname'), 'firstname'],
+                [trans('noshform.amount'), 'amount'],
+                [trans('noshform.payment_type'), 'type'],
             ];
             if (! empty($result)) {
                 $return = '<div class="table-responsive"><table class="table table-striped"><thead><tr>';
-                foreach ($head_arr as $head_row_k => $head_row_v) {
-                    $return .= '<th>' . $head_row_k . '</th>';
+                foreach ($head_arr as $head_row) {
+                    $return .= '<th>' . $head_row[0]. '</th>';
                 }
                 $return .= '</tr></thead><tbody>';
                 foreach ($result as $row) {
                     $return .= '<tr>';
-                    foreach ($head_arr as $head_row_k => $head_row_v) {
-                        if ($head_row_k !== 'Action') {
+                    foreach ($head_arr as $head_row1) {
+                        if ($head_row1[1] !== 'action') {
                             if (isset($row['click'])) {
-                                $return .= '<td class="nosh-click" data-nosh-click="' . $row['click'] . '">' . $row[$head_row_v] . '</td>';
+                                $return .= '<td class="nosh-click" data-nosh-click="' . $row['click'] . '">' . $row[$head_row1[1]] . '</td>';
                             } else {
-                                $return .= '<td>' . $row[$head_row_v] . '</td>';
+                                $return .= '<td>' . $row[$head_row1[1]] . '</td>';
                             }
                         } else {
-                            $return .= '<td>' . $row[$head_row_v] . '</td>';
+                            $return .= '<td>' . $row[$head_row1[1]] . '</td>';
                         }
                     }
                     $return .= '</tr>';
@@ -4149,16 +4281,16 @@ class CoreController extends Controller
                 $return .= '</tbody></table>';
             } else {
                 if ($type !== 'query') {
-                    $return .= ' No results.';
+                    $return = ' ' . trans('noshform.no_results') . '.';
                 }
             }
             $data['content'] = $return;
             $dropdown_array = [
-                'default_button_text' => '<i class="fa fa-chevron-left fa-fw fa-btn"></i>Back',
+                'default_button_text' => '<i class="fa fa-chevron-left fa-fw fa-btn"></i>' . trans('noshform.back'),
                 'default_button_text_url' => Session::get('last_page')
             ];
             $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
-            $data['panel_header'] = 'Financial Query';
+            $data['panel_header'] = trans('noshform.financial_query');
             Session::put('last_page', $request->fullUrl());
             if (Session::has('download_now')) {
                 $data['download_now'] = route('download_now');
@@ -4175,9 +4307,9 @@ class CoreController extends Controller
         DB::table('encounters')->where('eid', '=', $eid)->update($data);
         $this->audit('Update');
         if ($type == 'Pend') {
-            $message = "Billed encounter added to the print image queue";
+            $message = trans('noshform.financial_queue1');
         } else {
-            $message = "Billed encounter added to the print HCFA-1500 queue";
+            $message = trans('noshform.financial_queue2');
         }
         Session::put('message_action', $message);
         return redirect(Session::get('last_page'));
@@ -4186,15 +4318,15 @@ class CoreController extends Controller
     public function financial_resubmit(Request $request, $eid)
     {
         $row = DB::table('billing')->where('eid', '=', $eid)->first();
-        $message = "Error - No bill for this encounter";
+        $message = trans('noshform.error') . " - " . trans('noshform.financial_resubmit1');
         if ($row) {
             if ($row->insurance_id_1 == '0' || $row->insurance_id_1 == '') {
-                $message = "Error - No insurance was assigned, cannot be resubmitted";
+                $message = trans('noshform.error') . " - " . trans('noshform.financial_resubmit2');
             } else {
                 $data['bill_submitted'] = 'No';
                 DB::table('encounters')->where('eid', '=', $eid)->update($data);
                 $this->audit('Update');
-                $message = "Billed changed to unsent status";
+                $message = trans('noshform.financial_resubmit3');
             }
         }
         Session::put('message_action', $message);
@@ -4215,7 +4347,7 @@ class CoreController extends Controller
             $result = $this->parse_era($era);
             if (isset($result['invalid'])) {
                 unlink($file_path);
-                Session::put('message_action', 'Error - ' . $result['invalid']);
+                Session::put('message_action', trans('noshform.error') . ' - ' . $result['invalid']);
                 return redirect(Session::get('last_page'));
             } else {
                 $era_data = [
@@ -4242,13 +4374,14 @@ class CoreController extends Controller
                                     } else {
                                         $eid = $identity[1];
                                     }
+                                    App::setLocale(Session::get('practice_locale'));
                                     $data = [
                                         'eid' => $eid,
                                         'other_billing_id' => '',
                                         'pid' => $identity[0],
                                         'dos_f' => date('m/d/Y', $claim['dos']),
                                         'payment' => $claim['amount_approved'],
-                                        'payment_type' => 'Insurance Payment, Check #: ' . $result['check_number'] . ', ERA # ' . $era_id,
+                                        'payment_type' => trans('noshform.financial_era_form1') . ' #: ' . $result['check_number'] . ', ' . trans('noshform.financial_era_form2') . ' # ' . $era_id,
                                         'practice_id' => Session::get('practice_id')
                                     ];
                                     DB::table('billing_core')->insert($data);
@@ -4261,14 +4394,15 @@ class CoreController extends Controller
                                             'pid' => $identity[0],
                                             'dos_f' => date('m/d/Y', $claim['dos']),
                                             'payment' => $adjtotal,
-                                            'payment_type' => 'Insurance Adjustment, ERA #: ' . $era_id,
+                                            'payment_type' => trans('noshform.financial_era_form3') . ' #: ' . $era_id,
                                             'practice_id' => Session::get('practice_id')
                                         ];
                                         DB::table('billing_core')->insert($data1);
                                         $this->audit('Add');
                                     }
+                                    App::setLocale(Session::get('user_locale'));
                                     $patient = DB::table('demographics')->where('pid', '=', $identity[0])->first();
-                                    $message_arr[] = 'Payment added for encounter date of service of ' . date('Y-m-d', $claim['dos']) . 'for ' . $patient->firstname . ' ' . $patient->lastname;
+                                    $message_arr[] = trans('noshform.financial_upload_era1') . ' ' . date('Y-m-d', $claim['dos']) . 'for ' . $patient->firstname . ' ' . $patient->lastname;
                                 }
                             } else {
                                 $arr[$j]['claim_num'] = $i;
@@ -4302,11 +4436,11 @@ class CoreController extends Controller
                 return redirect(Session::get('last_page'));
             }
         } else {
-            $data['panel_header'] = 'Upload An ERA 835 File';
+            $data['panel_header'] = trans('noshform.financial_upload_era2');
             $data['document_upload'] = route('financial_upload_era');
             $type_arr = ['835', 'txt', 'era'];
             $data['document_type'] = json_encode($type_arr);
-            $dropdown_array['default_button_text'] = '<i class="fa fa-chevron-left fa-fw fa-btn"></i>Back';
+            $dropdown_array['default_button_text'] = '<i class="fa fa-chevron-left fa-fw fa-btn"></i>' . trans('noshform.back');
             $dropdown_array['default_button_text_url'] = Session::get('last_page');
             $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
             $data['assets_js'] = $this->assets_js('document_upload');
@@ -4321,7 +4455,7 @@ class CoreController extends Controller
         if ($file_path) {
             return response()->download($file_path)->deleteFileAfterSend(true);
         } else {
-            Session::put('message_action', 'Error - No HCFA to print.');
+            Session::put('message_action', trans('noshform.error') . ' - ' . trans('noshform.no_hcfa_print') . '.');
             return redirect(Session::get('last_page'));
         }
     }
@@ -4548,15 +4682,17 @@ class CoreController extends Controller
                 }
                 $new_name = str_replace('.' . $file->getClientOriginalExtension(), '', $file->getClientOriginalName()) . '_' . time() . '.' . $file->getClientOriginalExtension();
                 $file_path = $directory . $new_name;
+                App::setLocale(Session::get('practice_locale'));
                 $data = [
                     'image_location' => $file_path,
                     'pid' => $pid,
                     'message_id' => $message_id,
-                    'image_description' => 'Photo Uploaded ' . date('F jS, Y'),
+                    'image_description' => trans('noshform.photo_uploaded') . ' ' . date('F jS, Y'),
                     'id' => Session::get('user_id')
                 ];
                 $image_id = DB::table('image')->insertGetId($data);
                 $this->audit('Add');
+                App::setLocale(Session::get('user_locale'));
             }
             $file->move($directory, $new_name);
             return redirect(Session::get('message_photo_last_page'));
@@ -4565,7 +4701,7 @@ class CoreController extends Controller
             $data['document_upload'] = route('messaging_add_photo', [$message_id]);
             $type_arr = ['png', 'jpg'];
             $data['document_type'] = json_encode($type_arr);
-            $dropdown_array['default_button_text'] = '<i class="fa fa-chevron-left fa-fw fa-btn"></i>Back';
+            $dropdown_array['default_button_text'] = '<i class="fa fa-chevron-left fa-fw fa-btn"></i>' . trans('noshform.back');
             $dropdown_array['default_button_text_url'] = Session::get('message_photo_last_page');
             $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
             $data = array_merge($data, $this->sidebar_build('chart'));
@@ -4691,8 +4827,8 @@ class CoreController extends Controller
                     $data['image_list'] .= '<option value="' . $k . '">' . $v . '</option>';
                 }
             }
-            $data['image_list_title'] = 'Page Selector';
-            $data['image_list_label'] = 'Select a page to edit:';
+            $data['image_list_title'] = trans('noshform.page_selector');
+            $data['image_list_label'] = trans('noshform.select_page_edit') . ':';
             $items[] = [
                 'name' => 'image',
                 'type' => 'hidden',
@@ -4818,7 +4954,7 @@ class CoreController extends Controller
                 }
                 if ($request->input('submit') == 'fax') {
                     Session::put('fax_now', $file_path);
-                    Session::put('fax_fileoriginal', $request->input('documents_type') . ' for ' . $patient->firstname . ' ' . $patient->lastname);
+                    Session::put('fax_fileoriginal', $request->input('documents_type') . ' ' . trans('noshform.for') . ' ' . $patient->firstname . ' ' . $patient->lastname);
                     Session::put('message_action', trans('noshform.document_saved_chart') . ', ' . trans('noshform.ready_to_fax'));
                     return redirect()->route('messaging_sendfax', ['0']);
                 }
@@ -4881,7 +5017,7 @@ class CoreController extends Controller
             if (Session::has('messaging_last_page')) {
                 $origin = Session::get('messaging_last_page');
             }
-            $intro = '<div class="form-group" id="patient_name_div"><label class="col-md-3 control-label">Patient</label><div class="col-md-8"><p class="form-control-static" id="patient_name"></p></div></div>';
+            $intro = '<div class="form-group" id="patient_name_div"><label class="col-md-3 control-label">' . trans('noshform.patient') . '</label><div class="col-md-8"><p class="form-control-static" id="patient_name"></p></div></div>';
             $add_save['download'] = trans('noshform.save_download');
             $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
             if ($practice->fax_type !== '') {
@@ -4891,7 +5027,7 @@ class CoreController extends Controller
                 'form_id' => 'document_process_form',
                 'action' => route('messaging_editdoc_process', [$id, $type]),
                 'items' => $items,
-                'save_button_label' => 'Save',
+                'save_button_label' => trans('noshform.save'),
                 'origin' => $origin,
                 'intro' => $intro,
                 'add_save_button' => $add_save
@@ -4929,6 +5065,7 @@ class CoreController extends Controller
         $query = DB::table('messaging')->where('message_id', '=', $id)->first();
         $message = trans('noshform.internal_message_on') . ': ' . date('Y-m-d', $this->human_to_unix($query->date)) . "\n\r" . $query->body;
         $message = str_replace("<br>", "", $message);
+        App::setLocale(Session::get('practice_locale'));
         $data = [
             't_messages_subject' => trans('noshform.internal_message') . ': ' . $query->subject,
             't_messages_message' => $message,
@@ -4955,6 +5092,7 @@ class CoreController extends Controller
                 $this->audit('Add');
             }
         }
+        App::setLocale(Session::get('user_locale'));
         Session::put('message_action', trans('noshform.messaging_export'));
         return redirect(Session::get('last_page'));
     }
@@ -5063,7 +5201,7 @@ class CoreController extends Controller
                 }
                 $return .= $this->result_build($list_array, 'pages_list', true);
             } else {
-                $return .= ' None.';
+                $return .= ' ' . trans('noshform.none') . '.';
             }
             $return .= '</div></div>';
             $formitems[] = [
@@ -5154,14 +5292,14 @@ class CoreController extends Controller
             ];
             DB::table('pages')->insert($data);
             $this->audit('Add');
-            Session::get('message_action', 'PDF added to fax queue');
+            Session::get('message_action', trans('noshform.messaging_sendfax_upload1'));
             return redirect(Session::get('last_page'));
         } else {
-            $data['panel_header'] = 'Add PDF to Fax Queue';
+            $data['panel_header'] = trans('noshform.messaging_sendfax_upload');
             $data['document_upload'] = route('messaging_sendfax_upload', [$job_id]);
             $type_arr = ['pdf'];
             $data['document_type'] = json_encode($type_arr);
-            $dropdown_array['default_button_text'] = '<i class="fa fa-chevron-left fa-fw fa-btn"></i>Back';
+            $dropdown_array['default_button_text'] = '<i class="fa fa-chevron-left fa-fw fa-btn"></i>' . trans('noshform.back');
             $dropdown_array['default_button_text_url'] = Session::get('last_page');
             $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
             $data['assets_js'] = $this->assets_js('document_upload');
@@ -5177,17 +5315,17 @@ class CoreController extends Controller
         $columns = Schema::getColumnListing('messaging');
         $row_index = $columns[0];
         $return = '<div class="container" id="message_read_id" nosh-data-id="' . $id . '">';
-        $return .= '<div class="row"><div class="col-md-2" style="margin:10px"><b>Subject</b></div><div class="col-md-8" style="margin:10px">' . $query->subject . '</div></div>';
-        $return .= '<div class="row"><div class="col-md-2" style="margin:10px"><b>To</b></div><div class="col-md-8" style="margin:10px">' . str_replace(';', '; ', $query->message_to) . '</div></div>';
+        $return .= '<div class="row"><div class="col-md-2" style="margin:10px"><b>' . trans('noshform.subject') . '</b></div><div class="col-md-8" style="margin:10px">' . $query->subject . '</div></div>';
+        $return .= '<div class="row"><div class="col-md-2" style="margin:10px"><b>' . trans('noshform.message_to') . '</b></div><div class="col-md-8" style="margin:10px">' . str_replace(';', '; ', $query->message_to) . '</div></div>';
         if ($query->cc !== '' && $query->cc !== null) {
-            $return .= '<div class="row"><div class="col-md-2" style="margin:10px"><b>CC</b></div><div class="col-md-8" style="margin:10px">' . str_replace(';', '; ', $query->cc) . '</div></div>';
+            $return .= '<div class="row"><div class="col-md-2" style="margin:10px"><b>' . trans('noshform.cc') . '</b></div><div class="col-md-8" style="margin:10px">' . str_replace(';', '; ', $query->cc) . '</div></div>';
         }
-        $return .= '<div class="row"><div class="col-md-2" style="margin:10px"><b>From</b></div><div class="col-md-8" style="margin:10px">' . $user->displayname . '</div></div>';
-        $return .= '<div class="row"><div class="col-md-2" style="margin:10px"><b>Message</b></div><div class="col-md-8" style="margin:10px">' . nl2br($query->body) . '</div></div>';
+        $return .= '<div class="row"><div class="col-md-2" style="margin:10px"><b>' . trans('noshform.from') . '</b></div><div class="col-md-8" style="margin:10px">' . $user->displayname . '</div></div>';
+        $return .= '<div class="row"><div class="col-md-2" style="margin:10px"><b>' . trans('noshform.body') . '</b></div><div class="col-md-8" style="margin:10px">' . nl2br($query->body) . '</div></div>';
         $return .='</div>';
         $images = DB::table('image')->where('message_id', '=', $id)->get();
         if ($images->count()) {
-            $return .= '<br><h5>Images:</h5><div class="list-group gallery">';
+            $return .= '<br><h5>' . trans('noshform.images') . ':</h5><div class="list-group gallery">';
             foreach ($images as $image) {
                 $file_path1 = '/temp/' . time() . '_' . basename($image->image_location);
                 $file_path = public_path() . $file_path1;
@@ -5199,7 +5337,7 @@ class CoreController extends Controller
             $return .= '</div>';
         }
         $dropdown_array = [
-            'default_button_text' => '<i class="fa fa-chevron-left fa-fw fa-btn"></i>Back',
+            'default_button_text' => '<i class="fa fa-chevron-left fa-fw fa-btn"></i>' . trans('noshform.back'),
             'default_button_text_url' => Session::get('last_page')
         ];
         $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
@@ -5209,19 +5347,19 @@ class CoreController extends Controller
         $items1 = [];
         $items1[] = [
             'type' => 'item',
-            'label' => 'Reply',
+            'label' => trans('noshform.reply'),
             'icon' => 'fa-reply',
             'url' => route('core_form', ['messaging', $row_index, $query->$row_index, 'reply'])
         ];
         $items1[] = [
             'type' => 'item',
-            'label' => 'Reply All',
+            'label' => trans('noshform.reply_all'),
             'icon' => 'fa-reply-all',
             'url' => route('core_form', ['messaging', $row_index, $query->$row_index, 'reply_all'])
         ];
         $items1[] = [
             'type' => 'item',
-            'label' => 'Forward',
+            'label' => trans('noshform.forward'),
             'icon' => 'fa-share',
             'url' => route('core_form', ['messaging', $row_index, $query->$row_index, 'forward'])
         ];
@@ -5229,7 +5367,7 @@ class CoreController extends Controller
             if ($query->pid !== '' || $query->pid !== null) {
                 $items1[] = [
                     'type' => 'item',
-                    'label' => 'Export to Telephone Message',
+                    'label' => trans('noshform.export_t_message'),
                     'icon' => 'fa-phone',
                     'url' => route('messaging_export', [$id])
                 ];
@@ -5238,7 +5376,7 @@ class CoreController extends Controller
         $dropdown_array1['items'] = $items1;
         $data['panel_dropdown'] .= '<span class="fa-btn"></span>' . $this->dropdown_build($dropdown_array1);
         $data['content'] = $return;
-        $data['panel_header'] = 'Message';
+        $data['panel_header'] = trans('noshform.messaging_view');
         $data['assets_js'] = $this->assets_js();
         $data['assets_css'] = $this->assets_css();
         return view('core', $data);
@@ -5254,12 +5392,12 @@ class CoreController extends Controller
         if ($type == 'sendfax') {
             $result = DB::table('pages')->where('pages_id', '=', $id)->first();
             $file_path = $result->file;
-            $data['panel_header'] = 'Preview';
+            $data['panel_header'] = trans('noshform.preview');
         }
         if ($type == 'scans') {
             $result = DB::table('scans')->where('scans_id', '=', $id)->first();
             $file_path = $result->filePath;
-            $data['panel_header'] = 'Preview';
+            $data['panel_header'] = trans('noshform.preview');
         }
         $name = time() . '_' . Session::get('user_id') . '_doc.pdf';
         $data['filepath'] = public_path() . '/temp/' . $name;
@@ -5278,7 +5416,7 @@ class CoreController extends Controller
         }
         $items[] = [
             'type' => 'item',
-            'label' => 'Back',
+            'label' => trans('noshform.back'),
             'icon' => 'fa-chevron-left',
             'url' => $origin
         ];
@@ -5311,29 +5449,29 @@ class CoreController extends Controller
             if (Hash::check($request->input('old_password'), $query->password)) {
                 $data['password'] = substr_replace(Hash::make($request->input('password')),"$2a",0,3);
                 DB::table('users')->where('id', '=', Session::get('user_id'))->update($data);
-                Session::put('message_action', 'Password changed');
+                Session::put('message_action', trans('noshform.password_change1'));
                 return redirect(Session::get('last_page'));
             } else {
-                return redirect()->back()->withErrors(['tryagain' => 'Your current password was incorrect.  Try again.']);
+                return redirect()->back()->withErrors(['tryagain' => trans('noshform.password_change2')]);
             }
         } else {
             $items[] = [
                 'name' => 'old_password',
-                'label' => 'Current Password',
+                'label' => trans('noshform.old_password'),
                 'type' => 'password',
                 'required' => true,
                 'default_value' => null
             ];
             $items[] = [
                 'name' => 'password',
-                'label' => 'New Password',
+                'label' => trans('noshform.new_password'),
                 'type' => 'password',
                 'required' => true,
                 'default_value' => null
             ];
             $items[] = [
                 'name' => 'confirm_password',
-                'label' => 'Confirm Password',
+                'label' => trans('noshform.confirm_password'),
                 'type' => 'password',
                 'required' => true,
                 'default_value' => null
@@ -5342,15 +5480,15 @@ class CoreController extends Controller
                 'form_id' => 'password_change_form',
                 'action' => route('password_change'),
                 'items' => $items,
-                'save_button_label' => 'Save',
+                'save_button_label' => trans('noshform.save'),
             ];
             $data['content'] = $this->form_build($form_array);
-            $data['panel_header'] = 'Change Password';
+            $data['panel_header'] = trans('noshform.password_change');
             $dropdown_array = [];
             $items = [];
             $items[] = [
                 'type' => 'item',
-                'label' => 'Back',
+                'label' => trans('noshform.back'),
                 'icon' => 'fa-chevron-left',
                 'url' => Session::get('last_page')
             ];
@@ -5368,12 +5506,15 @@ class CoreController extends Controller
         $data['password'] = $this->gen_secret();
         DB::table('users')->where('id', '=', $id)->update($data);
         $this->audit('Update');
+        $this->sync_user($id);
         $url = route('password_reset_response', [$data['password']]);
-        $data2['message_data'] = 'This message is to notify you that you have reset your password with mdNOSH Gateway.<br>';
-        $data2['message_data'] .= 'To finish this process, please click on the following link or point your web browser to:<br>';
+        App::setLocale($query->locale);
+        $data2['message_data'] = trans('noshform.password_reset1') . '.<br>';
+        $data2['message_data'] .= trans('noshform.password_reset2') . ':<br>';
         $data2['message_data'] .= $url;
-        $this->send_mail('auth.emails.generic', $data2, 'Reset password to NOSH ChartingSystem', $query->email, $query->practice_id);
-        Session::put('message_action', 'Password reset.  Check your email for further instructions');
+        $this->send_mail('auth.emails.generic', $data2, trans('noshform.password_reset3'), $query->email, $query->practice_id);
+        App::setLocale(Session::get('user_locale'));
+        Session::put('message_action', trans('noshform.password_reset4'));
         return redirect(Session::get('last_page'));
     }
 
@@ -5409,7 +5550,7 @@ class CoreController extends Controller
         return redirect()->route('patient');
     }
 
-    public function practice_cancel(Request $request)
+    public function practice_cancel(Request $request, $id='0')
     {
         if (Session::get('group_id') != '1') {
             return redirect()->route('dashboard');
@@ -5439,29 +5580,108 @@ class CoreController extends Controller
                 $data2['active'] = 'N';
                 DB::table('practiceinfo')->where('practice_id', '=', $practice_id)->update($data2);
                 $this->audit('Update');
-                Session::get('message_action', "Practice #" . $practice_id . " manually canceled!");
+                Session::put('message_action', trans('noshform.practice') . " #" . $practice_id . " " . trans('noshform.manually_cancelled'));
                 return redirect()->route('dashboard');
             } else {
+                $default_value = null;
+                if ($id !== '0') {
+                    $default_value = $id;
+                }
                 $items[] = [
                     'name' => 'practice_id',
-                    'label' => 'Pick Practice',
+                    'label' => trans('noshform.pick_practice'),
                     'type' => 'select',
                     'select_items' => $this->array_practices('y'),
                     'required' => true,
-                    'default_value' => null
+                    'default_value' => $default_value
                 ];
                 $form_array = [
                     'form_id' => 'practice_cancel_form',
                     'action' => route('practice_cancel'),
                     'items' => $items,
-                    'save_button_label' => 'Save'
+                    'save_button_label' => trans('noshform.save')
                 ];
-                $data['panel_header'] = 'Cancel Practice';
+                $data['panel_header'] = trans('noshform.practice_cancel');
                 $data['content'] = $this->form_build($form_array);
                 $data['assets_js'] = $this->assets_js();
                 $data['assets_css'] = $this->assets_css();
                 return view('core', $data);
             }
+        }
+    }
+
+    public function practice_create(Request $request)
+    {
+        $practice = DB::table('practiceinfo')->where('practice_id', '=', '1')->first();
+        if ($request->isMethod('post')) {
+            $this->validate($request, [
+                'practice_name' => 'required'
+            ]);
+            $practice_data = [
+                'npi' => $practice_npi,
+                'practice_name' => $request->input('practice_name'),
+                'street_address1' => $practice->street_address1,
+                'city' => $practice->city,
+                'state' => $practice->state,
+                'zip' => $practice->zip,
+                'documents_dir' => $practice->documents_dir,
+                'version' => $practice->version,
+                'active' => 'Y',
+                'fax_type' => '',
+                'vivacare' => '',
+                'patient_centric' => 'n',
+                'smtp_user' => $practice->smtp_user,
+                'smtp_pass' => $practice->smtp_pass,
+                'npi' => $practice->npi,
+                'practice_medicare' => $practice->medicare,
+                'tax_id' => $practice->tax_id,
+                'default_pos_id' => $practice->default_pos_id,
+                'weight_unit' => $practice->weight_unit,
+                'height_unit' => $practice->height_unit,
+                'temp_unit' => $practice->temp_unit,
+                'hc_unit' => $practice->hc_unit,
+                'encounter_template' => $practice->encounter_template,
+                'additional_message' => $practice->additional_message,
+                'locale' => $practice->locale,
+                'billing_street_address1' => $practice->billing_street_address1,
+                'billing_street_address2' => $practice->billing_street_address2,
+                'billing_country' => $practice->billing_country,
+                'billing_city' => $practice->billing_city,
+                'billing_state' => $practice->billing_state,
+                'billing_zip' => $practice->billing_zip,
+                'fax_type' => $practice->fax_type,
+                'phaxio_api_key' => $practice->phaxio_api_key,
+                'phaxio_api_secret' => $practice->phaxio_api_secret,
+                'birthday_extension' => $practice->birthday_extension,
+                'birthday_message' => $practice->birthday_message,
+                'appointment_extension' => $practice->appointment_extension,
+                'appointment_interval' => $practice->appointment_interval,
+                'appointment_message' => $practice->appointment_message,
+                'sms_url' => $practice->sms_url
+            ];
+            $practice_id = DB::table('practiceinfo')->insertGetId($practice_data);
+            $this->audit('Add');
+            Session::put('message_action', trans('noshform.practice') . " #" . $practice_id . " " . trans('noshform.practice_create1'));
+            return redirect()->route('setup', [$practice_id]);
+        } else {
+            $items[] = [
+                'name' => 'practice_name',
+                'label' => trans('noshform.practice_name'),
+                'type' => 'text',
+                'required' => true,
+                'default_value' => null
+            ];
+            $form_array = [
+                'form_id' => 'practice_create_form',
+                'action' => route('practice_create'),
+                'items' => $items,
+                'save_button_label' => trans('noshform.save')
+            ];
+            $data['panel_header'] = trans('noshform.practice_create');
+            $data['content'] = $this->form_build($form_array);
+            $data['assets_js'] = $this->assets_js();
+            $data['assets_css'] = $this->assets_css();
+            return view('core', $data);
         }
     }
 
@@ -5494,13 +5714,97 @@ class CoreController extends Controller
             $data['document_upload'] = route('practice_logo_upload');
             $type_arr = ['jpg', 'jpeg', 'png', 'gif'];
             $data['document_type'] = json_encode($type_arr);
-            $dropdown_array['default_button_text'] = '<i class="fa fa-chevron-left fa-fw fa-btn"></i>Back';
+            $dropdown_array['default_button_text'] = '<i class="fa fa-chevron-left fa-fw fa-btn"></i>' . trans('noshform.back');
             $dropdown_array['default_button_text_url'] = Session::get('last_page');
             $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
             $data['assets_js'] = $this->assets_js('document_upload');
             $data['assets_css'] = $this->assets_css('document_upload');
             return view('document_upload', $data);
         }
+    }
+
+    public function practice_manage(Request $request, $type)
+    {
+        if (Session::get('group_id') != '1') {
+            Session::put('message_action', trans('noshform.error') . ' - ' . trans('noshform.practice_manage1'));
+            return redirect()->route('dashboard');
+        }
+        $data['message_action'] = Session::get('message_action');
+        Session::forget('message_action');
+        $query = DB::table('practiceinfo')->orderBy('practice_name', 'asc');
+        if ($type == 'active') {
+            $query->where('active', '=', 'Y');
+            $dropdown_array = [
+                'items_button_text' => trans('noshform.active')
+            ];
+            $items[] = [
+                'type' => 'item',
+                'label' => trans('noshform.inactive'),
+                'icon' => 'fa-times',
+                'url' => route('practice_manage', ['inactive'])
+            ];
+        } else {
+            $query->where('active', '=', 'N');
+            $dropdown_array = [
+                'items_button_text' => trans('noshform.inactive')
+            ];
+            $items[] = [
+                'type' => 'item',
+                'label' => trans('noshform.active'),
+                'icon' => 'fa-check',
+                'url' => route('practice_manage', ['active'])
+            ];
+        }
+        $dropdown_array['items'] = $items;
+        $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
+        $result = $query->get();
+        $return = '';
+        if ($result->count()) {
+            foreach ($result as $row) {
+                $arr = [];
+                $arr['label'] = $row->practice_name;
+                $arr['edit'] = route('setup', [$row->practice_id]);
+                if ($row->practice_id != '1') {
+                    if ($type == 'active') {
+                        $arr['users'] = route('users', ['2', '1', $row->practice_id]);
+                        $arr['inactivate'] = route('practice_cancel', [$row->practice_id]);
+                    } else {
+                        $arr['reactivate'] = route('practice_reactivate', [$row->practice_id]);
+                    }
+                }
+                $list_array[] = $arr;
+            }
+            $return .= $this->result_build($list_array, 'practice_list');
+        } else {
+            $return .= ' ' . trans('noshform.none') . '.';
+        }
+        $dropdown_array1 = [
+            'items_button_icon' => 'fa-plus'
+        ];
+        $items1 = [];
+        $items1[] = [
+            'type' => 'item',
+            'label' => '',
+            'icon' => 'fa-plus',
+            'url' => route('practice_create')
+        ];
+        $dropdown_array1['items'] = $items1;
+        $data['panel_dropdown'] .= '<span class="fa-btn"></span>' . $this->dropdown_build($dropdown_array1);
+        $data['content'] = $return;
+        $data['panel_header'] = trans('noshform.practice_manage');
+        Session::put('last_page', $request->fullUrl());
+        $data['assets_js'] = $this->assets_js();
+        $data['assets_css'] = $this->assets_css();
+        return view('core', $data);
+    }
+
+    public function practice_reactivate(Request $request, $id)
+    {
+        $data['active'] = 'Y';
+        DB::table('practiceinfo')->where('practice_id', '=', $id)->update($data);
+        $this->audit('Update');
+        Session::put('message_action', trans('noshform.practice') . " #" . $id . " " . trans('noshform.practice_reactivate'));
+        return redirect()->route('dashboard');
     }
 
     public function prescription_view(Request $request, $id='')
@@ -5514,7 +5818,7 @@ class CoreController extends Controller
                 $url = route('prescription_pharmacy_view', [$id]);
                 $data['content'] .= QrCode::size(300)->generate($url);
                 $data['content'] .= '</div>';
-                $data['content'] .= '<div style="text-align: center;"><a href="' . $url . '" target="_blank" class="nosh-no-load">Pharmacy Click Here</a></div>';
+                $data['content'] .= '<div style="text-align: center;"><a href="' . $url . '" target="_blank" class="nosh-no-load">' . trans('noshform.prescription_view5') . '</a></div>';
                 $med = explode(' ', $query->rxl_medication);
                 $data['rx'] = $this->goodrx_drug_search($med[0]);
                 $data['link'] = $this->goodrx_information($query->rxl_medication, $query->rxl_dosage . $query->rxl_dosage_unit);
@@ -5536,7 +5840,7 @@ class CoreController extends Controller
                 $items = [];
                 $items[] = [
                     'type' => 'item',
-                    'label' => 'GoodRX',
+                    'label' => trans('noshform.goodrx'),
                     'icon' => 'fa-chevron-down',
                     'url' => '#goodrx_container'
                 ];
@@ -5544,13 +5848,13 @@ class CoreController extends Controller
                 $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
                 return view('prescription', $data);
             } else {
-                $data['content'] = 'This is not a prescribed medication.';
-                $data['panel_header'] = 'Prescription Error';
+                $data['content'] = trans('noshform.prescription_view1');
+                $data['panel_header'] = trans('noshform.prescription_view2');
                 return view('core', $data);
             }
         } else {
-            $data['content'] = 'This prescription has been dispensed.';
-            $data['panel_header'] = 'Prescription Status';
+            $data['content'] = trans('noshform.prescription_view3');
+            $data['panel_header'] = trans('noshform.prescription_view4');
             return view('core', $data);
         }
     }
@@ -5590,7 +5894,7 @@ class CoreController extends Controller
             }
             return response()->download($file_path)->deleteFileAfterSend(true);
         } else {
-            Session::put('message_action', 'Error - Nothing in print queue');
+            Session::put('message_action', trans('noshform.error') . ' - ' . trans('noshform.empty_print_queue'));
             return redirect(Session::get('last_page'));
         }
     }
@@ -5783,7 +6087,7 @@ class CoreController extends Controller
                         'pid' => $pid,
                         'type' => $subtype
                     ],
-                    'message' => 'Prescription sent to print queue'
+                    'message' => trans('noshform.print_queue1')
                 ],
                 'orders' => [
                     'url' => [
@@ -5791,7 +6095,7 @@ class CoreController extends Controller
                         'id' => $id,
                         'pid' => $pid
                     ],
-                    'message' => 'Order sent to print queue'
+                    'message' => trans('noshform.print_queue2')
                 ],
                 'hippa' => [
                     'url' => [
@@ -5800,7 +6104,7 @@ class CoreController extends Controller
                         'pid' => $pid,
                         'type' => $subtype
                     ],
-                    'message' => 'Patient chart sent to print queue'
+                    'message' => trans('noshform.print_queue3')
                 ],
                 'hippa_request' => [
                     'url' => [
@@ -5808,7 +6112,7 @@ class CoreController extends Controller
                         'id' => $id,
                         'pid' => $pid
                     ],
-                    'message' => 'Records request sent to print queue'
+                    'message' => trans('noshform.print_queue4')
                 ]
             ];
             $action_url = $action_arr[$action]['url'];
@@ -5837,7 +6141,7 @@ class CoreController extends Controller
             $migrate->setTimeout(null);
             $migrate->run();
             $return = nl2br($migrate->getOutput());
-            Session::put('message_action', 'Backup restored<br>' . $return);
+            Session::put('message_action', trans('noshform.restore_backup1') . '<br>' . $return);
             return redirect()->route('dashboard');
         } else {
             $practice = DB::table('practiceinfo')->first();
@@ -5852,7 +6156,7 @@ class CoreController extends Controller
             }
             $items[] = [
                 'name' => 'backup',
-                'label' => 'Select Backup',
+                'label' => trans('noshform.backup'),
                 'type' => 'select',
                 'select_items' => $backup_arr,
                 'required' => true,
@@ -5862,9 +6166,9 @@ class CoreController extends Controller
                 'form_id' => 'restore_backup_form',
                 'action' => route('restore_backup'),
                 'items' => $items,
-                'save_button_label' => 'Restore'
+                'save_button_label' => trans('noshform.restore')
             ];
-            $data['panel_header'] = 'Restore Backup Database';
+            $data['panel_header'] = trans('noshform.restore_backup');
             $data['content'] = $this->form_build($form_array);
             $data['assets_js'] = $this->assets_js();
             $data['assets_css'] = $this->assets_css();
@@ -5882,7 +6186,7 @@ class CoreController extends Controller
             }
         }
         $provider_arr = $this->array_providers();
-        $data['provider_list'] = '<option value="">Select a provider</option>';
+        $data['provider_list'] = '<option value="">' . trans('noshform.select_provider') . '</option>';
         foreach ($provider_arr as $provider_id_key => $provider_name) {
             $data['provider_list'] .= '<option value="' . $provider_id_key . '">' . $provider_name . '</option>';
         }
@@ -5943,7 +6247,7 @@ class CoreController extends Controller
         Session::forget('message_action');
         $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
         $return = '';
-        $type_arr['0'] = 'All Providers';
+        $type_arr['0'] = trans('noshform.all_providers');
         $type_arr = $type_arr + $this->array_providers();
         $dropdown_array = [
             'items_button_text' => $type_arr[$type]
@@ -5985,7 +6289,7 @@ class CoreController extends Controller
             }
             $return .= $this->result_build($list_array, 'repeat_schedule_list');
         } else {
-            $return .= ' None.';
+            $return .= ' ' . trans('noshform.none') . '.';
         }
         $dropdown_array1 = [
             'items_button_icon' => 'fa-plus'
@@ -5993,14 +6297,14 @@ class CoreController extends Controller
         $items1 = [];
         $items1[] = [
             'type' => 'item',
-            'label' => 'Add Provider Exception',
+            'label' => trans('noshform.add_provider_exception'),
             'icon' => 'fa-plus',
             'url' => route('core_form', ['repeat_schedule', $row_index, '0', $type])
         ];
         $dropdown_array1['items'] = $items1;
         $data['panel_dropdown'] .= '<span class="fa-btn"></span>' . $this->dropdown_build($dropdown_array1);
         $data['content'] = $return;
-        $data['panel_header'] = 'Provider Exceptions for Schedule';
+        $data['panel_header'] = trans('noshform.schedule_provider_exceptions');
         Session::put('last_page', $request->fullUrl());
         if (Session::get('group_id') == '1') {
             if (Session::has('download_ccda_entire')) {
@@ -6022,8 +6326,8 @@ class CoreController extends Controller
         $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
         $return = '';
         $type_arr = [
-            'y' => ['Active', 'fa-check'],
-            'n' => ['Inactive', 'fa-times'],
+            'y' => [trans('noshform.active'), 'fa-check'],
+            'n' => [trans('noshform.inactive'), 'fa-times'],
         ];
         $dropdown_array = [
             'items_button_text' => $type_arr[$type][0]
@@ -6069,13 +6373,13 @@ class CoreController extends Controller
                 $arr = [];
                 $arr['label'] = '<span class="fa-btn"><i class="fa fa-square fa-lg" style="color:' . $color_arr[$row->classname] . '"></i> </span><b>' . $row->visit_type . '</b> - ';
                 if ($row->duration !== null) {
-                    $arr['label'] .= 'Duration: ' . $duration_arr[$row->duration]. ',';
+                    $arr['label'] .= trans('noshform.duration') . ': ' . $duration_arr[$row->duration]. ',';
                 }
                 if ($row->provider_id !== 0 && $row->provider_id !== null) {
                     $provider = DB::table('users')->where('id', '=', $row->provider_id)->first();
-                    $arr['label'] .= '<br>Provider: ' . $provider->displayname;
+                    $arr['label'] .= '<br>' . trans('noshform.provider') . ': ' . $provider->displayname;
                 } else {
-                    $arr['label'] .= '<br>All Providers';
+                    $arr['label'] .= '<br>' . trans('noshform.all_providers');
                 }
                 if ($edit) {
                     $arr['edit'] = route('core_form', ['calendar', $row_index, $row->$row_index, $type]);
@@ -6089,7 +6393,7 @@ class CoreController extends Controller
             }
             $return .= $this->result_build($list_array, 'calendar_list');
         } else {
-            $return .= ' None.';
+            $return .= ' ' . trans('noshform.none') . '.';
         }
         if ($edit) {
             $dropdown_array1 = [
@@ -6098,7 +6402,7 @@ class CoreController extends Controller
             $items1 = [];
             $items1[] = [
                 'type' => 'item',
-                'label' => 'Add Visit Type',
+                'label' => trans('noshform.add_visit_type'),
                 'icon' => 'fa-plus',
                 'url' => route('core_form', ['calendar', $row_index, '0'])
             ];
@@ -6106,7 +6410,7 @@ class CoreController extends Controller
             $data['panel_dropdown'] .= '<span class="fa-btn"></span>' . $this->dropdown_build($dropdown_array1);
         }
         $data['content'] = $return;
-        $data['panel_header'] = 'Visit Types';
+        $data['panel_header'] = trans('noshform.schedule_visit_types');
         Session::put('last_page', $request->fullUrl());
         if (Session::get('group_id') == '1') {
             if (Session::has('download_ccda_entire')) {
@@ -6127,21 +6431,25 @@ class CoreController extends Controller
         return redirect()->route('patient');
     }
 
-    public function setup(Request $request)
+    public function setup(Request $request, $practice_id='0')
     {
         $data['message_action'] = Session::get('message_action');
         Session::forget('message_action');
-        $result = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
+        if ($practice_id == '0') {
+            $practice_id = Session::get('practice_id');
+        }
+        Session::put('last_page', $request->fullUrl());
+        $result = DB::table('practiceinfo')->where('practice_id', '=', $practice_id)->first();
         $return = '';
         if ($result) {
             if ($result->weight_unit == null) {
-                return redirect()->route('core_form', ['practiceinfo', 'practice_id', Session::get('practice_id'), 'settings']);
+                return redirect()->route('core_form', ['practiceinfo', 'practice_id', $practice_id, 'settings']);
             }
             if ($result->billing_street_address1 == null) {
-                return redirect()->route('core_form', ['practiceinfo', 'practice_id', Session::get('practice_id'), 'billing']);
+                return redirect()->route('core_form', ['practiceinfo', 'practice_id', $practice_id, 'billing']);
             }
             if ($result->birthday_extension == null) {
-                return redirect()->route('core_form', ['practiceinfo', 'practice_id', Session::get('practice_id'), 'extensions']);
+                return redirect()->route('core_form', ['practiceinfo', 'practice_id', $practice_id, 'extensions']);
             }
             $state = $this->array_states($result->country);
             $unit_arr = [
@@ -6157,10 +6465,10 @@ class CoreController extends Controller
                 'phaxio' => trans('noshform.phaxio')
             ];
             $header_arr = [
-                trans('noshform.practice_information') => route('core_form', ['practiceinfo', 'practice_id', Session::get('practice_id'), 'information']),
-                trans('noshform.practice_settings') => route('core_form', ['practiceinfo', 'practice_id', Session::get('practice_id'), 'settings']),
-                trans('noshform.billing') => route('core_form', ['practiceinfo', 'practice_id', Session::get('practice_id'), 'billing']),
-                trans('noshform.extensions') => route('core_form', ['practiceinfo', 'practice_id', Session::get('practice_id'), 'extensions']),
+                trans('noshform.practice_information') => route('core_form', ['practiceinfo', 'practice_id', $practice_id, 'information']),
+                trans('noshform.practice_settings') => route('core_form', ['practiceinfo', 'practice_id', $practice_id, 'settings']),
+                trans('noshform.billing') => route('core_form', ['practiceinfo', 'practice_id', $practice_id, 'billing']),
+                trans('noshform.extensions') => route('core_form', ['practiceinfo', 'practice_id', $practice_id, 'extensions']),
                 trans('noshform.practice_logo') => route('practice_logo_upload')
             ];
             $info_arr = [
@@ -6282,11 +6590,10 @@ class CoreController extends Controller
             }
             $return .= '</div></div></div>';
         } else {
-            $return .= ' None.';
+            $return .= ' ' . trans('noshform.none') . '.';
         }
         $data['content'] = $return;
         $data['panel_header'] = trans('noshform.practice_setup');
-        Session::put('last_page', $request->fullUrl());
         $data['assets_js'] = $this->assets_js();
         $data['assets_css'] = $this->assets_css();
         return view('core', $data);
@@ -6313,10 +6620,10 @@ class CoreController extends Controller
             $search_no_insurance_only = $request->input('search_no_insurance_only');
             $search_gender = $request->input('search_gender');
             if ($request->input('submit') !== 'run') {
-                $message = 'Report updated';
+                $message = trans('noshform.superquery1');
                 if ($type == '0') {
                     $type = $request->input('title');
-                    $message = 'Report created';
+                    $message = trans('noshform.superquery2');
                 }
                 if ($type !== $request->input('title')) {
                     $old_type = $type;
@@ -6958,10 +7265,10 @@ class CoreController extends Controller
                     $arr['view'] = route('set_patient', [$row->pid]);
                     $list_array[] = $arr;
                 }
-                $table = '<h4>Results</h4>';
+                $table = '<h4>' . trans('noshform.superquery3') . '</h4>';
                 $table .= $this->result_build($list_array, 'superquery_list');
             } else {
-                $table = 'No result';
+                $table = trans('noshform.no_results');
             }
         } else {
             $values = [];
@@ -6976,7 +7283,7 @@ class CoreController extends Controller
                 'search_gender' => 'both',
                 'title' => null
             ];
-            $data['panel_header'] = 'New Report';
+            $data['panel_header'] = trans('noshform.superquery4');
             if ($type !== '0') {
                 $values = [];
                 $item = [];
@@ -6994,25 +7301,25 @@ class CoreController extends Controller
             Session::forget('message_action');
         }
         $intro = $this->query_build($values);
-        $gender_arr['both'] = 'All';
+        $gender_arr['both'] = trans('noshform.all');
         $gender_arr = array_merge($gender_arr, $this->array_gender());
         $items[] = [
             'name' => 'search_active_only',
-            'label' => 'Active Patients Only',
+            'label' => trans('noshform.search_active_only'),
             'type' => 'checkbox',
             'value' => 'Yes',
             'default_value' => $item['search_active_only']
         ];
         $items[] = [
             'name' => 'search_no_insurance_only',
-            'label' => 'Patients Without Insurance',
+            'label' => trans('noshform.search_no_insurance_only'),
             'type' => 'checkbox',
             'value' => 'Yes',
             'default_value' => $item['search_no_insurance_only']
         ];
         $items[] = [
             'name' => 'search_gender',
-            'label' => 'Gender',
+            'label' => trans('noshform.sex'),
             'type' => 'select',
             'required' => true,
             'select_items' => $gender_arr,
@@ -7020,7 +7327,7 @@ class CoreController extends Controller
         ];
         $items[] = [
             'name' => 'title',
-            'label' => 'Report Title',
+            'label' => trans('noshform.report_title'),
             'type' => 'text',
             'required' => true,
             'default_value' => $item['title']
@@ -7029,12 +7336,12 @@ class CoreController extends Controller
             'form_id' => 'super_query_form',
             'action' => route('superquery', [$type]),
             'items' => $items,
-            'save_button_label' => 'Save and Run Report',
+            'save_button_label' => trans('noshform.superquery5'),
             'intro' => $intro,
             'origin' => route('superquery_list'),
             'add_save_button' => [
-                'run' => 'Run Report',
-                'save' => 'Save Only'
+                'run' => trans('noshform.run_report'),
+                'save' => trans('noshform.save_only')
             ]
         ];
         $data['content'] = $this->form_build($form_array);
@@ -7055,7 +7362,7 @@ class CoreController extends Controller
         $formatter1 = Formatter::make($array, Formatter::ARR);
         $data['reports'] = $formatter1->toYaml();
         DB::table('users')->where('id', '=', Session::get('user_id'))->update($data);
-        Session::put('message_action', 'Report deleted');
+        Session::put('message_action', trans('noshform.superquery_delete'));
         return redirect(Session::get('last_page'));
     }
 
@@ -7063,9 +7370,9 @@ class CoreController extends Controller
     {
         $html = '';
         $type_arr = [
-            'all' => ['All', 'fa-calendar'],
-            'year' => ['Past Year', 'fa-calendar-o'],
-            'spec' => ['Specified Time', 'fa-clock-o']
+            'all' => [trans('noshform.all'), 'fa-calendar'],
+            'year' => [trans('noshform.past_year'), 'fa-calendar-o'],
+            'spec' => [trans('noshform.specified_time'), 'fa-clock-o']
         ];
         $dropdown_array = [
             'items_button_text' => $type_arr[$type][0]
@@ -7082,7 +7389,7 @@ class CoreController extends Controller
         }
         $dropdown_array['items'] = $items;
         $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
-        $data['panel_header'] = 'HEDIS Report';
+        $data['panel_header'] = trans('noshform.superquery_hedis');
         if ($request->isMethod('post')) {
             if ($type == 'spec') {
                 $type = date('m/d/Y', strtotime($request->input('time')));
@@ -7090,7 +7397,7 @@ class CoreController extends Controller
             $items = [];
             $items[] = [
                 'name' => 'time',
-                'label' => 'Choose Time Period for Audit to Begin',
+                'label' => trans('noshform.superquery_time'),
                 'type' => 'date',
                 'required' => true,
                 'default_value' => $request->input('time')
@@ -7099,7 +7406,7 @@ class CoreController extends Controller
                 'form_id' => 'superquery_hedis_form',
                 'action' => route('superquery_hedis', ['spec']),
                 'items' => $items,
-                'save_button_label' => 'Run Report',
+                'save_button_label' => trans('noshform.run_report'),
                 'origin' => route('superquery_list')
             ];
             $html .= $this->form_build($form_array);
@@ -7114,7 +7421,7 @@ class CoreController extends Controller
                 $items = [];
                 $items[] = [
                     'name' => 'time',
-                    'label' => 'Choose Time Period for Audit to Begin',
+                    'label' => trans('noshform.superquery_time'),
                     'type' => 'date',
                     'required' => true,
                     'default_value' => date('Y-m-d')
@@ -7123,7 +7430,7 @@ class CoreController extends Controller
                     'form_id' => 'superquery_hedis_form',
                     'action' => route('superquery_hedis', [$type]),
                     'items' => $items,
-                    'save_button_label' => 'Run Report',
+                    'save_button_label' => trans('noshform.run_report'),
                     'origin' => route('superquery_list')
                 ];
                 $html .= $this->form_build($form_array);
@@ -7138,9 +7445,9 @@ class CoreController extends Controller
             }
             $demographics = DB::table('demographics_relate')->where('practice_id', '=', Session::get('practice_id'))->get();
             if ($demographics->count()) {
-                $html .= '<h4>HEDIS Audit Results</h4>';
+                $html .= '<h4>' . trans('noshform.superquery_hedis1') . '</h4>';
                 $html .= '<div class="table-responsive"><table class="table table-striped">';
-                $html .= '<thead><tr><th>Measure</th><th>Description</th><th>Result</th><th>Rectify</th></tr></thead><tbody>';
+                $html .= '<thead><tr><th>' . trans('noshform.superquery_hedis2') . '</th><th>' . trans('noshform.superquery_hedis3') . '</th><th>' . trans('noshform.superquery_hedis4') . '</th><th>' . trans('noshform.superquery_hedis5') . '</th></tr></thead><tbody>';
                 $arr = [];
                 $total_count = 0;
                 foreach ($demographics as $demographic) {
@@ -7245,76 +7552,76 @@ class CoreController extends Controller
                     }
                 }
                 // ABA
-                $html .= '<tr><td>Adult BMI Assessment</td><td>Percentage of members 18-74 who had their BMI and weight documented at an outpatient visit</td><td>' . $counter['aba']['percent_goal'] .'%</td><td>' . $counter['aba']['rectify'] .'</td></tr>';
+                $html .= '<tr><td>' . trans('noshform.superquery_hedis_aba1') . '</td><td>' . trans('noshform.superquery_hedis_aba2') . '</td><td>' . $counter['aba']['percent_goal'] .'%</td><td>' . $counter['aba']['rectify'] .'</td></tr>';
                 // WCC
-                $html .= '<tr><td>Weight Assessment and Counseling for Nutrition and Physical Activity for Children and Adolescents</td><td>Percentage of members 3-17 who had an outpatient visit with a PCP or OB/GYN which included evidence of BMI documentation with corresponding height&weight, counseling for nutrition and/or counseling for physical activity</td><td>' . $counter['wcc']['percent_goal'] .'%</td><td>' . $counter['wcc']['rectify'] .'</td></tr>';
+                $html .= '<tr><td>' . trans('noshform.superquery_hedis_wcc1') . '</td><td>' . trans('noshform.superquery_hedis_wcc2') . '</td><td>' . $counter['wcc']['percent_goal'] .'%</td><td>' . $counter['wcc']['rectify'] .'</td></tr>';
                 // CIS
-                $html .= '<tr><td>Childhood Immunization Status</td><td>Percentage of children two years of age with appropriate childhood immunizations</td><td>' . $counter['cis']['percent_goal'] .'%</td><td>' . $counter['cis']['rectify'] .'</td></tr>';
+                $html .= '<tr><td>' . trans('noshform.superquery_hedis_cis1') . '</td><td>' . trans('noshform.superquery_hedis_cis2') . '</td><td>' . $counter['cis']['percent_goal'] .'%</td><td>' . $counter['cis']['rectify'] .'</td></tr>';
                 // IMA
-                $html .= '<tr><td>Immunizations for Adolescents</td><td>Percentage of adolescents 13 years of age with appropriate immunizations</td><td>' . $counter['ima']['percent_goal'] .'%</td><td>' . $counter['ima']['rectify'] .'</td></tr>';
+                $html .= '<tr><td>' . trans('noshform.superquery_hedis_ima1') . '</td><td>' . trans('noshform.superquery_hedis_ima2') . '</td><td>' . $counter['ima']['percent_goal'] .'%</td><td>' . $counter['ima']['rectify'] .'</td></tr>';
                 // HPV
-                $html .= '<tr><td>Human Papillomavirus Vaccine for Female Adolescents</td><td>Percentage of female adolescents 13 years of age who had three doses of HPV vaccine between 9th and 13th birthdays</td><td>' . $counter['hpv']['percent_goal'] .'%</td><td>' . $counter['hpv']['rectify'] .'</td></tr>';
+                $html .= '<tr><td>' . trans('noshform.superquery_hedis_hpv1') . '</td><td>' . trans('noshform.superquery_hedis_hpv2') . '</td><td>' . $counter['hpv']['percent_goal'] .'%</td><td>' . $counter['hpv']['rectify'] .'</td></tr>';
                 // LSC
-                $html .= '<tr><td>Lead Screening in Children</td><td>Percentage of children 2 years of age screened for lead poisoning</td><td>' . $counter['lsc']['percent_goal'] .'%</td><td>' . $counter['lsc']['rectify'] .'</td></tr>';
+                $html .= '<tr><td>' . trans('noshform.superquery_hedis_lsc1') . '</td><td>' . trans('noshform.superquery_hedis_lsc2') . '</td><td>' . $counter['lsc']['percent_goal'] .'%</td><td>' . $counter['lsc']['rectify'] .'</td></tr>';
                 // BCS
-                $html .= '<tr><td>Breast Cancer Screening</td><td>Percentage of women 40-69 years of age who had a mammogram</td><td>' . $counter['bcs']['percent_goal'] .'%</td><td>' . $counter['bcs']['rectify'] .'</td></tr>';
+                $html .= '<tr><td>' . trans('noshform.superquery_hedis_bcs1') . '</td><td>' . trans('noshform.superquery_hedis_bcs2') . '</td><td>' . $counter['bcs']['percent_goal'] .'%</td><td>' . $counter['bcs']['rectify'] .'</td></tr>';
                 // CCS
-                $html .= '<tr><td>Cervical Cancer Screening</td><td>Percentage of women 21-64 years of age who had a Pap test</td><td>' . $counter['ccs']['percent_goal'] .'%</td><td>' . $counter['ccs']['rectify'] .'</td></tr>';
+                $html .= '<tr><td>' . trans('noshform.superquery_hedis_ccs1') . '</td><td>' . trans('noshform.superquery_hedis_ccs2') . '</td><td>' . $counter['ccs']['percent_goal'] .'%</td><td>' . $counter['ccs']['rectify'] .'</td></tr>';
                 // COL
-                $html .= '<tr><td>Colorectal Cancer Screening</td><td>Percentage of members 50-75 years of age who had appropriate screening for colorectal cancer</td><td>' . $counter['col']['percent_goal'] .'%</td><td>' . $counter['col']['rectify'] .'</td></tr>';
+                $html .= '<tr><td>' . trans('noshform.superquery_hedis_col1') . '</td><td>' . trans('noshform.superquery_hedis_col2') . '</td><td>' . $counter['col']['percent_goal'] .'%</td><td>' . $counter['col']['rectify'] .'</td></tr>';
                 // CHL
-                $html .= '<tr><td>Chlamydia Screening in Women</td><td>Sexually active women 16-24 with annual chlamydia screening</td><td>' . $counter['chl']['percent_goal'] .'%</td><td>' . $counter['chl']['rectify'] .'</td></tr>';
+                $html .= '<tr><td>' . trans('noshform.superquery_hedis_chl1') . '</td><td>' . trans('noshform.superquery_hedis_chl2') . '</td><td>' . $counter['chl']['percent_goal'] .'%</td><td>' . $counter['chl']['rectify'] .'</td></tr>';
                 // GSO
-                $html .= '<tr><td>Glaucoma Screening Older Adults</td><td>Sexually active women 1Percentage of members 65 or older who received a glaucoma eye exam (no prior history)</td><td>' . $counter['gso']['percent_goal'] .'%</td><td>' . $counter['gso']['rectify'] .'</td></tr>';
+                $html .= '<tr><td>' . trans('noshform.superquery_hedis_gso1') . '</td><td>' . trans('noshform.superquery_hedis_gso2') . '</td><td>' . $counter['gso']['percent_goal'] .'%</td><td>' . $counter['gso']['rectify'] .'</td></tr>';
                 // CWP
-                $html .= '<tr><td>Appropriate Testing for Children With Pharyngitis</td><td>Percentage of children ages 2-18 diagnosed with pharyngitis, prescribed an antibiotic and tested for strep</td><td>';
-                $html .= '<ul><li>Percentage tested: ' . $counter['cwp']['percent_test'] . '%</li>';
-                $html .= '<li>Percentage treated with antibiotics: ' . $counter['cwp']['percent_abx'] . '%</li>';
-                $html .= '<li>Percentage treated with antibiotics without testing: ' . $counter['cwp']['percent_abx_no_test'] . '%</li></ul>';
+                $html .= '<tr><td>' . trans('noshform.superquery_hedis_cwp1') . '</td><td>' . trans('noshform.superquery_hedis_cwp2') . '</td><td>';
+                $html .= '<ul><li>' . trans('noshform.superquery_hedis_cwp3') . ': ' . $counter['cwp']['percent_test'] . '%</li>';
+                $html .= '<li>' . trans('noshform.superquery_hedis_cwp4') . ': ' . $counter['cwp']['percent_abx'] . '%</li>';
+                $html .= '<li>' . trans('noshform.superquery_hedis_cwp5') . ': ' . $counter['cwp']['percent_abx_no_test'] . '%</li></ul>';
                 $html .= '</td><td>' . $counter['cwp']['rectify'] .'</td></tr>';
                 // URI
-                $html .= '<tr><td>Appropriate Treatment for Children With Upper Respiratory Infection</td><td>Percentage of children 3 months-18 years diagnosed with ONLY upper respiratory infection diagnosis and NOT dispensed an antibiotic</td><td>';
-                $html .= '<ul><li>Percentage treated with antibiotics: ' . $counter['uri']['percent_abx'] . '%</li></ul>';
+                $html .= '<tr><td>' . trans('noshform.superquery_hedis_uri1') . '</td><td>' . trans('noshform.superquery_hedis_uri2') . '</td><td>';
+                $html .= '<ul><li>' . trans('noshform.superquery_hedis_uri3') . ': ' . $counter['uri']['percent_abx'] . '%</li></ul>';
                 $html .= '</td><td>' . $counter['uri']['rectify'] .'</td></tr>';
                 // AAB
-                $html .= '<tr><td>Avoidance of Antibiotic Treatment for Adults with Acute Bronchitis</td><td>Percentage of adults 18-64 years diagnosed with acute bronchitis who were NOT dispensed an antibiotic</td><td>';
-                $html .= '<ul><li>Percentage treated with antibiotics: ' . $counter['aab']['percent_abx'] . '%</li></ul>';
+                $html .= '<tr><td>' . trans('noshform.superquery_hedis_aab1') . '</td><td>' . trans('noshform.superquery_hedis_aab2') . '</td><td>';
+                $html .= '<ul><li>' . trans('noshform.superquery_hedis_aab3') . ': ' . $counter['aab']['percent_abx'] . '%</li></ul>';
                 $html .= '</td><td>' . $counter['aab']['rectify'] .'</td></tr>';
                 // SPR
-                $html .= '<tr><td>Use of Spirometry Testing in the Assessment and Diagnosis of COPD</td><td>Percentage of members age 40 and older w/ COPD and spirometry testing</td><td>' . $counter['spr']['percent_goal'] .'%</td><td>' . $counter['spr']['rectify'] .'</td></tr>';
+                $html .= '<tr><td>' . trans('noshform.superquery_hedis_spr1') . '</td><td>' . trans('noshform.superquery_hedis_spr2') . '</td><td>' . $counter['spr']['percent_goal'] .'%</td><td>' . $counter['spr']['rectify'] .'</td></tr>';
                 // PCE
-                $html .= '<tr><td>Pharmacotherapy Management of COPD Exacerbation</td><td>Members dispensed systemic corticosteroid & bronchodilator after COPD exacerbation</td><td>';
-                $html .= '<ul><li>Percentage treated for COPD exacerbations: ' . $counter['pce']['percent_tx'] . '%</li></ul>';
+                $html .= '<tr><td>' . trans('noshform.superquery_hedis_pce1') . '</td><td>' . trans('noshform.superquery_hedis_pce2') . '</td><td>';
+                $html .= '<ul><li>' . trans('noshform.superquery_hedis_pce3') . ': ' . $counter['pce']['percent_tx'] . '%</li></ul>';
                 $html .= '</td><td>' . $counter['pce']['rectify'] .'</td></tr>';
                 // ASM and AMR
-                $html .= '<tr><td>Use of Appropriate Medications for People with Asthma</td><td>Percentage of members 5-56 years with asthma and appropriately prescribed medications</td><td>' . $counter['asm']['percent_goal'] .'%</td><td>' . $counter['asm']['rectify'] .'</td></tr>';
-                $html .= '<tr><td>Asthma Medication Ratio</td><td>Percentage of members 5-64 years with asthma who had a ratio of controller medications to total asthma medications of .5 or greater</td><td>' . $counter['amr']['percent_goal'] .'%</td><td>' . $counter['amr']['rectify'] .'</td></tr>';
+                $html .= '<tr><td>' . trans('noshform.superquery_hedis_asm1') . '</td><td>' . trans('noshform.superquery_hedis_asm2') . '</td><td>' . $counter['asm']['percent_goal'] .'%</td><td>' . $counter['asm']['rectify'] .'</td></tr>';
+                $html .= '<tr><td>' . trans('noshform.superquery_hedis_amr1') . '</td><td>' . trans('noshform.superquery_hedis_amr2') . '</td><td>' . $counter['amr']['percent_goal'] .'%</td><td>' . $counter['amr']['rectify'] .'</td></tr>';
                 // CMC and PBH
-                $html .= '<tr><td>Cholesterol Management for Patients With Cardiovascular Conditions</td><td>Percentage of members 18-75 who were discharged alive for acute myocardial infarction, coronary artery bypass graft or percutaneous coronary interventions, or who had a diagnosis of ischemic vascular diasease who had LDL-C screenings</td><td>' . $counter['cmc']['percent_goal'] .'%</td><td>' . $counter['cmc']['rectify'] .'</td></tr>';
-                $html .= '<tr><td>Persistence of Beta-Blocker Treatment After a Heart Attack</td><td>Percentage of members 18 years or older, discharged with a diagnosis of acute myocardial infarction and received a beta-blocker treatment for 6 months</td><td>' . $counter['pbh']['percent_goal'] .'%</td><td>' . $counter['pbh']['rectify'] .'</td></tr>';
+                $html .= '<tr><td>' . trans('noshform.superquery_hedis_cmc1') . '</td><td>' . trans('noshform.superquery_hedis_cmc2') . '</td><td>' . $counter['cmc']['percent_goal'] .'%</td><td>' . $counter['cmc']['rectify'] .'</td></tr>';
+                $html .= '<tr><td>' . trans('noshform.superquery_hedis_pbh1') . '</td><td>' . trans('noshform.superquery_hedis_pbh2') . '</td><td>' . $counter['pbh']['percent_goal'] .'%</td><td>' . $counter['pbh']['rectify'] .'</td></tr>';
                 // CBP
-                $html .= '<tr><td>Controlling High Blood Pressure</td><td>Percentage of members 18-85 with a diagnosis of hypertension and whose blood pressure was controlled</td><td>' . $counter['cbp']['percent_goal'] .'%</td><td>' . $counter['cbp']['rectify'] .'</td></tr>';
+                $html .= '<tr><td>' . trans('noshform.superquery_hedis_cbp1') . '</td><td>' . trans('noshform.superquery_hedis_cbp2') . '</td><td>' . $counter['cbp']['percent_goal'] .'%</td><td>' . $counter['cbp']['rectify'] .'</td></tr>';
                 // CDC
-                $html .= '<tr><td>Comprehensive Diabetes Care</td><td>The percentage of members 18-75 years of age with diabetes (type 1 or type 2) who had each of the following: 1) HbA1c, 2) LDL Screening, 3) Nephropathy Screening, 4) Retinal Eye Exam, 5) Blood Pressure control.</td><td>' . $counter['cdc']['percent_goal'] .'%</td><td>' . $counter['cdc']['rectify'] .'</td></tr>';
+                $html .= '<tr><td>' . trans('noshform.superquery_hedis_cdc1') . '</td><td>' . trans('noshform.superquery_hedis_cdc2') . '</td><td>' . $counter['cdc']['percent_goal'] .'%</td><td>' . $counter['cdc']['rectify'] .'</td></tr>';
                 // ART
-                $html .= '<tr><td>Disease Modifying Anti-Rheumatic Drug Therapy for Rheumatoid Arthritis</td><td>Percentage of members w/ RA dispensed a DMARD</td><td>' . $counter['art']['percent_goal'] .'%</td><td>' . $counter['art']['rectify'] .'</td></tr>';
+                $html .= '<tr><td>' . trans('noshform.superquery_hedis_art1') . '</td><td>' . trans('noshform.superquery_hedis_art2') . '</td><td>' . $counter['art']['percent_goal'] .'%</td><td>' . $counter['art']['rectify'] .'</td></tr>';
                 // OMW
-                $html .= '<tr><td>Osteoporosis Management in Women Who Had Fracture</td><td>Percentage of women 67 years or older who suffered a fracture and then a DEXA scan or osteoporosis medication within 6 months of incident</td><td>' . $counter['omw']['percent_goal'] .'%</td><td>' . $counter['omw']['rectify'] .'</td></tr>';
+                $html .= '<tr><td>' . trans('noshform.superquery_hedis_omw1') . '</td><td>' . trans('noshform.superquery_hedis_omw2') . '</td><td>' . $counter['omw']['percent_goal'] .'%</td><td>' . $counter['omw']['rectify'] .'</td></tr>';
                 // LBP
-                $html .= '<tr><td>Osteoporosis Management in Women Who Had Fracture</td><td>Percentage of members with a primary diagnosis of low back pain who did not have an imaging study within 28 days of diagnosis</td><td>';
-                $html .= '<ul><li>Percentage of instances where no imaging study was performed for a diagnosis of low back pain: ' . $counter['lbp']['percent_no_rad'] . '%</li></ul>';
+                $html .= '<tr><td>' . trans('noshform.superquery_hedis_lbp1') . '</td><td>' . trans('noshform.superquery_hedis_lbp2') . '</td><td>';
+                $html .= '<ul><li>' . trans('noshform.superquery_hedis_lbp3') . ': ' . $counter['lbp']['percent_no_rad'] . '%</li></ul>';
                 $html .= '</td><td>' . $counter['lbp']['rectify'] .'</td></tr>';
                 // AMM
-                $html .= '<tr><td>Antidepressant Medication Management</td><td>Percentage of members 18 years or older diagnosed with depression and treated with antidepressant meds</td><td>' . $counter['amm']['percent_goal'] .'%</td><td>' . $counter['amm']['rectify'] .'</td></tr>';
+                $html .= '<tr><td>' . trans('noshform.superquery_hedis_amm1') . '</td><td>' . trans('noshform.superquery_hedis_amm2') . '</td><td>' . $counter['amm']['percent_goal'] .'%</td><td>' . $counter['amm']['rectify'] .'</td></tr>';
                 // ADD
-                $html .= '<tr><td>Follow-Up Care for Children Prescribed ADHD Medication</td><td>Percentage of children 6-12 with newly diagnosed ADHD who received the appropriate follow-up treatment and medication</td><td>' . $counter['add']['percent_goal'] .'%</td><td>' . $counter['add']['rectify'] .'</td></tr>';
+                $html .= '<tr><td>' . trans('noshform.superquery_hedis_add1') . '</td><td>' . trans('noshform.superquery_hedis_add2') . '</td><td>' . $counter['add']['percent_goal'] .'%</td><td>' . $counter['add']['rectify'] .'</td></tr>';
                 $html .= '</tbody></table>';
             } else {
-                $html .= 'No results.';
+                $html .= ' ' . trans('noshform.no_results') . '.';
             }
         }
         $dropdown_array1 = [
-            'default_button_text' => '<i class="fa fa-chevron-left fa-fw fa-btn"></i>Back',
+            'default_button_text' => '<i class="fa fa-chevron-left fa-fw fa-btn"></i>' . trans('noshform.back'),
             'default_button_text_url' => Session::get('last_page')
         ];
         $data['panel_dropdown'] .= '<span class="fa-btn"></span>' . $this->dropdown_build($dropdown_array1);
@@ -7332,7 +7639,7 @@ class CoreController extends Controller
         $return .= $this->practice_stats();
         $return .= '</div>';
         $user = DB::table('users')->where('id', '=', Session::get('user_id'))->first();
-        $data['panel_header'] = 'My Reports';
+        $data['panel_header'] = trans('noshform.superquery_list1');
         if ($user->reports == null || $user->reports == '') {
             $array = [];
         } else {
@@ -7342,12 +7649,12 @@ class CoreController extends Controller
         }
         $list_array = [];
         $list_array[] = [
-            'label' => 'Tag Search',
+            'label' => trans('noshform.superquery_list2'),
             'view' => route('superquery_tag'),
             'active' => true,
         ];
         $list_array[] = [
-            'label' => 'HEDIS Report',
+            'label' => trans('noshform.superquery_hedis'),
             'view' => route('superquery_hedis', ['all']),
             'active' => true
         ];
@@ -7367,7 +7674,7 @@ class CoreController extends Controller
         $items1 = [];
         $items1[] = [
            'type' => 'item',
-           'label' => 'Add Report',
+           'label' => trans('noshform.superquery_list3'),
            'icon' => 'fa-plus',
            'url' => route('superquery', ['0'])
         ];
@@ -7438,7 +7745,7 @@ class CoreController extends Controller
             ];
             $items[] = [
                 'name' => 'tags_array[]',
-                'label' => 'Search items with the following tag(s)',
+                'label' => trans('noshform.superquery_patient1'),
                 'type' => 'select',
                 'select_items' => $tags_arr,
                 'required' => true,
@@ -7450,7 +7757,7 @@ class CoreController extends Controller
                 'form_id' => 'superquery_tag_form',
                 'action' => route('superquery_tag'),
                 'items' => $items,
-                'save_button_label' => 'Run Report',
+                'save_button_label' => trans('noshform.run_report'),
                 'intro' => $intro,
                 'origin' => route('superquery_list')
             ];
@@ -7575,40 +7882,40 @@ class CoreController extends Controller
                 }
             }
             $head_arr = [
-                'Last Name' => 'lastname',
-                'First Name' => 'firstname',
-                'Date' => 'doc_date',
-                'Type' => 'doctype'
+                [trans('noshform.lastname'), 'lastname'],
+                [trans('noshform.firstname'), 'firstname'],
+                [trans('noshform.doc_date'), 'doc_date'],
+                [trans('noshform.doctype'), 'doctype']
             ];
             if (! empty($records1)) {
-                $html .= '<h4>Results</h4><h6>Click on row to show item</h6><div class="table-responsive"><table class="table table-striped"><thead><tr>';
-                foreach ($head_arr as $head_row_k => $head_row_v) {
-                    $html .= '<th>' . $head_row_k . '</th>';
+                $html .= '<h4>' . trans('noshform.superquery_patient2') . '</h4><h6>' . trans('noshform.superquery_patient3') . '</h6><div class="table-responsive"><table class="table table-striped"><thead><tr>';
+                foreach ($head_arr as $head_row) {
+                    $html .= '<th>' . $head_row[0] . '</th>';
                 }
                 $html .= '</tr></thead><tbody>';
                 foreach ($records1 as $row) {
                     $html .= '<tr>';
-                    foreach ($head_arr as $head_row_k => $head_row_v) {
-                        if ($head_row_k !== 'Action') {
+                    foreach ($head_arr as $head_row1) {
+                        if ($head_row1[1] !== 'action') {
                             if (isset($row['click'])) {
-                                $html .= '<td class="nosh-click" data-nosh-click="' . $row['click'] . '">' . $row[$head_row_v] . '</td>';
+                                $html .= '<td class="nosh-click" data-nosh-click="' . $row['click'] . '">' . $row[$head_row1[1]] . '</td>';
                             } elseif (isset($row['clickview'])) {
-                                $html .= '<td class="nosh-click-view" data-nosh-click="' . $row['clickview'] . '" data-nosh-index="' . $row['doctype_index'] . '" data-nosh-id="' . $row['doc_id'] . '" data-nosh-table="' . $row['doctype_table'] . '" data-nosh-pid="' . $row['pid'] . '">' . $row[$head_row_v] . '</td>';
+                                $html .= '<td class="nosh-click-view" data-nosh-click="' . $row['clickview'] . '" data-nosh-index="' . $row['doctype_index'] . '" data-nosh-id="' . $row['doc_id'] . '" data-nosh-table="' . $row['doctype_table'] . '" data-nosh-pid="' . $row['pid'] . '">' . $row[$head_row1[1]] . '</td>';
                             } else {
-                                $html .= '<td>' . $row[$head_row_v] . '</td>';
+                                $html .= '<td>' . $row[$head_row1[1]] . '</td>';
                             }
                         } else {
-                            $html .= '<td>' . $row[$head_row_v] . '</td>';
+                            $html .= '<td>' . $row[$head_row1[1]] . '</td>';
                         }
                     }
                     $html .= '</tr>';
                 }
                 $html .= '</tbody></table>';
             } else {
-                $html .= ' No data.';
+                $html .= ' ' . trans('noshform.no_data') . '.';
             }
         } else {
-            $intro = '<div class="form-group" id="patient_name_div"><label class="col-md-3 control-label">Patient</label><div class="col-md-8"><p class="form-control-static" id="patient_name">' . $patient_name . '</p></div></div>';
+            $intro = '<div class="form-group" id="patient_name_div"><label class="col-md-3 control-label">' . trans('noshform.patient') . '</label><div class="col-md-8"><p class="form-control-static" id="patient_name">' . $patient_name . '</p></div></div>';
             $items[] = [
                 'name' => 'pid',
                 'type' => 'hidden',
@@ -7616,7 +7923,7 @@ class CoreController extends Controller
             ];
             $items[] = [
                 'name' => 'tags_array[]',
-                'label' => 'Search items with the following tag(s)',
+                'label' => trans('noshform.superquery_patient1'),
                 'type' => 'select',
                 'select_items' => $tags_arr,
                 'required' => true,
@@ -7628,15 +7935,15 @@ class CoreController extends Controller
                 'form_id' => 'superquery_tag_form',
                 'action' => route('superquery_tag'),
                 'items' => $items,
-                'save_button_label' => 'Run Report',
+                'save_button_label' => trans('noshform.run_report'),
                 'intro' => $intro,
                 'origin' => route('superquery_list')
             ];
             $html .= $this->form_build($form_array);
         }
-        $data['panel_header'] = 'Tag Search';
+        $data['panel_header'] = trans('noshform.superquery_list2');
         $dropdown_array = [
-            'default_button_text' => '<i class="fa fa-chevron-left fa-fw fa-btn"></i>Back',
+            'default_button_text' => '<i class="fa fa-chevron-left fa-fw fa-btn"></i>' . trans('noshform.back'),
             'default_button_text_url' => Session::get('last_page')
         ];
         $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
@@ -7771,21 +8078,21 @@ class CoreController extends Controller
             if (isset($_REQUEST["authorization_state"])) {
                 if ($_REQUEST["authorization_state"] != 'claims_submitted') {
                     if ($_REQUEST["authorization_state"] == 'not_authorized') {
-                        $text = 'You are not authorized to have the desired authorization data added.';
+                        $text = trans('noshform.uma_aat1');
                     }
                     if ($_REQUEST["authorization_state"] == 'request_submitted') {
-                        $text = 'The authorization server needs additional information in order to determine whether you are authorized to have this authorization data.';
+                        $text = trans('noshform.uma_aat2');
                     }
                     if ($_REQUEST["authorization_state"] == 'need_info') {
-                        $text = 'The authorization server requires intervention by the patient to determine whether authorization data can be added. Try again later after receiving any information from the patient regarding updates on your access status.';
+                        $text = trans('noshform.uma_aat3');
                     }
-                    $data['panel_header'] = 'Error getting data';
-                    $data['content'] = 'Description:<br>' . $text;
+                    $data['panel_header'] = trans('noshform.uma_aat4');
+                    $data['content'] = trans('noshform.uma_aat5') . ':<br>' . $text;
                     $dropdown_array = [];
                     $items = [];
                     $items[] = [
                         'type' => 'item',
-                        'label' => 'Back',
+                        'label' => trans('noshform.back'),
                         'icon' => 'fa-chevron-left',
                         'url' => Session::get('last_page')
                     ];
@@ -7809,13 +8116,13 @@ class CoreController extends Controller
         }
         $result = $this->fhir_request($urlinit,true);
         if (isset($result['error'])) {
-            $data['panel_header'] = 'Error getting data';
-            $data['content'] = 'Description:<br>' . $result;
+            $data['panel_header'] = trans('noshform.uma_aat4');
+            $data['content'] = trans('noshform.uma_aat5') . ':<br>' . $result;
             $dropdown_array = [];
             $items = [];
             $items[] = [
                 'type' => 'item',
-                'label' => 'Back',
+                'label' => trans('noshform.back'),
                 'icon' => 'fa-chevron-left',
                 'url' => Session::get('last_page')
             ];
@@ -7839,7 +8146,7 @@ class CoreController extends Controller
 
     public function uma_add_patient(Request $request, $type='')
     {
-        $message = 'Error - Adding patient canceled';
+        $message = trans('noshform.error') . ' - ' . trans('noshform.uma_add_patient1');
         if ($type == '') {
             $data = Session::get('uma_add_patient');
             $pid = DB::table('demographics')->insertGetId($data);
@@ -7890,13 +8197,13 @@ class CoreController extends Controller
                     Session::forget('uma_permission_ticket');
                     return redirect()->route('uma_aat');
                 } else {
-                    $data['panel_header'] = 'Error getting data';
-                    $data['content'] = 'Description:<br>' . $result1['error'];
+                    $data['panel_header'] = trans('noshform.uma_api1');
+                    $data['content'] = trans('noshform.uma_api2') . ':<br>' . $result1['error'];
                     $dropdown_array = [];
                     $items = [];
                     $items[] = [
                         'type' => 'item',
-                        'label' => 'Back',
+                        'label' => trans('noshform.back'),
                         'icon' => 'fa-chevron-left',
                         'url' => Session::get('last_page')
                     ];
@@ -7908,13 +8215,13 @@ class CoreController extends Controller
                 }
             }
             if (isset($result1['errors'])) {
-                $data['panel_header'] = 'Error getting data';
-                $data['content'] = 'Description:<br>' . $result1['errors'];
+                $data['panel_header'] = trans('noshform.uma_api1');
+                $data['content'] = trans('noshform.uma_api2') . ':<br>' . $result1['errors'];
                 $dropdown_array = [];
                 $items = [];
                 $items[] = [
                     'type' => 'item',
-                    'label' => 'Back',
+                    'label' => trans('noshform.back'),
                     'icon' => 'fa-chevron-left',
                     'url' => Session::get('last_page')
                 ];
@@ -7955,21 +8262,21 @@ class CoreController extends Controller
         if (Session::has('uma_add_patient')) {
             $items[] = [
                 'type' => 'item',
-                'label' => 'Cancel',
+                'label' => trans('noshform.cancel'),
                 'icon' => 'fa-chevron-left',
                 'url' => route('uma_add_patient', ['cancel'])
             ];
         } else {
             $items[] = [
                 'type' => 'item',
-                'label' => 'Back',
+                'label' => trans('noshform.back'),
                 'icon' => 'fa-chevron-left',
                 'url' => Session::get('last_page')
             ];
         }
         $dropdown_array['items'] = $items;
         $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
-        $data['content'] = 'None.';
+        $data['content'] = ' ' . trans('noshform.none') . '.';
         $data['panel_header'] = $title_array[Session::get('type')]['name'] . ' for ' . Session::get('uma_as_name');
         if (isset($result3['total'])) {
             if ($result3['total'] != '0') {
@@ -7997,20 +8304,20 @@ class CoreController extends Controller
                         $items1 = [];
                         $items1[] = [
                             'type' => 'item',
-                            'label' => 'Add Patient',
+                            'label' => trans('noshform.uma_add_patient'),
                             'icon' => 'fa-plus',
                             'url' => route('uma_add_patient')
                         ];
                         $dropdown_array1['items'] = $items1;
                         $data['panel_dropdown'] .= '<span class="fa-btn"></span>' . $this->dropdown_build($dropdown_array1);
-                        $data['panel_header'] = 'Add Patient';
+                        $data['panel_header'] = trans('noshform.uma_add_patient');
                         $data['content'] .= '<li class="list-group-item">' . $entry['resource']['text']['div'];
                         // Preview medication list
                         $urlinit1 = Session::get('medicationstatement_uri');
                         $result4 = $this->fhir_request($urlinit1,false,$rpt);
                         if (isset($result4['total'])) {
                             if ($result4['total'] != '0') {
-                                $data['content'] .= '<strong>Medications</strong><ul>';
+                                $data['content'] .= '<strong>' . trans('noshform.medications') . '</strong><ul>';
                                 foreach ($result4['entry'] as $entry1) {
                                     $data['content'] .= '<li>' . $entry1['resource']['text']['div'] . '</li>';
                                 }
@@ -8102,7 +8409,7 @@ class CoreController extends Controller
         } else {
             $items[] = [
                 'name' => 'url',
-                'label' => "URL of Patient's Authorization Server",
+                'label' => trans('noshform.uma_list1'),
                 'type' => 'text',
                 'required' => true,
                 'default_value' => 'https://'
@@ -8111,9 +8418,9 @@ class CoreController extends Controller
                 'form_id' => 'uma_list_form',
                 'action' => route('uma_list'),
                 'items' => $items,
-                'save_button_label' => 'Add New Patient'
+                'save_button_label' => trans('noshform.uma_list2')
             ];
-            $data['panel_header'] = 'FHIR Connected Patients';
+            $data['panel_header'] = trans('noshform.uma_list3');
             $data['content'] = $this->form_build($form_array);
             $query = DB::table('demographics')->where('hieofone_as_url', '!=', '')->orWhere('hieofone_as_url', '!=', null)->get();
             if ($query->count()) {
@@ -8172,7 +8479,7 @@ class CoreController extends Controller
                 }
                 return redirect()->route('uma_aat');
             } else {
-                Session::put('message_action', 'Error - the authorization you were trying to connect to has no resources.');
+                Session::put('message_action', trans('noshform.error') . ' - ' . trans('noshform.uma_register_auth3'));
                 Session::forget('uma_add_patient');
                 return redirect()->route('uma_list');
             }
@@ -8203,15 +8510,15 @@ class CoreController extends Controller
         $resources = $oidc->get_resources(true);
         Session::put('uma_auth_resources', $resources);
         $resources_array = $this->fhir_resources();
-        $data['panel_header'] = $patient->firstname . ' ' . $patient->lastname . "'s Patient Summary";
-        $data['content'] = 'No resources available yet.';
+        $data['panel_header'] = $patient->firstname . ' ' . $patient->lastname . trans('noshform.uma_resources1');
+        $data['content'] = trans('noshform.uma_resources2') . '.';
         $data['message_action'] = Session::get('message_action');
         Session::forget('message_action');
         $dropdown_array = [];
         $items = [];
         $items[] = [
             'type' => 'item',
-            'label' => 'Back',
+            'label' => trans('noshform.back'),
             'icon' => 'fa-chevron-left',
             'url' => route('uma_list')
         ];
@@ -8296,15 +8603,87 @@ class CoreController extends Controller
         }
     }
 
-    public function users(Request $request, $type='2', $active='1')
+    public function user_copy(Request $request, $id)
+    {
+        $row = DB::table('users')->where('id', '=', $id)->first();
+        if ($request->isMethod('post')) {
+            $columns = Schema::getColumnListing('users');
+            $practice = DB::table('practiceinfo')->where('practice_id', '=', $request->input('practice_id'))->first();
+            if ($row) {
+                foreach ($columns as $column) {
+                    if ($column !== 'id' && $column !== 'practice_id') {
+                        $data[$column] = $row->{$column};
+                    }
+                }
+                $data['practice_id'] = $request->input('practice_id');
+                $new_id = DB::table('users')->insertGetId($data);
+                $this->audit('Add');
+                if ($row->group_id == '2') {
+                    $provider = DB::table('providers')->where('id', '=', $id)->first();
+                    if ($provider) {
+                        $columns_provider = Schema::getColumnListing('providers');
+                        foreach ($columns_provider as $column_provider) {
+                            if ($column_provider !== 'id' && $column_provider !== 'practice_id') {
+                                $data1[$column_provider] = $provider->{$column_provider};
+                            }
+                        }
+                        $data1['id'] = $new_id;
+                        $data1['practice_id'] = $request->input('practice_id');
+                        DB::table('providers')->insert($data1);
+                        $this->audit('Add');
+                    }
+                }
+            }
+            Session::put('message_action', $row->username . ' ' . trans('noshform.user_copy1') . ' ' . $practice->practice_name);
+            return redirect(Session::get('last_page'));
+        } else {
+            $practice_array = $this->array_practices('y');
+            $query = DB::table('users')->where('username', '=', $row->username)->get();
+            if ($query->count()) {
+                foreach ($query as $row1) {
+                    if (isset($practice_array[$row1->practice_id])) {
+                        unset($practice_array[$row1->practice_id]);
+                    }
+                }
+            }
+            $items[] = [
+                'name' => 'practice_id',
+                'label' => trans('noshform.pick_practice'),
+                'type' => 'select',
+                'select_items' => $practice_array,
+                'required' => true,
+                'default_value' => null
+            ];
+            $form_array = [
+                'form_id' => 'copy_user_form',
+                'action' => route('user_copy', $id),
+                'items' => $items,
+                'save_button_label' => trans('noshform.save')
+            ];
+            $data['panel_header'] = trans('noshform.user_copy');
+            $data['content'] = $this->form_build($form_array);
+            $data['assets_js'] = $this->assets_js();
+            $data['assets_css'] = $this->assets_css();
+            return view('core', $data);
+        }
+    }
+
+    public function users(Request $request, $type='2', $active='1', $practice_id='0')
     {
         if (Session::get('group_id') != '1') {
-            Session::put('message_action', 'Error - You are not allowed to manage users');
+            Session::put('message_action', trans('noshform.error') . ' - ' . trans('noshform.users1'));
             return redirect()->route('dashboard');
         }
         $data['message_action'] = Session::get('message_action');
         Session::forget('message_action');
-        $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
+        $back = false;
+        if ($practice_id == '0') {
+            $practice_id = Session::get('practice_id');
+        } else {
+            Session::put('users_practice_id', $practice_id);
+            $back = true;
+        }
+        $practice = DB::table('practiceinfo')->where('practice_id', '=', $practice_id)->first();
         $return = '';
         $type_arr = [
             '2' => [
@@ -8335,7 +8714,7 @@ class CoreController extends Controller
                             'type' => 'item',
                             'label' => $value1[0],
                             'icon' => $value1[1],
-                            'url' => route('users', [$key, $key1])
+                            'url' => route('users', [$key, $key1, $practice_id])
                         ];
                     }
                 }
@@ -8348,19 +8727,19 @@ class CoreController extends Controller
                 ->join('providers', 'providers.id', '=', 'users.id')
                 ->where('users.group_id', '=', $type)
                 ->where('users.active', '=', $active)
-                ->where('users.practice_id', '=', Session::get('practice_id'));
+                ->where('users.practice_id', '=', $practice_id);
         } elseif ($type == '100') {
             $query = DB::table('users')
                 ->leftJoin('demographics_relate', 'users.id', '=', 'demographics_relate.id')
                 ->select('users.*', 'demographics_relate.pid')
                 ->where('users.group_id', '=', $type)
                 ->where('users.active', '=', $active)
-                ->where('users.practice_id', '=', Session::get('practice_id'));
+                ->where('users.practice_id', '=', $practice_id);
         } else {
             $query = DB::table('users')
                 ->where('group_id', '=', $type)
                 ->where('active', '=', $active)
-                ->where('practice_id', '=', Session::get('practice_id'));
+                ->where('practice_id', '=', $practice_id);
         }
         $result = $query->get();
         $columns = Schema::getColumnListing('users');
@@ -8377,6 +8756,7 @@ class CoreController extends Controller
                 if ($active == '1') {
                     $arr['inactivate'] = route('core_action', ['table' => 'users', 'action' => 'inactivate', 'index' => $row_index, 'id' => $row->$row_index]);
                     $arr['reset'] = route('password_reset', [$row->$row_index]);
+                    $arr['user_copy'] = route('user_copy', [$row->$row_index]);
                 } else {
                     $arr['reactivate'] = route('core_action', ['table' => 'users', 'action' => 'reactivate', 'index' => $row_index, 'id' => $row->$row_index]);
                 }
@@ -8410,6 +8790,13 @@ class CoreController extends Controller
         ];
         $dropdown_array1['items'] = $items1;
         $data['panel_dropdown'] .= '<span class="fa-btn"></span>' . $this->dropdown_build($dropdown_array1);
+        if ($back == true) {
+            $dropdown_array2 = [
+                'default_button_text' => '<i class="fa fa-chevron-left fa-fw fa-btn"></i>' . trans('noshform.back'),
+                'default_button_text_url' => Session::get('last_page')
+            ];
+            $data['panel_dropdown'] .= '<span class="fa-btn"></span>' . $this->dropdown_build($dropdown_array2);
+        }
         $data['content'] = $return;
         $data['panel_header'] = trans('noshform.users');
         Session::put('last_page', $request->fullUrl());
@@ -8434,7 +8821,7 @@ class CoreController extends Controller
             $user = DB::table('users')->where('id', '=', $id)->first();
             $name = $user->firstname . " " . $user->lastname;
             if ($name !== $request->input('name')) {
-                $message = "Error - Incorrect name!  Signature not saved.  Try again";
+                $message = trans('noshform.error') . ' - ' . trans('noshform.user_signature1');
             } else {
                 if (file_exists($signature->signature)) {
                     unlink($signature->signature);
@@ -8446,7 +8833,8 @@ class CoreController extends Controller
                 $data['signature'] = $file_path;
                 DB::table('providers')->where('id', '=', $id)->update($data);
                 $this->audit('Update');
-                $message = "Signature created";
+                $this->sync_user($id);
+                $message = trans('noshform.user_signature2');
             }
             Session::put('message_action', $message);
             return redirect()->route('dashboard');
