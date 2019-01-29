@@ -5618,7 +5618,7 @@ class CoreController extends Controller
                 'practice_name' => 'required'
             ]);
             $practice_data = [
-                'npi' => $practice_npi,
+                'npi' => $practice->npi,
                 'practice_name' => $request->input('practice_name'),
                 'street_address1' => $practice->street_address1,
                 'city' => $practice->city,
@@ -5633,7 +5633,7 @@ class CoreController extends Controller
                 'smtp_user' => $practice->smtp_user,
                 'smtp_pass' => $practice->smtp_pass,
                 'npi' => $practice->npi,
-                'practice_medicare' => $practice->medicare,
+                'medicare' => $practice->medicare,
                 'tax_id' => $practice->tax_id,
                 'default_pos_id' => $practice->default_pos_id,
                 'weight_unit' => $practice->weight_unit,
