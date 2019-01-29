@@ -4213,6 +4213,7 @@ class CoreController extends Controller
                 });
             }
         });
+        $query = $query_text1->get();
         if ($query->count()) {
             foreach ($query as $records_row) {
                 $query2_row = DB::table('demographics')->where('pid', '=', $records_row->pid)->first();
