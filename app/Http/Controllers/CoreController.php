@@ -884,6 +884,7 @@ class CoreController extends Controller
                 }
                 if ($table == 'users') {
                     $this->sync_user($id);
+                    Session::put('user_locale', $data['locale']);
                 }
             }
         }
