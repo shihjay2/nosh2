@@ -53,7 +53,7 @@ read -e -p "Enter your registered URL: " -i "" URL
 
 # Install dependencies
 apt-get update
-apt-get -y install software-properties-common build-essential binutils-doc git subversion bc apache2 php php-cli php-common php-curl php-gd php-imagick php-imap php-mbstring php-mysql php-pear php-soap php-ssh2 php-xml php-zip libapache2-mod-php libdbi-perl libdbd-mysql-perl libssh2-1-dev imagemagick openssh-server pwgen jq
+apt-get -y install curl software-properties-common build-essential binutils-doc git subversion bc apache2 php php-cli php-common php-curl php-gd php-imagick php-imap php-mbstring php-mysql php-pear php-soap php-ssh2 php-xml php-zip libapache2-mod-php libdbi-perl libdbd-mysql-perl libssh2-1-dev imagemagick openssh-server pwgen jq
 export DEBIAN_FRONTEND=noninteractive
 # Randomly generated password for MariaDB
 MYSQL_PASSWORD=`pwgen -s 40 1`
