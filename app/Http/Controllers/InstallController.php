@@ -979,6 +979,7 @@ class InstallController extends Controller {
                     ],
                 ];
                 $this->changeEnv($mail_arr[$request->input('mail_type')]);
+                $clear = new Process("php artisan config:clear");
                 if ($request->input('mail_type') == 'gmail') {
                     return redirect()->route('googleoauth');
                 } else {

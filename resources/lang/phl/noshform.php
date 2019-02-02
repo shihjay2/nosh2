@@ -1050,7 +1050,7 @@ return [
     "rxl_quantity" => "Quantity",
     "rxl_refill" => "Refills",
     "daw" => "Dispense As Written",
-    "rxl_dea" => "DEA Number on Prescription",
+    "rxl_dea" => "PRC Number on Prescription",
     "notification" => "Notification To (SMS or Email)",
     "medication" => "Medication",
     "new" => "New",

@@ -33,12 +33,18 @@ class AjaxInstallController extends Controller {
     public function get_state_data(Request $request)
     {
         $country = $request->input('country');
-        return Countries::where('name.common', $country)
+        $states = Countries::where('name.common', $country)
             ->first()
             ->hydrateStates()
             ->states
             ->sortBy('name')
-            ->pluck('name', 'postal');
+            ->pluck('name', 'postal')
+            ->toArray();
+        if ($country == 'Philippines') {
+            $states['MNL'] = 'Metro Manila';
+            asort($states);
+        }
+        return $states;
     }
 
 

@@ -214,7 +214,7 @@
 						<div class="form-group">
 							<div class="col-md-6 col-md-offset-4">
 								<button type="submit" class="btn btn-primary">
-									<i class="fa fa-btn fa-sign-in"></i> {{ trans('noshdata.save') }}
+									<i class="fa fa-btn fa-sign-in"></i> {{ trans('noshform.save') }}
 								</button>
 							</div>
 						</div>

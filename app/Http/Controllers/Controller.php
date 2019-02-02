@@ -2352,6 +2352,10 @@ class Controller extends BaseController
             ->sortBy('name')
             ->pluck('name', 'postal')
             ->toArray();
+        if ($country == 'Philippines') {
+            $states1['MNL'] = 'Metro Manila';
+            asort($states1);
+        }
         $states = array_merge($states, $states1);
         $states_old = [
             '' => '',
