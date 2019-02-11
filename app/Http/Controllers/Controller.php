@@ -14455,6 +14455,10 @@ class Controller extends BaseController
             $data['allergyInfo'] .= trans('noshform.nkda') . '.';
         }
         $data['signature'] = $this->signature($rx->id);
+        $data['dea'] = '';
+        if ($rx->rxl_dea != '') {
+            $data['dea'] = trans('noshform.dea') . ': ' . $rx->rxl_dea . '<br>';
+        }
         App::setLocale(Session::get('user_locale'));
         return view('pdf.prescription_page', $data);
     }
