@@ -84,7 +84,7 @@
 						<?php echo $signature;?>
 						<p style="font-size:2pt;text-align:left;">THIS IS AN ORIGINAL PRESCRIPTION-THIS IS AN ORIGINAL PRESCRIPTION-THIS IS AN ORIGINAL PRESCRIPTION-THIS IS AN ORIGINAL PRESCRIPTION-THIS IS AN ORIGINAL PRESCRIPTION-THIS IS AN ORIGINAL PRESCRIPTION</p>
 						<br>
-						<?php if ($rx->rxl_dea != '') {echo trans('noshform.dea') . ': ' . $rx->rxl_dea . '<br>';}?>
+						<?php echo $dea;?>
 					</td>
 				</tr>
 			</tbody>
