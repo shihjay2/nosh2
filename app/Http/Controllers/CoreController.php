@@ -6492,6 +6492,8 @@ class CoreController extends Controller
             // Remove depreciated encounter types for new encounters
             unset($encounter_type_arr['standardmedical']);
             unset($encounter_type_arr['standardmedical1']);
+            $reminder_interval_arr = $this->array_reminder_interval();
+            $locale_arr = $this->array_locale();
             $settings_arr = [
                 trans('noshform.primary_contact') => $result->primary_contact,
                 trans('noshform.practice_npi') => $result->npi,
@@ -6505,7 +6507,8 @@ class CoreController extends Controller
                 trans('noshform.hc_unit') => $unit_arr[$result->hc_unit],
                 trans('noshform.encounter_template') => $encounter_type_arr[$result->encounter_template],
                 trans('noshform.additional_message') => $result->additional_message,
-                trans('noshform.locale') => $result->locale
+                trans('noshform.reminder_interval') => $reminder_interval_arr[$result->reminder_interval],
+                trans('noshform.locale') => $locale_arr[$result->locale]
             ];
             $billing_arr = [
                 trans('noshform.street_address1') => $result->billing_street_address1,
@@ -6538,28 +6541,28 @@ class CoreController extends Controller
             $return = $this->header_build($header_arr, trans('noshform.practice_information'));
             foreach ($info_arr as $key1 => $value1) {
                 if ($value1 !== '' && $value1 !== null) {
-                    $return .= '<div class="col-md-3"><b>' . $key1 . '</b></div><div class="col-md-8">' . $value1 . '</div>';
+                    $return .= '<div class="row"><div class="col-md-3"><b>' . $key1 . '</b></div><div class="col-md-8">' . $value1 . '</div></div>';
                 }
             }
             $return .= '</div></div></div>';
             $return .= $this->header_build($header_arr, trans('noshform.practice_settings'));
             foreach ($settings_arr as $key2 => $value2) {
                 if ($value2 !== '' && $value2 !== null) {
-                    $return .= '<div class="col-md-3"><b>' . $key2 . '</b></div><div class="col-md-8">' . $value2 . '</div>';
+                    $return .= '<div class="row"><div class="col-md-3"><b>' . $key2 . '</b></div><div class="col-md-8">' . $value2 . '</div></div>';
                 }
             }
             $return .= '</div></div></div>';
             $return .= $this->header_build($header_arr, trans('noshform.billing'));
             foreach ($billing_arr as $key3 => $value3) {
                 if ($value3 !== '' && $value3 !== null) {
-                    $return .= '<div class="col-md-3"><b>' . $key3 . '</b></div><div class="col-md-8">' . $value3 . '</div>';
+                    $return .= '<div class="row"><div class="col-md-3"><b>' . $key3 . '</b></div><div class="col-md-8">' . $value3 . '</div></div>';
                 }
             }
             $return .= '</div></div></div>';
             $return .= $this->header_build($header_arr, trans('noshform.extensions'));
             foreach ($extensions_arr as $key4 => $value4) {
                 if ($value4 !== '' && $value4 !== null) {
-                    $return .= '<div class="col-md-3"><b>' . $key4 . '</b></div><div class="col-md-8">' . $value4 . '</div>';
+                    $return .= '<div class="row"><div class="col-md-3"><b>' . $key4 . '</b></div><div class="col-md-8">' . $value4 . '</div></div>';
                 }
             }
             $return .= '</div></div>';
