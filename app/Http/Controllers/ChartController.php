@@ -2992,28 +2992,28 @@ class ChartController extends Controller {
             $return = $this->header_build($header_arr, trans('noshform.name_identity'));
             foreach ($identity_arr as $key1 => $value1) {
                 if ($value1 !== '' && $value1 !== null) {
-                    $return .= '<div class="col-md-3"><b>' . $key1 . '</b></div><div class="col-md-8">' . $value1 . '</div>';
+                    $return .= '<div class="row"><div class="col-md-3"><b>' . $key1 . '</b></div><div class="col-md-8">' . $value1 . '</div></div>';
                 }
             }
             $return .= '</div></div></div>';
             $return .= $this->header_build($header_arr, trans('noshform.contacts'));
             foreach ($contact_arr as $key2 => $value2) {
                 if ($value2 !== '' && $value2 !== null) {
-                    $return .= '<div class="col-md-3"><b>' . $key2 . '</b></div><div class="col-md-8">' . $value2 . '</div>';
+                    $return .= '<div class="row"><div class="col-md-3"><b>' . $key2 . '</b></div><div class="col-md-8">' . $value2 . '</div></div>';
                 }
             }
             $return .= '</div></div></div>';
             $return .= $this->header_build($header_arr, trans('noshform.guardians'));
             foreach ($guardian_arr as $key3 => $value3) {
                 if ($value3 !== '' && $value3 !== null) {
-                    $return .= '<div class="col-md-3"><b>' . $key3 . '</b></div><div class="col-md-8">' . $value3 . '</div>';
+                    $return .= '<div class="row"><div class="col-md-3"><b>' . $key3 . '</b></div><div class="col-md-8">' . $value3 . '</div></div>';
                 }
             }
             $return .= '</div></div></div>';
             $return .= $this->header_build($header_arr, trans('noshform.other'));
             foreach ($other_arr as $key4 => $value4) {
                 if ($value4 !== '' && $value4 !== null) {
-                    $return .= '<div class="col-md-3"><b>' . $key4 . '</b></div><div class="col-md-8">' . $value4 . '</div>';
+                    $return .= '<div class="row"><div class="col-md-3"><b>' . $key4 . '</b></div><div class="col-md-8">' . $value4 . '</div></div>';
                 }
             }
             $return .= '</div></div></div>';
