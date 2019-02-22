@@ -6627,6 +6627,7 @@ class Controller extends BaseController
             'name' => 'hippa_role',
             'label' => trans('noshform.hippa_role'),
             'type' => 'select',
+            'required' => true,
             'select_items' => $role_arr,
             'default_value' => $data['hippa_role']
         ];
