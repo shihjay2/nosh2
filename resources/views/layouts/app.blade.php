@@ -48,7 +48,9 @@
                         <li><a href="{{ route('dashboard') }}">{{ trans('nosh.tasks') }}</a></li>
                         @if (Session::get('group_id') == '1')
                             <li><a href="{{ route('setup') }}">{{ trans('nosh.setup') }}</a></li>
-                            <li><a href="{{ route('setup_mail') }}">{{ trans('nosh.setup_mail') }}</a></li>
+                            @if (env('DOCKER') !== '1')
+                                <li><a href="{{ route('setup_mail') }}">{{ trans('nosh.setup_mail') }}</a></li>
+                            @endif
                             <li><a href="{{ route('practice_manage', ['active']) }}">{{ trans('noshform.practice_manage') }}</a></li>
                             <li><a href="{{ route('users', ['2', '1']) }}">{{ trans('nosh.users') }}</a></li>
                             <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{ trans('nosh.schedule') }} <span class="caret"></span></a>
@@ -169,7 +171,9 @@
                                     <li><a href="{{ route('template_restore') }}" class="nosh-confirm" data-nosh-confirm-message="{{ trans('nosh.template_restore_confirm') }}"><i class="fa fa-fw fa-btn fa-refresh"></i>{{ trans('nosh.template_restore') }}</a></li>
                                 @endif
                                 <li><a href="{{ route('password_change') }}"><i class="fa fa-fw fa-btn fa-cog"></i>{{ trans('nosh.password_change') }}</a></li>
-                                <li><a href="{{ route('update_system') }}"><i class="fa fa-fw fa-btn fa-download"></i>{{ trans('nosh.update_system') }}</a></li>
+                                @if (env('DOCKER') !== '1')
+                                    <li><a href="{{ route('update_system') }}"><i class="fa fa-fw fa-btn fa-download"></i>{{ trans('nosh.update_system') }}</a></li>
+                                @endif
                                 <li><a href="https://github.com/shihjay2/nosh2/issues/new" target="_blank" class="nosh-no-load"><i class="fa fa-fw fa-btn fa-github-alt"></i>{{ trans('nosh.report_bug') }}</a></li>
                                 <li><a href="https://github.com/shihjay2/nosh2/issues/new" target="_blank" class="nosh-no-load"><i class="fa fa-fw fa-btn fa-heart"></i>{{ trans('nosh.make_suggestion') }}</a></li>
                                 <li><a href="{{ route('logout') }}"><i class="fa fa-fw fa-btn fa-sign-out"></i>{{ trans('nosh.logout') }}</a></li>

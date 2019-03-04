@@ -42,6 +42,9 @@
                     @endif
                 </div>
                 <div class="panel-body">
+                    <div id="uport_indicator" style="text-align: center;">
+                        <i class="fa fa-spinner fa-spin fa-pulse fa-2x fa-fw"></i><span id="modaltext" style="margin:10px">Loading uPort...</span><br><br>
+                    </div>
                     {!! $content !!}
                 </div>
             </div>
@@ -55,12 +58,12 @@
 <script src="{{ asset('assets/js/uport-connect.js') }}"></script>
 <script src="{{ asset('assets/js/mnid.js') }}"></script>
 <script type="text/javascript">
-    const Connect = window.uportconnect.Connect;
+    const Connect = window.uportconnect;
     const Mnid = window.mnid;
-	const appName = 'nosh';
-    const connect = new Connect(appName, {'clientId': '2oyVF8cuGih6VQy7LseeXjaXHHFNzzoqBTk'});
-    // const connect = new Connect(appName, {'clientId': '0xe56550b7b094b37e722082ccfe13b0c5b4e441df'});
-	const web3 = connect.getWeb3();
+	const appName = 'NOSH ChartingSystem';
+    const uport = new Connect(appName, {
+        network: 'rinkeby'
+    });
 	const globalState = {
 		uportId: "{!! $uport_id !!}",
 		txHash: "",
@@ -73,19 +76,26 @@
     const hash = '{!! $hash !!}';
     const uport_need = '{!! $uport_need !!}';
 	const uportConnect = function () {
-        connect.requestCredentials().then((credentials) => {
-			console.log(credentials);
+        $('#uport_indicator').show();
+        uport.requestDisclosure({
+            requested: ['name', 'email', 'NPI'],
+			notifications: true // We want this if we want to recieve credentials
+	    });
+        uport.onResponse('disclosureReq').then((res) => {
+            var did = res.payload.did;
+			var credentials = res.payload.verified;
+			console.log(res.payload);
 			$.ajax({
 				type: "POST",
 				url: '{!! $ajax1 !!}',
-				data: 'name=' + credentials.name + '&uport=' + credentials.networkAddress,
+				data: 'name=' + res.payload.name + '&uport=' + res.payload.did,
 				dataType: 'json',
 				success: function(data){
 					if (data.message !== 'OK') {
 						toastr.error(data.message);
 						// console.log(data);
 					} else {
-                        globalState.uportId = credentials.address;
+                        globalState.uportId = res.payload.did;
                         setEther();
 						sendEther();
 					}
@@ -94,38 +104,34 @@
 			// render();
 		}, console.err);
 	};
-	const sendEther = () => {
-        web3.eth.sendTransaction(
-			{
-				from: globalState.uportId,
-				to: globalState.sendToAddr,
-				value: value,
-				gasPrice: gasPrice,
-				gas: gas,
-                data: hash
-			},
-			(error, txHash) => {
-				if (error) { throw error; }
-				globalState.txHash = txHash;
-                $.ajax({
-    				type: "POST",
-    				url: '{!! $ajax !!}',
-    				data: 'txHash=' + txHash,
-    				dataType: 'json',
-    				success: function(data){
-    					if (data.message !== 'OK') {
-    						toastr.error(data.message);
-    						// console.log(data);
-    					} else {
-    						window.location = data.url;
-    					}
-    				}
-    			});
-				console.log(txHash);
-			}
-		);
-	};
-    const setEther = function () {
+    const sendEther = () => {
+        const txobject = {
+            to: globalState.sendToAddr,
+            value: '0.1',
+            data: hash,
+            appName: appName
+        }
+        uport.sendTransaction(txobject, 'setStatus');
+        uport.onResponse('setStatus').then((res) => {
+            const txHash = res.payload;
+            $.ajax({
+                type: "POST",
+                url: '{!! $ajax !!}',
+                data: 'txHash=' + txHash,
+                dataType: 'json',
+                success: function(data){
+                    if (data.message !== 'OK') {
+                        toastr.error(data.message);
+                        // console.log(data);
+                    } else {
+                        window.location = data.url;
+                    }
+                }
+            });
+            console.log(txHash);
+        });
+    };
+	const setEther = function () {
         if (Mnid.isMNID(globalState.uportId)) {
             var address = Mnid.decode(globalState.uportId);
             globalState.uportId = address.address;

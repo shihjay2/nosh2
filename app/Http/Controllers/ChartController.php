@@ -11,7 +11,6 @@ use DB;
 use File;
 use Form;
 use HTML;
-use Htmldom;
 use Illuminate\Http\Request;
 use Illuminate\Support\MessageBag;
 use Minify;

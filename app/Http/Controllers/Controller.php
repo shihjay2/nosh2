@@ -22,6 +22,7 @@ use Google_Client;
 use GuzzleHttp;
 use HTML;
 use Htmldom;
+use KubAT\PhpSimple\HtmlDomParser;
 use Laravel\LegacyEncrypter\McryptEncrypter;
 use Mail;
 use PDF;
@@ -3417,7 +3418,7 @@ class Controller extends BaseController
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $data = curl_exec($ch);
         curl_close($ch);
-        $html = new Htmldom($data);
+        $html = HTMLDomParser::str_get_html($data);
         $data1['English'][''] = '';
         $data1['Spanish'][''] = '';
         if (isset($html)) {
@@ -3552,7 +3553,7 @@ class Controller extends BaseController
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $data = curl_exec($ch);
         curl_close($ch);
-        $html = new Htmldom($data);
+        $html = HTMLDomParser::str_get_html($data);
         $table = $html->find('table[id=codelist]',0);
         $description = '';
         foreach ($table->find('tr[class=current]') as $row) {
@@ -3624,7 +3625,7 @@ class Controller extends BaseController
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $data = curl_exec($ch);
         curl_close($ch);
-        $html = new Htmldom($data);
+        $html = HTMLDomParser::str_get_html($data);
         $data1 = [];
         if (isset($html)) {
             foreach ($html->find('.specialtyList') as $item) {
@@ -3646,7 +3647,7 @@ class Controller extends BaseController
             curl_setopt($ch1, CURLOPT_RETURNTRANSFER, true);
             $data2 = curl_exec($ch1);
             curl_close($ch1);
-            $html1 = new Htmldom($data2);
+            $html1 = HTMLDomParser::str_get_html($data2);
             if (isset($html1)) {
                 foreach ($html1->find('.codeList') as $item3) {
                     foreach ($item3->find('li') as $item4) {
@@ -13653,7 +13654,7 @@ class Controller extends BaseController
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $data = curl_exec($ch);
         curl_close($ch);
-        $html = new Htmldom($data);
+        $html = HTMLDomParser::str_get_html($data);
         $data1 = [];
         if (isset($html)) {
             $main = $html->find('div.HWAccordion', 0);
@@ -13682,7 +13683,7 @@ class Controller extends BaseController
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $data = curl_exec($ch);
         curl_close($ch);
-        $html = new Htmldom($data);
+        $html = HTMLDomParser::str_get_html($data);
         $data1 = [];
         if (isset($html)) {
             $main = $html->find('div.HwContent', 0);
@@ -13769,7 +13770,7 @@ class Controller extends BaseController
         curl_setopt($ch,CURLOPT_TIMEOUT, 60);
         curl_setopt($ch,CURLOPT_CONNECTTIMEOUT ,0);
         $result = curl_exec($ch);
-        $html = new Htmldom($result);
+        $html = HTMLDomParser::str_get_html($result);
         $data = [];
         if (isset($html)) {
             // Get pages_data
@@ -13801,7 +13802,7 @@ class Controller extends BaseController
         curl_setopt($ch,CURLOPT_TIMEOUT, 60);
         curl_setopt($ch,CURLOPT_CONNECTTIMEOUT ,0);
         $result = curl_exec($ch);
-        $html = new Htmldom($result);
+        $html = HTMLDomParser::str_get_html($result);
         if (isset($html)) {
             foreach ($html->find('div.SearchResultItem') as $link) {
                 $status1 = $link->find('img.img2', 0);
@@ -17508,7 +17509,7 @@ class Controller extends BaseController
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             $data = curl_exec($ch);
             curl_close($ch);
-            $html = new Htmldom($data);
+            $html = HTMLDomParser::str_get_html($data);
             if (isset($html)) {
                 $form = $html->find('form',0);
                 $action = $form->action;
@@ -17614,7 +17615,7 @@ class Controller extends BaseController
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $data = curl_exec($ch);
         curl_close($ch);
-        $html = new Htmldom($data);
+        $html = HTMLDomParser::str_get_html($data);
         $data1 = [];
         if (isset($html)) {
             foreach ($html->find('[class=section-body]') as $div) {

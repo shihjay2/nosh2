@@ -18,7 +18,7 @@ use Form;
 use Google_Client;
 use Hash;
 use HTML;
-use Htmldom;
+use KubAT\PhpSimple\HtmlDomParser;
 use Illuminate\Http\Request;
 use Illuminate\Support\MessageBag;
 use Imagick;
@@ -132,10 +132,16 @@ class InstallController extends Controller {
             return redirect()->route('dashboard');
         }
         // Tag version number for baseline prior to updating system in the future
-        if (!File::exists(base_path() . "/.version")) {
-            // First time after install
-            $result = $this->github_all();
-            File::put(base_path() . '/.version', $result[0]['sha']);
+        if (env('DOCKER') == null || env('DOCKER') == '0') {
+            if (env('DOCKER') == null) {
+                $env_arr['DOCKER'] = '0';
+                $this->changeEnv($env_arr);
+            }
+            if (!File::exists(base_path() . "/.version")) {
+                // First time after install
+                $result = $this->github_all();
+                File::put(base_path() . '/.version', $result[0]['sha']);
+            }
         }
         if ($request->isMethod('post')) {
             $this->validate($request, [
@@ -261,47 +267,49 @@ class InstallController extends Controller {
                 $root_url = explode('/', $pnosh_url);
                 $root_url1 = explode('.', $root_url[0]);
                 $final_root_url = $root_url1[1] . '.' . $root_url1[2];
-                if ($final_root_url == 'hieofone.org') {
-                    $mailgun_url = 'https://dir.' . $final_root_url . '/mailgun';
-                    $params = ['uri' => $root_url[0]];
-                    $post_body = json_encode($params);
-                    $content_type = 'application/json';
-                    $ch = curl_init();
-                    curl_setopt($ch,CURLOPT_URL, $mailgun_url);
-                    curl_setopt($ch, CURLOPT_POST, 1);
-                    curl_setopt($ch, CURLOPT_POSTFIELDS, $post_body);
-                    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-                        "Content-Type: {$content_type}",
-                        'Content-Length: ' . strlen($post_body)
-                    ]);
-                    curl_setopt($ch, CURLOPT_HEADER, 0);
-                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-                    curl_setopt($ch,CURLOPT_FAILONERROR,1);
-                    curl_setopt($ch,CURLOPT_FOLLOWLOCATION,1);
-                    curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
-                    curl_setopt($ch,CURLOPT_TIMEOUT, 60);
-                    curl_setopt($ch,CURLOPT_CONNECTTIMEOUT ,0);
-                    $mailgun_secret = curl_exec($ch);
-                    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-                    curl_close ($ch);
-                    if ($httpCode !== 404 && $httpCode !== 0) {
-                        if ($mailgun_secret !== 'Not authorized.' && $mailgun_secret !== 'Try again.') {
-                            $mail_arr = [
-                                'MAIL_DRIVER' => 'mailgun',
-                                'MAILGUN_DOMAIN' => 'mg.hieofone.org',
-                                'MAILGUN_SECRET' => $mailgun_secret,
-                                'MAIL_HOST' => '',
-                                'MAIL_PORT' => '',
-                                'MAIL_ENCRYPTION' => '',
-                                'MAIL_USERNAME' => '',
-                                'MAIL_PASSWORD' => '',
-                                'GOOGLE_KEY' => '',
-                                'GOOGLE_SECRET' => '',
-                                'GOOGLE_REDIRECT_URI' => ''
-                            ];
-                            $this->changeEnv($mail_arr);
-                        } else {
+                if (env('DOCKER') == '0') {
+                    if ($final_root_url == 'hieofone.org') {
+                        $mailgun_url = 'https://dir.' . $final_root_url . '/mailgun';
+                        $params = ['uri' => $root_url[0]];
+                        $post_body = json_encode($params);
+                        $content_type = 'application/json';
+                        $ch = curl_init();
+                        curl_setopt($ch,CURLOPT_URL, $mailgun_url);
+                        curl_setopt($ch, CURLOPT_POST, 1);
+                        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_body);
+                        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                            "Content-Type: {$content_type}",
+                            'Content-Length: ' . strlen($post_body)
+                        ]);
+                        curl_setopt($ch, CURLOPT_HEADER, 0);
+                        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+                        curl_setopt($ch,CURLOPT_FAILONERROR,1);
+                        curl_setopt($ch,CURLOPT_FOLLOWLOCATION,1);
+                        curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+                        curl_setopt($ch,CURLOPT_TIMEOUT, 60);
+                        curl_setopt($ch,CURLOPT_CONNECTTIMEOUT ,0);
+                        $mailgun_secret = curl_exec($ch);
+                        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                        curl_close ($ch);
+                        if ($httpCode !== 404 && $httpCode !== 0) {
+                            if ($mailgun_secret !== 'Not authorized.' && $mailgun_secret !== 'Try again.') {
+                                $mail_arr = [
+                                    'MAIL_DRIVER' => 'mailgun',
+                                    'MAILGUN_DOMAIN' => 'mg.hieofone.org',
+                                    'MAILGUN_SECRET' => $mailgun_secret,
+                                    'MAIL_HOST' => '',
+                                    'MAIL_PORT' => '',
+                                    'MAIL_ENCRYPTION' => '',
+                                    'MAIL_USERNAME' => '',
+                                    'MAIL_PASSWORD' => '',
+                                    'GOOGLE_KEY' => '',
+                                    'GOOGLE_SECRET' => '',
+                                    'GOOGLE_REDIRECT_URI' => ''
+                                ];
+                                $this->changeEnv($mail_arr);
+                            } else {
 
+                            }
                         }
                     }
                 }
@@ -619,14 +627,24 @@ class InstallController extends Controller {
         if ($query) {
             return 'Error - Already installed';
         }
-        if (!File::exists(base_path() . '/.patientcentric')) {
-            return 'Error - Not pNOSH';
-        }
-        // Tag version number for baseline prior to updating system in the future
-        if (!File::exists(base_path() . "/.version")) {
-            // First time after install
-            $result = $this->github_all();
-            File::put(base_path() . '/.version', $result[0]['sha']);
+        if (env('DOCKER') == null || env('DOCKER') == '0') {
+            if (env('DOCKER') == null) {
+                $env_arr['DOCKER'] = '0';
+                $this->changeEnv($env_arr);
+            }
+            if (!File::exists(base_path() . '/.patientcentric')) {
+                return 'Error - Not pNOSH';
+            }
+            // Tag version number for baseline prior to updating system in the future
+            if (!File::exists(base_path() . "/.version")) {
+                // First time after install
+                $result = $this->github_all();
+                File::put(base_path() . '/.version', $result[0]['sha']);
+            }
+        } else {
+            if (env('PATIENTCENTRIC') == '1') {
+                return 'Error - Not pNOSH';
+            }
         }
         // $this->validate($request, [
         //     'password' => 'min:4',
@@ -728,20 +746,22 @@ class InstallController extends Controller {
         $this->audit('Add');
         $directory = $documents_dir . $pid;
         mkdir($directory, 0775);
-        $mail_arr = [
-            'MAIL_DRIVER' => 'mailgun',
-            'MAILGUN_DOMAIN' => 'mg.hieofone.org',
-            'MAILGUN_SECRET' => $request->input('mailgun_secret'),
-            'MAIL_HOST' => '',
-            'MAIL_PORT' => '',
-            'MAIL_ENCRYPTION' => '',
-            'MAIL_USERNAME' => '',
-            'MAIL_PASSWORD' => '',
-            'GOOGLE_KEY' => '',
-            'GOOGLE_SECRET' => '',
-            'GOOGLE_REDIRECT_URI' => ''
-        ];
-        $this->changeEnv($mail_arr);
+        if (env('DOCKER') == '0') {
+            $mail_arr = [
+                'MAIL_DRIVER' => 'mailgun',
+                'MAILGUN_DOMAIN' => 'mg.hieofone.org',
+                'MAILGUN_SECRET' => $request->input('mailgun_secret'),
+                'MAIL_HOST' => '',
+                'MAIL_PORT' => '',
+                'MAIL_ENCRYPTION' => '',
+                'MAIL_USERNAME' => '',
+                'MAIL_PASSWORD' => '',
+                'GOOGLE_KEY' => '',
+                'GOOGLE_SECRET' => '',
+                'GOOGLE_REDIRECT_URI' => ''
+            ];
+            $this->changeEnv($mail_arr);
+        }
         // Insert groups
         $groups_data[] = [
             'id' => '1',
@@ -784,7 +804,7 @@ class InstallController extends Controller {
         return 'Success';
     }
 
-    public function prescription_pharmacy_view(Request $request, $id, $ret='')
+    public function prescription_pharmacy_view(Request $request, $id, $ret='', $did='')
     {
         $data['hash'] = '';
         $data['ajax'] = route('dashboard');
@@ -817,6 +837,19 @@ class InstallController extends Controller {
                         $data['tx_hash'] = $query->transaction;
                         $data['rx_json'] = $query->json;
                         $hash = hash('sha256', $query->json);
+                        $etherscan_uri = "https://rinkeby.etherscan.io/tx/" . $query->transaction;
+                        $ch = curl_init();
+                        curl_setopt($ch,CURLOPT_URL, $etherscan_uri);
+                        curl_setopt($ch,CURLOPT_FAILONERROR,1);
+                        curl_setopt($ch,CURLOPT_FOLLOWLOCATION,1);
+                        curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+                        curl_setopt($ch,CURLOPT_TIMEOUT, 60);
+                        curl_setopt($ch,CURLOPT_CONNECTTIMEOUT ,0);
+                        $return_data = curl_exec($ch);
+                        curl_close($ch);
+                        $html = HTMLDomParser::str_get_html($return_data);
+                        $data_row = $html->find('span[id=rawinput]',0);
+                        $data['inputdata'] = $data_row->innertext;
                         $outcome = '';
                         $items[] = [
                             'name' => 'rx_json',
@@ -839,28 +872,45 @@ class InstallController extends Controller {
                             'readonly' => true,
                             'default_value' => $query->transaction
                         ];
+                        $items[] = [
+                            'name' => 'tx_data',
+                            'label' => trans('noshform.tx_data'),
+                            'type' => 'textarea',
+                            'readonly' => true,
+                            'default_value' => $data['inputdata']
+                        ];
                         if ($request->isMethod('post')) {
                             $data['uport_need'] = 'validate';
                             Session::put('rx_json', $request->input('rx_json'));
                             Session::put('hash', hash('sha256', $request->input('rx_json')));
                         }
-                        if ($ret !== '') {
-                            $items[0]['default_value'] = Session::get('rx_json');
-                            $items[1]['default_value'] = Session::get('hash');
-                            Session::forget('rx_json');
-                            Session::forget('hash');
-                            $bytes = 13 * 64;
-                            $rx_hash = substr(substr(substr($ret, 18), $bytes), 0, -56);
-                            $items[] = [
-                                'name' => 'rx_hash',
-                                'label' => trans('noshform.rx_hash'),
-                                'type' => 'text',
-                                'readonly' => true,
-                                'default_value' => $rx_hash
-                            ];
-                            $outcome = '<div class="alert alert-danger"><strong>' . trans('noshform.prescription_pharmacy_view1') . '</strong> - ' . trans('noshform.prescription_pharmacy_view2') . '.</div>';
-                            if ($rx_hash == $items[1]['default_value']) {
-                                $outcome = '<div class="alert alert-success"><strong>' . trans('noshform.prescription_pharmacy_view3') . '</strong></div>';
+                        if (Session::has('rx_json')) {
+                            if ($ret !== '') {
+                                $items[0]['default_value'] = Session::get('rx_json');
+                                $items[1]['default_value'] = Session::get('hash');
+                                Session::forget('rx_json');
+                                Session::forget('hash');
+                                // $bytes = 13 * 64;
+                                // $rx_hash = substr(substr(substr($ret, 18), $bytes), 0, -56);
+                                $rx_hash = $ret;
+                                $items[] = [
+                                    'name' => 'rx_hash',
+                                    'label' => trans('noshform.rx_hash'),
+                                    'type' => 'text',
+                                    'readonly' => true,
+                                    'default_value' => $rx_hash
+                                ];
+                                $items[] = [
+                                    'name' => 'did',
+                                    'label' => trans('noshform.did'),
+                                    'type' => 'text',
+                                    'readonly' => true,
+                                    'default_value' => $did
+                                ];
+                                $outcome = '<div class="alert alert-danger"><strong>' . trans('noshform.prescription_pharmacy_view1') . '</strong> - ' . trans('noshform.prescription_pharmacy_view2') . '.</div>';
+                                if ($rx_hash == $items[1]['default_value']) {
+                                    $outcome = '<div class="alert alert-success"><strong>' . trans('noshform.prescription_pharmacy_view3') . '</strong></div>';
+                                }
                             }
                         }
                         $form_array = [
@@ -1363,141 +1413,149 @@ class InstallController extends Controller {
 
     public function update_system(Request $request, $type='')
     {
-        ini_set('memory_limit','196M');
-        ini_set('max_execution_time', '300');
-        $current_version = File::get(base_path() . "/.version");
-        $composer = false;
-        if (Session::has('user_locale')) {
-            App::setLocale(Session::get('user_locale'));
-        }
-        if ($type !== '') {
-            if ($type == 'composer_install') {
-                $install = new Process("/usr/local/bin/composer install");
-                $install->setWorkingDirectory(base_path());
-                $install->setEnv(['COMPOSER_HOME' => '/usr/local/bin/composer']);
-                $install->setTimeout(null);
-                $install->run();
-                $return = nl2br($install->getOutput());
+        if (env('DOCKER') == null || env('DOCKER') == '0') {
+            if (env('DOCKER') == null) {
+                $env_arr['DOCKER'] = '0';
+                $this->changeEnv($env_arr);
             }
-            if ($type == 'migrate') {
-                $migrate = new Process("php artisan migrate --force");
-                $migrate->setWorkingDirectory(base_path());
-                $migrate->setTimeout(null);
-                $migrate->run();
-                $return = nl2br($migrate->getOutput());
+            ini_set('memory_limit','196M');
+            ini_set('max_execution_time', '300');
+            $current_version = File::get(base_path() . "/.version");
+            $composer = false;
+            if (Session::has('user_locale')) {
+                App::setLocale(Session::get('user_locale'));
             }
-            $result1 = $this->github_single($type);
-            if (isset($result1['files'])) {
-                foreach ($result1['files'] as $row1) {
-                    $filename = base_path() . "/" . $row1['filename'];
-                    if ($row1['status'] == 'added' || $row1['status'] == 'modified' || $row1['status'] == 'renamed') {
-                        $github_url = str_replace(' ', '%20', $row1['raw_url']);
-                        if ($github_url !== '') {
-                            $file = file_get_contents($github_url);
-                            $parts = explode('/', $row1['filename']);
-                            array_pop($parts);
-                            $dir = implode('/', $parts);
-                            if (!is_dir(base_path() . "/" . $dir)) {
-                                if ($parts[0] == 'public') {
-                                    mkdir(base_path() . "/" . $dir, 0777, true);
-                                } else {
-                                    mkdir(base_path() . "/" . $dir, 0755, true);
-                                }
-                            }
-                            file_put_contents($filename, $file);
-                            if ($row1['filename'] == 'composer.json' || $row1['filename'] == 'composer.lock') {
-                                $composer = true;
-                            }
-                        }
-                    }
-                    if ($row1['status'] == 'removed') {
-                        if (file_exists($filename)) {
-                            unlink($filename);
-                        }
-                    }
-                }
-                define('STDIN',fopen("php://stdin","r"));
-                File::put(base_path() . "/.version", $type);
-                $return = trans('noshform.update_system1') . " " . $type . " " . trans('noshform.from1') . " " . $current_version;
-                $migrate = new Process("php artisan migrate --force");
-                $migrate->setWorkingDirectory(base_path());
-                $migrate->setTimeout(null);
-                $migrate->run();
-                $return .= '<br>' . nl2br($migrate->getOutput());
-                if ($composer == true) {
+            if ($type !== '') {
+                if ($type == 'composer_install') {
                     $install = new Process("/usr/local/bin/composer install");
                     $install->setWorkingDirectory(base_path());
                     $install->setEnv(['COMPOSER_HOME' => '/usr/local/bin/composer']);
                     $install->setTimeout(null);
                     $install->run();
-                    $return .= '<br>' .nl2br($install->getOutput());
+                    $return = nl2br($install->getOutput());
+                }
+                if ($type == 'migrate') {
+                    $migrate = new Process("php artisan migrate --force");
+                    $migrate->setWorkingDirectory(base_path());
+                    $migrate->setTimeout(null);
+                    $migrate->run();
+                    $return = nl2br($migrate->getOutput());
+                }
+                $result1 = $this->github_single($type);
+                if (isset($result1['files'])) {
+                    foreach ($result1['files'] as $row1) {
+                        $filename = base_path() . "/" . $row1['filename'];
+                        if ($row1['status'] == 'added' || $row1['status'] == 'modified' || $row1['status'] == 'renamed') {
+                            $github_url = str_replace(' ', '%20', $row1['raw_url']);
+                            if ($github_url !== '') {
+                                $file = file_get_contents($github_url);
+                                $parts = explode('/', $row1['filename']);
+                                array_pop($parts);
+                                $dir = implode('/', $parts);
+                                if (!is_dir(base_path() . "/" . $dir)) {
+                                    if ($parts[0] == 'public') {
+                                        mkdir(base_path() . "/" . $dir, 0777, true);
+                                    } else {
+                                        mkdir(base_path() . "/" . $dir, 0755, true);
+                                    }
+                                }
+                                file_put_contents($filename, $file);
+                                if ($row1['filename'] == 'composer.json' || $row1['filename'] == 'composer.lock') {
+                                    $composer = true;
+                                }
+                            }
+                        }
+                        if ($row1['status'] == 'removed') {
+                            if (file_exists($filename)) {
+                                unlink($filename);
+                            }
+                        }
+                    }
+                    define('STDIN',fopen("php://stdin","r"));
+                    File::put(base_path() . "/.version", $type);
+                    $return = trans('noshform.update_system1') . " " . $type . " " . trans('noshform.from1') . " " . $current_version;
+                    $migrate = new Process("php artisan migrate --force");
+                    $migrate->setWorkingDirectory(base_path());
+                    $migrate->setTimeout(null);
+                    $migrate->run();
+                    $return .= '<br>' . nl2br($migrate->getOutput());
+                    if ($composer == true) {
+                        $install = new Process("/usr/local/bin/composer install");
+                        $install->setWorkingDirectory(base_path());
+                        $install->setEnv(['COMPOSER_HOME' => '/usr/local/bin/composer']);
+                        $install->setTimeout(null);
+                        $install->run();
+                        $return .= '<br>' .nl2br($install->getOutput());
+                    }
+                } else {
+                    $return = trans('noshform.update_system2');
                 }
             } else {
-                $return = trans('noshform.update_system2');
-            }
-        } else {
-            $result = $this->github_all();
-            if ($current_version != $result[0]['sha']) {
-                $arr = [];
-                foreach ($result as $row) {
-                    $arr[] = $row['sha'];
-                    if ($current_version == $row['sha']) {
-                        break;
+                $result = $this->github_all();
+                if ($current_version != $result[0]['sha']) {
+                    $arr = [];
+                    foreach ($result as $row) {
+                        $arr[] = $row['sha'];
+                        if ($current_version == $row['sha']) {
+                            break;
+                        }
                     }
-                }
-                $arr2 = array_reverse($arr);
-                foreach ($arr2 as $sha) {
-                    $result1 = $this->github_single($sha);
-                    if (isset($result1['files'])) {
-                        foreach ($result1['files'] as $row1) {
-                            $filename = base_path() . '/' . $row1['filename'];
-                            if ($row1['status'] == 'added' || $row1['status'] == 'modified' || $row1['status'] == 'renamed') {
-                                $github_url = str_replace(' ', '%20', $row1['raw_url']);
-                                if ($github_url !== '') {
-                                    $file = file_get_contents($github_url);
-                                    $parts = explode('/', $row1['filename']);
-                                    array_pop($parts);
-                                    $dir = implode('/', $parts);
-                                    if (!is_dir(base_path() . '/' . $dir)) {
-                                        if ($parts[0] == 'public') {
-                                            mkdir(base_path() . '/' . $dir, 0777, true);
-                                        } else {
-                                            mkdir(base_path() . '/' . $dir, 0755, true);
+                    $arr2 = array_reverse($arr);
+                    foreach ($arr2 as $sha) {
+                        $result1 = $this->github_single($sha);
+                        if (isset($result1['files'])) {
+                            foreach ($result1['files'] as $row1) {
+                                $filename = base_path() . '/' . $row1['filename'];
+                                if ($row1['status'] == 'added' || $row1['status'] == 'modified' || $row1['status'] == 'renamed') {
+                                    $github_url = str_replace(' ', '%20', $row1['raw_url']);
+                                    if ($github_url !== '') {
+                                        $file = file_get_contents($github_url);
+                                        $parts = explode('/', $row1['filename']);
+                                        array_pop($parts);
+                                        $dir = implode('/', $parts);
+                                        if (!is_dir(base_path() . '/' . $dir)) {
+                                            if ($parts[0] == 'public') {
+                                                mkdir(base_path() . '/' . $dir, 0777, true);
+                                            } else {
+                                                mkdir(base_path() . '/' . $dir, 0755, true);
+                                            }
+                                        }
+                                        file_put_contents($filename, $file);
+                                        if ($row1['filename'] == 'composer.json' || $row1['filename'] == 'composer.lock') {
+                                            $composer = true;
                                         }
                                     }
-                                    file_put_contents($filename, $file);
-                                    if ($row1['filename'] == 'composer.json' || $row1['filename'] == 'composer.lock') {
-                                        $composer = true;
-                                    }
                                 }
-                            }
-                            if ($row1['status'] == 'removed') {
-                                if (file_exists($filename)) {
-                                    unlink($filename);
+                                if ($row1['status'] == 'removed') {
+                                    if (file_exists($filename)) {
+                                        unlink($filename);
+                                    }
                                 }
                             }
                         }
                     }
+                    define('STDIN',fopen("php://stdin","r"));
+                    File::put(base_path() . '/.version', $result[0]['sha']);
+                    $return = trans('noshform.update_system1') . " " . $result[0]['sha'] . " " . trans('noshform.from1') . " " . $current_version;
+                    $migrate = new Process("php artisan migrate --force");
+                    $migrate->setWorkingDirectory(base_path());
+                    $migrate->setTimeout(null);
+                    $migrate->run();
+                    $return .= '<br>' .  nl2br($migrate->getOutput());
+                    if ($composer == true) {
+                        $install = new Process("/usr/local/bin/composer install");
+                        $install->setWorkingDirectory(base_path());
+                        $install->setEnv(['COMPOSER_HOME' => '/usr/local/bin/composer']);
+                        $install->setTimeout(null);
+                        $install->run();
+                        $return .= '<br>' . nl2br($install->getOutput());
+                    }
+                } else {
+                    $return = trans('noshform.update_system3');
                 }
-                define('STDIN',fopen("php://stdin","r"));
-                File::put(base_path() . '/.version', $result[0]['sha']);
-                $return = trans('noshform.update_system1') . " " . $result[0]['sha'] . " " . trans('noshform.from1') . " " . $current_version;
-                $migrate = new Process("php artisan migrate --force");
-                $migrate->setWorkingDirectory(base_path());
-                $migrate->setTimeout(null);
-                $migrate->run();
-                $return .= '<br>' .  nl2br($migrate->getOutput());
-                if ($composer == true) {
-                    $install = new Process("/usr/local/bin/composer install");
-                    $install->setWorkingDirectory(base_path());
-                    $install->setEnv(['COMPOSER_HOME' => '/usr/local/bin/composer']);
-                    $install->setTimeout(null);
-                    $install->run();
-                    $return .= '<br>' . nl2br($install->getOutput());
-                }
-            } else {
-                $return = trans('noshform.update_system3');
             }
+        } else {
+            $return = "Update function disabled";
         }
         if (Auth::guest()) {
             return $return;

@@ -38,33 +38,45 @@ class CheckInstall
         }
 
         // Check if version file exists
-        if (!file_exists(base_path() . '/.version')) {
-            return redirect()->route('set_version');
+        if (env('DOCKER') == null || env('DOCKER') == '0') {
+            if (!file_exists(base_path() . '/.version')) {
+                return redirect()->route('set_version');
+            }
         }
 
         // Chcek if needing installation
         $install = DB::table('practiceinfo')->first();
         if (!$install) {
-            if (file_exists(base_path() . '/.patientcentric')) {
-                return redirect()->route('install', ['patient']);
+            if (env('DOCKER') == null || env('DOCKER') == '0') {
+                if (file_exists(base_path() . '/.patientcentric')) {
+                    return redirect()->route('install', ['patient']);
+                } else {
+                    return redirect()->route('install', ['practice']);
+                }
             } else {
-                return redirect()->route('install', ['practice']);
+                if (env('PATIENTCENTRIC') == '1') {
+                    return redirect()->route('install', ['patient']);
+                } else {
+                    return redirect()->route('install', ['practice']);
+                }
             }
         }
 
         // Check for updates
-        define('STDIN',fopen("php://stdin","r"));
-        if (!Schema::hasTable('migrations')) {
-            $migrate = new Process("php artisan migrate:install --force");
-            $migrate->setWorkingDirectory(base_path());
-            $migrate->setTimeout(null);
-            $migrate->run();
-            // Artisan::call('migrate:install', ['--force' => true]);
+        if (env('DOCKER') == null || env('DOCKER') == '0') {
+            define('STDIN',fopen("php://stdin","r"));
+            if (!Schema::hasTable('migrations')) {
+                $migrate = new Process("php artisan migrate:install --force");
+                $migrate->setWorkingDirectory(base_path());
+                $migrate->setTimeout(null);
+                $migrate->run();
+                // Artisan::call('migrate:install', ['--force' => true]);
+            }
+            $migrate1 = new Process("php artisan migrate --force");
+            $migrate1->setWorkingDirectory(base_path());
+            $migrate1->setTimeout(null);
+            $migrate1->run();
         }
-        $migrate1 = new Process("php artisan migrate --force");
-        $migrate1->setWorkingDirectory(base_path());
-        $migrate1->setTimeout(null);
-        $migrate1->run();
         // Artisan::call('migrate', ['--force' => true]);
         $current_version = "2.0.0";
         if ($install->version < $current_version) {

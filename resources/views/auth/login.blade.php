@@ -357,7 +357,7 @@
 <script type="text/javascript">
     $(document).ready(function() {
         if (noshdata.message_action !== '') {
-            if (noshdata.message_action.search('Error - ') == -1) {
+            if (noshdata.message_action.search(noshdata.error_text) == -1) {
                 toastr.success(noshdata.message_action);
             } else {
                 toastr.error(noshdata.message_action);
@@ -400,32 +400,35 @@
     });
 
 	// Uport
-	const Connect = window.uportconnect.Connect;
-	const appName = 'nosh';
-	const connect = new Connect(appName, {
-		'clientId': '2oyVF8cuGih6VQy7LseeXjaXHHFNzzoqBTk',
-		'signer': window.uportconnect.SimpleSigner('82de57b7883af687b673f7c6521e143d28e02d00ba39aed237beac97f2a96f2e'),
-		'network': 'rinkeby'
+	const Connect = window.uportconnect;
+	const appName = 'NOSH ChartingSystem';
+	const uport = new Connect(appName, {
+		network: 'rinkeby'
 	});
-	const web3 = connect.getWeb3();
 	const loginBtnClick = () => {
-		connect.requestCredentials({
-	      requested: ['name', 'phone', 'country', 'email', 'description'],
-	      notifications: true // We want this if we want to recieve credentials
-	    }).then((credentials) => {
-			console.log(credentials);
-			var uport_data = 'name=' + credentials.name + '&uport=' + credentials.address;
-			if (typeof credentials.description !== 'undefined') {
-				uport_data += '&npi=' + credentials.description;
+		uport.requestDisclosure({
+			requested: ['name', 'email', 'NPI'],
+			notifications: true // We want this if we want to recieve credentials
+	    });
+		uport.onResponse('disclosureReq').then((res) => {
+			var did = res.payload.did;
+			var credentials = res.payload.verified;
+			console.log(res.payload);
+			var uport_data = 'name=' + res.payload.name + '&uport=' + res.payload.did;
+			if (typeof res.payload.NPI !== 'undefined') {
+				uport_data += '&npi=' + res.payload.NPI;
 			}
-			if (typeof credentials.email !== 'undefined') {
-				uport_data += '&email=' + credentials.email;
+			if (typeof res.payload.email !== 'undefined') {
+				uport_data += '&email=' + res.payload.email;
 			}
 			$.ajax({
 				type: "POST",
 				url: noshdata.login_uport,
 				data: uport_data,
 				dataType: 'json',
+				beforeSend: function(request) {
+					return request.setRequestHeader("X-CSRF-Token", $("meta[name='csrf-token']").attr('content'));
+				},
 				success: function(data){
 					if (data.message !== 'OK') {
 						toastr.error(data.message);

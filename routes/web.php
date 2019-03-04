@@ -44,7 +44,7 @@ Route::any('google_start', ['as' => 'google_start', 'uses' => 'InstallController
 Route::any('install/{type}', ['as' => 'install', 'uses' => 'InstallController@install']);
 Route::any('install_fix', ['as' => 'install_fix', 'uses' => 'InstallController@install_fix']);
 Route::post('pnosh_install', ['as' => 'pnosh_install', 'uses' => 'InstallController@pnosh_install']);
-Route::any('prescription_pharmacy_view/{id}/{ret?}', ['as' => 'prescription_pharmacy_view', 'uses' => 'InstallController@prescription_pharmacy_view']);
+Route::any('prescription_pharmacy_view/{id}/{ret?}/{did?}', ['as' => 'prescription_pharmacy_view', 'uses' => 'InstallController@prescription_pharmacy_view']);
 Route::get('set_version', ['as' => 'set_version', 'uses' => 'InstallController@set_version']);
 Route::any('setup_mail', ['as' => 'setup_mail', 'uses' => 'InstallController@setup_mail']);
 Route::get('setup_mail_test', ['as' => 'setup_mail_test', 'uses' => 'InstallController@setup_mail_test']);

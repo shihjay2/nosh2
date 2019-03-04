@@ -14,7 +14,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        if (env('DOCKER') == '1') {
+            $url = url('/') . '/nosh';
+            \URL::forceRootUrl($url);
+        }
     }
 
     /**

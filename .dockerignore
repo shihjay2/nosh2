@@ -1,0 +1,36 @@
+# Application temporary files, caches, logs
+database/database.*
+storage/logs/*
+storage/coverage
+storage/*log*xml
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+storage/*.key
+*.cache
+.env
+vendor/*
+
+# Git
+**/.gitignore
+.git
+
+# Docker
+.dockerignore
+
+# Homestead
+Homestead.yaml
+Homestead.json
+
+# etc.
+**/*node_modules
+**/.DS_Store
+.version
+.privkey.pem
+.pubkey.pem
+.jshint.rc
+public/assets/js/uport-connect-new.js
+public/assets/js/uport-connect-old.js
+public/assets/js/web3-new.js
+public/assets/js/web3-old.js
+public/storage
