@@ -18435,7 +18435,7 @@ class Controller extends BaseController
         if ($practice->uma_refresh_token !== null && $practice->uma_refresh_token !== '') {
             $client_id = $practice->uma_client_id;
             $client_secret = $practice->uma_client_secret;
-            $open_id_url = $query->uma_uri;
+            $open_id_url = $practice->uma_uri;
             $oidc = new OpenIDConnectUMAClient($open_id_url, $client_id, $client_secret);
             $oidc->startSession();
             $oidc->setSessionName('pnosh');
