@@ -87,6 +87,7 @@ RUN chmod 777 /var/www/public
 USER www-data
 
 # Install all PHP dependencies
+RUN mkdir /var/www/vendor
 RUN composer install --no-interaction
 
 USER root
