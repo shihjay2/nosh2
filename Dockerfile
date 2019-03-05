@@ -78,6 +78,7 @@ ENV PATH="./vendor/bin:$PATH"
 
 # Copy source files and run composer
 COPY . /var/www
+RUN mkdir /var/www/vendor
 
 # Copy existing application directory permissions
 COPY --chown=www-data:www-data . /var/www
@@ -87,7 +88,6 @@ RUN chmod 777 /var/www/public
 USER www-data
 
 # Install all PHP dependencies
-RUN mkdir /var/www/vendor
 RUN composer install --no-interaction
 
 USER root
