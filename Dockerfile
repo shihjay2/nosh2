@@ -84,6 +84,7 @@ RUN mkdir /var/www/vendor
 COPY --chown=www-data:www-data . /var/www
 RUN chmod 777 /var/www/storage
 RUN chmod 777 /var/www/public
+RUN chmod 777 /var/www/vendor
 
 USER www-data
 
