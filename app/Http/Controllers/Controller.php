@@ -18448,7 +18448,7 @@ class Controller extends BaseController
                 $this->audit('Update');
             }
             $resource_set_id = '';
-            foreach ($scope as $scope) {
+            foreach ($scopes as $scope) {
                 if (filter_var($scope, FILTER_VALIDATE_URL)) {
                     $resource = DB::table('uma')->where('scope', '=', $scope)->first();
                     if ($resource) {
