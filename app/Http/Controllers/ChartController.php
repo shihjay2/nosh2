@@ -1541,18 +1541,30 @@ class ChartController extends Controller {
             } else {
                 $sync_message = '';
                 if ($table == 'demographics' && isset($data['email'])) {
-                    if (Session::get('patient_centric') == 'yp' || Session::get('patient_centric') == 'y') {
-                        // Synchronize with HIE of One AS
-                        $old_demo = DB::table('demographics')->where('pid', '=', '1')->first();
-                        if ($data['email'] !==  $old_demo->email || $data['phone_cell'] !== $old_demo->phone_cell) {
+                    if (isset($data['email']) || isset($data['lastname'])) {
+                        if (Session::get('patient_centric') == 'yp' || Session::get('patient_centric') == 'y') {
+                            // Synchronize with HIE of One AS
+                            $old_demo = DB::table('demographics')->where('pid', '=', '1')->first();
                             $pnosh_practice = DB::table('practiceinfo')->where('practice_id', '=', '1')->first();
                             $sync_data = [
                                 'old_email' => $old_demo->email,
-                                'email' => $data['email'],
-                                'sms' => $data['phone_cell'],
+                                'email' => $old_demo->email,
+                                'sms' => $old_demo->phone_cell,
                                 'client_id' => $pnosh_practice->uma_client_id,
-                                'client_secret' => $pnosh_practice->uma_client_secret
+                                'client_secret' => $pnosh_practice->uma_client_secret,
+                                'lastname' => $old_demo->lastname,
+                                'firstname' => $old_demo->firstname,
+                                'DOB' => date('Y-m-d', strtotime($old_demo->DOB))
                             ];
+                            if (isset($data['email'])) {
+                                $sync_data['email'] = $data['email'];
+                                $sync_data['sms'] = $data['phone_cell'];
+                            }
+                            if (isset($data['lastname'])) {
+                                $sync_data['lastname'] = $data['lastname'];
+                                $sync_data['firstname'] = $data['firstname'];
+                                $sync_data['DOB'] = date('Y-m-d', strtotime($data['DOB']));
+                            }
                             $sync_message = $this->pnosh_sync($sync_data);
                         }
                     }

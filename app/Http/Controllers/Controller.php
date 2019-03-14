@@ -14469,6 +14469,7 @@ class Controller extends BaseController
     {
         App::setLocale(Session::get('practice_locale'));
         $data['rx_item'] = '';
+        $data['dea'] = '';
         foreach ($arr as $rxl_id) {
             $rx = DB::table('rx_list')->where('rxl_id', '=', $rxl_id)->first();
             $data['rx'] = $rx;
@@ -14491,7 +14492,9 @@ class Controller extends BaseController
                 $data['rx_item'] .= $rx->rxl_daw . '<br>';
             }
             $data['rx_item'] .= '</td></tr></tbody></table><br><br><br>';
-
+            if ($rx->rxl_dea != '') {
+                $data['dea'] = trans('noshform.dea') . ': ' . $rx->rxl_dea . '<br>';
+            }
         }
         $provider = DB::table('providers')->where('id', '=', $provider_id)->first();
         $practice = DB::table('practiceinfo')->where('practice_id', '=', $provider->practice_id)->first();

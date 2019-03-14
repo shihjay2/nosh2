@@ -199,7 +199,10 @@ class LoginController extends Controller {
                 if ($query->uma_client_id == $request->input('client_id') && $query->uma_client_secret == $request->input('client_secret')) {
                     $data = [
                         'email' => $request->input('email'),
-                        'phone_cell' => $request->input('sms')
+                        'phone_cell' => $request->input('sms'),
+                        'lastname' => $request->input('lastname'),
+                        'firstname' => $request->input('firstname'),
+                        'DOB' => $request->input('DOB')
                     ];
                     DB::table('demographics')->where('pid', '=', '1')->update($data);
                     $this->audit('Update');
