@@ -1540,7 +1540,7 @@ class ChartController extends Controller {
                 }
             } else {
                 $sync_message = '';
-                if ($table == 'demographics' && isset($data['email'])) {
+                if ($table == 'demographics') {
                     if (isset($data['email']) || isset($data['lastname'])) {
                         if (Session::get('patient_centric') == 'yp' || Session::get('patient_centric') == 'y') {
                             // Synchronize with HIE of One AS

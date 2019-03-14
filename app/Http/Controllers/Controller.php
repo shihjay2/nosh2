@@ -15358,7 +15358,7 @@ class Controller extends BaseController
 
     protected function pnosh_sync($sync_data)
     {
-        $result = 'PNOSH SYNC attempted';
+        $result = '';
         if (Session::get('patient_centric') == 'yp' || Session::get('patient_centric') == 'y') {
             $url = str_replace('/nosh', '/pnosh_sync', URL::to('/'));
             $ch = curl_init();
