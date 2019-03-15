@@ -206,6 +206,7 @@ class LoginController extends Controller {
                     ];
                     DB::table('demographics')->where('pid', '=', '1')->update($data);
                     $this->audit('Update');
+                    $this->demographics_update('1', true);
                     $message = 'Contact data synchronized';
                 }
             }
