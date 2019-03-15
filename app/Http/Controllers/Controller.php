@@ -4037,6 +4037,40 @@ class Controller extends BaseController
         return $return;
     }
 
+    protected function demographics_update($id, $pid)
+    {
+        if ($pid == false) {
+            $user = DB::table('users')->where('id', '=', $id)->first();
+            $query = DB::table('users')->where('username', '=', $user->username)->where('active', '=', '1')->get();
+            if ($query->count()) {
+                foreach ($query as $row) {
+                    $query1 = DB::table('demographics_relate')->where('id', '=', $row->id)->first();
+                    if ($query1) {
+                        $query2 = DB::table('demographics')->where('pid', '=', $query1->pid)->first();
+                        if ($query2) {
+                            $data['lastname'] = $user->lastname;
+                            $data['firstname'] = $user->firstname;
+                            DB::table('demographics')->where('pid','=', $query1->pid)->update($data);
+                            $this->audit('Update');
+                        }
+                    }
+                }
+            }
+        } else {
+            $patient = DB::table('demographics')->where('pid', '=', $id)->first();
+            $query3 = DB::table('demographics_relate')->where('pid', '=', $id)->get();
+            $data1['lastname'] = $patient->lastname;
+            $data1['firstname'] = $patient->firstname;
+            $data1['displayname'] = $patient->firstname . ' ' . $patient->lastname;
+            if ($query3->count()) {
+                foreach ($query3 as $row3) {
+                    DB::table('users')->where('id', '=', $$row3->id)->update($data1);
+                    $this->audit('Update');
+                }
+            }
+        }
+    }
+
     /**
     * Dropdown build
     * @param array  $dropdown_array -

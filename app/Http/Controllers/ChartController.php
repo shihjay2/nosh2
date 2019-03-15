@@ -1568,6 +1568,7 @@ class ChartController extends Controller {
                             $sync_message = $this->pnosh_sync($sync_data);
                         }
                     }
+                    $this->demographics_update($id, true);
                 }
                 DB::table($table)->where($index, '=', $id)->update($data);
                 $this->audit('Update');
