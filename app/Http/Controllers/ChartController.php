@@ -1769,7 +1769,7 @@ class ChartController extends Controller {
                         }
                     }
                 }
-                $this->demographics_update($id, true);
+                $this->demographics_update($row_id1, true);
             }
             // FHIR resource post-save handling
             if (isset($data['label'])) {
