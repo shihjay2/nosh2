@@ -4064,7 +4064,7 @@ class Controller extends BaseController
             $data1['displayname'] = $patient->firstname . ' ' . $patient->lastname;
             if ($query3->count()) {
                 foreach ($query3 as $row3) {
-                    DB::table('users')->where('id', '=', $$row3->id)->update($data1);
+                    DB::table('users')->where('id', '=', $row3->id)->update($data1);
                     $this->audit('Update');
                 }
             }
