@@ -2921,7 +2921,7 @@ class ChartController extends Controller {
         Session::forget('message_action');
         $result = DB::table('demographics')->where('pid', '=', Session::get('pid'))->first();
         $return = '';
-        if (Session::get('patient_centric') !== 'yp') {
+        if (Session::get('patient_centric') == 'n' && Session::get('group_id') != '100') {
             $dropdown_array = [
                 'default_button_text' => trans('noshform.register_portal'),
                 'default_button_text_url' => route('register_patient')
@@ -6191,12 +6191,13 @@ class ChartController extends Controller {
             ];
             if ($edit) {
                 $user = DB::table('users')->where('id', '=', Session::get('user_id'))->first();
-                if ($user->forms == null || $user->forms == '') {
+                if (!empty($user->forms)) {
+                    $yaml = $user->forms;
+                } else {
                     $data1['forms'] = File::get(resource_path() . '/forms.yaml');
+                    $data1['forms_updated_at'] = null;
                     DB::table('users')->where('id', '=', Session::get('user_id'))->update($data1);
                     $yaml = $data1['forms'];
-                } else {
-                    $yaml = $user->forms;
                 }
                 $form_item = [
                     'id' => Session::get('user_id'),

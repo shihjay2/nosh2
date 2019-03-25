@@ -1339,12 +1339,13 @@ class AjaxSearchController extends Controller {
     {
         $data['response'] = 'false';
         $user = DB::table('users')->where('id', '=', Session::get('user_id'))->first();
-        if ($user->template == null || $user->template == '') {
+        if (!empty($user->template)) {
+            $yaml = $user->template;
+        } else {
             $data1['template'] = File::get(resource_path() . '/template.yaml');
+            $data1['template_updated_at'] = null;
             DB::table('users')->where('id', '=', Session::get('user_id'))->update($data1);
             $yaml = $data1['template'];
-        } else {
-            $yaml = $user->template;
         }
         $formatter = Formatter::make($yaml, Formatter::YAML);
         $array = $formatter->toArray();
@@ -1566,6 +1567,7 @@ class AjaxSearchController extends Controller {
         if ($arr['response'] == 'yes') {
             $formatter1 = Formatter::make($array, Formatter::ARR);
             $data['template'] = $formatter1->toYaml();
+            $data['template_updated_at'] = date('Y-m-d H:i:s', time());
             DB::table('users')->where('id', '=', Session::get('user_id'))->update($data);
         }
         return $arr;
@@ -1601,6 +1603,7 @@ class AjaxSearchController extends Controller {
         }
         $formatter1 = Formatter::make($array, Formatter::ARR);
         $data['template'] = $formatter1->toYaml();
+        $data['template_updated_at'] = date('Y-m-d H:i:s', time());
         DB::table('users')->where('id', '=', Session::get('user_id'))->update($data);
         return $message;
     }
@@ -1619,6 +1622,7 @@ class AjaxSearchController extends Controller {
         }
         $formatter1 = Formatter::make($array, Formatter::ARR);
         $data['template'] = $formatter1->toYaml();
+        $data['template_updated_at'] = date('Y-m-d H:i:s', time());
         DB::table('users')->where('id', '=', Session::get('user_id'))->update($data);
         return $message;
     }
@@ -1627,6 +1631,7 @@ class AjaxSearchController extends Controller {
     {
         if ($action == '') {
             $data1['template'] = File::get(resource_path() . '/template.yaml');
+            $data1['template_updated_at'] = null;
             DB::table('users')->where('id', '=', Session::get('user_id'))->update($data1);
             $message = 'Template restored to default';
         }
@@ -1653,6 +1658,7 @@ class AjaxSearchController extends Controller {
                     sleep(2);
                 }
                 $data2['template'] = File::get($file_path);
+                $data2['template_updated_at'] = date('Y-m-d H:i:s', time());
                 DB::table('users')->where('id', '=', Session::get('user_id'))->update($data2);
                 $message = 'Template uploaded and set';
             } else {
@@ -1660,7 +1666,7 @@ class AjaxSearchController extends Controller {
                 $data['document_upload'] = route('template_restore', ['upload']);
                 $type_arr = ['yaml'];
                 $data['document_type'] = json_encode($type_arr);
-                $dropdown_array['default_button_text'] = '<i class="fa fa-chevron-left fa-fw fa-btn"></i>Back';
+                $dropdown_array['default_button_text'] = '<i class="fa fa-chevron-left fa-fw fa-btn"></i>' . trans('noshform.back');
                 $dropdown_array['default_button_text_url'] = Session::get('last_page');
                 $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
                 $data['assets_js'] = $this->assets_js('document_upload');

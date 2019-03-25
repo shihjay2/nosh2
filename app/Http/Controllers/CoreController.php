@@ -1254,6 +1254,7 @@ class CoreController extends Controller
         unset($array[$type]);
         $formatter1 = Formatter::make($array, Formatter::ARR);
         $data1['forms'] = $formatter1->toYaml();
+        $data1['forms_updated_at'] = date('Y-m-d H:i:s', time());
         DB::table('users')->where('id', '=', Session::get('user_id'))->update($data1);
         Session::put('message_action', trans('noshform.form_deleted'));
         return redirect()->route('configure_form_list');
@@ -1290,6 +1291,7 @@ class CoreController extends Controller
             }
             $formatter1 = Formatter::make($array, Formatter::ARR);
             $data['forms'] = $formatter1->toYaml();
+            $data['forms_updated_at'] = date('Y-m-d H:i:s', time());
             DB::table('users')->where('id', '=', $id)->update($data);
             Session::put('message_action', $message);
             return redirect()->route('configure_form_show', [$type]);
@@ -1402,6 +1404,7 @@ class CoreController extends Controller
             }
             $formatter1 = Formatter::make($array, Formatter::ARR);
             $data1['forms'] = $formatter1->toYaml();
+            $data1['forms_updated_at'] = date('Y-m-d H:i:s', time());
             DB::table('users')->where('id', '=', $id)->update($data1);
             Session::put('message_action', $message);
             return redirect()->route('configure_form_show', [$type]);
@@ -1469,12 +1472,13 @@ class CoreController extends Controller
         $return = '';
         $user = DB::table('users')->where('id', '=', Session::get('user_id'))->first();
         $data['panel_header'] = trans('noshform.configure_form_list');
-        if ($user->forms == null || $user->forms == '') {
+        if (!empty($user->forms)) {
+            $yaml = $user->forms;
+        } else {
             $data1['forms'] = File::get(resource_path() . '/forms.yaml');
+            $data1['forms_updated_at'] = null;
             DB::table('users')->where('id', '=', Session::get('user_id'))->update($data1);
             $yaml = $data1['forms'];
-        } else {
-            $yaml = $user->forms;
         }
         $formatter = Formatter::make($yaml, Formatter::YAML);
         $array = $formatter->toArray();
@@ -1517,6 +1521,7 @@ class CoreController extends Controller
         unset($array[$type][$item]);
         $formatter1 = Formatter::make($array, Formatter::ARR);
         $data1['forms'] = $formatter1->toYaml();
+        $data1['forms_updated_at'] = date('Y-m-d H:i:s', time());
         DB::table('users')->where('id', '=', Session::get('user_id'))->update($data1);
         Session::put('message_action', trans('noshform.configure_form_remove'));
         return redirect()->route('configure_form_show', [$type]);
@@ -1545,6 +1550,7 @@ class CoreController extends Controller
             $array[$type]['scoring'][$new_item] = $request->input('description');
             $formatter1 = Formatter::make($array, Formatter::ARR);
             $data1['forms'] = $formatter1->toYaml();
+            $data1['forms_updated_at'] = date('Y-m-d H:i:s', time());
             DB::table('users')->where('id', '=', $id)->update($data1);
             Session::put('message_action', $message);
             return redirect()->route('configure_form_scoring_list', [$type]);
@@ -1603,6 +1609,7 @@ class CoreController extends Controller
         unset($array[$type]['scoring'][$item]);
         $formatter1 = Formatter::make($array, Formatter::ARR);
         $data1['forms'] = $formatter1->toYaml();
+        $data1['forms_updated_at'] = date('Y-m-d H:i:s', time());
         DB::table('users')->where('id', '=', $id)->update($data1);
         Session::put('message_action', trans('noshform.configure_form_scoring_delete'));
         return redirect()->route('configure_form_scoring_list', [$type]);
@@ -6608,12 +6615,12 @@ class CoreController extends Controller
     public function superquery(Request $request, $type)
     {
         $user = DB::table('users')->where('id', '=', Session::get('user_id'))->first();
-        if ($user->reports == null || $user->reports == '') {
-            $array = [];
-        } else {
+        if (!empty($user->reports)) {
             $yaml = $user->reports;
             $formatter = Formatter::make($yaml, Formatter::YAML);
             $array = $formatter->toArray();
+        } else {
+            $array = [];
         }
         $table = '';
         if ($request->isMethod('post')) {
@@ -6650,6 +6657,7 @@ class CoreController extends Controller
                 }
                 $formatter1 = Formatter::make($array, Formatter::ARR);
                 $data['reports'] = $formatter1->toYaml();
+                $data['reports_updated_at'] = date('Y-m-d H:i:s', time());
                 DB::table('users')->where('id', '=', Session::get('user_id'))->update($data);
                 Session::put('message_action', $message);
                 if ($request->input('submit') == 'save') {
@@ -7367,6 +7375,7 @@ class CoreController extends Controller
         unset($array[$type]);
         $formatter1 = Formatter::make($array, Formatter::ARR);
         $data['reports'] = $formatter1->toYaml();
+        $data['reports_updated_at'] = date('Y-m-d H:i:s', time());
         DB::table('users')->where('id', '=', Session::get('user_id'))->update($data);
         Session::put('message_action', trans('noshform.superquery_delete'));
         return redirect(Session::get('last_page'));

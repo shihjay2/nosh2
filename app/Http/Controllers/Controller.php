@@ -17681,8 +17681,35 @@ class Controller extends BaseController
         if ($query->count()) {
             foreach ($query as $row) {
                 foreach ($columns as $column) {
-                    if ($column !== 'id' && $column !== 'practice_id' && $column !== 'group_id') {
+                    if ($column !== 'id' && $column !== 'practice_id' && $column !== 'group_id' && $column !== 'template' && $column !== 'forms' && $column !== 'reports') {
                         $data[$column] = $row->{$column};
+                    }
+                    if ($column == 'template') {
+                        if (!empty($row->{$column})) {
+                            if (!empty($row->template_updated_at)) {
+                                if ($row->template_updated_at > $user->template_updated_at) {
+                                    $data[$column] = $row->{$column};
+                                }
+                            }
+                        }
+                    }
+                    if ($column == 'forms') {
+                        if (!empty($row->{$column})) {
+                            if (!empty($row->forms_updated_at)) {
+                                if ($row->forms_updated_at > $user->forms_updated_at) {
+                                    $data[$column] = $row->{$column};
+                                }
+                            }
+                        }
+                    }
+                    if ($column == 'reports') {
+                        if (!empty($row->{$column})) {
+                            if (!empty($row->reports_updated_at)) {
+                                if ($row->reports_updated_at > $user->reports_updated_at) {
+                                    $data[$column] = $row->{$column};
+                                }
+                            }
+                        }
                     }
                 }
                 DB::table('users')->where('id', '=', $row->id)->update($data);
