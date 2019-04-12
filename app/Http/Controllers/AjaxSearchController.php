@@ -900,7 +900,7 @@ class AjaxSearchController extends Controller {
         $data['response'] = 'false';
         $query = DB::table('demographics')
             ->join('demographics_relate', 'demographics_relate.pid', '=', 'demographics.pid')
-            ->select('demographics.lastname', 'demographics.firstname', 'demographics.DOB', 'demographics.pid')
+            ->select('demographics.lastname', 'demographics.firstname', 'demographics.DOB', 'demographics.pid', 'demographics.active')
             ->where('demographics_relate.practice_id', '=', Session::get('practice_id'))
             ->where(function($query_array1) use ($q) {
                 $query_array1->where('demographics.lastname', 'LIKE', "%$q%")
@@ -914,6 +914,9 @@ class AjaxSearchController extends Controller {
             foreach ($query as $row) {
                 $dob = date('m/d/Y', strtotime($row->DOB));
                 $name = $row->lastname . ', ' . $row->firstname . ' (DOB: ' . $dob . ') (ID: ' . $row->pid . ')';
+                if ($row->active != '1') {
+                    $name .= ' - INACTIVE <i class="fa fa-times fa-fw fa-btn"></i>';
+                }
                 $href = route('set_patient', [$row->pid]);
                 if (Session::get('group_id') == '1') {
                     $href = route('print_chart_admin', [$row->pid]);
@@ -923,7 +926,8 @@ class AjaxSearchController extends Controller {
                     'label' => $name,
                     'value' => $row->pid,
                     'ptname' => $name,
-                    'href' => $href
+                    'href' => $href,
+                    'ptactive' => $row->active
                 ];
             }
         }

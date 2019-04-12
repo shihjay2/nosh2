@@ -31,6 +31,7 @@
                     @endif
                     <div style="margin:15px;">
                         <button type="button" id="schedule_view_button" class="btn btn-default btn-block"></button>
+                        <a href="{{ route('print_schedule') }}" class="btn btn-default btn-block nosh-no-load">{{ trans('noshform.print') . ' ' . trans('nosh.schedule') }}</a>
                     </div>
                 </div>
             </div>

@@ -14223,7 +14223,7 @@ class Controller extends BaseController
             App::setLocale(Session::get('patient_locale'));
         }
         $data = $this->page_default();
-        $data['body'] = 'Immunizations for ' . $data['firstname'] . ' ' . $data['lastname'] . ':<br />';
+        $data['body'] = trans('noshform.immunizations') . ' ' . trans('noshform.for') . ' ' . $data['firstname'] . ' ' . $data['lastname'] . ':<br />';
         $seq_arr = [
             '1' => lcfirst(trans('noshform.first')),
             '2' => lcfirst(trans('noshform.second')),

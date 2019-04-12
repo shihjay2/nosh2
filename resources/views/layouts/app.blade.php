@@ -1494,6 +1494,11 @@
                                         html += ' nosh-icd10 list-group-item-success';
                                     }
                                 }
+                                if (typeof val.ptactive !== 'undefined') {
+                                    if (val.ptactive != '1') {
+                                        html += ' list-group-item-danger';
+                                    }
+                                }
                                 html += '" data-nosh-value="' + val.value +'" data-nosh-id="' + val.id + '">' + val.label + '</a>';
                                 if (typeof val.category_id !== 'undefined') {
                                     $('#'+ val.category_id).append(html);

@@ -6139,6 +6139,40 @@ class CoreController extends Controller
         }
     }
 
+    public function print_schedule(Request $request)
+    {
+        ini_set('memory_limit','196M');
+        if(isset($_COOKIE['nosh-schedule'])) {
+            $date = Date::parse($_COOKIE['nosh-schedule']);
+        } else {
+            $date = Date::now();
+        }
+        $start = $date->startOfDay()->timestamp;
+        $end = $date->endofDay()->timestamp;
+        $id = Session::get('provider_id');
+        $provider = DB::table('users')->where('id', '=', $id)->first();
+        $title = trans('nosh.schedule') . ' ' . trans('noshform.for') . ' ' . $provider->displayname . ' on ' . date('Y-m-d', $start);
+        $html = $this->page_intro($title, Session::get('practice_id'));
+        $query = DB::table('schedule')->where('provider_id', '=', $id)->whereBetween('start', [$start, $end])->get();
+        if ($query->count()) {
+            $html .= '<table border="1" cellpadding="5"><thead><tr><th style="width:15%"></th><th style="width:35%">' . trans('noshform.patient') . '</th><th>' . trans('noshform.visit_type') . '</th><th>' . trans('noshform.schedule_reason') . '</th></tr></thead><tbody>';
+            foreach ($query as $row) {
+                $html .= '<tr><td style="width:15%">' . date('h:i A', $row->start) . '</td>';
+                $html .= '<td style="width:35%">' . $row->title . '</td>';
+                $html .= '<td>' . $row->visit_type . '</td>';
+                $html .= '<td>' . $row->reason . '</td></tr>';
+            }
+            $html .= '</tbody></table>';
+        }
+        $html .= '<br />' . trans('noshform.printed_by') . ' ' . Session::get('displayname') . '.</html>';
+        $file_path = public_path() . "/temp/" . time() . "_schedule_" . Session::get('user_id') . ".pdf";
+        $this->generate_pdf($html, $file_path);
+        while(!file_exists($file_path)) {
+            sleep(2);
+        }
+        return response()->download($file_path);
+    }
+
     public function restore_backup(Request $request)
     {
         if ($request->isMethod('post')) {
