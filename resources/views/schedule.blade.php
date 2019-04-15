@@ -69,7 +69,7 @@
                 <div class="modal-body" style="height:85vh;overflow-y:auto;">
                     @if (Session::get('group_id') != '100')
                         <div style="margin:15px">
-                            <form class="input-group form nosh-appt" border="0" id="search_patient_appointment_form" role="search" action="{{ url('search_patient') }}" method="POST" style="margin-bottom:0px;" data-nosh-target="search_patient_appointment_results" data-nosh-search-to="pid">
+                            <form class="input-group form nosh-appt" border="0" id="search_patient_appointment_form" role="search" action="{{ url('search_patient_schedule') }}" method="POST" style="margin-bottom:0px;" data-nosh-target="search_patient_appointment_results" data-nosh-search-to="pid">
                                 <input type="text" class="form-control search" id="search_patient_appointment" name="search_patient" placeholder="Search Patient" style="margin-bottom:0px;" required autocomplete="off">
                                 <input type="hidden" name="type" value="li">
                                 <span class="input-group-btn">

@@ -960,6 +960,45 @@ class AjaxSearchController extends Controller {
         return $data;
     }
 
+    public function search_patient_schedule(Request $request)
+    {
+        $q = strtolower($request->input('search_patient'));
+        if (!$q) return;
+        $data['response'] = 'false';
+        $query = DB::table('demographics')
+            ->join('demographics_relate', 'demographics_relate.pid', '=', 'demographics.pid')
+            ->select('demographics.lastname', 'demographics.firstname', 'demographics.DOB', 'demographics.pid', 'demographics.active')
+            ->where('demographics_relate.practice_id', '=', Session::get('practice_id'))
+            ->where('demographics.active', '=', '1')
+            ->where(function($query_array1) use ($q) {
+                $query_array1->where('demographics.lastname', 'LIKE', "%$q%")
+                ->orWhere('demographics.firstname', 'LIKE', "%$q%")
+                ->orWhere('demographics.pid', 'LIKE', "%$q%");
+            })
+            ->get();
+        if ($query->count()) {
+            $data['message'] = [];
+            $data['response'] = $request->input('type');
+            foreach ($query as $row) {
+                $dob = date('m/d/Y', strtotime($row->DOB));
+                $name = $row->lastname . ', ' . $row->firstname . ' (DOB: ' . $dob . ') (ID: ' . $row->pid . ')';
+                $href = route('set_patient', [$row->pid]);
+                if (Session::get('group_id') == '1') {
+                    $href = route('print_chart_admin', [$row->pid]);
+                }
+                $data['message'][] = [
+                    'id' => 'pid',
+                    'label' => $name,
+                    'value' => $row->pid,
+                    'ptname' => $name,
+                    'href' => $href,
+                    'ptactive' => $row->active
+                ];
+            }
+        }
+        return $data;
+    }
+
     public function search_rx(Request $request)
     {
         $q = $request->input('search_rx');

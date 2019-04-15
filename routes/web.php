@@ -296,6 +296,7 @@ Route::post('search_loinc', ['as' => 'search_loinc', 'uses' => 'AjaxSearchContro
 Route::post('search_ndc', ['as' => 'search_ndc', 'uses' => 'AjaxSearchController@search_ndc']);
 Route::post('search_patient', ['as' => 'search_patient', 'uses' => 'AjaxSearchController@search_patient']);
 Route::post('search_patient_history', ['as' => 'search_patient_history', 'uses' => 'AjaxSearchController@search_patient_history']);
+Route::post('search_patient_schedule', ['as' => 'search_patient_schedule', 'uses' => 'AjaxSearchController@search_patient_schedule']);
 Route::post('search_referral_provider', ['as' => 'search_referral_provider', 'uses' => 'AjaxSearchController@search_referral_provider']);
 Route::post('search_rx', ['as' => 'search_rx', 'uses' => 'AjaxSearchController@search_rx']);
 Route::post('search_specialty', ['as' => 'search_specialty', 'uses' => 'AjaxSearchController@search_specialty']);

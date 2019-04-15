@@ -6153,7 +6153,7 @@ class CoreController extends Controller
         $provider = DB::table('users')->where('id', '=', $id)->first();
         $title = trans('nosh.schedule') . ' ' . trans('noshform.for') . ' ' . $provider->displayname . ' on ' . date('Y-m-d', $start);
         $html = $this->page_intro($title, Session::get('practice_id'));
-        $query = DB::table('schedule')->where('provider_id', '=', $id)->whereBetween('start', [$start, $end])->get();
+        $query = DB::table('schedule')->where('provider_id', '=', $id)->whereBetween('start', [$start, $end])->orderBy('start', 'asc')->get();
         if ($query->count()) {
             $html .= '<table border="1" cellpadding="5"><thead><tr><th style="width:15%"></th><th style="width:35%">' . trans('noshform.patient') . '</th><th>' . trans('noshform.visit_type') . '</th><th>' . trans('noshform.schedule_reason') . '</th></tr></thead><tbody>';
             foreach ($query as $row) {
