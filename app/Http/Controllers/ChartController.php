@@ -6968,7 +6968,7 @@ class ChartController extends Controller {
             foreach ($result as $row) {
                 $arr = [];
                 if ($row->rxl_sig == '') {
-                    $arr['label'] = '<strong>' . $row->rxl_medication . '</strong> ' . $row->rxl_dosage . ' ' . $row->rxl_dosage_unit . ', ' . $row->rxl_instructions . ' ' . trans('noshform. for') . ' ' . $row->rxl_reason;
+                    $arr['label'] = '<strong>' . $row->rxl_medication . '</strong> ' . $row->rxl_dosage . ' ' . $row->rxl_dosage_unit . ', ' . $row->rxl_instructions . ' ' . trans('noshform.for') . ' ' . $row->rxl_reason;
                 } else {
                     $arr['label'] = '<strong>' . $row->rxl_medication . '</strong> ' . $row->rxl_dosage . ' ' . $row->rxl_dosage_unit . ', ' . $row->rxl_sig . ', ' . $row->rxl_route . ', ' . $row->rxl_frequency;
                     $arr['label'] .= ' ' . trans('noshform.for') . ' ' . $row->rxl_reason;
@@ -6983,7 +6983,7 @@ class ChartController extends Controller {
                     if ($previous->rxl_date_prescribed !== null && $previous->rxl_date_prescribed !== '0000-00-00 00:00:00') {
                         $previous_date = new Date($this->human_to_unix($previous->rxl_date_prescribed));
                         $ago = $previous_date->diffInDays();
-                        $arr['label'] .= '<br><strong>Last Prescribed:</strong> ' . date('Y-m-d', $this->human_to_unix($previous->rxl_date_prescribed)) . ', ' . $ago . ' days ago';
+                        $arr['label'] .= '<br><strong>' . trans('noshform.last_prescribed') . ':</strong> ' . date('Y-m-d', $this->human_to_unix($previous->rxl_date_prescribed)) . ', ' . $ago . ' ' . trans('noshform.days_ago');
                         // $arr['label'] .= '<br><strong>Prescription Status:</strong> ' . ucfirst($previous->prescription);
                     }
                 }
@@ -7009,7 +7009,7 @@ class ChartController extends Controller {
             }
             $return .= $this->result_build($list_array, 'medications_list');
         } else {
-            $return .= ' None.';
+            $return .= ' ' . trans('noshform.none') . '.';
         }
         $data['content'] = $return;
         $data['medications_active'] = true;

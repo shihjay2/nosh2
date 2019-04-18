@@ -1092,6 +1092,7 @@ return [
     "prescription_pharmacy_view6" => "Prescription has been inactivated",
     "prescription_pharmacy_view7" => "This medication was never prescribed",
     "prescription_pharmacy_view8" => "No prescription exists",
+    "days_ago" => "days ago",
 
     // Supplements
     "pull_inventory1" => "Pull from Supplements Inventory",
