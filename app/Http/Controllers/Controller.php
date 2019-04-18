@@ -16014,7 +16014,7 @@ class Controller extends BaseController
                 $response['text']['div'] .= ', Date Active: ' . date("Y-m-d", $this->human_to_unix($row->rxl_date_active)) . '</div>';
                 $dosage_text = $row->rxl_instructions . ' for ' . $row->rxl_reason;
                 $asNeededBoolean = false;
-                if (in_array($med_row->rxl_instructions, $med_prn_array)) {
+                if (in_array($row->rxl_instructions, $med_prn_array)) {
                     $asNeededBoolean = true;
                 }
                 $dosage_array = [
