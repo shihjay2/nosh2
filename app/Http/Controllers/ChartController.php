@@ -2278,7 +2278,7 @@ class ChartController extends Controller {
             if ($id == '0') {
                 $data['panel_header'] = trans('noshform.add') . ' ' . trans('noshform.alert');
             } else {
-                $data['panel_header'] = trans('noshform.edit') . ' ' . trans('noshform.allergy');
+                $data['panel_header'] = trans('noshform.edit') . ' ' . trans('noshform.alert');
             }
             if ($subtype == 'incomplete') {
                 $data['panel_header'] = trans('noshform.mark_alert_incomplete');
