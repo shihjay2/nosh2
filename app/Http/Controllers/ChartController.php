@@ -3675,7 +3675,7 @@ class ChartController extends Controller {
         $assessment_other_val = null;
         $assessment_ddx_label = trans('noshform.diff_dx');
         $assessment_ddx_val = null;
-        $assessment_notes_label = trans('noshform.disuss_dx');
+        $assessment_notes_label = trans('noshform.discuss_dx');
         $assessment_notes_val = null;
         if ($encounter->encounter_template == 'standardmtm') {
             $assessment_other_label = trans('noshform.soap_note');
@@ -6398,7 +6398,7 @@ class ChartController extends Controller {
         } else {
             $items = [];
             foreach ($array[$type] as $row_k => $row_v) {
-                if ($row_k !== 'forms_title' && $row_k !== 'forms_destination' && $row_k !== 'scoring') {
+                if ($row_k !== 'forms_title' && $row_k !== 'forms_destination' && $row_k !== 'scoring' && $row_k !== 'gender') {
                     $form_item = [
                         'name' => $row_v['name'],
                         'label' => $row_v['text'],
