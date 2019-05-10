@@ -1280,6 +1280,9 @@ class CoreController extends Controller
             }
             $array[$type]['forms_title'] = $request->input('forms_title');
             $array[$type]['forms_destination'] = $request->input('forms_destination');
+            unset($array[$type]['gender']);
+            unset($array[$type]['age']);
+            unset($array[$type]['scoring']);
             if ($request->input('gender') !== '') {
                 $array[$type]['gender'] = $request->input('gender');
             }
