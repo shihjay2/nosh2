@@ -9454,7 +9454,9 @@ class Controller extends BaseController
                 'active' => '1',
                 'practice_id' => $practice_id,
                 'locale' => null,
-                'secure_message_notification' => '0'
+                'secure_message_notification' => '0',
+                'secret_question' => null,
+                'secret_answer' => null
             ];
             if ($subtype == '2') {
                 $data2 = [
@@ -9488,7 +9490,9 @@ class Controller extends BaseController
                 'active' => $result->active,
                 'practice_id' => $result->practice_id,
                 'locale' => $result->locale,
-                'secure_message_notification' => $result->secure_message_notification
+                'secure_message_notification' => $result->secure_message_notification,
+                'secret_question' => $result->secret_question,
+                'secret_answer' => $result->secret_answer
             ];
             if ($subtype == '2') {
                 $provider = DB::table('providers')->where('id', '=', $id)->first();
@@ -9569,6 +9573,18 @@ class Controller extends BaseController
             'type' => 'select',
             'select_items' => $this->array_locale(),
             'default_value' => $data['locale']
+        ];
+        $items[] = [
+            'name' => 'secret_question',
+            'label' => trans('nosh.secret_question'),
+            'type' => 'text',
+            'default_value' => $data['secret_question']
+        ];
+        $items[] = [
+            'name' => 'secret_answer',
+            'label' => trans('nosh.secret_answer'),
+            'type' => 'text',
+            'default_value' => $data['secret_answer']
         ];
         $items[] = [
             'name' => 'group_id',
