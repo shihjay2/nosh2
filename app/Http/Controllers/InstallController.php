@@ -642,7 +642,7 @@ class InstallController extends Controller {
                 File::put(base_path() . '/.version', $result[0]['sha']);
             }
         } else {
-            if (env('PATIENTCENTRIC') == '1') {
+            if (env('PATIENTCENTRIC') != '1') {
                 return 'Error - Not pNOSH';
             }
         }
