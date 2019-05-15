@@ -100,6 +100,10 @@ COPY supervisord.conf /etc/supervisord.conf
 COPY schedule.sh /usr/local/bin/schedule.sh
 RUN ["chmod", "+x", "/usr/local/bin/schedule.sh"]
 
+RUN mkdir /noshdocuments
+RUN chown -R www-data:www-data /noshdocuments
+RUN chmod -R 755 /noshdocuments
+
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 
 EXPOSE 9000
