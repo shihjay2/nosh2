@@ -1567,5 +1567,6 @@ class InstallController extends Controller {
 
     public function test1(Request $request)
     {
+        return $request->fullUrl();
     }
 }

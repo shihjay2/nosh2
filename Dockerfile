@@ -67,9 +67,9 @@ RUN pecl install imagick &&\
 RUN apk del .build-deps
 
 # Copy composer.lock and composer.json
-COPY composer.lock composer.json /var/www/
+COPY composer.lock composer.json /var/www/nosh/
 
-WORKDIR "/var/www"
+WORKDIR "/var/www/nosh"
 
 # Install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -77,14 +77,14 @@ ENV COMPOSER_ALLOW_SUPERUSER=1
 ENV PATH="./vendor/bin:$PATH"
 
 # Copy source files and run composer
-COPY . /var/www
-RUN mkdir /var/www/vendor
+COPY . /var/www/nosh
+RUN mkdir /var/www/nosh/vendor
 
 # Copy existing application directory permissions
-COPY --chown=www-data:www-data . /var/www
-RUN chmod 777 /var/www/storage
-RUN chmod 777 /var/www/public
-RUN chmod 777 /var/www/vendor
+COPY --chown=www-data:www-data . /var/www/nosh
+RUN chmod 777 /var/www/nosh/storage
+RUN chmod 777 /var/www/nosh/public
+RUN chmod 777 /var/www/nosh/vendor
 
 USER www-data
 
