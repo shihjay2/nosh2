@@ -140,7 +140,7 @@
                     <!-- Authentication Links -->
                     @if (Auth::guest())
                         @if (!isset($noheader))
-                            <li><a href="{{ url('/login') }}">{{ trans('nosh.login_heading') }}</a></li>
+                            <li><a href="{{ url('/') }}">{{ trans('nosh.login_heading') }}</a></li>
                         @endif
                     @else
                         @if (Session::has('uma_uri'))

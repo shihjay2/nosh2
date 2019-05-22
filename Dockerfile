@@ -1,4 +1,4 @@
-FROM php:7.3.2-fpm-alpine
+FROM php:7.3.5-fpm-alpine
 
 LABEL Maintainer Michael Shihjay Chen <shihjay2@gmail.com>
 
