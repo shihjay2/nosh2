@@ -5634,6 +5634,7 @@ class CoreController extends Controller
                 'npi' => $practice->npi,
                 'practice_name' => $request->input('practice_name'),
                 'street_address1' => $practice->street_address1,
+                'country' => $practice->country,
                 'city' => $practice->city,
                 'state' => $practice->state,
                 'zip' => $practice->zip,
@@ -5670,7 +5671,8 @@ class CoreController extends Controller
                 'appointment_extension' => $practice->appointment_extension,
                 'appointment_interval' => $practice->appointment_interval,
                 'appointment_message' => $practice->appointment_message,
-                'sms_url' => $practice->sms_url
+                'sms_url' => $practice->sms_url,
+                'reminder_interval' => $practice->reminder_interval
             ];
             $practice_id = DB::table('practiceinfo')->insertGetId($practice_data);
             $this->audit('Add');
@@ -6499,6 +6501,7 @@ class CoreController extends Controller
                 return redirect()->route('core_form', ['practiceinfo', 'practice_id', $practice_id, 'extensions']);
             }
             $state = $this->array_states($result->country);
+            $billing_state = $this->array_states($result->billing_country);
             $unit_arr = [
                 'in' => trans('noshform.in'),
                 'cm' => trans('noshform.cm'),
@@ -6560,7 +6563,7 @@ class CoreController extends Controller
                 trans('noshform.street_address2') => $result->billing_street_address2,
                 trans('noshform.country') => $result->billing_country,
                 trans('noshform.city') => $result->billing_city,
-                trans('noshform.state') => $state[$result->billing_state],
+                trans('noshform.state') => $billing_state[$result->billing_state],
                 trans('noshform.zip') => $result->billing_zip,
             ];
             $appt_arr = [
