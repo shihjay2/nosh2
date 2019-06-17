@@ -7,6 +7,8 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesResources;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 use App;
 use App\Libraries\Phaxio;
@@ -3844,12 +3846,12 @@ class Controller extends BaseController
             Config::set('excel.csv.delimiter', "\t");
             $reader = Excel::load(resource_path() . '/Default.txt');
             $file_result = $reader->get()->toArray();
-            $specific = array_where($file_result, function($value, $key) {
+            $specific = Arr::where($file_result, function($value, $key) {
                 if (stripos($value['category'] , 'specific') !== false) {
                     return true;
                 }
             });
-            $query = array_where($file_result, function($value, $key) {
+            $query = Arr::where($file_result, function($value, $key) {
                 if (stripos($value['category'] , 'text') !== false) {
                     return true;
                 }
@@ -4722,7 +4724,7 @@ class Controller extends BaseController
                                         $formatter = Formatter::make($yaml, Formatter::YAML);
                                         $route_arr = $formatter->toArray();
                                         $q = $row2['resource']['dosage'][0]['route']['coding'][0]['code'];
-                                        $route_result = array_where($route_arr, function($value, $key) use ($q) {
+                                        $route_result = Arr::where($route_arr, function($value, $key) use ($q) {
                                             if (stripos($value['code'], $q) !== false) {
                                                 return true;
                                             }
@@ -10280,7 +10282,7 @@ class Controller extends BaseController
         Config::set('excel.csv.delimiter', "\t");
         $reader = Excel::load(resource_path() . '/' . $gc[$style][$sex]);
         $result = $reader->get()->toArray();
-        $result1a = array_where($result, function($value, $key) use ($age, $style) {
+        $result1a = Arr::where($result, function($value, $key) use ($age, $style) {
             if ($style == 'height-age') {
                 if ($value['day'] == $age) {
                     return true;
@@ -10301,7 +10303,7 @@ class Controller extends BaseController
         Config::set('excel.csv.delimiter', "\t");
         $reader = Excel::load(resource_path() . '/' . $gc[$style][$sex]);
         $result = $reader->get()->toArray();
-        $result1a = array_where($result, function($value, $key) use ($length) {
+        $result1a = Arr::where($result, function($value, $key) use ($length) {
             if ($value['length'] == $length) {
                 return true;
             }
@@ -10316,7 +10318,7 @@ class Controller extends BaseController
         Config::set('excel.csv.delimiter', "\t");
         $reader = Excel::load(resource_path() . '/' . $gc[$style][$sex]);
         $result = $reader->get()->toArray();
-        $result1a = array_where($result, function($value, $key) use ($height) {
+        $result1a = Arr::where($result, function($value, $key) use ($height) {
             if ($value['height'] == $height) {
                 return true;
             }
@@ -13797,7 +13799,7 @@ class Controller extends BaseController
         }
         $result = [];
         $return = '';
-        $result = array_where($preicd, function($value, $key) use ($code) {
+        $result = Arr::where($preicd, function($value, $key) use ($code) {
             if (stripos($value['icd10'] , $code) !== false) {
                 return true;
             }
@@ -13937,7 +13939,8 @@ class Controller extends BaseController
         $pnosh_url = str_replace(array('http://','https://'), '', $pnosh_url);
         $root_url = explode('/', $pnosh_url);
         $root_url1 = explode('.', $root_url[0]);
-        $final_root_url = $root_url1[1] . '.' . $root_url1[2];
+        $root_url1 = array_slice($root_url1, -2, 2, false);
+        $final_root_url = implode('.', $root_url1);
         if ($pnosh_url == 'shihjay.xyz/nosh') {
             $final_root_url = 'hieofone.org';
         }
@@ -14280,7 +14283,7 @@ class Controller extends BaseController
         }
         $data['practiceInfo'] .= '<br />';
         $data['practiceInfo'] .= $practice->city . ', ' . $practice->state . ' ' . $practice->zip . '<br />';
-        $data['practiceInfo'] .= trans('noshform..phone') . ': ' . $practice->phone . ', ' . trans('noshform.fax') . ': ' . $practice->fax . '<br />';
+        $data['practiceInfo'] .= trans('noshform.phone') . ': ' . $practice->phone . ', ' . trans('noshform.fax') . ': ' . $practice->fax . '<br />';
         $data['practiceLogo'] = $this->practice_logo($practice_id);
         $data['title'] = $title;
         App::setLocale(Session::get('user_locale'));
@@ -15175,7 +15178,7 @@ class Controller extends BaseController
                 foreach($rx_row_parts as $rx_row_part) {
                     if (strpos($rx_row_part, trans('noshform.plan_build1')) !== false) {
                         $arr1 = explode("\n", str_replace(trans('noshform.plan_build1') . "  ", "", $rx_row_part));
-                        $arr1 = array_where($arr1, function($value, $key) {
+                        $arr1 = Arr::where($arr1, function($value, $key) {
                             if ($value !== '') {
                                 return true;
                             }
@@ -15184,7 +15187,7 @@ class Controller extends BaseController
                     }
                     if (strpos($rx_row_part, trans('noshform.plan_build2')) !== false) {
                         $arr2 = explode("\n", str_replace(trans('noshform.plan_build2') . "  ", "", $rx_row_part));
-                        $arr2 = array_where($arr2, function($value, $key) {
+                        $arr2 = Arr::where($arr2, function($value, $key) {
                             if ($value !== '') {
                                 return true;
                             }
@@ -15193,7 +15196,7 @@ class Controller extends BaseController
                     }
                     if (strpos($rx_row_part, trans('noshform.plan_build3')) !== false) {
                         $arr3 = explode("\n", str_replace(trans('noshform.plan_build3') . "  ", "", $rx_row_part));
-                        $arr3 = array_where($arr3, function($value, $key) {
+                        $arr3 = Arr::where($arr3, function($value, $key) {
                             if ($value !== '') {
                                 return true;
                             }
@@ -15202,7 +15205,7 @@ class Controller extends BaseController
                     }
                     if (strpos($rx_row_part, trans('noshform.plan_build4')) !== false) {
                         $arr4 = explode("\n", str_replace(trans('noshform.plan_build4') . "  ", "", $rx_row_part));
-                        $arr4 = array_where($arr4, function($value, $key) {
+                        $arr4 = Arr::where($arr4, function($value, $key) {
                             if ($value !== '') {
                                 return true;
                             }
@@ -15308,7 +15311,7 @@ class Controller extends BaseController
                 foreach($sup_row_parts as $sup_row_part) {
                     if (strpos($sup_row_part, trans('noshform.plan_build9')) !== false) {
                         $arr5 = explode("\n", str_replace(trans('noshform.plan_build9') . "  ", "", $sup_row_part));
-                        $arr5 = array_where($arr5, function($value, $key) {
+                        $arr5 = Arr::where($arr5, function($value, $key) {
                             if ($value !== '') {
                                 return true;
                             }
@@ -15317,7 +15320,7 @@ class Controller extends BaseController
                     }
                     if (strpos($sup_row_part, trans('noshform.plan_build10')) !== false) {
                         $arr6 = explode("\n", str_replace(trans('noshform.plan_build10') . "  ", "", $sup_row_part));
-                        $arr6 = array_where($arr6, function($value, $key) {
+                        $arr6 = Arr::where($arr6, function($value, $key) {
                             if ($value !== '') {
                                 return true;
                             }
@@ -15326,7 +15329,7 @@ class Controller extends BaseController
                     }
                     if (strpos($sup_row_part, trans('noshform.plan_build11')) !== false) {
                         $arr7 = explode("\n", str_replace(trans('noshform.plan_build11') . "  ", "", $sup_row_part));
-                        $arr7 = array_where($arr7, function($value, $key) {
+                        $arr7 = Arr::where($arr7, function($value, $key) {
                             if ($value !== '') {
                                 return true;
                             }
@@ -15335,7 +15338,7 @@ class Controller extends BaseController
                     }
                     if (strpos($sup_row_part, trans('noshform.plan_build12')) !== false) {
                         $arr8 = explode("\n", str_replace(trans('noshform.plan_build12') . "  ", "", $sup_row_part));
-                        $arr8 = array_where($arr8, function($value, $key) {
+                        $arr8 = Arr::where($arr8, function($value, $key) {
                             if ($value !== '') {
                                 return true;
                             }
@@ -15528,7 +15531,7 @@ class Controller extends BaseController
         $lastname = str_replace(' ', '_', $patient->lastname);
         $firstname = str_replace(' ', '_', $patient->firstname);
         $dob = date('Ymd', $this->human_to_unix($patient->DOB));
-        $filename_string = str_random(30);
+        $filename_string = Str::random(30);
         $pdf_arr = [];
         // Generate encounters and messages
         $header = strtoupper($patient->lastname . ', ' . $patient->firstname . '(DOB: ' . date('m/d/Y', $this->human_to_unix($patient->DOB)) . ', Gender: ' . ucfirst(Session::get('gender')) . ', ID: ' . $pid . ')');
