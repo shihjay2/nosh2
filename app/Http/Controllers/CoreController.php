@@ -6579,6 +6579,7 @@ class CoreController extends Controller
                 trans('noshform.fax_type') => $unit_arr[$result->fax_type],
                 trans('noshform.phaxio_api_key') => $result->phaxio_api_key,
                 trans('noshform.phaxio_api_secret') => $result->phaxio_api_secret,
+                trans('noshform.mtm_extension') => $unit_arr[$result->mtm_extension],
                 trans('noshform.birthday_extension') => $unit_arr[$result->birthday_extension],
                 trans('noshform.birthday_message') => $result->birthday_message,
                 trans('noshform.appointment_extension')=> $unit_arr[$result->appointment_extension],

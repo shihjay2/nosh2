@@ -975,6 +975,7 @@ return [
     "phaxio" => "Phaxio",
     "phaxio_api_key" => "Phaxio API Key",
     "phaxio_api_secret" => "Phaxio API Secret",
+    "mtm_extension" => "Medication Therapy Management Extension Enabled",
     "birthday_extension" => "Birthday Message Enabled",
     "birthday_message" => "Birthday Message",
     "appointment_extension" => "Appointment Reminder Enabled",

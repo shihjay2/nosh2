@@ -8177,7 +8177,8 @@ class Controller extends BaseController
                 'appointment_extension' => $result->appointment_extension,
                 'appointment_interval' => $result->appointment_interval,
                 'appointment_message' => $result->appointment_message,
-                'sms_url' => $result->sms_url
+                'sms_url' => $result->sms_url,
+                'mtm_extension' => $result->mtm_extension
             ];
             $items[] = [
                 'name' => 'fax_type',
@@ -8197,6 +8198,13 @@ class Controller extends BaseController
                 'label' => trans('noshform.phaxio_api_secret'),
                 'type' => 'text',
                 'default_value' => $extensions_arr['phaxio_api_secret']
+            ];
+            $items[] = [
+                'name' => 'mtm_extension',
+                'label' => trans('noshform.mtm_extension'),
+                'type' => 'select',
+                'select_items' => ['n' => trans('noshform.no'),'y' => trans('noshform.yes')],
+                'default_value' => $extensions_arr['mtm_extension']
             ];
             $items[] = [
                 'name' => 'birthday_extension',
