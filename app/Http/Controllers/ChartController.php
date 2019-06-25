@@ -1273,7 +1273,7 @@ class ChartController extends Controller {
             'documents' => trans('noshform.document') . ' ',
             'tests' => trans('noshform.test_result') . ' ',
             'orders' => trans('noshform.order') . ' ',
-            'vitals' => 'Vital Signs ',
+            'vitals' => trans('noshform.vital_signs') . ' ',
             't_messages' => trans('noshform.t_messages_message') . ' ',
             'hippa' => trans('noshform.hippa') . ' ',
             'hippa_request' => trans('noshform.hippa_request') . ' ',

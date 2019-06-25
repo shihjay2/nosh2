@@ -4187,6 +4187,7 @@ class Controller extends BaseController
         $data['hpi'] = '';
         $data['ros'] = '';
         $data['oh'] = '';
+        $data['mtm'] = '';
         $data['vitals'] = '';
         $data['pe'] = '';
         $data['images'] = '';
@@ -4245,6 +4246,11 @@ class Controller extends BaseController
                 }
             }
             $data['oh'] .= '</p>';
+        }
+        if ($encounterInfo->encounter_template == 'standardmtm') {
+            $data['mtm'] = '<br><h4>' . trans('noshform.mtm1') . ':</h4><p class="view">';
+            $data['mtm'] .= $this->page_mtm_map($pid, true);
+            $data['mtm'] .= $this->page_mtm_pml($pid, true);
         }
         $vitalsInfo = DB::table('vitals')->where('eid', '=', $eid)->first();
         if ($vitalsInfo) {
@@ -7576,7 +7582,8 @@ class Controller extends BaseController
                 'mtm_related_conditions' => $result->mtm_related_conditions,
                 'mtm_duration' => $result->mtm_duration,
                 'mtm_date_completed' => date('Y-m-d', $this->human_to_unix($result->mtm_date_completed)),
-                'pid' => $result->pid
+                'pid' => $result->pid,
+                'practice_id' => $result->practice_id
             ];
         }
         $items[] = [
@@ -15016,7 +15023,7 @@ class Controller extends BaseController
         return view('pdf.mtm_cp_page', $data);
 	}
 
-	protected function page_mtm_map($pid)
+	protected function page_mtm_map($pid, $preview=false)
 	{
         if (Session::has('patient_locale')) {
             App::setLocale(Session::get('patient_locale'));
@@ -15045,17 +15052,21 @@ class Controller extends BaseController
 		if ($query) {
 			foreach ($query as $query_row) {
 				$data['mapItems'] .= '<div style="width:6.62in;height:0.2in"></div>';
-				$data['mapItems'] .= '<table><tr><td colspan="2" style="min-height:0.7in;">';
+				$data['mapItems'] .= '<table class="table"><tr><td colspan="2" style="min-height:0.7in;">';
 				$data['mapItems'] .= '<b>What we talked about:</b><br>' . $query_row->mtm_description . '</td></tr><tr><td style="width: 3.31in;min-height:0.9in;">';
 				$data['mapItems'] .= '<b>What I need to do:</b><br>' . $query_row->mtm_recommendations . '</td><td style="width: 3.31in;min-height:0.9in;">';
 				$data['mapItems'] .= '<b>What I did and when I did it:</b></td></tr></table>';
 			}
 		}
         App::setLocale(Session::get('user_locale'));
-        return view('pdf.mtm_map_page', $data);
+        if ($preview == false) {
+            return view('pdf.mtm_map_page', $data);
+        } else {
+            return view('pdf.mtm_map_page_preview', $data);
+        }
 	}
 
-	protected function page_mtm_pml($pid)
+	protected function page_mtm_pml($pid, $preview=false)
 	{
         if (Session::has('patient_locale')) {
             App::setLocale(Session::get('patient_locale'));
@@ -15093,7 +15104,7 @@ class Controller extends BaseController
 		if ($rx_query) {
 			foreach ($rx_query as $rx_row) {
 				$data['pmlItems'] .= '<div style="width:6.62in;height:0.2in;float:left"></div>';
-				$data['pmlItems'] .= '<table><tr><td colspan="2" style="min-height:0.23in;">';
+				$data['pmlItems'] .= '<table class="table"><tr><td colspan="2" style="min-height:0.23in;">';
 				$data['pmlItems'] .= '<b>Medication:</b><br>' . $rx_row->rxl_medication . ', ' . $rx_row->rxl_dosage . ' ' . $rx_row->rxl_dosage_unit . '</td></tr><tr><td colspan="2" style="min-height:0.23in;">';
 				if ($rx_row->rxl_sig == '') {
 					$data['pmlItems'] .= '<b>How I use it:</b><br>' . $rx_row->rxl_instructions . '</td></tr><tr><td style="width: 3.31in;min-height:0.23in;">';
@@ -15108,7 +15119,11 @@ class Controller extends BaseController
 			}
 		}
         App::setLocale(Session::get('user_locale'));
-        return view('pdf.mtm_pml_page', $data);
+        if ($preview == false) {
+            return view('pdf.mtm_pml_page', $data);
+        } else {
+            return view('pdf.mtm_pml_page_preview', $data);
+        }
 	}
 
 	protected function page_mtm_provider($pid)

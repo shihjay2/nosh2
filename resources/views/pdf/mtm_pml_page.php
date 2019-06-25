@@ -56,11 +56,11 @@
 			</div>
 		<div style="width:2.5in;float:left;padding:2mm;" class="surround_div">
 			Keep this list up-to-date with:<br>
-			<input type="checkbox"/> prescription medications<br>
-			<input type="checkbox"/> over the counter drugs<br>
-			<input type="checkbox"/> herbals<br>
-			<input type="checkbox"/> vitamins<br>
-			<input type="checkbox"/> minerals<br>
+			<input type="checkbox" name="1" value="1" checked="checked"/> prescription medications<br>
+			<input type="checkbox" name="2" value="1" checked="checked"/> over the counter drugs<br>
+			<input type="checkbox" name="3" value="1" checked="checked"/> herbals<br>
+			<input type="checkbox" name="4" value="1" checked="checked"/> vitamins<br>
+			<input type="checkbox" name="5" value="1" checked="checked"/> minerals<br>
 		</div>
 		<p style="width:6.62in;float:left">If you go to the hospital or emergency room, take this list with you. Share this with your family or caregivers too.</p>
 		<div style="width:6.62in;float:right;text-align:right;font-size:16">
