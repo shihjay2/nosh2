@@ -1279,7 +1279,7 @@ class ChartController extends Controller {
             'hippa_request' => trans('noshform.hippa_request') . ' ',
             'billing_core' => trans('noshform.billing') . ' ',
             'demographics' => trans('noshform.demographics') .' ',
-            'mtm' => trans('noshform.mtm')
+            'mtm' => trans('noshform.mtm') . ' '
         ];
         $multiple_select_arr = [
             'icd_pointer'

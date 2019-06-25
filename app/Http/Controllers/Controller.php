@@ -7551,6 +7551,102 @@ class Controller extends BaseController
         return $items;
     }
 
+    protected function form_mtm($result, $table, $id, $subtype)
+    {
+        if ($id == '0') {
+            $data = [
+                'mtm_description' => null,
+                'mtm_recommendations' => null,
+                'mtm_beneficiary_notes' => null,
+                'mtm_action' => null,
+                'mtm_outcome' => null,
+                'mtm_related_conditions' => null,
+                'mtm_duration' => null,
+                'mtm_date_completed' => null,
+                'pid' => Session::get('pid'),
+                'practice_id' => Session::get('practice_id')
+            ];
+        } else {
+            $data = [
+                'mtm_description' => $result->mtm_description,
+                'mtm_recommendations' => $result->mtm_recommendations,
+                'mtm_beneficiary_notes' => $result->mtm_beneficiary_notes,
+                'mtm_action' => $result->mtm_action,
+                'mtm_outcome' => $result->mtm_outcome,
+                'mtm_related_conditions' => $result->mtm_related_conditions,
+                'mtm_duration' => $result->mtm_duration,
+                'mtm_date_completed' => date('Y-m-d', $this->human_to_unix($result->mtm_date_completed)),
+                'pid' => $result->pid
+            ];
+        }
+        $items[] = [
+            'name' => 'mtm_description',
+            'label' => trans('noshform.mtm_description'),
+            'type' => 'text',
+            'required' => true,
+            'typeahead' => route('typeahead', ['table' => $table, 'column' => 'mtm_description']),
+            'default_value' => $data['mtm_description']
+        ];
+        $items[] = [
+            'name' => 'mtm_recommendations',
+            'label' => trans('noshform.mtm_recommendations'),
+            'type' => 'textarea',
+            'required' => true,
+            'default_value' => $data['mtm_recommendations']
+        ];
+        $items[] = [
+            'name' => 'mtm_beneficiary_notes',
+            'label' => trans('noshform.mtm_beneficiary_notes'),
+            'type' => 'textarea',
+            'default_value' => $data['mtm_beneficiary_notes']
+        ];
+        $items[] = [
+            'name' => 'mtm_action',
+            'label' => trans('noshform.mtm_action'),
+            'type' => 'text',
+            'typeahead' => route('typeahead', ['table' => $table, 'column' => 'mtm_action']),
+            'default_value' => $data['mtm_action']
+        ];
+        $items[] = [
+            'name' => 'mtm_outcome',
+            'label' => trans('noshform.mtm_outcome'),
+            'type' => 'text',
+            'typeahead' => route('typeahead', ['table' => $table, 'column' => 'mtm_outcome']),
+            'default_value' => $data['mtm_outcome']
+        ];
+        $items[] = [
+            'name' => 'mtm_related_conditions',
+            'label' => trans('noshform.mtm_related_conditions'),
+            'type' => 'text',
+            'typeahead' => route('typeahead', ['table' => $table, 'column' => 'mtm_related_conditions']),
+            'default_value' => $data['mtm_related_conditions']
+        ];
+        $items[] = [
+            'name' => 'mtm_duration',
+            'label' => trans('noshform.mtm_duration'),
+            'type' => 'text',
+            'typeahead' => route('typeahead', ['table' => $table, 'column' => 'mtm_duration']),
+            'default_value' => $data['mtm_duration']
+        ];
+        $items[] = [
+            'name' => 'mtm_date_completed',
+            'label' => trans('noshform.mtm_date_completed'),
+            'type' => 'date',
+            'default_value' => $data['mtm_date_completed']
+        ];
+        $items[] = [
+            'name' => 'pid',
+            'type' => 'hidden',
+            'default_value' => $data['pid'],
+        ];
+        $items[] = [
+            'name' => 'practice_id',
+            'type' => 'hidden',
+            'default_value' => $data['practice_id'],
+        ];
+        return $items;
+    }
+
     protected function form_orders($result, $table, $id, $subtype)
     {
         $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
@@ -11393,7 +11489,7 @@ class Controller extends BaseController
             if ($footer == 'mtmfooterpdf') {
                 $footer_html = '<div style="border-top: 1px solid #000000; font-family: Arial, Helvetica, sans-serif; font-size: 7;">';
                 $footer_html .= '<table><tr><td>Form CMS-10396 (01/12)</td><td style="text-align:right;">Form Approved OMB No. 0938-1154</td></tr></table>';
-                $footer_html .- '<div style="text-align:center; font-family: ' . "'Times New Roman'" . ', Times, serif; font-size: 12;">" Page ' . $pdf->getAliasNumPage() . ' of ' . $pdf->getAliasNbPages() . '</div>';
+                $footer_html .= '<div style="text-align:center; font-family: ' . "'Times New Roman'" . ', Times, serif; font-size: 12;">Page ' . $pdf->getAliasNumPage() . ' of ' . $pdf->getAliasNbPages() . '</div></div>';
             }
             // Page number
             $pdf->writeHTML($footer_html, true, false, false, false, '');
@@ -14892,7 +14988,169 @@ class Controller extends BaseController
         return view('pdf.instruction_page', $data);
     }
 
-    function parse_era($era_string)
+    protected function page_mtm_cp($pid)
+	{
+        if (Session::has('patient_locale')) {
+            App::setLocale(Session::get('patient_locale'));
+        }
+        $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
+        $data['practiceName'] = $practice->practice_name;
+		$data['practiceInfo'] = $practice->street_address1;
+		if ($practice->street_address2 != '') {
+			$data['practiceInfo'] .= ', ' . $practice->street_address2;
+		}
+        $data['practiceInfo'] .= '<br />';
+		$data['practiceInfo'] .= $practice->city . ', ' . $practice->state . ' ' . $practice->zip . '<br />';
+		$data['practiceInfo'] .= trans('noshform.phone') . ': ' . $practice->phone . ', ' . trans('noshform.fax') .': ' . $practice->fax;
+		$data['website'] = $practice->website;
+        $data['practiceLogo'] = $this->practice_logo(Session::get('practice_id'));
+		$row = DB::table('demographics')->where('pid', '=', $pid)->first();
+		$data['patientInfo1'] = $row->firstname . ' ' . $row->lastname;
+		$data['patientInfo2'] = $row->address;
+		$data['patientInfo3'] = $row->city . ', ' . $row->state . ' ' . $row->zip;
+		$data['date'] = date('F jS, Y');
+		$data['salutation'] = "Dear " . $row->firstname .",";
+		$data['practicePhone'] = $practice->phone;
+		$data['providerSignature'] = $this->signature(Session::get('user_id'));
+        App::setLocale(Session::get('user_locale'));
+        return view('pdf.mtm_cp_page', $data);
+	}
+
+	protected function page_mtm_map($pid)
+	{
+        if (Session::has('patient_locale')) {
+            App::setLocale(Session::get('patient_locale'));
+        }
+		$practice_id = Session::get('practice_id');
+		$practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
+		$data['practiceName'] = $practice->practice_name;
+		$data['practiceInfo'] = $practice->street_address1;
+		if ($practice->street_address2 != '') {
+			$data['practiceInfo'] .= ', ' . $practice->street_address2;
+		}
+        $data['practiceInfo'] .= '<br />';
+		$data['practiceInfo'] .= $practice->city . ', ' . $practice->state . ' ' . $practice->zip . '<br />';
+		$data['practiceInfo'] .= trans('noshform.phone') . ': ' . $practice->phone . ', ' . trans('noshform.fax') .': ' . $practice->fax;
+		$data['website'] = $practice->website;
+        $data['practiceLogo'] = $this->practice_logo(Session::get('practice_id'));
+		$row = DB::table('demographics')->where('pid', '=', $pid)->first();
+		$data['patientDOB'] = date('m/d/Y', $this->human_to_unix($row->DOB));
+		$data['patientInfo1'] = $row->firstname . ' ' . $row->lastname;
+		$data['patientInfo2'] = $row->address;
+		$data['patientInfo3'] = $row->city . ', ' . $row->state . ' ' . $row->zip;
+		$data['date'] = date('F jS, Y');
+		$data['practicePhone'] = $practice->phone;
+		$query = DB::table('mtm')->where('pid', '=', $pid)->where('complete', '=', 'no')->where('practice_id', '=', $practice_id)->get();
+		$data['mapItems'] = '';
+		if ($query) {
+			foreach ($query as $query_row) {
+				$data['mapItems'] .= '<div style="width:6.62in;height:0.2in"></div>';
+				$data['mapItems'] .= '<table><tr><td colspan="2" style="min-height:0.7in;">';
+				$data['mapItems'] .= '<b>What we talked about:</b><br>' . $query_row->mtm_description . '</td></tr><tr><td style="width: 3.31in;min-height:0.9in;">';
+				$data['mapItems'] .= '<b>What I need to do:</b><br>' . $query_row->mtm_recommendations . '</td><td style="width: 3.31in;min-height:0.9in;">';
+				$data['mapItems'] .= '<b>What I did and when I did it:</b></td></tr></table>';
+			}
+		}
+        App::setLocale(Session::get('user_locale'));
+        return view('pdf.mtm_map_page', $data);
+	}
+
+	protected function page_mtm_pml($pid)
+	{
+        if (Session::has('patient_locale')) {
+            App::setLocale(Session::get('patient_locale'));
+        }
+		$practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
+		$data['practiceName'] = $practice->practice_name;
+		$data['practiceInfo'] = $practice->street_address1;
+		if ($practice->street_address2 != '') {
+			$data['practiceInfo'] .= ', ' . $practice->street_address2;
+		}
+        $data['practiceInfo'] .= '<br />';
+		$data['practiceInfo'] .= $practice->city . ', ' . $practice->state . ' ' . $practice->zip . '<br />';
+		$data['practiceInfo'] .= trans('noshform.phone') . ': ' . $practice->phone . ', ' . trans('noshform.fax') .': ' . $practice->fax;
+		$data['website'] = $practice->website;
+        $data['practiceLogo'] = $this->practice_logo(Session::get('practice_id'));
+		$row = DB::table('demographics')->where('pid', '=', $pid)->first();
+		$data['patientDOB'] = date('m/d/Y', $this->human_to_unix($row->DOB));
+		$data['patientInfo1'] = $row->firstname . ' ' . $row->lastname;
+		$data['patientInfo2'] = $row->address;
+		$data['patientInfo3'] = $row->city . ', ' . $row->state . ' ' . $row->zip;
+		$data['date'] = date('F jS, Y');
+		$data['practicePhone'] = $practice->phone;
+		$allergies_query = DB::table('allergies')->where('pid', '=', $pid)->where('allergies_date_inactive', '=', '0000-00-00 00:00:00')->get();
+		if ($allergies_query) {
+			$data['allergies'] = '<ol>';
+			foreach ($allergies_query as $allergies_row) {
+				$data['allergies'] .= '<li>' . $allergies_row->allergies_med . ' - ' . $allergies_row->allergies_reaction . '</li>';
+			}
+			$data['allergies'] .= '</ol>';
+		} else {
+			$data['allergies'] = trans('noshform.none') . '.';
+		}
+		$rx_query = DB::table('rx_list')->where('pid', '=', $pid)->where('rxl_date_inactive', '=', '0000-00-00 00:00:00')->where('rxl_date_old', '=', '0000-00-00 00:00:00')->get();
+		$data['pmlItems'] = '';
+		if ($rx_query) {
+			foreach ($rx_query as $rx_row) {
+				$data['pmlItems'] .= '<div style="width:6.62in;height:0.2in;float:left"></div>';
+				$data['pmlItems'] .= '<table><tr><td colspan="2" style="min-height:0.23in;">';
+				$data['pmlItems'] .= '<b>Medication:</b><br>' . $rx_row->rxl_medication . ', ' . $rx_row->rxl_dosage . ' ' . $rx_row->rxl_dosage_unit . '</td></tr><tr><td colspan="2" style="min-height:0.23in;">';
+				if ($rx_row->rxl_sig == '') {
+					$data['pmlItems'] .= '<b>How I use it:</b><br>' . $rx_row->rxl_instructions . '</td></tr><tr><td style="width: 3.31in;min-height:0.23in;">';
+				} else {
+					$data['pmlItems'] .= '<b>How I use it:</b><br>' . $rx_row->rxl_sig . ' ' . $rx_row->rxl_route . ' ' . $rx_row->rxl_frequency . '</td></tr><tr><td style="width: 3.31in;min-height:0.23in;">';
+				}
+				$data['pmlItems'] .= '<b>Why I use it:</b><br>' . ucfirst($rx_row->rxl_reason) . '</td><td style="width: 3.31in;min-height:0.23in;">';
+				$data['pmlItems'] .= '<b>Prescriber:</b><br>' . $rx_row->rxl_provider . '</td></tr><tr><td style="width: 3.31in;min-height:0.23in;">';
+				$data['pmlItems'] .= '<b>Date I started using it:</b><br>' . date('m/d/Y', $this->human_to_unix($rx_row->rxl_date_active)) . '</td><td style="width: 3.31in;min-height:0.23in;">';
+				$data['pmlItems'] .= '<b>Date I stopped using it:</b><br></td></tr><tr><td colspan="2" style="min-height:0.23in;">';
+				$data['pmlItems'] .= '<b>Why I stopped using it:</b></td></tr></table>';
+			}
+		}
+        App::setLocale(Session::get('user_locale'));
+        return view('pdf.mtm_pml_page', $data);
+	}
+
+	protected function page_mtm_provider($pid)
+	{
+        if (Session::has('patient_locale')) {
+            App::setLocale(Session::get('patient_locale'));
+        }
+		$practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
+		$data['practiceName'] = $practice->practice_name;
+		$data['practiceInfo'] = $practice->street_address1;
+		if ($practice->street_address2 != '') {
+			$data['practiceInfo'] .= ', ' . $practice->street_address2;
+		}
+        $data['practiceInfo'] .= '<br />';
+		$data['practiceInfo'] .= $practice->city . ', ' . $practice->state . ' ' . $practice->zip . '<br />';
+		$data['practiceInfo'] .= trans('noshform.phone') . ': ' . $practice->phone . ', ' . trans('noshform.fax') .': ' . $practice->fax;
+		$data['website'] = $practice->website;
+        $data['practiceLogo'] = $this->practice_logo(Session::get('practice_id'));
+		$row = DB::table('demographics')->where('pid', '=', $pid)->first();
+		$data['patientDOB'] = date('m/d/Y', $this->human_to_unix($row->DOB));
+		$data['patientInfo1'] = $row->firstname . ' ' . $row->lastname;
+		$data['patient_doctor'] = $row->preferred_provider;
+		$data['date'] = date('F jS, Y');
+		$query = DB::table('mtm')->where('pid', '=', $pid)->where('complete', '=', 'no')->where('practice_id', '=', Session::get('practice_id'))->get();
+		$data['topics'] = '';
+		$data['recommendations'] = '';
+		if ($query) {
+			$data['topics'] = "<ol>";
+			$data['recommendations'] = "<ol>";
+			foreach ($query as $query_row) {
+				$data['topics'] .= '<li>' . $query_row->mtm_description . '</li>';
+				$data['recommendations'] .= '<li>' . $query_row->mtm_recommendations . '</li>';
+			}
+			$data['topics'] .= "</ol>";
+			$data['recommendations'] .= "</ol>";
+		}
+		$data['providerSignature'] = $this->signature(Session::get('user_id'));
+        App::setLocale(Session::get('user_locale'));
+        return view('pdf.mtm_provider_page', $data);
+	}
+
+    protected function parse_era($era_string)
     {
         $return = [];
         $lines = explode('~', $era_string);
@@ -15644,6 +15902,68 @@ class Controller extends BaseController
         $file_path = public_path() . '/temp/' . time() . '_' . $filename_string . '_' . $pid . '_printchart_final.pdf';
         $pdf->merge();
         $pdf->save($file_path);
+        App::setLocale(Session::get('user_locale'));
+        return $file_path;
+    }
+
+    protected function print_mtm($eid)
+    {
+        ini_set('memory_limit','196M');
+        App::setLocale(Session::get('practice_locale'));
+        $pid = Session::get('pid');
+        $filename_string = Str::random(30);
+        $pdf_arr = [];
+        $file_path_cp = public_path() . '/temp/' . time() . '_' . $filename_string . '_cp.pdf';
+        $html_cp = $this->page_mtm_cp($pid);
+        $this->generate_pdf($html_cp, $file_path_cp, 'mtmfooterpdf', '', '1');
+        while (!file_exists($file_path_cp)) {
+            sleep(2);
+        }
+        $pdf_arr[] = $file_path_cp;
+        $file_path_map = public_path() . '/temp/' . time() . '_' . $filename_string . '_map.pdf';
+        $html_map = $this->page_mtm_map($pid);
+        $this->generate_pdf($html_map, $file_path_map, 'mtmfooterpdf', '', '1');
+        while (!file_exists($file_path_map)) {
+            sleep(2);
+        }
+        $pdf_arr[] = $file_path_map;
+        $file_path_pml = public_path() . '/temp/' . time() . '_' . $filename_string . '_pml.pdf';
+        $html_pml = $this->page_mtm_pml($pid);
+        $this->generate_pdf($html_pml, $file_path_pml, 'mtmfooterpdf', 'mtmheaderpdf', '1', Session::get('pid'));
+        while (!file_exists($file_path_pml)) {
+            sleep(2);
+        }
+        $pdf_arr[] = $file_path_pml;
+        // Compile and save file
+        $pdf = new Merger();
+        foreach ($pdf_arr as $pdf_item) {
+            if (file_exists($pdf_item)) {
+                $file_parts = pathinfo($pdf_item);
+                if ($file_parts['extension'] == 'pdf') {
+                    $pdf->addFromFile($pdf_item );
+                }
+            }
+        }
+        $file_name = time() . '_' . $filename_string . '_' . $pid . '_mtm.pdf';
+        $file_path = public_path() . '/temp/' . $file_name;
+        $pdf->merge();
+        $pdf->save($file_path);
+        while (!file_exists($file_path)) {
+            sleep(2);
+        }
+        $new_file_path = Session::get('documents_dir') . $pid . '/' . $file_name;
+        File::copy($file_path, $new_file_path);
+        App::setLocale(Session::get('practice_locale'));
+        $pages_data = [
+            'documents_url' => $new_file_path,
+            'pid' => $pid,
+            'documents_type' => 'Letters',
+            'documents_desc' => trans('noshform.mtm_for') . ' ' . Session::get('ptname'),
+            'documents_from' => Session::get('displayname'),
+            'documents_viewed' => Session::get('displayname'),
+            'documents_date' => date('Y-m-d H:i:s', time())
+        ];
+        $document_id = DB::table('documents')->insertGetId($pages_data);
         App::setLocale(Session::get('user_locale'));
         return $file_path;
     }
