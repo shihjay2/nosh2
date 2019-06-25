@@ -7122,7 +7122,10 @@ class ChartController extends Controller {
         if ($query->count()) {
             $list_array = [];
             foreach ($query as $row) {
-                $arr['label'] = '<b>' . $row->mtm_description . '</b><br><br><b>' . trans('noshform.mtm_recommendations') . ':</b> ' . $row->mtm_recommendations . '<br><b>' . trans('noshform.mtm_date_completed') . ':</b> ' . date('Y-m-d', $this->human_to_unix($row->mtm_date_completed));
+                $arr['label'] = '<b>' . $row->mtm_description . '</b><br><br><b>' . trans('noshform.mtm_recommendations') . ':</b> ' . $row->mtm_recommendations;
+                if ($row->mtm_date_completed !== '0000-00-00') {
+                    $arr['label'] .= '<br><b>' . trans('noshform.mtm_date_completed') . ':</b> ' . date('Y-m-d', $this->human_to_unix($row->mtm_date_completed));
+                }
                 $arr['edit'] = route('chart_form', ['mtm', $row_index, $row->$row_index]);
                 $arr['inactivate'] = route('chart_action', ['table' => 'mtm', 'action' => 'inactivate', 'index' => $row_index, 'id' => $row->$row_index]);
                 $arr['delete'] = route('chart_action', ['table' => 'mtm', 'action' => 'delete', 'index' => $row_index, 'id' => $row->$row_index]);
