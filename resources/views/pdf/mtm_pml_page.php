@@ -17,21 +17,10 @@
 
 			div.surround_div1 {
 				border: 2px solid black;
-			}
-
-			div.content {
-				padding: 0.5mm;
-			}
-
-			table {
-				border-collapse:collapse;
-				border: 2px solid black;
-				width: 6.62in;
 				page-break-inside:avoid;
 			}
-			td {
-				border: 1px solid black;
-				vertical-align: top;
+			div.content {
+				padding: 0.5mm;
 			}
 			b.smallcaps {
 				font-variant: small-caps;
@@ -44,7 +33,7 @@
 	<body>
 		<table>
 			<tr>
-				<td>
+				<td style="vertical-align: middle;">
 					<?php echo $practiceLogo;?>
 				</td>
 				<td>
@@ -79,12 +68,12 @@
 		</div>
 		<div style="width:6.62in;height:0.2in;float:left"></div>
 		<div style="width:6.62in;min-height:0.45in;float:left" class="surround_div1">
-			<div class="content"><b>Allergies or side effects: <?php echo $allergies;?></div>
+			<div class="content"><b>Allergies or side effects: <?php echo $allergies;?></b></div>
 		</div>
 		<?php echo $pmlItems;?>
 		<div style="width:6.62in;height:0.2in;float:left"></div>
-		<div style="width:6.62in;height:1.15in;float:left" class="surround_div1 nobreak">
-			<div class="content"><b>Other Information:</div>
+		<div style="width:6.62in;height:1.15in;float:left" class="surround_div1">
+			<div class="content"><b>Other Information:</b></div>
 		</div>
 		<p style="width:6.62in;float:left">If you have any questions about your medication list, call <?php echo $practicePhone;?>.</p>
 		<div style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; font-family: Arial, Helvetica, sans-serif; font-size: 7;margin-left:auto;margin-right:auto;width:5in;">

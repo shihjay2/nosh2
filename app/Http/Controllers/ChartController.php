@@ -1238,7 +1238,8 @@ class ChartController extends Controller {
             'lab_date',
             'accident_f',
             'accident_t',
-            'hippa_date_request'
+            'hippa_date_request',
+            'mtm_date_completed'
         ];
         $date_convert_array1 = [
             'dos_f',
@@ -1277,7 +1278,8 @@ class ChartController extends Controller {
             'hippa' => trans('noshform.hippa') . ' ',
             'hippa_request' => trans('noshform.hippa_request') . ' ',
             'billing_core' => trans('noshform.billing') . ' ',
-            'demographics' => trans('noshform.demographics') .' '
+            'demographics' => trans('noshform.demographics') .' ',
+            'mtm' => trans('noshform.mtm')
         ];
         $multiple_select_arr = [
             'icd_pointer'
@@ -1504,6 +1506,14 @@ class ChartController extends Controller {
                     'cpt_charge' => 'numeric',
                     'unit' => 'numeric'
                 ]);
+            }
+        }
+        // MTM specific handling
+        if ($table == 'mtm') {
+            if ($data['mtm_date_completed'] != '') {
+                $data['complete'] = 'yes';
+            } else {
+                $data['complete'] = 'no';
             }
         }
         if ($action == 'save') {
@@ -2493,6 +2503,14 @@ class ChartController extends Controller {
             ];
             $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
             Session::put('addressbook_last_page', $request->fullUrl());
+        }
+        // MTM
+        if ($table == 'mtm') {
+            if ($id == '0') {
+                $data['panel_header'] = trans('noshform.new') . ' ' . trans('noshform.mtm1');
+            } else {
+                $data['panel_header'] = trans('noshform.edit') . ' ' . trans('noshform.mtm1');
+            }
         }
         $form_array = [
             'form_id' => $table . '_form',
@@ -3990,6 +4008,14 @@ class ChartController extends Controller {
             'icon' => 'fa-print',
             'url' => route('encounter_print_plan', [$eid])
         ];
+        if ($encounter->encounter_template == 'standardmtm') {
+            $items[] = [
+                'type' => 'item',
+                'label' => trans('noshform.print_mtm'),
+                'icon' => 'fa-print',
+                'url' => route('encounter_print_mtm', [$eid])
+            ];
+        }
         $items[] = [
             'type' => 'separator'
         ];
@@ -5248,6 +5274,12 @@ class ChartController extends Controller {
         return redirect(Session::get('last_page'));
     }
 
+    public function encounter_print_mtm(Request $request, $eid)
+    {
+        $file_path = $this->print_mtm($eid);
+        return response()->download($file_path);
+    }
+
     public function encounter_print_plan(Request $request, $eid)
     {
         $html = $this->page_plan($eid);
@@ -5260,7 +5292,6 @@ class ChartController extends Controller {
         Session::put('download_now', $filepath);
         return redirect(Session::get('last_page'));
     }
-
 
     public function encounter_save(Request $request, $eid, $section)
     {
@@ -7071,6 +7102,53 @@ class ChartController extends Controller {
             Session::forget('demo_comment');
         }
         Session::put('last_page', $request->fullUrl());
+        $data['assets_js'] = $this->assets_js('chart');
+        $data['assets_css'] = $this->assets_css('chart');
+        return view('chart', $data);
+    }
+
+    public function mtm(Request $request, $type='mtm')
+    {
+        $data['message_action'] = Session::get('message_action');
+        Session::forget('message_action');
+        $result = [];
+        $return = '';
+        $query = DB::table('mtm')
+            ->where('pid', '=', Session::get('pid'))
+            ->where('practice_id', '=', Session::get('practice_id'))
+            ->get();
+        $columns = Schema::getColumnListing('mtm');
+        $row_index = $columns[0];
+        if ($query->count()) {
+            $list_array = [];
+            foreach ($query as $row) {
+                $arr['label'] = '<b>' . $row->mtm_description . '</b><br><br><b>' . trans('noshform.mtm_recommendations') . ':</b> ' . $row->mtm_recommendations . '<br><b>' . trans('noshform.mtm_date_completed') . ':</b> ' . date('Y-m-d', $this->human_to_unix($row->mtm_date_completed));
+                $arr['edit'] = route('chart_form', ['mtm', $row_index, $row->$row_index]);
+                $arr['inactivate'] = route('chart_action', ['table' => 'mtm', 'action' => 'inactivate', 'index' => $row_index, 'id' => $row->$row_index]);
+                $arr['delete'] = route('chart_action', ['table' => 'mtm', 'action' => 'delete', 'index' => $row_index, 'id' => $row->$row_index]);
+                $list_array[] = $arr;
+            }
+            $return .= $this->result_build($list_array, 'mtm_list');
+        } else {
+            $return .= trans('noshform.none') . '.';
+        }
+        $dropdown_array1 = [
+            'items_button_icon' => 'fa-plus'
+        ];
+        $items1 = [];
+        $items1[] = [
+            'type' => 'item',
+            'label' => '',
+            'icon' => 'fa-plus',
+            'url' => route('chart_form', ['mtm', $row_index, '0'])
+        ];
+        $dropdown_array1['items'] = $items1;
+        $data['panel_dropdown'] = $this->dropdown_build($dropdown_array1);
+        $data['content'] = $return;
+        $data['panel_header'] = trans('noshform.mtm');
+        $data['mtm_active'] = true;
+        Session::put('last_page', $request->fullUrl());
+        $data = array_merge($data, $this->sidebar_build('chart'));
         $data['assets_js'] = $this->assets_js('chart');
         $data['assets_css'] = $this->assets_css('chart');
         return view('chart', $data);

@@ -266,7 +266,8 @@ class InstallController extends Controller {
                 $pnosh_url = str_replace(array('http://','https://'), '', $pnosh_url);
                 $root_url = explode('/', $pnosh_url);
                 $root_url1 = explode('.', $root_url[0]);
-                $final_root_url = $root_url1[1] . '.' . $root_url1[2];
+                $root_url1 = array_slice($root_url1, -2, 2, false);
+                $final_root_url = implode('.', $root_url1);
                 if (env('DOCKER') == '0') {
                     if ($final_root_url == 'hieofone.org') {
                         $mailgun_url = 'https://dir.' . $final_root_url . '/mailgun';
@@ -1567,6 +1568,5 @@ class InstallController extends Controller {
 
     public function test1(Request $request)
     {
-        return $request->fullUrl();
     }
 }

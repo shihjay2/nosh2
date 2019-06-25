@@ -23,11 +23,11 @@
 			</tr>
 		</table>
 		<div style="width:100%;">
-		<hr />
-		<?php echo $date;?><br><br>
-		<?php echo $patientInfo1;?><br><?php echo $patientInfo2;?><br><?php echo $patientInfo3;?>
-		<br><br><br>
-		<?php echo $salutation;?><br>
+			<hr />
+			<?php echo $date;?><br><br>
+			<?php echo $patientInfo1;?><br><?php echo $patientInfo2;?><br><?php echo $patientInfo3;?>
+			<br><br><br>
+			<?php echo $salutation;?><br>
 		</div>
 		<p>Thank you for talking with me on <?php echo $date;?> about your health and medications. Medicare's MTM (Medication Therapy Management) program helps you make sure that your medications are working.</p>
 		<p>Along with this letter are an action plan (Medication Action Plan) and a medication list (Personal Medication List). <b>The action plan has steps you should take to help you get the best results from your medications. The medication list will help you keep track of your medications and how to use them the right way.</b></p>

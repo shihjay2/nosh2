@@ -212,6 +212,7 @@ Route::any('encounter_details/{eid}', ['as' => 'encounter_details', 'uses' => 'C
 Route::any('encounter_edit_image/{id?}/{t_messages_id?}', ['as' => 'encounter_edit_image', 'uses' => 'ChartController@encounter_edit_image']);
 Route::any('encounter_education', ['as' => 'encounter_education', 'uses' => 'ChartController@encounter_education']);
 Route::get('encounter_form_add/{id}', ['as' => 'encounter_form_add', 'uses' => 'ChartController@encounter_form_add']);
+Route::get('encounter_print_mtm/{eid}', ['as' => 'encounter_print_mtm', 'uses' => 'ChartController@encounter_print_mtm']);
 Route::get('encounter_print_plan/{eid}', ['as' => 'encounter_print_plan', 'uses' => 'ChartController@encounter_print_plan']);
 Route::any('encounter_save/{eid}/{section}', ['as' => 'encounter_save', 'uses' => 'ChartController@encounter_save']);
 Route::get('encounter_sign/{eid}', ['as' => 'encounter_sign', 'uses' => 'ChartController@encounter_sign']);
@@ -232,6 +233,7 @@ Route::get('generate_hcfa1/{eid}/{insurance_id_1}/{insurance_id_2}', ['as' => 'g
 Route::post('get_appointments', ['as' => 'get_appointments', 'uses' => 'AjaxChartController@get_appointments']);
 Route::get('growth_chart/{type}', ['as' => 'growth_chart', 'uses' => 'ChartController@growth_chart']);
 Route::get('medications_list/{type}', ['as' => 'medications_list', 'uses' => 'ChartController@medications_list']);
+Route::get('mtm', ['as' => 'mtm', 'uses' => 'ChartController@mtm']);
 Route::get('immunizations_csv', ['as' => 'immunizations_csv', 'uses' => 'ChartController@immunizations_csv']);
 Route::get('immunizations_list', ['as' => 'immunizations_list', 'uses' => 'ChartController@immunizations_list']);
 Route::any('immunizations_notes', ['as' => 'immunizations_notes', 'uses' => 'ChartController@immunizations_notes']);

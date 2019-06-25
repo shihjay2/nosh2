@@ -11,6 +11,7 @@ use Excel;
 use File;
 use Form;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\MessageBag;
 use Schema;
 use Session;
@@ -165,19 +166,19 @@ class AjaxSearchController extends Controller {
                 $i++;
             }
             if (count($pos1) == 1) {
-                $result1a = array_where($precpt, function($value, $key) use ($q) {
+                $result1a = Arr::where($precpt, function($value, $key) use ($q) {
                     if (stripos($value['desc'] , $q) !== false) {
                         return true;
                     }
                 });
-                $result1b = array_where($precpt, function($value, $key) use ($q) {
+                $result1b = Arr::where($precpt, function($value, $key) use ($q) {
                     if (stripos($value['cpt'] , $q) !== false) {
                         return true;
                     }
                 });
                 $result1 = array_merge($result1a, $result1b);
             } else {
-                $result1 = array_where($precpt, function($value, $key) use ($pos1) {
+                $result1 = Arr::where($precpt, function($value, $key) use ($pos1) {
                     if ($this->striposa($value['desc'] , $pos1) !== false) {
                         return true;
                     }
@@ -239,7 +240,7 @@ class AjaxSearchController extends Controller {
             }
             fclose($handle);
         }
-        $result1 = array_where($pre, function($value, $key) use ($q) {
+        $result1 = Arr::where($pre, function($value, $key) use ($q) {
             if (stripos($value['desc'] , $q) !== false) {
                 return true;
             }
@@ -268,13 +269,13 @@ class AjaxSearchController extends Controller {
         $arr = $formatter->toArray();
         $pos1 = explode(',', $q);
         if (count($pos1) == 1) {
-            $result1 = array_where($arr, function($value, $key) use ($q) {
+            $result1 = Arr::where($arr, function($value, $key) use ($q) {
                 if (stripos($value['desc'] , $q) !== false) {
                     return true;
                 }
             });
         } else {
-            $result1 = array_where($arr, function($value, $key) use ($pos1) {
+            $result1 = Arr::where($arr, function($value, $key) use ($pos1) {
                 if ($this->striposa($value['desc'] , $pos1) !== false) {
                     return true;
                 }
@@ -397,19 +398,19 @@ class AjaxSearchController extends Controller {
                 }
             }
             if (count($pos) == 1) {
-                $common_result = array_where($common_arr, function($value, $key) use ($q) {
+                $common_result = Arr::where($common_arr, function($value, $key) use ($q) {
                     if (stripos($value['desc'] , $q) !== false) {
                         return true;
                     }
                 });
-                $common_result1 = array_where($common_arr, function($value, $key) use ($q) {
+                $common_result1 = Arr::where($common_arr, function($value, $key) use ($q) {
                     if (stripos($value['code'] , $q) !== false) {
                         return true;
                     }
                 });
                 $common_result = array_merge($common_result, $common_result1);
             } else {
-                $common_result = array_where($common_arr, function($value, $key) use ($pos) {
+                $common_result = Arr::where($common_arr, function($value, $key) use ($pos) {
                     if ($this->striposa($value['desc'] , $pos) !== false) {
                         return true;
                     }
@@ -460,19 +461,19 @@ class AjaxSearchController extends Controller {
             }
             $result = [];
             if (count($pos) == 1) {
-                $result = array_where($preicd, function($value, $key) use ($q) {
+                $result = Arr::where($preicd, function($value, $key) use ($q) {
                     if (stripos($value['desc'] , $q) !== false) {
                         return true;
                     }
                 });
-                $result1 = array_where($preicd, function($value, $key) use ($q) {
+                $result1 = Arr::where($preicd, function($value, $key) use ($q) {
                     if (stripos($value['icd10'] , $q) !== false) {
                         return true;
                     }
                 });
                 $result = array_merge($result, $result1);
             } else {
-                $result = array_where($preicd, function($value, $key) use ($pos) {
+                $result = Arr::where($preicd, function($value, $key) use ($pos) {
                     if ($this->striposa($value['desc'] , $pos) !== false) {
                         return true;
                     }
@@ -535,7 +536,7 @@ class AjaxSearchController extends Controller {
             ];
         }
         $result = [];
-        $result = array_where($preicd, function($value, $key) use ($request) {
+        $result = Arr::where($preicd, function($value, $key) use ($request) {
             if (stripos($value['icd10'] , $request->input('icd')) !== false) {
                 return true;
             }
@@ -575,13 +576,13 @@ class AjaxSearchController extends Controller {
         }
         $pos = explode(' ', $q);
         if (count($pos) == 1) {
-            $result = array_where($pre, function($value, $key) use ($q) {
+            $result = Arr::where($pre, function($value, $key) use ($q) {
                 if (stripos($value['desc'] , $q) !== false) {
                     return true;
                 }
             });
         } else {
-            $result = array_where($pre, function($value, $key) use ($pos) {
+            $result = Arr::where($pre, function($value, $key) use ($pos) {
                 if ($this->striposa($value['desc'] , $pos) !== false) {
                     return true;
                 }
@@ -619,17 +620,17 @@ class AjaxSearchController extends Controller {
             }
         }
         if (count($pos1) == 1) {
-            $result1a = array_where($pre, function($value, $key) use ($q) {
+            $result1a = Arr::where($pre, function($value, $key) use ($q) {
                 if (stripos($value['cvx'] , $q) !== false) {
                     return true;
                 }
             });
-            $result1b = array_where($pre, function($value, $key) use ($q) {
+            $result1b = Arr::where($pre, function($value, $key) use ($q) {
                 if (stripos($value['long_desc'] , $q) !== false) {
                     return true;
                 }
             });
-            $result1c = array_where($pre, function($value, $key) use ($q) {
+            $result1c = Arr::where($pre, function($value, $key) use ($q) {
                 if (stripos($value['short_desc'] , $q) !== false) {
                     return true;
                 }
@@ -637,7 +638,7 @@ class AjaxSearchController extends Controller {
             $result1d = array_merge($result1a, $result1b);
             $result1 = array_merge($result1d, $result1c);
         } else {
-            $result1 = array_where($pre, function($value, $key) use ($pos1) {
+            $result1 = Arr::where($pre, function($value, $key) use ($pos1) {
                 if ($this->striposa($value['long_desc'] , $pos1) !== false) {
                     return true;
                 }
@@ -815,7 +816,7 @@ class AjaxSearchController extends Controller {
             }
             fclose($lang_handle);
         }
-        $result1 = array_where($pre, function($value, $key) use ($q) {
+        $result1 = Arr::where($pre, function($value, $key) use ($q) {
             if (stripos($value['desc'] , $q) !== false) {
                 return true;
             }
@@ -843,13 +844,13 @@ class AjaxSearchController extends Controller {
         $result = [];
         $pos = explode(' ', $q);
         if (count($pos) == 1) {
-            $result = array_where($results, function($value, $key) use ($q) {
+            $result = Arr::where($results, function($value, $key) use ($q) {
                 if (stripos($value['long_common_name'] , $q) !== false) {
                     return true;
                 }
             });
         } else {
-            $result = array_where($results, function($value, $key) use ($pos) {
+            $result = Arr::where($results, function($value, $key) use ($pos) {
                 if ($this->striposa($value['long_common_name'] , $pos) !== false) {
                     return true;
                 }
@@ -912,6 +913,7 @@ class AjaxSearchController extends Controller {
             $data['message'] = [];
             $data['response'] = $request->input('type');
             foreach ($query as $row) {
+                $proceed = true;
                 $dob = date('m/d/Y', strtotime($row->DOB));
                 $name = $row->lastname . ', ' . $row->firstname . ' (DOB: ' . $dob . ') (ID: ' . $row->pid . ')';
                 if ($row->active != '1') {
@@ -921,14 +923,19 @@ class AjaxSearchController extends Controller {
                 if (Session::get('group_id') == '1') {
                     $href = route('print_chart_admin', [$row->pid]);
                 }
-                $data['message'][] = [
-                    'id' => 'pid',
-                    'label' => $name,
-                    'value' => $row->pid,
-                    'ptname' => $name,
-                    'href' => $href,
-                    'ptactive' => $row->active
-                ];
+                if ($request->input('type') == 'li' && $row->active != '1') {
+                    $proceed = false;
+                }
+                if ($proceed == true) {
+                    $data['message'][] = [
+                        'id' => 'pid',
+                        'label' => $name,
+                        'value' => $row->pid,
+                        'ptname' => $name,
+                        'href' => $href,
+                        'ptactive' => $row->active
+                    ];
+                }
             }
         }
         return $data;
@@ -1104,19 +1111,19 @@ class AjaxSearchController extends Controller {
             $i++;
         }
         if (count($pos1) == 1) {
-            $result1a = array_where($pre, function($value, $key) use ($q) {
+            $result1a = Arr::where($pre, function($value, $key) use ($q) {
                 if (stripos($value['specialization'] , $q) !== false) {
                     return true;
                 }
             });
-            $result1b = array_where($pre, function($value, $key) use ($q) {
+            $result1b = Arr::where($pre, function($value, $key) use ($q) {
                 if (stripos($value['classification'] , $q) !== false) {
                     return true;
                 }
             });
             $result1 = array_merge($result1a, $result1b);
         } else {
-            $result1 = array_where($pre, function($value, $key) use ($pos1) {
+            $result1 = Arr::where($pre, function($value, $key) use ($pos1) {
                 if ($this->striposa($value['specialization'] , $pos1) !== false) {
                     return true;
                 }
@@ -1227,7 +1234,7 @@ class AjaxSearchController extends Controller {
         $yaml = File::get(resource_path() . '/supplements.yaml');
         $formatter = Formatter::make($yaml, Formatter::YAML);
         $arr = $formatter->toArray();
-        $result1 = array_where($arr, function($value, $key) use ($q) {
+        $result1 = Arr::where($arr, function($value, $key) use ($q) {
             if (stripos($value , $q) !== false) {
                 return true;
             }
@@ -1725,6 +1732,13 @@ class AjaxSearchController extends Controller {
     public function typeahead($table, $column, $subtype='')
     {
         $data = [];
+        if ($table == 'mtm') {
+            if ($column == 'mtm_description' || $column == 'mtm_action') {
+                for ($i='noshform.' . $column . '1'; trans($i) !== $i; $i++) {
+                    $data[] = trans($i);
+                }
+            }
+        }
         $query = DB::table($table);
         if ($subtype == 'address_id') {
             $query->select($column, 'address_id');
@@ -1745,7 +1759,9 @@ class AjaxSearchController extends Controller {
                     if ($subtype == 'address_id') {
                         $data[] = $row->{$column} . ' [' . $row->address_id . ']';
                     } else {
-                        $data[] = $row->{$column};
+                        if (!in_array($row->{$column}, $data)) {
+                            $data[] = $row->{$column};
+                        }
                     }
                 }
             }

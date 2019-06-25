@@ -9079,7 +9079,7 @@ class CoreController extends Controller
             $data['panel_dropdown'] .= '<span class="fa-btn"></span>' . $this->dropdown_build($dropdown_array1);
         }
         $data['content'] = $return;
-        $data['panel_header'] = trans('noshform.vaccines');
+        $data['panel_header'] = $type_arr[$type][0];
         Session::put('last_page', $request->fullUrl());
         $data['assets_js'] = $this->assets_js();
         $data['assets_css'] = $this->assets_css();

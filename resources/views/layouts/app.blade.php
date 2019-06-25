@@ -335,6 +335,16 @@
                                 <span class="sidebar-item">{{ trans('nosh.family_history') }}</span>
                             </a>
                         </li>
+                        @if (Session::has('mtm_extension'))
+                            @if (Session::get('mtm_extension') == 'y')
+                                <li @if(isset($mtm_active)) class="active" @endif>
+                                    <a href="{{ route('mtm') }}">
+                                        <i class="fa fa-medkit fa-fw fa-lg"></i>
+                                        <span class="sidebar-item">{{ trans('noshform.mtm2') }}</span>
+                                    </a>
+                                </li>
+                            @endif
+                        @endif
                         <li @if(isset($care_active)) class="active" @endif>
                             <a href="{{ route('care_opportunities', ['prevention']) }}">
                                 <i class="fa fa-info fa-fw fa-lg"></i>

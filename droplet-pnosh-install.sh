@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # install script for nosh-2 on a droplet - Ubuntu 16.04 server
 
 set -e

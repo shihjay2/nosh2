@@ -18,16 +18,6 @@
 			div.content {
 				padding: 0.5mm;
 			}
-			table {
-				border-collapse:collapse;
-				border: 2px solid black;
-				width: 6.62in;
-				page-break-inside:avoid;
-			}
-			td {
-				border: 1px solid black;
-				vertical-align: top;
-			}
 			b.smallcaps {
 				font-variant: small-caps;
 			}
