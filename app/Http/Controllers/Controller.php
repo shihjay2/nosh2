@@ -4731,7 +4731,7 @@ class Controller extends BaseController
                                         $route_arr = $formatter->toArray();
                                         $q = $row2['resource']['dosage'][0]['route']['coding'][0]['code'];
                                         $route_result = Arr::where($route_arr, function($value, $key) use ($q) {
-                                            if (stripos($value['code'], $q) !== false) {
+                                            if (stripos($value['code'], (string)$q) !== false) {
                                                 return true;
                                             }
                                         });
@@ -13911,7 +13911,7 @@ class Controller extends BaseController
         $result = [];
         $return = '';
         $result = Arr::where($preicd, function($value, $key) use ($code) {
-            if (stripos($value['icd10'] , $code) !== false) {
+            if (stripos($value['icd10'] , (string)$code) !== false) {
                 return true;
             }
         });
@@ -17985,7 +17985,7 @@ class Controller extends BaseController
         $count = count($needle);
         $i = 0;
         foreach ($needle as $query) {
-            if (stripos($haystack, $query, $offset) !== false) {
+            if (stripos($haystack, (string)$query, $offset) !== false) {
                 $i++;
             }
         }

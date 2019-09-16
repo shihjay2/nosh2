@@ -1638,6 +1638,7 @@ return [
     "when" => "When",
     "sidebar1" => "Age",
     "sidebar2" => "Encounter Action Items",
+    "print_summary" => "Print Summary",
 
     // Core
     "audit_logs" => "Audit Logs",

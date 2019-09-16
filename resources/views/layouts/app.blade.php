@@ -357,6 +357,11 @@
                                 <span class="sidebar-item">{{ trans('nosh.records_list') }}</span>
                             </a>
                         </li>
+                        <li>
+                            <a href="#" class="print_summary">
+                                <i class="fa fa-print fa-fw fa-lg"></i><span class="sidebar-item">{{ trans('noshform.print_summary') }}</span>
+                            </a>
+                        </li>
                         <li @if(isset($billing_active)) class="active" @endif>
                             <a href="{{ route('billing_list', ['type' => 'encounters', 'pid' => Session::get('pid')]) }}">
                                 <i class="fa fa-bank fa-fw fa-lg"></i>
@@ -568,7 +573,7 @@
             <!-- Modal content-->
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">{{ trans('nosh.patient_summary') }}</h5>
+                    <h5 class="modal-title">{{ trans('nosh.patient_summary') }} {{ trans('noshform.for') }} {{ $name }}</h5>
                 </div>
                 <div class="modal-body" id="chart_overview" style="height:80vh;overflow-y:auto;">
                     @if (isset($encounters_preview))
@@ -606,8 +611,9 @@
                     </div>
                 </div>
                 <div class="modal-footer">
+                    <button type="button" class="btn btn-default print_summary"><i class="fa fa-btn fa-print"></i> {{ trans('noshform.print') }}</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-btn fa-times"></i> {{ trans('nosh.button_close') }}</button>
-                  </div>
+                </div>
             </div>
         </div>
     </div>
@@ -1055,6 +1061,24 @@
                     }
                 }
             });
+        }
+
+        function print_summary()
+        {
+            var divToPrint = document.getElementById("overviewModal");
+            newWin = window.open("");
+            newWin.document.write(divToPrint.outerHTML);
+            newWin.document.getElementById("overviewModal").removeAttribute('style');
+            newWin.document.getElementById("chart_overview").removeAttribute('style');
+            var f = newWin.document.getElementsByClassName("modal-footer");
+            var requiredfooter = f[0];
+            requiredfooter.remove();
+            var e = newWin.document.getElementsByTagName('h5')[0];
+            var d = newWin.document.createElement('h2');
+            d.innerHTML = e.innerHTML;
+            e.parentNode.replaceChild(d, e);
+            newWin.print();
+            newWin.close();
         }
 
         if (noshdata.group_id !== '') {
@@ -2331,6 +2355,9 @@
                 }
             });
 
+        });
+        $(document).on('click', '.print_summary', function(event){
+            print_summary();
         });
     </script>
     {{-- <script src="{{ elixir('js/app.js') }}"></script> --}}

@@ -3573,12 +3573,21 @@ class ChartController extends Controller {
                 'default_value' => $ros_val
             ];
         }
-        $s_form_array = [
-            'form_id' => 's_form',
-            'action' => route('encounter_save', [$eid, 'o']),
-            'items' => $s_items,
-            'save_button_label' => trans('noshform.save_next')
-        ];
+        if (in_array($encounter->encounter_template, $o_array)) {
+            $s_form_array = [
+                'form_id' => 's_form',
+                'action' => route('encounter_save', [$eid, 'o']),
+                'items' => $s_items,
+                'save_button_label' => trans('noshform.save_next')
+            ];
+        } else {
+            $s_form_array = [
+                'form_id' => 's_form',
+                'action' => route('encounter_save', [$eid, 'a']),
+                'items' => $s_items,
+                'save_button_label' => trans('noshform.save_next')
+            ];
+        }
         $return .= $this->form_build($s_form_array);
         $return .= '</div>';
         // O
