@@ -13924,31 +13924,33 @@ class Controller extends BaseController
 
     protected function icd10data($icd10q)
     {
-        $url = 'http://www.icd10data.com/Search.aspx?search=' . $icd10q . '&codeBook=ICD10CM';
-        $ch = curl_init();
-        curl_setopt($ch,CURLOPT_URL, $url);
-        curl_setopt($ch,CURLOPT_FAILONERROR,1);
-        curl_setopt($ch,CURLOPT_FOLLOWLOCATION,1);
-        curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
-        curl_setopt($ch,CURLOPT_TIMEOUT, 60);
-        curl_setopt($ch,CURLOPT_CONNECTTIMEOUT ,0);
-        $result = curl_exec($ch);
-        $html = HTMLDomParser::str_get_html($result);
         $data = [];
-        if (isset($html)) {
-            // Get pages_data
-            $pagination = $html->find('ul.pagination', 0);
-            if ($pagination) {
-                $i = 1;
-                foreach ($pagination->find('li') as $page_icd) {
-                    // Limit searh to 3 pages or less
-                    if ($i < 3) {
-                        $data = $this->icd10data_get($i, $data, $icd10q);
+        $url = 'http://www.icd10data.com/Search.aspx?search=' . $icd10q . '&codeBook=ICD10CM';
+        if (strlen($icd10q) > 2) {
+            $ch = curl_init();
+            curl_setopt($ch,CURLOPT_URL, $url);
+            curl_setopt($ch,CURLOPT_FAILONERROR,1);
+            curl_setopt($ch,CURLOPT_FOLLOWLOCATION,1);
+            curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+            curl_setopt($ch,CURLOPT_TIMEOUT, 60);
+            curl_setopt($ch,CURLOPT_CONNECTTIMEOUT ,0);
+            $result = curl_exec($ch);
+            $html = HTMLDomParser::str_get_html($result);
+            if (isset($html)) {
+                // Get pages_data
+                $pagination = $html->find('ul.pagination', 0);
+                if ($pagination) {
+                    $i = 1;
+                    foreach ($pagination->find('li') as $page_icd) {
+                        // Limit searh to 3 pages or less
+                        if ($i < 3) {
+                            $data = $this->icd10data_get($i, $data, $icd10q);
+                        }
+                        $i++;
                     }
-                    $i++;
+                } else {
+                    $data = $this->icd10data_get('1', $data, $icd10q);
                 }
-            } else {
-                $data = $this->icd10data_get('1', $data, $icd10q);
             }
         }
         return $data;
@@ -13956,31 +13958,33 @@ class Controller extends BaseController
 
     protected function icd10data_get($page, $data, $icd10q)
     {
-        $url = 'http://www.icd10data.com/Search.aspx?search=' . $icd10q . '&codeBook=ICD10CM' . '&page=' . $page;
-        $ch = curl_init();
-        curl_setopt($ch,CURLOPT_URL, $url);
-        curl_setopt($ch,CURLOPT_FAILONERROR,1);
-        curl_setopt($ch,CURLOPT_FOLLOWLOCATION,1);
-        curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
-        curl_setopt($ch,CURLOPT_TIMEOUT, 60);
-        curl_setopt($ch,CURLOPT_CONNECTTIMEOUT ,0);
-        $result = curl_exec($ch);
-        $html = HTMLDomParser::str_get_html($result);
-        if (isset($html)) {
-            foreach ($html->find('div.SearchResultItem') as $link) {
-                $status1 = $link->find('img.img2', 0);
-                if (isset($status1->src)) {
-                    $status = $status1->src;
-                    if ($status == '/images/bullet_triangle_green.png') {
-                        $code1 = $link->find('span.identifier', 0);
-                        $code = $code1->innertext;
-                        $desc1 = $link->find('div.SearchResultDescription', 0);
-                        $desc = $desc1->plaintext;
-                        $common_records = $desc . ' [' . $code . ']';
-                        $data[] = [
-                            'code' => $code,
-                            'desc' => $common_records
-                        ];
+        if (strlen($icd10q) > 2) {
+            $url = 'http://www.icd10data.com/Search.aspx?search=' . $icd10q . '&codeBook=ICD10CM' . '&page=' . $page;
+            $ch = curl_init();
+            curl_setopt($ch,CURLOPT_URL, $url);
+            curl_setopt($ch,CURLOPT_FAILONERROR,1);
+            curl_setopt($ch,CURLOPT_FOLLOWLOCATION,1);
+            curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+            curl_setopt($ch,CURLOPT_TIMEOUT, 60);
+            curl_setopt($ch,CURLOPT_CONNECTTIMEOUT ,0);
+            $result = curl_exec($ch);
+            $html = HTMLDomParser::str_get_html($result);
+            if (isset($html)) {
+                foreach ($html->find('div.SearchResultItem') as $link) {
+                    $status1 = $link->find('img.img2', 0);
+                    if (isset($status1->src)) {
+                        $status = $status1->src;
+                        if ($status == '/images/bullet_triangle_green.png') {
+                            $code1 = $link->find('span.identifier', 0);
+                            $code = $code1->innertext;
+                            $desc1 = $link->find('div.SearchResultDescription', 0);
+                            $desc = $desc1->plaintext;
+                            $common_records = $desc . ' [' . $code . ']';
+                            $data[] = [
+                                'code' => $code,
+                                'desc' => $common_records
+                            ];
+                        }
                     }
                 }
             }
