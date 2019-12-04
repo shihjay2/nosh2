@@ -1442,6 +1442,18 @@ class InstallController extends Controller {
                     $migrate->run();
                     $return = nl2br($migrate->getOutput());
                 }
+                if ($type == 'clear_cache') {
+                    $clear_cache = new Process("php artisan cache:clear");
+                    $clear_cache->setWorkingDirectory(base_path());
+                    $clear_cache->setTimeout(null);
+                    $clear_cache->run();
+                    $return = nl2br($clear_cache->getOutput());
+                    $clear_view = new Process("php artisan view:clear");
+                    $clear_view->setWorkingDirectory(base_path());
+                    $clear_view->setTimeout(null);
+                    $clear_view->run();
+                    $return .= '<br>' . nl2br($clear_view->getOutput());
+                }
                 $result1 = $this->github_single($type);
                 if (isset($result1['files'])) {
                     foreach ($result1['files'] as $row1) {
@@ -1551,6 +1563,16 @@ class InstallController extends Controller {
                         $install->run();
                         $return .= '<br>' . nl2br($install->getOutput());
                     }
+                    $clear_cache = new Process("php artisan cache:clear");
+                    $clear_cache->setWorkingDirectory(base_path());
+                    $clear_cache->setTimeout(null);
+                    $clear_cache->run();
+                    $return .= '<br>' . nl2br($clear_cache->getOutput());
+                    $clear_view = new Process("php artisan view:clear");
+                    $clear_view->setWorkingDirectory(base_path());
+                    $clear_view->setTimeout(null);
+                    $clear_view->run();
+                    $return .= '<br>' . nl2br($clear_view->getOutput());
                 } else {
                     $return = trans('noshform.update_system3');
                 }
