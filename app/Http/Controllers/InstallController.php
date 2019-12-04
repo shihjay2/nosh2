@@ -1427,81 +1427,84 @@ class InstallController extends Controller {
                 App::setLocale(Session::get('user_locale'));
             }
             if ($type !== '') {
-                if ($type == 'composer_install') {
-                    $install = new Process("/usr/local/bin/composer install");
-                    $install->setWorkingDirectory(base_path());
-                    $install->setEnv(['COMPOSER_HOME' => '/usr/local/bin/composer']);
-                    $install->setTimeout(null);
-                    $install->run();
-                    $return = nl2br($install->getOutput());
-                }
-                if ($type == 'migrate') {
-                    $migrate = new Process("php artisan migrate --force");
-                    $migrate->setWorkingDirectory(base_path());
-                    $migrate->setTimeout(null);
-                    $migrate->run();
-                    $return = nl2br($migrate->getOutput());
-                }
-                if ($type == 'clear_cache') {
-                    $clear_cache = new Process("php artisan cache:clear");
-                    $clear_cache->setWorkingDirectory(base_path());
-                    $clear_cache->setTimeout(null);
-                    $clear_cache->run();
-                    $return = nl2br($clear_cache->getOutput());
-                    $clear_view = new Process("php artisan view:clear");
-                    $clear_view->setWorkingDirectory(base_path());
-                    $clear_view->setTimeout(null);
-                    $clear_view->run();
-                    $return .= '<br>' . nl2br($clear_view->getOutput());
-                }
-                $result1 = $this->github_single($type);
-                if (isset($result1['files'])) {
-                    foreach ($result1['files'] as $row1) {
-                        $filename = base_path() . "/" . $row1['filename'];
-                        if ($row1['status'] == 'added' || $row1['status'] == 'modified' || $row1['status'] == 'renamed') {
-                            $github_url = str_replace(' ', '%20', $row1['raw_url']);
-                            if ($github_url !== '') {
-                                $file = file_get_contents($github_url);
-                                $parts = explode('/', $row1['filename']);
-                                array_pop($parts);
-                                $dir = implode('/', $parts);
-                                if (!is_dir(base_path() . "/" . $dir)) {
-                                    if ($parts[0] == 'public') {
-                                        mkdir(base_path() . "/" . $dir, 0777, true);
-                                    } else {
-                                        mkdir(base_path() . "/" . $dir, 0755, true);
-                                    }
-                                }
-                                file_put_contents($filename, $file);
-                                if ($row1['filename'] == 'composer.json' || $row1['filename'] == 'composer.lock') {
-                                    $composer = true;
-                                }
-                            }
-                        }
-                        if ($row1['status'] == 'removed') {
-                            if (file_exists($filename)) {
-                                unlink($filename);
-                            }
-                        }
-                    }
-                    define('STDIN',fopen("php://stdin","r"));
-                    File::put(base_path() . "/.version", $type);
-                    $return = trans('noshform.update_system1') . " " . $type . " " . trans('noshform.from1') . " " . $current_version;
-                    $migrate = new Process("php artisan migrate --force");
-                    $migrate->setWorkingDirectory(base_path());
-                    $migrate->setTimeout(null);
-                    $migrate->run();
-                    $return .= '<br>' . nl2br($migrate->getOutput());
-                    if ($composer == true) {
+                if ($type == 'composer_install' || $type == 'migrate' || $type == 'clear_cache') {
+                    if ($type == 'composer_install') {
                         $install = new Process("/usr/local/bin/composer install");
                         $install->setWorkingDirectory(base_path());
                         $install->setEnv(['COMPOSER_HOME' => '/usr/local/bin/composer']);
                         $install->setTimeout(null);
                         $install->run();
-                        $return .= '<br>' .nl2br($install->getOutput());
+                        $return = nl2br($install->getOutput());
+                    }
+                    if ($type == 'migrate') {
+                        $migrate = new Process("php artisan migrate --force");
+                        $migrate->setWorkingDirectory(base_path());
+                        $migrate->setTimeout(null);
+                        $migrate->run();
+                        $return = nl2br($migrate->getOutput());
+                    }
+                    if ($type == 'clear_cache') {
+                        $clear_cache = new Process("php artisan cache:clear");
+                        $clear_cache->setWorkingDirectory(base_path());
+                        $clear_cache->setTimeout(null);
+                        $clear_cache->run();
+                        $return = nl2br($clear_cache->getOutput());
+                        $clear_view = new Process("php artisan view:clear");
+                        $clear_view->setWorkingDirectory(base_path());
+                        $clear_view->setTimeout(null);
+                        $clear_view->run();
+                        $return .= '<br>' . nl2br($clear_view->getOutput());
                     }
                 } else {
-                    $return = trans('noshform.update_system2');
+                    $result1 = $this->github_single($type);
+                    if (isset($result1['files'])) {
+                        foreach ($result1['files'] as $row1) {
+                            $filename = base_path() . "/" . $row1['filename'];
+                            if ($row1['status'] == 'added' || $row1['status'] == 'modified' || $row1['status'] == 'renamed') {
+                                $github_url = str_replace(' ', '%20', $row1['raw_url']);
+                                if ($github_url !== '') {
+                                    $file = file_get_contents($github_url);
+                                    $parts = explode('/', $row1['filename']);
+                                    array_pop($parts);
+                                    $dir = implode('/', $parts);
+                                    if (!is_dir(base_path() . "/" . $dir)) {
+                                        if ($parts[0] == 'public') {
+                                            mkdir(base_path() . "/" . $dir, 0777, true);
+                                        } else {
+                                            mkdir(base_path() . "/" . $dir, 0755, true);
+                                        }
+                                    }
+                                    file_put_contents($filename, $file);
+                                    if ($row1['filename'] == 'composer.json' || $row1['filename'] == 'composer.lock') {
+                                        $composer = true;
+                                    }
+                                }
+                            }
+                            if ($row1['status'] == 'removed') {
+                                if (file_exists($filename)) {
+                                    unlink($filename);
+                                }
+                            }
+                        }
+                        define('STDIN',fopen("php://stdin","r"));
+                        File::put(base_path() . "/.version", $type);
+                        $return = trans('noshform.update_system1') . " " . $type . " " . trans('noshform.from1') . " " . $current_version;
+                        $migrate = new Process("php artisan migrate --force");
+                        $migrate->setWorkingDirectory(base_path());
+                        $migrate->setTimeout(null);
+                        $migrate->run();
+                        $return .= '<br>' . nl2br($migrate->getOutput());
+                        if ($composer == true) {
+                            $install = new Process("/usr/local/bin/composer install");
+                            $install->setWorkingDirectory(base_path());
+                            $install->setEnv(['COMPOSER_HOME' => '/usr/local/bin/composer']);
+                            $install->setTimeout(null);
+                            $install->run();
+                            $return .= '<br>' .nl2br($install->getOutput());
+                        }
+                    } else {
+                        $return = trans('noshform.update_system2');
+                    }
                 }
             } else {
                 $result = $this->github_all();
