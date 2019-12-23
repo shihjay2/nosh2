@@ -41,7 +41,7 @@ RUN apk add --update --no-cache \
 RUN docker-php-ext-configure \
     opcache --enable-opcache &&\
     docker-php-ext-configure gd --with-freetype --with-jpeg &&\
-    docker-php-ext-configure imap --with-imap --with-imap-ssl &&\
+    PHP_OPENSSL=yes docker-php-ext-configure imap --with-imap --with-imap-ssl &&\
     docker-php-ext-install \
     opcache \
     mysqli \
