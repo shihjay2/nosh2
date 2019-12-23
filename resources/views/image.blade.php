@@ -295,7 +295,7 @@
         // MAKE RECTANGLES
         function makeRect() {
             $canvas.drawRect({
-                fillStyle: 'red',
+                fillStyle: sketchpad.color,
                 x: currentX, y: currentY,
                 width: Math.abs(width),
                 height: Math.abs(height),

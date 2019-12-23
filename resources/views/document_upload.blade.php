@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@section('view.stylesheet')
+	<link rel="stylesheet" href="{{ asset('assets/css/fileinput.min.css') }}">
+@endsection
+
 @section('content')
 @if (isset($sidebar_content))
     <div class="container-fluid">
@@ -34,6 +38,10 @@
 @endsection
 
 @section('view.scripts')
+<script src="{{ asset('assets/js/canvas-to-blob.min.js') }}"></script>
+<script src="{{ asset('assets/js/sortable.min.js') }}"></script>
+<script src="{{ asset('assets/js/purify.min.js') }}"></script>
+<script src="{{ asset('assets/js/fileinput.min.js') }}"></script>
 <script type="text/javascript">
     $(document).ready(function() {
         $('[data-toggle=offcanvas]').css('cursor', 'pointer').click(function() {
@@ -48,8 +56,49 @@
         }
         $("#file_input").fileinput({
             allowedFileExtensions: JSON.parse(noshdata.document_type),
-            maxFileCount: 1
+            maxFileCount: 1,
+			dropZoneEnabled: false
         });
+
+		@if (isset($content))
+		function handleError(error) {
+			console.error('navigator.getUserMedia error: ', error);
+		}
+		const constraints = {video: true};
+
+		(function() {
+			const video = document.querySelector('video');
+			const captureVideoButton = document.querySelector('#start_video');
+			const screenshotButton = document.querySelector('#stop_video');
+			const img = document.querySelector('#screenshot img');
+			const input = document.querySelector('#img');
+			const canvas = document.createElement('canvas');
+			const saveButton = document.querySelector('#save_picture');
+
+			function handleSuccess(stream) {
+				screenshotButton.disabled = false;
+				video.srcObject = stream;
+			}
+
+			captureVideoButton.onclick = function() {
+				video.style.display = "block";
+				navigator.mediaDevices.getUserMedia(constraints).
+				then(handleSuccess).catch(handleError);
+				img.style.display = "none";
+			};
+
+			screenshotButton.onclick = function() {
+				canvas.width = video.videoWidth;
+				canvas.height = video.videoHeight;
+				canvas.getContext('2d').drawImage(video, 0, 0);
+				img.src = canvas.toDataURL('image/png');
+				input.value = img.src;
+				img.style.display = "block";
+				saveButton.style.display = "inline";
+				video.style.display = "none";
+			};
+		})();
+		@endif
     });
 </script>
 @endsection

@@ -20,6 +20,7 @@ use Hash;
 use HTML;
 use KubAT\PhpSimple\HtmlDomParser;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\MessageBag;
 use Imagick;
 use Laravel\LegacyEncrypter\McryptEncrypter;
@@ -713,6 +714,14 @@ class InstallController extends Controller {
             'state' => $state,
             'zip' => $zip
         ];
+        $postData = $request->post();
+        $img = Arr::has($postData, 'photo_data');
+        if ($img) {
+            $img_data = substr($request->input('photo_data'), strpos($request->input('photo_data'), ',') + 1);
+            $img_data = base64_decode($img_data);
+            $file_path = $documents_dir . "/" . $request->input('photo_filename');
+            $patient_data['photo'] = $file_path;
+        }
         $pid = DB::table('demographics')->insertGetId($patient_data);
         $this->audit('Add');
         $patient_data1 = [
@@ -745,8 +754,17 @@ class InstallController extends Controller {
         ];
         DB::table('demographics_relate')->insert($patient_data3);
         $this->audit('Add');
+        $patient_data4 = [
+            'pid' => $pid,
+            'date_added' => date('Y-m-d H:i:s')
+        ];
+        DB::table('demographics_plus')->insert($patient_data4);
+        $this->audit('Add');
         $directory = $documents_dir . $pid;
         mkdir($directory, 0775);
+        if ($img) {
+            File::put($file_path, $img_data);
+        }
         if (env('DOCKER') == '0') {
             $mail_arr = [
                 'MAIL_DRIVER' => 'mailgun',
@@ -1593,5 +1611,9 @@ class InstallController extends Controller {
 
     public function test1(Request $request)
     {
+        if (Session::has('messaging_add_photo')) {
+            return Session::get('messaging_add_photo');
+        }
+        // Session::forget('messaging_add_photo');
     }
 }

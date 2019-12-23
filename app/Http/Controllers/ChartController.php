@@ -11,7 +11,9 @@ use DB;
 use File;
 use Form;
 use HTML;
+use Imagick;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\MessageBag;
 use Minify;
 use PdfMerger;
@@ -1294,6 +1296,9 @@ class ChartController extends Controller {
         $multiple_select_arr2 = [
             'label'
         ];
+        $multiple_select_arr3 = [
+            'alert_providers'
+        ];
         $nosh_action_tables = [
             'rx_list',
             'orders',
@@ -1375,6 +1380,11 @@ class ChartController extends Controller {
         foreach ($multiple_select_arr2 as $key4) {
             if (array_key_exists($key4, $data)) {
                 $data[$key4] = implode(";", $data[$key4]);
+            }
+        }
+        foreach ($multiple_select_arr3 as $key5) {
+            if (array_key_exists($key5, $data)) {
+                $data[$key5] = implode(",", $data[$key5]);
             }
         }
         // Handle rCopia calls after action
@@ -1650,7 +1660,7 @@ class ChartController extends Controller {
                             $data['wt_ht_percentile'] = $wt_ht_data['percentile'];
                         }
                         if (!empty($data['headcircumference'])) {
-                            $hc_data = $this->gc_hc_age($sex, $pid);
+                            $hc_data = $this->gc_head_age($sex, $pid);
                             $data['hc_percentile'] = $hc_data['percentile'];
                         }
                         if (Session::get('agealldays') > 730.5) {
@@ -1731,7 +1741,7 @@ class ChartController extends Controller {
                                 'alert_date_active' => date('Y-m-d H:i:s', time()),
                                 'alert_date_complete' => '',
                                 'alert_reason_not_complete' => '',
-                                'alert_provider' => Session::get('user_id'),
+                                'alert_providers' => Session::get('user_id'),
                                 'orders_id' => $row_id1,
                                 'pid' => Session::get('pid'),
                                 'practice_id' => Session::get('practice_id'),
@@ -1752,7 +1762,7 @@ class ChartController extends Controller {
                                     'alert_date_active' => date('Y-m-d H:i:s', time()),
                                     'alert_date_complete' => '',
                                     'alert_reason_not_complete' => '',
-                                    'alert_provider' => Session::get('user_id'),
+                                    'alert_providers' => Session::get('user_id'),
                                     'results' => 1
                                 ];
                                 if ($type_k == 'orders_referrals') {
@@ -3065,10 +3075,22 @@ class ChartController extends Controller {
         if ($request->isMethod('post')) {
             $pid = Session::get('pid');
             $directory = Session::get('documents_dir') . $pid;
-            $file = $request->file('file_input');
-            $new_name = str_replace('.' . $file->getClientOriginalExtension(), '', $file->getClientOriginalName()) . '_' . time() . '.' . $file->getClientOriginalExtension();
-            $file->move($directory, $new_name);
+            $postData = $request->post();
+            $img = Arr::has($postData, 'img');
+            if ($img) {
+                $img_data = substr($request->input('img'), strpos($request->input('img'), ',') + 1);
+                $img_data = base64_decode($img_data);
+                $new_name = time() . '_photo_' . Session::get('user_id') . ".png";
+            } else {
+                $file = $request->file('file_input');
+                $new_name = str_replace('.' . $file->getClientOriginalExtension(), '', $file->getClientOriginalName()) . '_' . time() . '.' . $file->getClientOriginalExtension();
+            }
             $file_path = $directory . "/" . $new_name;
+            if ($img) {
+                File::put($file_path, $img_data);
+            } else {
+                $file->move($directory, $new_name);
+            }
             $data['photo'] = $file_path;
             $image_id = DB::table('demographics')->where('pid', '=', $pid)->update($data);
             $this->audit('Update');
@@ -3083,8 +3105,12 @@ class ChartController extends Controller {
             $dropdown_array['default_button_text_url'] = Session::get('last_page');
             $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
             $data = array_merge($data, $this->sidebar_build('chart'));
-            $data['assets_js'] = $this->assets_js('document_upload');
-            $data['assets_css'] = $this->assets_css('document_upload');
+            $data['content'] = '<div><b>Take a Snapshot</b></div>';
+            $data['content'] .= '<form action="' . route('demographics_add_photo') . '" method="POST">' . csrf_field() . '<div style="margin:auto;" id="screenshot"><video autoplay style="display:none;width: 100% !important;height: auto !important;"></video><img src="" style="width: 100% !important;height: auto !important;"><canvas style="display:none;"></canvas><input type="hidden" name="img" id="img"></div>';
+            $data['content'] .= '<div style="margin:auto;"><button type="button" id="start_video" class="btn btn-primary" style="margin:5px;">Start</button><button type="button" id="stop_video" class="btn btn-danger" style="margin:5px;">Stop</button><button type="submit" id="save_picture" class="btn btn-success" style="margin:5px;display:none;">Save</button></form></div>';
+            $data['content'] .= '<br><div><b>or Upload a Picture</b></div>';
+            $data['assets_js'] = $this->assets_js();
+            $data['assets_css'] = $this->assets_css();
             return view('document_upload', $data);
         }
     }
@@ -3178,7 +3204,17 @@ class ChartController extends Controller {
             $directory = Session::get('documents_dir') . $pid;
             $file = $request->file('file_input');
             $new_name = str_replace('.' . $file->getClientOriginalExtension(), '', $file->getClientOriginalName()) . '_' . time() . '.pdf';
-            $file->move($directory, $new_name);
+            if ($file->getClientOriginalExtension() == 'pdf' || $file->getClientOriginalExtension() == 'PDF') {
+                $file->move($directory, $new_name);
+            } else {
+                $temp_filename = uniqid() . '.' . $file->getClientOriginalExtension();
+                $temp_file = storage_path($temp_filename);
+                $file->move(storage_path(), $temp_filename);
+                $image = new Imagick($temp_file);
+                $image->setImageFormat('pdf');
+                $image->writeImage($directory . '/' . $new_name);
+                File::delete($temp_file);
+            }
             $data = [
                 'documents_url' => $directory . '/' . $new_name,
                 'pid' => $pid
@@ -3190,14 +3226,14 @@ class ChartController extends Controller {
             $data['documents_active'] = true;
             $data['panel_header'] = trans('noshform.document_upload');
             $data['document_upload'] = route('document_upload');
-            $type_arr = ['pdf'];
+            $type_arr = ['pdf', 'png', 'jpg'];
             $data['document_type'] = json_encode($type_arr);
             $dropdown_array['default_button_text'] = '<i class="fa fa-chevron-left fa-fw fa-btn"></i>' . trans('noshform.back');
             $dropdown_array['default_button_text_url'] = Session::get('last_page');
             $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
             $data = array_merge($data, $this->sidebar_build('chart'));
-            $data['assets_js'] = $this->assets_js('document_upload');
-            $data['assets_css'] = $this->assets_css('document_upload');
+            $data['assets_js'] = $this->assets_js();
+            $data['assets_css'] = $this->assets_css();
             return view('document_upload', $data);
         }
     }
@@ -3469,6 +3505,7 @@ class ChartController extends Controller {
             'standardmedical1',
             'standardpsych',
             'standardpsych1',
+            'standardmtm'
         ];
         $psych_array = [
             'standardpsych',
@@ -3640,52 +3677,54 @@ class ChartController extends Controller {
                 }
                 $return .= $this->result_build($vitals_list_array, 'vitals_list', true);
             }
-            $images = DB::table('image')->where('eid', '=', Session::get('eid'))->get();
-            if ($images->count()) {
-                $return .= '<div class="list-group gallery">';
-                foreach ($images as $image) {
-                    $file_path1 = '/temp/' . time() . '_' . basename($image->image_location);
-                    $file_path = public_path() . $file_path1;
-                    copy($image->image_location, $file_path);
-                    $return .= '<div class="col-sm-4 col-xs-6 col-md-3 col-lg-3"><a class="thumbnail fancybox nosh-no-load" rel="ligthbox" href="' . url('/') . $file_path1 . '">';
-                    $return .= '<img class="img-responsive" alt="" src="' . url('/') . $file_path1 . '" />';
-                    $return .= '<div class="text-center"><small class="text-muted">' . $image->image_description . '</small></div></a>';
-                    $return .= '<a href="' . route('encounter_edit_image', [$image->image_id]) . '" class="edit-icon btn btn-success"><i class="glyphicon glyphicon-pencil"></i></a>';
-                    $return .= '<a href="' . route('encounter_delete_photo', [$image->image_id]) . '" class="close-icon btn btn-danger"><i class="glyphicon glyphicon-remove"></i></a></div>';
+            if ($encounter->encounter_template !== 'standardmtm') {
+                $images = DB::table('image')->where('eid', '=', Session::get('eid'))->get();
+                if ($images->count()) {
+                    $return .= '<div class="list-group gallery">';
+                    foreach ($images as $image) {
+                        $file_path1 = '/temp/' . time() . '_' . basename($image->image_location);
+                        $file_path = public_path() . $file_path1;
+                        copy($image->image_location, $file_path);
+                        $return .= '<div class="col-sm-4 col-xs-6 col-md-3 col-lg-3"><a class="thumbnail fancybox nosh-no-load" rel="ligthbox" href="' . url('/') . $file_path1 . '">';
+                        $return .= '<img class="img-responsive" alt="" src="' . url('/') . $file_path1 . '" />';
+                        $return .= '<div class="text-center"><small class="text-muted">' . $image->image_description . '</small></div></a>';
+                        $return .= '<a href="' . route('encounter_edit_image', [$image->image_id]) . '" class="edit-icon btn btn-success"><i class="glyphicon glyphicon-pencil"></i></a>';
+                        $return .= '<a href="' . route('encounter_delete_photo', [$image->image_id]) . '" class="close-icon btn btn-danger"><i class="glyphicon glyphicon-remove"></i></a></div>';
+                    }
+                    $return .= '</div>';
                 }
-                $return .= '</div>';
-            }
-            $pe_val = null;
-            $pe = DB::table('pe')->where('eid', '=', $eid)->first();
-            if ($pe) {
-                $pe_val = $pe->pe;
-                // Convert depreciated encounter type to current
-                if (in_array($encounter->encounter_template, $depreciated_array)) {
-                    $pe_arr = $this->array_pe();
-                    foreach ($pe_arr as $pe_k => $pe_v) {
-                        if ($pe->{$pe_k} !== '' && $pe->{$pe_k} !== null) {
-                            if ($pe_k !== 'pe') {
-                                $pe_val .=  $pe_v . ': ';
+                $pe_val = null;
+                $pe = DB::table('pe')->where('eid', '=', $eid)->first();
+                if ($pe) {
+                    $pe_val = $pe->pe;
+                    // Convert depreciated encounter type to current
+                    if (in_array($encounter->encounter_template, $depreciated_array)) {
+                        $pe_arr = $this->array_pe();
+                        foreach ($pe_arr as $pe_k => $pe_v) {
+                            if ($pe->{$pe_k} !== '' && $pe->{$pe_k} !== null) {
+                                if ($pe_k !== 'pe') {
+                                    $pe_val .=  $pe_v . ': ';
+                                }
+                                $pe_val .= $pe->{$pe_k};
+                                $pe_val .= "\n\n";
                             }
-                            $pe_val .= $pe->{$pe_k};
-                            $pe_val .= "\n\n";
                         }
                     }
                 }
+                $o_items[] = [
+                    'name' => 'pe',
+                    'label' => trans('noshform.pe'),
+                    'type' => 'textarea',
+                    'default_value' => $pe_val
+                ];
+                $o_form_array = [
+                    'form_id' => 'o_form',
+                    'action' => route('encounter_save', [$eid, 'a']),
+                    'items' => $o_items,
+                    'save_button_label' => trans('noshform.save_next')
+                ];
+                $return .= $this->form_build($o_form_array);
             }
-            $o_items[] = [
-                'name' => 'pe',
-                'label' => trans('noshform.pe'),
-                'type' => 'textarea',
-                'default_value' => $pe_val
-            ];
-            $o_form_array = [
-                'form_id' => 'o_form',
-                'action' => route('encounter_save', [$eid, 'a']),
-                'items' => $o_items,
-                'save_button_label' => trans('noshform.save_next')
-            ];
-            $return .= $this->form_build($o_form_array);
             $return .= '</div>';
         }
         // A
@@ -4178,8 +4217,8 @@ class ChartController extends Controller {
             }
             $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
             $data = array_merge($data, $this->sidebar_build('chart'));
-            $data['assets_js'] = $this->assets_js('document_upload');
-            $data['assets_css'] = $this->assets_css('document_upload');
+            $data['assets_js'] = $this->assets_js();
+            $data['assets_css'] = $this->assets_css();
             return view('document_upload', $data);
         }
     }
@@ -5404,7 +5443,7 @@ class ChartController extends Controller {
                     'alert_date_active' => date('Y-m-d H:i:s', time()),
                     'alert_date_complete' => '',
                     'alert_reason_not_complete' => '',
-                    'alert_provider' => Session::get('user_id'),
+                    'alert_providers' => Session::get('user_id'),
                     'orders_id' => '',
                     'pid' => Session::get('pid'),
                     'practice_id' => Session::get('practice_id'),
@@ -6705,6 +6744,12 @@ class ChartController extends Controller {
                 'icon' => 'fa-table',
                 'url' => route('immunizations_csv')
             ];
+            $items1[] = [
+                'type' => 'item',
+                'label' => trans('noshform.recommendations'),
+                'icon' => 'fa-thumbs-o-up',
+                'url' => route('care_opportunities', ['immunizations'])
+            ];
             $dropdown_array1['items'] = $items1;
             $data['panel_dropdown'] .= '<span class="fa-btn"></span>' . $this->dropdown_build($dropdown_array1);
         }
@@ -7172,6 +7217,7 @@ class ChartController extends Controller {
         Session::forget('message_action');
         $data['content'] = '';
         $demographics = DB::table('demographics')->where('pid', '=', Session::get('pid'))->first();
+        $demographics_plus = DB::table('demographics_plus')->where('pid', '=', Session::get('pid'))->first();
         $practiceInfo = DB::table('practiceinfo')->first();
         if ($demographics->photo !== null) {
             if (file_exists($demographics->photo)) {
@@ -7188,10 +7234,24 @@ class ChartController extends Controller {
         if ($demographics->hieofone_as_url !== '' && $demographics->hieofone_as_url !== null) {
             $data['content'] .= '<div class="alert alert-danger"><span style="margin-right:15px;"><i class="fa fa-download fa-lg"></i></span><strong><a href="' . route('uma_resources', [Session::get('pid')]) . '">' . trans('noshform.reconcile_chart') . '</a></strong></div>';
         }
+        if (!empty($demographics_plus->date_added)) {
+            $data['content'] .= '<div class="alert alert-success"><span style="margin-right:15px;"><i class="fa fa-user fa-lg" aria-hidden="true"></i></span><strong>' . trans('noshform.date_added') . '</strong>: ' . date('F jS, Y', strtotime($demographics_plus->date_added)) . '</div>';
+        } else {
+            $demographics_plus_data['date_added'] = $demographics->date;
+            if ($demographics_plus) {
+                DB::table('demographics_plus')->where('pid', '=', Session::get('pid'))->update($demographics_plus_data);
+                $this->audit('Update');
+            } else {
+                $demographics_plus_data['pid'] = Session::get('pid');
+                DB::table('demographics_plus')->insert($demographics_plus_data);
+                $this->audit('Add');
+            }
+            $data['content'] .= '<div class="alert alert-success"><span style="margin-right:15px;"><i class="fa fa-user fa-lg" aria-hidden="true"></i></span><strong>' . trans('noshform.date_added') . '</strong>: ' . date('F jS, Y', strtotime($demographics->date)) . '</div>';
+        }
         if (Session::get('patient_centric') !== 'y') {
             $next_appt = DB::table('schedule')->where('pid', '=', Session::get('pid'))->where('start', '>', time())->first();
             if ($next_appt && isset($next_appt->start)) {
-                $data['content'] .= '<div class="alert alert-success"><span style="margin-right:15px;"><i class="fa fa-hand-o-right fa-lg"></i></span><strong>' . trans('noshform.next_appt') . '</strong>: ' . date('F jS, Y, g:i A', $next_appt->start) . '</div>';
+                $data['content'] .= '<div class="alert alert-success"><a href="' . route('schedule') . '" class="nosh-schedule" nosh-schedule-date="' . date('Y-m-d', $next_appt->start) . '"><span style="margin-right:15px;"><i class="fa fa-hand-o-right fa-lg"></i></span><strong>' . trans('noshform.next_appt') . '</strong>: ' . date('F jS, Y, g:i A', $next_appt->start) . '</a></div>';
             }
             $last_visit = DB::table('encounters')->where('pid', '=', Session::get('pid'))
     			->where('eid', '!=', '')
@@ -7201,10 +7261,11 @@ class ChartController extends Controller {
     		if ($last_visit) {
                 $data['content'] .= '<div class="alert alert-success"><span style="margin-right:15px;"><i class="fa fa-calendar-check-o fa-lg" aria-hidden="true"></i></span><strong>' . trans('noshform.last_visit') . '</strong>: ' . date('F jS, Y', strtotime($last_visit->encounter_DOS)) . '</div>';
     		}
-            $lmc = DB::table('schedule')->where('pid', '=', Session::get('pid'))->where('status', '=', 'LMC')->get();
+            $lmc = DB::table('schedule')->where('pid', '=', Session::get('pid'))->where('status', '=', 'LMC')->orderBy('start', 'desc')->get();
             $dnka = DB::table('schedule')->where('pid', '=', Session::get('pid'))->where('status', '=', 'DNKA')->get();
             if ($lmc->count()) {
-                $data['content'] .= '<div class="alert alert-warning"><span style="margin-right:15px;"><i class="fa fa-clock-o fa-lg"></i></span><strong>' . trans('noshform.lmc') . ': ' . $lmc->count() . '</strong></div>';
+                $lmc_last = DB::table('schedule')->where('pid', '=', Session::get('pid'))->where('status', '=', 'LMC')->orderBy('start', 'desc')->first();
+                $data['content'] .= '<div class="alert alert-warning"><span style="margin-right:15px;"><i class="fa fa-clock-o fa-lg"></i></span><strong>' . trans('noshform.lmc') . ': ' . $lmc->count() . '</strong><br><strong>' . trans('noshform.lmc_last') . ':</strong> ' . date('F jS, Y', $lmc_last->start) . '</div>';
             }
             if ($dnka->count()) {
                 $data['content'] .= '<div class="alert alert-danger"><span style="margin-right:15px;"><i class="fa fa-ban fa-lg"></i></span><strong>' . trans('noshform.dnka') . ': ' . $dnka->count() . '</strong></div>';
@@ -7305,7 +7366,7 @@ class ChartController extends Controller {
             'items_button_icon' => 'fa-tasks',
             'items' => $items
         ];
-        if (Session::has('uma_uri') == 'y') {
+        if (Session::has('uma_uri') && Session::get('group_id') == '100') {
             $dropdown_array1 = [];
             $dropdown_array1['default_button_text'] = '<i class="fa fa-table fa-fw fa-btn"></i>' . trans('noshform.consent_table');
             $dropdown_array1['default_button_text_url'] = Session::get('uma_uri');
@@ -9351,8 +9412,8 @@ class ChartController extends Controller {
             $dropdown_array['default_button_text_url'] = Session::get('last_page');
             $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
             $data = array_merge($data, $this->sidebar_build('chart'));
-            $data['assets_js'] = $this->assets_js('document_upload');
-            $data['assets_css'] = $this->assets_css('document_upload');
+            $data['assets_js'] = $this->assets_js();
+            $data['assets_css'] = $this->assets_css();
             return view('document_upload', $data);
         }
     }
@@ -9634,8 +9695,8 @@ class ChartController extends Controller {
             $dropdown_array['default_button_text_url'] = Session::get('last_page');
             $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
             $data = array_merge($data, $this->sidebar_build('chart'));
-            $data['assets_js'] = $this->assets_js('document_upload');
-            $data['assets_css'] = $this->assets_css('document_upload');
+            $data['assets_js'] = $this->assets_js();
+            $data['assets_css'] = $this->assets_css();
             return view('document_upload', $data);
         }
     }

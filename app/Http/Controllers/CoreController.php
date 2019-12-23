@@ -13,6 +13,7 @@ use Form;
 use Hash;
 use HTML;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\MessageBag;
 use Imagick;
 use Minify;
@@ -24,6 +25,7 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Schema;
 use Session;
+use Storage;
 use SoapBox\Formatter\Formatter;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
@@ -36,6 +38,7 @@ class CoreController extends Controller
     {
         $this->middleware('checkinstall');
         $this->middleware('auth');
+        $this->middleware('csrf');
         $this->middleware('postauth');
     }
 
@@ -53,7 +56,8 @@ class CoreController extends Controller
                 'sexuallyactive' => 'no',
                 'tobacco' => 'no',
                 'pregnant' => 'no',
-                'country' => $result->country
+                'country' => $result->country,
+                'date_added' => date('Y-m-d H:i:s')
             ];
             $pid = DB::table('demographics')->insertGetId($data);
             $this->audit('Add');
@@ -70,6 +74,12 @@ class CoreController extends Controller
                 'practice_id' => $practice_id
             ];
             DB::table('demographics_relate')->insert($data2);
+            $this->audit('Add');
+            $data3 = [
+                'pid' => $pid,
+                'date_added' => date('Y-m-d H:i:s')
+            ];
+            DB::table('demographics_plus')->insert($data3);
             $this->audit('Add');
             $directory = $result->documents_dir . $pid;
             mkdir($directory, 0775);
@@ -737,13 +747,13 @@ class CoreController extends Controller
                         $row = DB::table('users')->where('id', '=', $data['message_from'])->first();
                         $displayname = $row->displayname . ' (' . $row->id . ')';
                         $t_message = DB::table('t_messages')->where('t_messages_id', '=', $data['t_messages_id'])->first();
-                        $message = $t_message->t_messages_message . "\n\r" . trans('noshform.t_message_on') . ' ' . date('Y-m-d', $this->human_to_unix($data['date'])) . ', ' . $displayname . ' ' . trans('noshform.t_message_wrote') . ':';
+                        $message = $t_message->t_messages_message . "\n\r" . trans('noshform.t_message_on') . ' ' . date('Y-m-d') . ', ' . $displayname . ' ' . trans('noshform.t_message_wrote') . ':';
                         $message .= "\n---------------------------------\n" . $data['body'];
                         $data1 = [
                             't_messages_message' => $message,
                             't_messages_to' => ''
                         ];
-                        DB::table('t_messages')->where('t_messages_id', '=', $t_messages_id)->update($data1);
+                        DB::table('t_messages')->where('t_messages_id', '=', $t_message->t_messages_id)->update($data1);
                         $this->audit('Update');
                     }
                 }
@@ -996,6 +1006,7 @@ class CoreController extends Controller
         if ($table == 'addressbook' && $subtype == 'Referral') {
             return redirect(Session::get('addressbook_last_page'));
         }
+        Session::forget('messaging_add_photo');
         // if ($table == 'practiceinfo') {
         //     return redirect()->route('setup');
         // }
@@ -1022,6 +1033,19 @@ class CoreController extends Controller
                         'required' => true,
                         'default_value' => null
                     ];
+                    if (!Session::has('messaging_add_photo')) {
+                        $message_images = DB::table('image')->where($index, '=', $id)->get();
+                        if ($message_images->count()) {
+                            $message_add_photo_arr = [];
+                            foreach ($message_images as $message_image) {
+                                $message_file_path1 = '/temp/' . time() . '_' . basename($message_image->image_location);
+                                $message_file_path = public_path() . $message_file_path1;
+                                copy($message_image->image_location, $message_file_path);
+                                $message_add_photo_arr[] = $message_file_path;
+                            }
+                            Session::put('messaging_add_photo', $message_add_photo_arr);
+                        }
+                    }
                 } else {
                     $items[] = [
                         'name' => $index,
@@ -1106,13 +1130,23 @@ class CoreController extends Controller
                'items_button_icon' => 'fa-plus'
             ];
             $items1 = [];
-            $items1[] = [
-               'type' => 'item',
-               'label' => trans('noshform.messaging_add_photo'),
-               'icon' => 'fa-camera',
-               'url' => route('messaging_add_photo', [$id]),
-               'id' => 'nosh_messaging_add_photo'
-            ];
+            if ($subtype !== '') {
+                $items1[] = [
+                   'type' => 'item',
+                   'label' => trans('noshform.messaging_add_photo'),
+                   'icon' => 'fa-camera',
+                   'url' => route('messaging_add_photo', ['0']),
+                   'id' => 'nosh_messaging_add_photo'
+                ];
+            } else {
+                $items1[] = [
+                   'type' => 'item',
+                   'label' => trans('noshform.messaging_add_photo'),
+                   'icon' => 'fa-camera',
+                   'url' => route('messaging_add_photo', [$id]),
+                   'id' => 'nosh_messaging_add_photo'
+                ];
+            }
             $dropdown_array['items'] = $items1;
             $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
             Session::put('message_photo_last_page', $request->fullUrl());
@@ -1209,24 +1243,29 @@ class CoreController extends Controller
             }
             if ($images->count() || count($images1) > 0) {
                 $data['content'] .= '<br><h5>' . trans('noshform.images') . ':</h5><div class="list-group gallery">';
-                if ($images->count()) {
-                    foreach ($images as $image) {
-                        $file_path1 = '/temp/' . time() . '_' . basename($image->image_location);
-                        $file_path = public_path() . $file_path1;
-                        copy($image->image_location, $file_path);
-                        $data['content'] .= '<div class="col-sm-4 col-xs-6 col-md-3 col-lg-3"><a class="thumbnail fancybox nosh-no-load" rel="ligthbox" href="' . url('/') . $file_path1 . '">';
-                        $data['content'] .= '<img class="img-responsive" alt="" src="' . url('/') . $file_path1 . '" />';
-                        $data['content'] .= '<div class="text-center"><small class="text-muted">' . basename($image->image_location) . '</small></div></a>';
-                        $data['content'] .= '<a href="' . route('messaging_delete_photo', [$image->image_id]) . '" class="nosh-photo-delete close-icon btn btn-danger"><i class="glyphicon glyphicon-remove"></i></a></div>';
+                if ($subtype == '') {
+                    if ($images->count()) {
+                        foreach ($images as $image) {
+                            $file_path1 = '/temp/' . time() . '_' . basename($image->image_location);
+                            $file_path = public_path() . $file_path1;
+                            copy($image->image_location, $file_path);
+                            $data['content'] .= '<div class="col-sm-4 col-xs-6 col-md-3 col-lg-3"><a class="thumbnail fancybox nosh-no-load" rel="ligthbox" href="' . url('/') . $file_path1 . '">';
+                            $data['content'] .= '<img class="img-responsive" alt="" src="' . url('/') . $file_path1 . '" />';
+                            $data['content'] .= '<div class="text-center"><small class="text-muted">' . basename($image->image_location) . '</small></div></a>';
+                            $data['content'] .= '<a href="' . route('messaging_delete_photo', [$image->image_id]) . '" class="nosh-photo-delete close-icon btn btn-danger"><i class="glyphicon glyphicon-remove"></i></a></div>';
+                        }
                     }
                 }
                 if (count($images1) > 0) {
+                    $i = 0;
                     foreach ($images1 as $image1) {
-                        $file_path1 = str_replace(public_path(), '', $image1);
+                        $directory = public_path();
+                        $file_path1 = str_replace($directory, '', $image1);
                         $data['content'] .= '<div class="col-sm-4 col-xs-6 col-md-3 col-lg-3"><a class="thumbnail fancybox nosh-no-load" rel="ligthbox" href="' . url('/') . $file_path1 . '">';
                         $data['content'] .= '<img class="img-responsive" alt="" src="' . url('/') . $file_path1 . '" />';
-                        $data['content'] .= '<div class="text-center"><small class="text-muted">' . $image1 . '</small></div></a>';
-                        $data['content'] .= '<a href="' . route('messaging_delete_photo', [$image1, 'session']) . '" class="nosh-photo-delete close-icon btn btn-danger"><i class="glyphicon glyphicon-remove"></i></a></div>';
+                        $data['content'] .= '<div class="text-center"><small class="text-muted">' . $file_path1 . '</small></div></a>';
+                        $data['content'] .= '<a href="' . route('messaging_delete_photo', [$i, 'session']) . '" class="nosh-photo-delete close-icon btn btn-danger"><i class="glyphicon glyphicon-remove"></i></a></div>';
+                        $i++;
                     }
                 }
                 $data['content'] .= '</div>';
@@ -1768,7 +1807,7 @@ class CoreController extends Controller
                 ->count();
             $data['number_reminders'] = DB::table('alerts')
                 ->join('demographics', 'alerts.pid', '=', 'demographics.pid')
-                ->where('alerts.alert_provider', '=', $user_id)
+                ->whereRaw("find_in_set($user_id,alerts.alert_providers)")
                 ->where('alerts.alert_date_complete', '=', '0000-00-00 00:00:00')
                 ->where('alerts.alert_reason_not_complete', '=', '')
                 ->where(function($query_array) {
@@ -1817,7 +1856,7 @@ class CoreController extends Controller
                 ->count();
             $data['number_reminders'] = DB::table('alerts')
                 ->join('demographics', 'alerts.pid', '=', 'demographics.pid')
-                ->where('alerts.alert_provider', '=', $user_id)
+                ->whereRaw("find_in_set($user_id,alerts.alert_providers)")
                 ->where('alerts.alert_date_complete', '=', '0000-00-00 00:00:00')
                 ->where('alerts.alert_reason_not_complete', '=', '')
                 ->where(function($query_array) {
@@ -1960,9 +1999,10 @@ class CoreController extends Controller
 
     public function dashboard_reminders(Request $request)
     {
+        $user_id = Session::get('user_id');
         $query = DB::table('alerts')
             ->join('demographics', 'alerts.pid', '=', 'demographics.pid')
-            ->where('alerts.alert_provider', '=', Session::get('user_id'))
+            ->whereRaw("find_in_set($user_id,alerts.alert_providers)")
             ->where('alerts.alert_date_complete', '=', '0000-00-00 00:00:00')
             ->where('alerts.alert_reason_not_complete', '=', '')
             ->where(function($query_array) {
@@ -2834,8 +2874,8 @@ class CoreController extends Controller
             $dropdown_array['default_button_text'] = '<i class="fa fa-chevron-left fa-fw fa-btn"></i>' . trans('noshform.back');
             $dropdown_array['default_button_text_url'] = Session::get('last_page');
             $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
-            $data['assets_js'] = $this->assets_js('document_upload');
-            $data['assets_css'] = $this->assets_css('document_upload');
+            $data['assets_js'] = $this->assets_js();
+            $data['assets_css'] = $this->assets_css();
             return view('document_upload', $data);
         }
     }
@@ -2864,8 +2904,8 @@ class CoreController extends Controller
             $dropdown_array['default_button_text'] = '<i class="fa fa-chevron-left fa-fw fa-btn"></i>' . trans('noshform.back');
             $dropdown_array['default_button_text_url'] = Session::get('last_page');
             $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
-            $data['assets_js'] = $this->assets_js('document_upload');
-            $data['assets_css'] = $this->assets_css('document_upload');
+            $data['assets_js'] = $this->assets_js();
+            $data['assets_css'] = $this->assets_css();
             return view('document_upload', $data);
         }
     }
@@ -4456,8 +4496,8 @@ class CoreController extends Controller
             $dropdown_array['default_button_text'] = '<i class="fa fa-chevron-left fa-fw fa-btn"></i>' . trans('noshform.back');
             $dropdown_array['default_button_text_url'] = Session::get('last_page');
             $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
-            $data['assets_js'] = $this->assets_js('document_upload');
-            $data['assets_css'] = $this->assets_css('document_upload');
+            $data['assets_js'] = $this->assets_js();
+            $data['assets_css'] = $this->assets_css();
             return view('document_upload', $data);
         }
     }
@@ -4477,6 +4517,7 @@ class CoreController extends Controller
     {
         $data['message_action'] = Session::get('message_action');
         Session::forget('message_action');
+        Session::forget('messaging_add_photo');
         $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
         $return = '';
         $type_arr = [
@@ -4673,14 +4714,25 @@ class CoreController extends Controller
     public function messaging_add_photo(Request $request, $message_id)
     {
         if ($request->isMethod('post')) {
-            $file = $request->file('file_input');
+            $postData = $request->post();
+            $img = Arr::has($postData, 'img');
+            if ($img) {
+                $img_data = substr($request->input('img'), strpos($request->input('img'), ',') + 1);
+                $img_data = base64_decode($img_data);
+            } else {
+                $file = $request->file('file_input');
+            }
             if ($message_id == '0') {
                 $directory = public_path() . '/temp/';
-                $new_name = time() . '_photo_' . Session::get('user_id') . "." . $file->getClientOriginalExtension();
+                $new_name = time() . '_photo_' . Session::get('user_id') . ".";
+                if ($img) {
+                    $new_name .= 'png';
+                } else {
+                    $new_name .= $file->getClientOriginalExtension();
+                }
+                $message_add_photo_arr = [];
                 if (Session::has('messaging_add_photo')) {
                     $message_add_photo_arr = Session::get('messaging_add_photo');
-                } else {
-                    $message_add_photo_arr = [];
                 }
                 $file_path = $directory . $new_name;
                 $message_add_photo_arr[] = $file_path;
@@ -4693,7 +4745,11 @@ class CoreController extends Controller
                     $pid = '';
                     $directory = Session::get('documents_dir');
                 }
-                $new_name = str_replace('.' . $file->getClientOriginalExtension(), '', $file->getClientOriginalName()) . '_' . time() . '.' . $file->getClientOriginalExtension();
+                if ($img) {
+                    $new_name = time() . '_photo_' . Session::get('user_id') . ".png";
+                } else {
+                    $new_name = str_replace('.' . $file->getClientOriginalExtension(), '', $file->getClientOriginalName()) . '_' . time() . '.' . $file->getClientOriginalExtension();
+                }
                 $file_path = $directory . $new_name;
                 App::setLocale(Session::get('practice_locale'));
                 $data = [
@@ -4707,7 +4763,11 @@ class CoreController extends Controller
                 $this->audit('Add');
                 App::setLocale(Session::get('user_locale'));
             }
-            $file->move($directory, $new_name);
+            if ($img) {
+                File::put($directory . $new_name, $img_data);
+            } else {
+                $file->move($directory, $new_name);
+            }
             return redirect(Session::get('message_photo_last_page'));
         } else {
             $data['panel_header'] = trans('noshform.messaging_add_photo');
@@ -4718,8 +4778,12 @@ class CoreController extends Controller
             $dropdown_array['default_button_text_url'] = Session::get('message_photo_last_page');
             $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
             $data = array_merge($data, $this->sidebar_build('chart'));
-            $data['assets_js'] = $this->assets_js('document_upload');
-            $data['assets_css'] = $this->assets_css('document_upload');
+            $data['content'] = '<div><b>Take a Snapshot</b></div>';
+            $data['content'] .= '<form action="' . route('messaging_add_photo', [$message_id]) . '" method="POST">'. csrf_field() . '<div style="margin:auto;" id="screenshot"><video autoplay style="display:none;width: 100% !important;height: auto !important;"></video><img src="" style="width: 100% !important;height: auto !important;"><canvas style="display:none;"></canvas><input type="hidden" name="img" id="img"></div>';
+            $data['content'] .= '<div style="margin:auto;"><button type="button" id="start_video" class="btn btn-primary" style="margin:5px;">Start</button><button type="button" id="stop_video" class="btn btn-danger" style="margin:5px;">Stop</button><button type="submit" id="save_picture" class="btn btn-success" style="margin:5px;display:none;">Save</button></form></div>';
+            $data['content'] .= '<br><div><b>or Upload a Picture</b></div>';
+            $data['assets_js'] = $this->assets_js();
+            $data['assets_css'] = $this->assets_css();
             return view('document_upload', $data);
         }
     }
@@ -4728,9 +4792,10 @@ class CoreController extends Controller
     {
         if ($type == 'session') {
             $arr = Session::get('messaging_add_photo');
-            if (($key = array_search($id, $arr)) !== false) {
-                unset($arr[$key]);
-            }
+            // if (($key = array_search($id, $arr)) !== false) {
+            //     unset($arr[$key]);
+            // }
+            unset($arr[$id]);
             Session::put('messaging_add_photo', $arr);
         } else {
             DB::table('image')->where('image_id', '=', $id)->delete();
@@ -4828,16 +4893,18 @@ class CoreController extends Controller
                 Session::put('messaging_editdoc_pages', $arr1);
             }
             $data['image_list'] = '';
-            foreach ($arr as $k => $v) {
-                if (Session::has('messaging_editdoc_next')) {
-                    if ($k == Session::get('messaging_editdoc_next')) {
-                        $data['image_list'] .= '<option value="' . $k . '" selected>' . $v . '</option>';
-                        Session::forget('messaging_editdoc_next');
+            if (!empty($arr)) {
+                foreach ($arr as $k => $v) {
+                    if (Session::has('messaging_editdoc_next')) {
+                        if ($k == Session::get('messaging_editdoc_next')) {
+                            $data['image_list'] .= '<option value="' . $k . '" selected>' . $v . '</option>';
+                            Session::forget('messaging_editdoc_next');
+                        } else {
+                            $data['image_list'] .= '<option value="' . $k . '">' . $v . '</option>';
+                        }
                     } else {
                         $data['image_list'] .= '<option value="' . $k . '">' . $v . '</option>';
                     }
-                } else {
-                    $data['image_list'] .= '<option value="' . $k . '">' . $v . '</option>';
                 }
             }
             $data['image_list_title'] = trans('noshform.page_selector');
@@ -4903,9 +4970,11 @@ class CoreController extends Controller
     {
         $temp_file_path = Session::get('messaging_editdoc');
         $pages = Session::get('messaging_editdoc_pages');
-        foreach ($pages as $page) {
-            if (file_exists($page)) {
-                unlink($page);
+        if (!empty($pages)) {
+            foreach ($pages as $page) {
+                if (file_exists($page)) {
+                    unlink($page);
+                }
             }
         }
         unlink($temp_file_path);
@@ -5315,8 +5384,8 @@ class CoreController extends Controller
             $dropdown_array['default_button_text'] = '<i class="fa fa-chevron-left fa-fw fa-btn"></i>' . trans('noshform.back');
             $dropdown_array['default_button_text_url'] = Session::get('last_page');
             $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
-            $data['assets_js'] = $this->assets_js('document_upload');
-            $data['assets_css'] = $this->assets_css('document_upload');
+            $data['assets_js'] = $this->assets_js();
+            $data['assets_css'] = $this->assets_css();
             return view('document_upload', $data);
         }
     }
@@ -5345,7 +5414,7 @@ class CoreController extends Controller
                 copy($image->image_location, $file_path);
                 $return .= '<div class="col-sm-4 col-xs-6 col-md-3 col-lg-3"><a class="thumbnail fancybox nosh-no-load" rel="ligthbox" href="' . url('/') . $file_path1 . '">';
                 $return .= '<img class="img-responsive" alt="" src="' . url('/') . $file_path1 . '" />';
-                $return .= '<div class="text-center"><small class="text-muted">' . basename($image->image_location) . '</small></div></a>';
+                $return .= '<div class="text-center"><small class="text-muted">' . basename($image->image_location) . '</small></div></a></div>';
             }
             $return .= '</div>';
         }

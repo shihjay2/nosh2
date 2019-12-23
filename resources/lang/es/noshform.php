@@ -45,7 +45,7 @@ return [
 
     // Alerts
     "alert" => "Alert",
-    "alert_provider" => "User or Provider to Alert",
+    "alert_provider" => "Users or Providers to Alert",
     "alert_description" => "Description",
     "alert_date_active" => "Due Date",
     "alert_send_message" => "Message to Patient about Alert",
@@ -369,6 +369,7 @@ return [
     "add_credit_card" => "Add Credit Card",
     "add_patient" => "Add New Patient",
     "happy_birthday" => "Happy Birthday",
+    "date_added" => "Date Chart Created",
 
     // Documents
     "laboratory" => "Laboratory",
@@ -1602,13 +1603,14 @@ return [
     "next_appt" => "Next Appointment",
     "last_visit" => "Last Visit with Your Practice",
     "lmc" => "# Last minute cancellations",
+    "lmc_last" => "Last cancelled appointment",
     "dnka" => "# Did not keep appointments",
     "timeline" => "Timeline",
     "account_created" => "Account Created!",
     "photo_rec1" => "It is recommended to",
     "photo_rec2" => "add a photo of you",
     "photo_rec3" => "so that other health care providers can recognize you",
-    "consent_table" => "Consent Table",
+    "consent_table" => "My Consents",
     "data_sync" => "Data Sync via FHIR",
     "read_more" => "Read more",
     "connected_medicare" => "Connected to Medicare",

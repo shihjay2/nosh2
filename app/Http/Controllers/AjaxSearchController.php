@@ -7,7 +7,6 @@ use App\Http\Requests;
 use Config;
 use DB;
 use Date;
-use Excel;
 use File;
 use Form;
 use Illuminate\Http\Request;
@@ -154,9 +153,7 @@ class AjaxSearchController extends Controller {
                 }
             }
             $pos1 = explode(',', $q);
-            Config::set('excel.csv.delimiter', "\t");
-            $reader = Excel::load(resource_path() . '/CPT.txt');
-            $arr = $reader->noHeading()->get()->toArray();
+            $arr = $this->csv_to_array(resource_path() . '/CPT.txt', "\t", false);
             $i = 0;
             foreach ($arr as $row) {
                 $precpt[$i] = [
@@ -607,9 +604,7 @@ class AjaxSearchController extends Controller {
         $data['response'] = 'false';
         $data['message'] = [];
         $pos1 = explode(',', $q);
-        Config::set('excel.csv.delimiter', "|");
-        $reader = Excel::load(resource_path() . '/cvx.txt');
-        $arr = $reader->noHeading()->get()->toArray();
+        $arr = $this->csv_to_array(resource_path() . '/cvx.txt', "|", false);
         foreach ($arr as $row) {
             if ($row[6] == 'Active') {
                 $pre[] = [
@@ -839,19 +834,18 @@ class AjaxSearchController extends Controller {
         $q = strtolower($request->input('search_loinc'));
         if (!$q) return;
         $data['response'] = 'false';
-        $reader = Excel::load(resource_path() . '/LOINC.csv');
-        $results = $reader->get()->toArray();
+        $results = $this->csv_to_array(resource_path() . '/LOINC.csv', ",", true);
         $result = [];
         $pos = explode(' ', $q);
         if (count($pos) == 1) {
             $result = Arr::where($results, function($value, $key) use ($q) {
-                if (stripos($value['long_common_name'] , $q) !== false) {
+                if (stripos($value['Long Common Name'] , $q) !== false) {
                     return true;
                 }
             });
         } else {
             $result = Arr::where($results, function($value, $key) use ($pos) {
-                if ($this->striposa($value['long_common_name'] , $pos) !== false) {
+                if ($this->striposa($value['Long Common Name'] , $pos) !== false) {
                     return true;
                 }
             });
@@ -861,12 +855,12 @@ class AjaxSearchController extends Controller {
             $data['response'] = 'li';
             foreach($result as $row) {
                 $arr[] = [
-                    'loinc' => $row['loinc'],
-                    'description' => $row['long_common_name']
+                    'loinc' => $row['LOINC #'],
+                    'description' => $row['Long Common Name']
                 ];
-                $label = $row['long_common_name'] . ' [' . $row['loinc'] . ']';
+                $label = $row['Long Common Name'] . ' [' . $row['LOINC #'] . ']';
                 $data['message'][] = [
-                    'id' => $row['loinc'],
+                    'id' => $row['LOINC #'],
                     'label' => $label,
                     'value' => $label
                 ];
@@ -1098,9 +1092,7 @@ class AjaxSearchController extends Controller {
         $data['response'] = 'false';
         $data['message'] = [];
         $pos1 = explode(',', $q);
-        Config::set('excel.csv.delimiter', ",");
-        $reader = Excel::load(resource_path() . '/nucc_taxonomy.csv');
-        $arr = $reader->noHeading()->get()->toArray();
+        $arr = $this->csv_to_array(resource_path() . '/nucc_taxonomy.csv', ",", false);
         $i = 0;
         foreach ($arr as $row) {
             $pre[$i] = [

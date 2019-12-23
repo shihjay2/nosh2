@@ -3,11 +3,13 @@
 		<style>
 			body {
 				/* font-family: Arial, sans-serif; */
-				font-size: 10;
+				font-size: 12;
+				/* font-size: 10; */
 			}
 			p {
 				text-align: center;
-				font-size: 0.8em;
+				/* font-size: 0.8em; */
+				font-size: 0.9em;
 			}
 			b.smallcaps {
 				font-variant: small-caps;
@@ -21,7 +23,8 @@
 				color: #FFFFFF;
 			}
 			table {
-				font-size: 0.8em;
+				/* font-size: 0.8em; */
+				font-size: 0.9em;
 				table-layout:fixed;
 				page-break-inside:avoid;
 				width: 700px;

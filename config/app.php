@@ -167,7 +167,6 @@ return [
         Jenssegers\Date\DateServiceProvider::class,
         // Yangqi\Htmldom\HtmldomServiceProvider::class,
         Devfactory\Minify\MinifyServiceProvider::class,
-        Maatwebsite\Excel\ExcelServiceProvider::class,
         Elibyy\TCPDF\ServiceProvider::class
     ],
 
@@ -221,7 +220,6 @@ return [
         'Date' => Jenssegers\Date\Date::class,
         // 'Htmldom' => Yangqi\Htmldom\Htmldom::class,
         'Minify' => Devfactory\Minify\Facades\MinifyFacade::class,
-        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'PDF' => Elibyy\TCPDF\Facades\TCPDF::class,
     ],
 

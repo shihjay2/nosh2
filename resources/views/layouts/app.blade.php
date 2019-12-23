@@ -15,6 +15,24 @@
     </title>
     {!! Minify::stylesheet($assets_css)->withFullUrl() !!}
     @yield('view.stylesheet')
+    <style>
+		@import url(https://fonts.googleapis.com/css?family=Nunito);
+		body {
+			font-family: 'Nunito';
+		}
+        h3 {
+			font-family: 'Nunito';
+		}
+        h4 {
+			font-family: 'Nunito';
+		}
+        h5 {
+			font-family: 'Nunito';
+		}
+        .cd-timeline-content h3 {
+            font-family: 'Nunito';
+        }
+    </style>
 
 </head>
 <body id="app-layout">
@@ -315,7 +333,9 @@
                                 <ul class="dropdown-menu" role="menu">
                                     <li><a href="{{ route('growth_chart', ['weight-age']) }}">{{ trans('nosh.weight') }}</a></li>
                                     <li><a href="{{ route('growth_chart', ['height-age']) }}">{{ trans('nosh.height') }}</a></li>
-                                    <li><a href="{{ route('growth_chart', ['head-age']) }}">{{ trans('nosh.hc') }}</a></li>
+                                    @if(Session::get('agealldays') < 1856)
+                                        <li><a href="{{ route('growth_chart', ['head-age']) }}">{{ trans('nosh.hc') }}</a></li>
+                                    @endif
                                     <li><a href="{{ route('growth_chart', ['weight-height']) }}">{{ trans('nosh.weight_height') }}</a></li>
                                     @if(Session::get('agealldays') > 730.5)
                                         <li><a href="{{ route('growth_chart', ['bmi-age']) }}">{{ trans('nosh.BMI') }}</a></li>
@@ -1219,6 +1239,11 @@
                     }
                     if ($(this).hasClass('nosh-no-load') === true && $(this).hasClass('nosh-delete')) {
                         $(this).removeClass('nosh-no-load');
+                    }
+                    if ($(this).hasClass('nosh-schedule')) {
+                        event.preventDefault();
+                        $.cookie('nosh-schedule', $(this).attr('nosh-schedule-date'), { path: '/' });
+                        window.location = $(this).attr('href');
                     }
                 }
             });

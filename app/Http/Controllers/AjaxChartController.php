@@ -8,7 +8,7 @@ use DB;
 use Form;
 use Illuminate\Http\Request;
 use Illuminate\Support\MessageBag;
-use NaviOcean\Laravel\NameParser;
+use ADCI\FullNameParser\Parser;
 use QrCode;
 use Schema;
 use Session;
@@ -72,9 +72,9 @@ class AjaxChartController extends Controller
     {
         $user = DB::table('users')->where('id', '=', Session::get('user_id'))->first();
         $name = $request->input('name');
-        $parser = new NameParser();
-        $name_arr = $parser->parse_name($name);
-        if ($user->firstname == $name_arr['fname'] && $user->lastname == $name_arr['lname']) {
+        $parser = new Parser();
+        $nameObject = $parser->parse($name);
+        if ($user->firstname == $nameObject->getFirstName() && $user->lastname == $nameObject->getLastName()) {
             $return['message'] = 'OK';
             Session::put('uport_id', $request->input('uport'));
             $ether_data = [

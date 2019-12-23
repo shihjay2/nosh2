@@ -12,11 +12,10 @@ use Illuminate\Support\Str;
 
 use App;
 use App\Libraries\Phaxio;
-use Cezpdf;
+use Cache\Adapter\Filesystem\FilesystemCachePool;
 use Config;
 use Date;
 use DB;
-use Excel;
 use Exception;
 use File;
 use Form;
@@ -26,6 +25,8 @@ use HTML;
 use Htmldom;
 use KubAT\PhpSimple\HtmlDomParser;
 use Laravel\LegacyEncrypter\McryptEncrypter;
+use League\Flysystem\Adapter\Local;
+use League\Flysystem\Filesystem;
 use Mail;
 use PDF;
 use PragmaRX\Countries\Package\Countries;
@@ -2660,7 +2661,7 @@ class Controller extends BaseController
                 'unit' => $practice->height_unit
             ],
             'headcircumference' => [
-                'name' => trans('headcircumference1'),
+                'name' => trans('noshform.headcircumference1'),
                 'unit' => $practice->hc_unit
             ],
             'BMI' => [
@@ -3843,9 +3844,7 @@ class Controller extends BaseController
         $arr_options = [];
         $remove[] = '*~*';
         if ($file == true) {
-            Config::set('excel.csv.delimiter', "\t");
-            $reader = Excel::load(resource_path() . '/Default.txt');
-            $file_result = $reader->get()->toArray();
+            $file_result = $this->csv_to_array(resource_path() . '/Default.txt', "\t", true);
             $specific = Arr::where($file_result, function($value, $key) {
                 if (stripos($value['category'] , 'specific') !== false) {
                     return true;
@@ -4008,9 +4007,7 @@ class Controller extends BaseController
 
     protected function cpt_search($code)
     {
-        Config::set('excel.csv.delimiter', "\t");
-        $reader = Excel::load(resource_path() . '/CPT.txt');
-        $arr = $reader->noHeading()->get()->toArray();
+        $arr = $this->csv_to_array(resource_path() . '/CPT.txt', "\t", false);
         $return = '';
         foreach ($arr as $row) {
             if ($row[0] == $code) {
@@ -4021,11 +4018,34 @@ class Controller extends BaseController
         return $return;
     }
 
+    protected function csv_to_array($filename = '', $delimiter = ',', $asHash = true) {
+        if (!(is_readable($filename) || (($status = get_headers($filename)) && strpos($status[0], '200')))) {
+            return FALSE;
+        }
+        $header = NULL;
+        $data = [];
+        if (($handle = fopen($filename, 'r')) !== FALSE) {
+            if ($asHash) {
+                while ($row = fgetcsv($handle, 0, $delimiter)) {
+                    if (!$header) {
+                        $header = $row;
+                    } else {
+                        $data[] = array_combine($header, mb_convert_encoding($row, 'UTF-8', 'UTF-8'));
+                    }
+                }
+            } else {
+                while ($row = fgetcsv($handle, 0, $delimiter)) {
+                    $data[] = mb_convert_encoding($row, 'UTF-8', 'UTF-8');
+                }
+            }
+            fclose($handle);
+        }
+        return $data;
+    }
+
     protected function cvx_search($code)
     {
-        Config::set('excel.csv.delimiter', "|");
-        $reader = Excel::load(resource_path() . '/cvx.txt');
-        $arr = $reader->noHeading()->get()->toArray();
+        $arr = $this->csv_to_array(resource_path() . '/cvx.txt', "|", false);
         $return = '';
         foreach ($arr as $row) {
             if ($row[6] == 'Active') {
@@ -5160,13 +5180,13 @@ class Controller extends BaseController
             }
             if (isset($item['multiple']) && $item['multiple'] == true) {
                 $item_attr[] = 'multiple';
+                $item_attr['id'] = str_replace('[]', '', $item['name']);
                 if (isset($item['selectpicker']) && $item['selectpicker'] == true) {
                     $item_attr['class'] .= ' selectpicker';
                 }
                 if (isset($item['tagsinput'])) {
                     $item_attr['class'] .= ' tagsinput_select';
                     $item_attr['data-nosh-tagsinput'] = $item['tagsinput'];
-                    $item_attr['id'] = str_replace('[]', '', $item['name']);
                 }
             }
             if (isset($item['phone']) && $item['phone'] == true) {
@@ -5533,7 +5553,7 @@ class Controller extends BaseController
                 'alert_date_active' => date('Y-m-d'),
                 'alert_date_complete' => null,
                 'alert_reason_not_complete' => null,
-                'alert_provider' => Session::get('user_id'),
+                'alert_providers' => Session::get('user_id'),
                 'orders_id' => null,
                 'pid' => Session::get('pid'),
                 'practice_id' => Session::get('practice_id'),
@@ -5541,13 +5561,17 @@ class Controller extends BaseController
                 'results' => 0
             ];
         } else {
+            $alert_providers = [];
+            if (!empty($result->alert_providers))  {
+                $alert_providers = explode(',', $result->alert_providers);
+            }
             $alert = [
                 'alert' => $result->alert,
                 'alert_description' => $result->alert_description,
                 'alert_date_active' => date('Y-m-d', $this->human_to_unix($result->alert_date_active)),
                 'alert_date_complete' => $result->alert_date_complete,
                 'alert_reason_not_complete' => $result->alert_reason_not_complete,
-                'alert_provider' => $result->alert_provider,
+                'alert_providers' => $alert_providers,
                 'orders_id' => $result->orders_id,
                 'pid' => $result->pid,
                 'practice_id' => $result->practice_id,
@@ -5564,11 +5588,13 @@ class Controller extends BaseController
                 'default_value' => $alert['alert']
             ];
             $items[] = [
-                'name' => 'alert_provider',
+                'name' => 'alert_providers[]',
                 'label' => trans('noshform.alert_provider'),
                 'type' => 'select',
                 'select_items' => $users_arr,
-                'default_value' => $alert['alert_provider']
+                'multiple' => true,
+                'selectpicker' => true,
+                'default_value' => $alert['alert_providers']
             ];
             $items[] = [
                 'name' => 'alert_description',
@@ -10040,7 +10066,7 @@ class Controller extends BaseController
             'type' => 'text',
             'default_value' => $vitals['height']
         ];
-        if (Session::get('agealldays') < 6574.5) {
+        if (Session::get('agealldays') < 1856) {
             $items[] = [
                 'name' => 'headcircumference',
                 'label' => trans('noshform.headcircumference') . ' (' . $vitals_arr['headcircumference']['unit'] . ')',
@@ -10126,29 +10152,29 @@ class Controller extends BaseController
         $data['graph_y_title'] = 'kg/m2';
         $array = $this->gc_spline($type, $sex);
         $myComparator = function($a, $b) use ($array) {
-            return $a["age"] - $b["age"];
+            return $a["Age"] - $b["Age"];
         };
         usort($array, $myComparator);
         foreach ($array as $row) {
-            $data['categories'][] = (float) $row['age'];
-            $data['P5'][] = (float) $row['p5'];
-            $data['P10'][] = (float) $row['p10'];
-            $data['P25'][] = (float) $row['p25'];
-            $data['P50'][] = (float) $row['p50'];
-            $data['P75'][] = (float) $row['p75'];
-            $data['P90'][] = (float) $row['p90'];
-            $data['P95'][] = (float) $row['p95'];
+            $data['categories'][] = (float) $row['Age'];
+            $data['P5'][] = (float) $row['P5'];
+            $data['P10'][] = (float) $row['P10'];
+            $data['P25'][] = (float) $row['P25'];
+            $data['P50'][] = (float) $row['P50'];
+            $data['P75'][] = (float) $row['P75'];
+            $data['P90'][] = (float) $row['P90'];
+            $data['P95'][] = (float) $row['P95'];
         }
         $data['graph_x_title'] = trans('noshform.age_days');
         $val = end($data['patient']);
         $age = round($val[0]);
         $x = $val[1];
         $lms = $this->gc_lms($type, $sex, $age);
-        $l = $lms['l'];
-        $m = $lms['m'];
-        $s = $lms['s'];
+        $l = $lms['L'];
+        $m = $lms['M'];
+        $s = $lms['S'];
         $val1 = $x / $m;
-        if ($lms['l'] != '0') {
+        if ($lms['L'] != '0') {
             $val2 = pow($val1, $l);
             $val2 = $val2 - 1;
             $val3 = $l * $s;
@@ -10226,18 +10252,18 @@ class Controller extends BaseController
         $data['graph_y_title'] = 'cm';
         $array = $this->gc_spline($type, $sex);
         $myComparator = function($a, $b) use ($array) {
-            return $a["age"] - $b["age"];
+            return $a["Age"] - $b["Age"];
         };
         usort($array, $myComparator);
         foreach ($array as $row) {
-            $data['categories'][] = (float) $row['age'];
-            $data['P5'][] = (float) $row['p5'];
-            $data['P10'][] = (float) $row['p10'];
-            $data['P25'][] = (float) $row['p25'];
-            $data['P50'][] = (float) $row['p50'];
-            $data['P75'][] = (float) $row['p75'];
-            $data['P90'][] = (float) $row['p90'];
-            $data['P95'][] = (float) $row['p95'];
+            $data['categories'][] = (float) $row['Age'];
+            $data['P5'][] = (float) $row['P5'];
+            $data['P10'][] = (float) $row['P10'];
+            $data['P25'][] = (float) $row['P25'];
+            $data['P50'][] = (float) $row['P50'];
+            $data['P75'][] = (float) $row['P75'];
+            $data['P90'][] = (float) $row['P90'];
+            $data['P95'][] = (float) $row['P95'];
         }
         $data['graph_x_title'] = trans('noshform.age_days');
         $val = end($data['patient']);
@@ -10310,29 +10336,29 @@ class Controller extends BaseController
         $data['graph_y_title'] = 'cm';
         $array = $this->gc_spline($type, $sex);
         $myComparator = function($a, $b) use ($array) {
-            return $a["day"] - $b["day"];
+            return $a["Day"] - $b["Day"];
         };
         usort($array, $myComparator);
         foreach ($array as $row) {
-            $data['categories'][] = (float) $row['day'];
-            $data['P5'][] = (float) $row['p5'];
-            $data['P10'][] = (float) $row['p10'];
-            $data['P25'][] = (float) $row['p25'];
-            $data['P50'][] = (float) $row['p50'];
-            $data['P75'][] = (float) $row['p75'];
-            $data['P90'][] = (float) $row['p90'];
-            $data['P95'][] = (float) $row['p95'];
+            $data['categories'][] = (float) $row['Day'];
+            $data['P5'][] = (float) $row['P5'];
+            $data['P10'][] = (float) $row['P10'];
+            $data['P25'][] = (float) $row['P25'];
+            $data['P50'][] = (float) $row['P50'];
+            $data['P75'][] = (float) $row['P75'];
+            $data['P90'][] = (float) $row['P90'];
+            $data['P95'][] = (float) $row['P95'];
         }
         $data['graph_x_title'] = trans('noshform.age_days');
         $val = end($data['patient']);
         $age = round($val[0]);
         $x = $val[1];
         $lms = $this->gc_lms($type, $sex, $age);
-        $l = $lms['l'];
-        $m = $lms['m'];
-        $s = $lms['s'];
+        $l = $lms['L'];
+        $m = $lms['M'];
+        $s = $lms['S'];
         $val1 = $x / $m;
-        if ($lms['l'] != '0') {
+        if ($lms['L'] != '0') {
             $val2 = pow($val1, $l);
             $val2 = $val2 - 1;
             $val3 = $l * $s;
@@ -10390,16 +10416,14 @@ class Controller extends BaseController
     protected function gc_lms($style, $sex, $age)
     {
         $gc = $this->array_gc();
-        Config::set('excel.csv.delimiter', "\t");
-        $reader = Excel::load(resource_path() . '/' . $gc[$style][$sex]);
-        $result = $reader->get()->toArray();
+        $result = $this->csv_to_array(resource_path() . '/' . $gc[$style][$sex], "\t", true);
         $result1a = Arr::where($result, function($value, $key) use ($age, $style) {
             if ($style == 'height-age') {
-                if ($value['day'] == $age) {
+                if ($value['Day'] == $age) {
                     return true;
                 }
             } else {
-                if ($value['age'] == $age) {
+                if ($value['Age'] == $age) {
                     return true;
                 }
             }
@@ -10411,11 +10435,9 @@ class Controller extends BaseController
     protected function gc_lms1($style, $sex, $length)
     {
         $gc = $this->array_gc();
-        Config::set('excel.csv.delimiter', "\t");
-        $reader = Excel::load(resource_path() . '/' . $gc[$style][$sex]);
-        $result = $reader->get()->toArray();
+        $result = $this->csv_to_array(resource_path() . '/' . $gc[$style][$sex], "\t", true);
         $result1a = Arr::where($result, function($value, $key) use ($length) {
-            if ($value['length'] == $length) {
+            if ($value['Length'] == $length) {
                 return true;
             }
         });
@@ -10426,11 +10448,9 @@ class Controller extends BaseController
     protected function gc_lms2($style, $sex, $height)
     {
         $gc = $this->array_gc();
-        Config::set('excel.csv.delimiter', "\t");
-        $reader = Excel::load(resource_path() . '/' . $gc[$style][$sex]);
-        $result = $reader->get()->toArray();
+        $result = $this->csv_to_array(resource_path() . '/' . $gc[$style][$sex], "\t", true);
         $result1a = Arr::where($result, function($value, $key) use ($height) {
-            if ($value['height'] == $height) {
+            if ($value['Height'] == $height) {
                 return true;
             }
         });
@@ -10441,9 +10461,7 @@ class Controller extends BaseController
     protected function gc_spline($style, $sex)
     {
         $gc = $this->array_gc();
-        Config::set('excel.csv.delimiter', "\t");
-        $reader = Excel::load(resource_path() . '/' . $gc[$style][$sex]);
-        $result = $reader->get()->toArray();
+        $result = $this->csv_to_array(resource_path() . '/' . $gc[$style][$sex], "\t", true);
         return $result;
     }
 
@@ -10454,30 +10472,30 @@ class Controller extends BaseController
         $data['graph_y_title'] = 'kg';
         $array = $this->gc_spline($type, $sex);
         $myComparator = function($a, $b) use ($array) {
-            return $a["age"] - $b["age"];
+            return $a["Age"] - $b["Age"];
         };
         usort($array, $myComparator);
         foreach ($array as $row) {
-            $data['categories'][] = (float) $row['age'];
-            $data['P5'][] = (float) $row['p5'];
-            $data['P10'][] = (float) $row['p10'];
-            $data['P25'][] = (float) $row['p25'];
-            $data['P50'][] = (float) $row['p50'];
-            $data['P75'][] = (float) $row['p75'];
-            $data['P90'][] = (float) $row['p90'];
-            $data['P95'][] = (float) $row['p95'];
+            $data['categories'][] = (float) $row['Age'];
+            $data['P5'][] = (float) $row['P5'];
+            $data['P10'][] = (float) $row['P10'];
+            $data['P25'][] = (float) $row['P25'];
+            $data['P50'][] = (float) $row['P50'];
+            $data['P75'][] = (float) $row['P75'];
+            $data['P90'][] = (float) $row['P90'];
+            $data['P95'][] = (float) $row['P95'];
         }
         $data['graph_x_title'] = trans('noshform.age_days');
         $val = end($data['patient']);
         $age = round($val[0]);
         $x = $val[1];
         $lms = $this->gc_lms($type, $sex, $age);
-        $l = $lms['l'];
-        $m = $lms['m'];
-        $s = $lms['s'];
+        $l = $lms['L'];
+        $m = $lms['M'];
+        $s = $lms['S'];
         $val1 = $x / $m;
         $data['val1'] = $val1;
-        if ($lms['l'] != '0') {
+        if ($lms['L'] != '0') {
             $val2 = pow($val1, $l);
             $val2 = $val2 - 1;
             $val3 = $l * $s;
@@ -10549,56 +10567,56 @@ class Controller extends BaseController
             $type = 'weight-length';
             $array1 = $this->gc_spline($type, $sex);
             $myComparator = function($a, $b) use ($array1) {
-                if ($a["length"] == $b["length"]) {
+                if ($a["Length"] == $b["Length"]) {
                     return 0;
                 }
-                return ($a["length"] < $b["length"]) ? -1 : 1;
+                return ($a["Length"] < $b["Length"]) ? -1 : 1;
             };
             usort($array1, $myComparator);
             $i = 0;
             foreach ($array1 as $row1) {
-                $data['P5'][$i][] = (float) $row1['length'];
-                $data['P5'][$i][] = (float) $row1['p5'];
-                $data['P10'][$i][] = (float) $row1['length'];
-                $data['P10'][$i][] = (float) $row1['p10'];
-                $data['P25'][$i][] = (float) $row1['length'];
-                $data['P25'][$i][] = (float) $row1['p25'];
-                $data['P50'][$i][] = (float) $row1['length'];
-                $data['P50'][$i][] = (float) $row1['p50'];
-                $data['P75'][$i][] = (float) $row1['length'];
-                $data['P75'][$i][] = (float) $row1['p75'];
-                $data['P90'][$i][] = (float) $row1['length'];
-                $data['P90'][$i][] = (float) $row1['p90'];
-                $data['P95'][$i][] = (float) $row1['length'];
-                $data['P95'][$i][] = (float) $row1['p95'];
+                $data['P5'][$i][] = (float) $row1['Length'];
+                $data['P5'][$i][] = (float) $row1['P5'];
+                $data['P10'][$i][] = (float) $row1['Length'];
+                $data['P10'][$i][] = (float) $row1['P10'];
+                $data['P25'][$i][] = (float) $row1['Length'];
+                $data['P25'][$i][] = (float) $row1['P25'];
+                $data['P50'][$i][] = (float) $row1['Length'];
+                $data['P50'][$i][] = (float) $row1['P50'];
+                $data['P75'][$i][] = (float) $row1['Length'];
+                $data['P75'][$i][] = (float) $row1['P75'];
+                $data['P90'][$i][] = (float) $row1['Length'];
+                $data['P90'][$i][] = (float) $row1['P90'];
+                $data['P95'][$i][] = (float) $row1['Length'];
+                $data['P95'][$i][] = (float) $row1['P95'];
                 $i++;
             }
         } else {
             $type = 'weight-height';
             $array2 = $this->gc_spline($type, $sex);
             $myComparator = function($a, $b) use ($array2) {
-                if ($a["height"] == $b["height"]) {
+                if ($a["Height"] == $b["Height"]) {
                     return 0;
                 }
-                return ($a["height"] < $b["height"]) ? -1 : 1;
+                return ($a["Height"] < $b["Height"]) ? -1 : 1;
             };
             usort($array2, $myComparator);
             $j = 0;
             foreach ($array2 as $row1) {
-                $data['P5'][$j][] = (float) $row1['height'];
-                $data['P5'][$j][] = (float) $row1['p5'];
-                $data['P10'][$j][] = (float) $row1['height'];
-                $data['P10'][$j][] = (float) $row1['p10'];
-                $data['P25'][$j][] = (float) $row1['height'];
-                $data['P25'][$j][] = (float) $row1['p25'];
-                $data['P50'][$j][] = (float) $row1['height'];
-                $data['P50'][$j][] = (float) $row1['p50'];
-                $data['P75'][$j][] = (float) $row1['height'];
-                $data['P75'][$j][] = (float) $row1['p75'];
-                $data['P90'][$j][] = (float) $row1['height'];
-                $data['P90'][$j][] = (float) $row1['p90'];
-                $data['P95'][$j][] = (float) $row1['height'];
-                $data['P95'][$j][] = (float) $row1['p95'];
+                $data['P5'][$j][] = (float) $row1['Height'];
+                $data['P5'][$j][] = (float) $row1['P5'];
+                $data['P10'][$j][] = (float) $row1['Height'];
+                $data['P10'][$j][] = (float) $row1['P10'];
+                $data['P25'][$j][] = (float) $row1['Height'];
+                $data['P25'][$j][] = (float) $row1['P25'];
+                $data['P50'][$j][] = (float) $row1['Height'];
+                $data['P50'][$j][] = (float) $row1['P50'];
+                $data['P75'][$j][] = (float) $row1['Height'];
+                $data['P75'][$j][] = (float) $row1['P75'];
+                $data['P90'][$j][] = (float) $row1['Height'];
+                $data['P90'][$j][] = (float) $row1['P90'];
+                $data['P95'][$j][] = (float) $row1['Height'];
+                $data['P95'][$j][] = (float) $row1['P95'];
                 $j++;
             }
         }
@@ -10613,11 +10631,11 @@ class Controller extends BaseController
         }
         $percentile = 0;
         if (! empty($lms)) {
-            $l = $lms['l'];
-            $m = $lms['m'];
-            $s = $lms['s'];
+            $l = $lms['L'];
+            $m = $lms['M'];
+            $s = $lms['S'];
             $val1 = $x / $m;
-            if ($lms['l'] != '0') {
+            if ($lms['L'] != '0') {
                 $val2 = pow($val1, $l);
                 $val2 = $val2 - 1;
                 $val3 = $l * $s;
@@ -11517,7 +11535,7 @@ class Controller extends BaseController
         PDF::SetFooterMargin('40');
         PDF::SetFont('freeserif', '', 10);
         PDF::AddPage();
-        PDF::SetAutoPageBreak(TRUE, '40');
+        PDF::SetAutoPageBreak(true, '40');
         PDF::writeHTML($html, true, false, false, false, '');
         if ($watermark !== '') {
             if ($watermark == 'void') {
@@ -11872,43 +11890,40 @@ class Controller extends BaseController
 
     protected function github_all()
     {
-        $client = new \Github\Client(
-            new \Github\HttpClient\CachedHttpClient(array('cache_dir' => '/tmp/github-api-cache'))
-        );
-        $client = new \Github\HttpClient\CachedHttpClient();
-        $client->setCache(
-            new \Github\HttpClient\Cache\FilesystemCache('/tmp/github-api-cache')
-        );
-        $client = new \Github\Client($client);
+        $filesystemAdapter = new Local(storage_path('app/public/'));
+        $filesystem = new Filesystem($filesystemAdapter);
+        $pool = new FilesystemCachePool($filesystem);
+        $pool->setFolder('/tmp/github-api-cache');
+        $client = new \Github\Client();
+        $client->addCache($pool);
         $result = $client->api('repo')->commits()->all('shihjay2', 'nosh2', ['sha' => 'master']);
+        $client->removeCache();
         return $result;
     }
 
     protected function github_release()
     {
-        $client = new \Github\Client(
-            new \Github\HttpClient\CachedHttpClient(array('cache_dir' => '/tmp/github-api-cache'))
-        );
-        $client = new \Github\HttpClient\CachedHttpClient();
-        $client->setCache(
-            new \Github\HttpClient\Cache\FilesystemCache('/tmp/github-api-cache')
-        );
-        $client = new \Github\Client($client);
+        $filesystemAdapter = new Local(storage_path('app/public/'));
+        $filesystem = new Filesystem($filesystemAdapter);
+        $pool = new FilesystemCachePool($filesystem);
+        $pool->setFolder('/tmp/github-api-cache');
+        $client = new \Github\Client();
+        $client->addCache($pool);
         $result = $client->api('repo')->releases()->latest('shihjay2', 'nosh2');
+        $client->removeCache();
         return $result;
     }
 
     protected function github_single($sha)
     {
-        $client = new \Github\Client(
-            new \Github\HttpClient\CachedHttpClient(array('cache_dir' => '/tmp/github-api-cache'))
-        );
-        $client = new \Github\HttpClient\CachedHttpClient();
-        $client->setCache(
-            new \Github\HttpClient\Cache\FilesystemCache('/tmp/github-api-cache')
-        );
-        $client = new \Github\Client($client);
+        $filesystemAdapter = new Local(storage_path('app/public/'));
+        $filesystem = new Filesystem($filesystemAdapter);
+        $pool = new FilesystemCachePool($filesystem);
+        $pool->setFolder('/tmp/github-api-cache');
+        $client = new \Github\Client();
+        $client->addCache($pool);
         $result = $client->api('repo')->commits()->show('shihjay2', 'nosh2', $sha);
+        $client->removeCache();
         return $result;
     }
 
@@ -12015,25 +12030,20 @@ class Controller extends BaseController
             $file_root = public_path() . '/temp/';
             $file_name = time() . '_' . Session::get('user_id') . '_printhcfa_';
             $file_path = $file_root . $file_name . 'final.pdf';
-            $pdf = new Cezpdf('LETTER');
-            $pdf->ezSetMargins(19, 0, 24, 0);
-            $pdf->selectFont('Courier');
-            foreach ($query as $pdfinfo) {
-                $input = resource_path() . '/cms1500new.pdf';
-                $print_image = $this->printimage($eid);
-                $img_file = resource_path() . '/cms1500.png';
-                if ($i > 0) {
-                    $pdf->ezNewPage();
-                }
-                $pdf->ezSetY($pdf->ez['pageHeight'] - $pdf->ez['topMargin']);
-                $pdf->addPngFromFile($img_file, 0, 0, 612, 792);
-                $pdf->ezText($print_image, 12, [
-                   'justification' => 'left',
-                   'leading' => 12
-                ]);
-                $i++;
-            }
-            File::put($file_path, $pdf->ezOutput());
+            PDF::SetAuthor('NOSH ChartingSystem');
+            PDF::SetTitle('NOSH PDF Document');
+            PDF::SetMargins('0', '0' ,'0', true);
+            PDF::SetFont('Courier', '', 12);
+            PDF::AddPage('','USLETTER');
+            PDF::SetAutoPageBreak(true, 0);
+            $print_image = $this->printimage($eid, 'y');
+            $img_file = resource_path() . '/cms1500.png';
+            PDF::Image($img_file, '', '', 0, 0, '', '', '', true, 72, '', false, false, 0, false, false, true);
+            PDF::SetXY(0,8);
+            PDF::setCellHeightRatio(1);
+            PDF::MultiCell(0,0, $print_image);
+            PDF::Output($file_path, 'F');
+            PDF::reset();
             $data1['bill_submitted'] = 'Done';
             DB::table('encounters')->where('eid', '=', $eid)->update($data1);
             $this->audit('Update');
@@ -15987,13 +15997,23 @@ class Controller extends BaseController
         return $file_path;
     }
 
-    protected function printimage($eid)
+    protected function printimage($eid, $hcfa='')
     {
         $query = DB::table('billing')->where('eid', '=', $eid)->get();
         $new_template = '';
         $b = $this->array_billing();
         foreach ($query as $result) {
-            $template = File::get(resource_path() . '/billing.txt');
+            if ($hcfa == 'y') {
+                $lines = file(resource_path() . '/billing.txt');
+                $template = '';
+                if (is_array($lines)) {
+                    foreach($lines as $line) {
+                        $template .= "   " . $line;
+                    }
+                }
+            } else {
+                $template = File::get(resource_path() . '/billing.txt');
+            }
             foreach ($b as $k => $v) {
                 if (isset($v['len'])) {
                     $search[] = $v['hcfa'];
@@ -17225,7 +17245,7 @@ class Controller extends BaseController
 		$binary = str_pad($binary, 32, "0", STR_PAD_LEFT);
 		$binary = $binary.str_repeat("0", $steps);
 		$binary = substr($binary, strlen($binary) - 32);
-		return ($binary{0} == "0" ? bindec($binary) : -(pow(2, 31) - bindec(substr($binary, 1))));
+		return ($binary[0] == "0" ? bindec($binary) : -(pow(2, 31) - bindec(substr($binary, 1))));
 	}
 
     protected function rxnorm_search($item)
