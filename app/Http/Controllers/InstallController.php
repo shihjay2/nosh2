@@ -714,14 +714,6 @@ class InstallController extends Controller {
             'state' => $state,
             'zip' => $zip
         ];
-        $postData = $request->post();
-        $img = Arr::has($postData, 'photo_data');
-        if ($img) {
-            $img_data = substr($request->input('photo_data'), strpos($request->input('photo_data'), ',') + 1);
-            $img_data = base64_decode($img_data);
-            $file_path = $documents_dir . "/" . $request->input('photo_filename');
-            $patient_data['photo'] = $file_path;
-        }
         $pid = DB::table('demographics')->insertGetId($patient_data);
         $this->audit('Add');
         $patient_data1 = [
@@ -762,8 +754,15 @@ class InstallController extends Controller {
         $this->audit('Add');
         $directory = $documents_dir . $pid;
         mkdir($directory, 0775);
+        $postData = $request->post();
+        $img = Arr::has($postData, 'photo_data');
         if ($img) {
+            $img_data = substr($request->input('photo_data'), strpos($request->input('photo_data'), ',') + 1);
+            $img_data = base64_decode($img_data);
+            $file_path = $documents_dir . $pid . "/" . $request->input('photo_filename');
+            $patient_data4['photo'] = $file_path;
             File::put($file_path, $img_data);
+            DB::table('demographics')->where('pid', '=', $pid)->update($patient_data4);
         }
         if (env('DOCKER') == '0') {
             $mail_arr = [
