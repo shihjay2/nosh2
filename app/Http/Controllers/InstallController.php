@@ -760,9 +760,9 @@ class InstallController extends Controller {
             $img_data = substr($request->input('photo_data'), strpos($request->input('photo_data'), ',') + 1);
             $img_data = base64_decode($img_data);
             $file_path = $documents_dir . $pid . "/" . $request->input('photo_filename');
-            $patient_data4['photo'] = $file_path;
+            $patient_data5['photo'] = $file_path;
             File::put($file_path, $img_data);
-            DB::table('demographics')->where('pid', '=', $pid)->update($patient_data4);
+            DB::table('demographics')->where('pid', '=', $pid)->update($patient_data5);
             $this->audit('Add');
         }
         if (env('DOCKER') == '0') {

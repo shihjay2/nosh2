@@ -1883,5 +1883,9 @@ return [
     "uma_patient_centric_designate4" => "You will need to designate the URL of your Authorization Server to proceed with using NOSH ChartingSystem",
     "update_system1" => "System Updated with version",
     "update_system2" => "Wrong version number",
-    "update_system3" => "No update needed"
+    "update_system3" => "No update needed",
+    "start" => "Start",
+    "stop" => "Stop",
+    "upload_photo" => "or Upload a Picture",
+    "snapshot" => "Take a Snapshot",
 ];

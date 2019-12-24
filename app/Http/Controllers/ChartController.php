@@ -3105,10 +3105,10 @@ class ChartController extends Controller {
             $dropdown_array['default_button_text_url'] = Session::get('last_page');
             $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
             $data = array_merge($data, $this->sidebar_build('chart'));
-            $data['content'] = '<div><b>Take a Snapshot</b></div>';
+            $data['content'] = '<div><b>' . trans('noshform.snapshot') . '</b></div>';
             $data['content'] .= '<form action="' . route('demographics_add_photo') . '" method="POST">' . csrf_field() . '<div style="margin:auto;" id="screenshot"><video autoplay style="display:none;width: 100% !important;height: auto !important;"></video><img src="" style="width: 100% !important;height: auto !important;"><canvas style="display:none;"></canvas><input type="hidden" name="img" id="img"></div>';
-            $data['content'] .= '<div style="margin:auto;"><button type="button" id="start_video" class="btn btn-primary" style="margin:5px;">Start</button><button type="button" id="stop_video" class="btn btn-danger" style="margin:5px;">Stop</button><button type="submit" id="save_picture" class="btn btn-success" style="margin:5px;display:none;">Save</button></form></div>';
-            $data['content'] .= '<br><div><b>or Upload a Picture</b></div>';
+            $data['content'] .= '<div style="margin:auto;"><button type="button" id="start_video" class="btn btn-primary" style="margin:5px;"><i class="fa fa-play fa-fw" style="margin-right:10px"></i>' . trans('noshform.start') . '</button><button type="button" id="stop_video" class="btn btn-danger" style="margin:5px;"><i class="fa fa-stop fa-fw" style="margin-right:10px"></i>' . trans('noshform.stop') . '</button><button type="submit" id="save_picture" class="btn btn-success" style="margin:5px;display:none;"><i class="fa fa-camera fa-fw" style="margin-right:10px"></i>' . trans('noshform.save') . '</button></form></div>';
+            $data['content'] .= '<br><div><b>' . trans('noshform.upload_photo') . '</b></div>';
             $data['assets_js'] = $this->assets_js();
             $data['assets_css'] = $this->assets_css();
             return view('document_upload', $data);
