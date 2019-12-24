@@ -763,6 +763,7 @@ class InstallController extends Controller {
             $patient_data4['photo'] = $file_path;
             File::put($file_path, $img_data);
             DB::table('demographics')->where('pid', '=', $pid)->update($patient_data4);
+            $this->audit('Add');
         }
         if (env('DOCKER') == '0') {
             $mail_arr = [
