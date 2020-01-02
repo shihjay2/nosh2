@@ -397,7 +397,7 @@
         if (noshdata.patient_url == window.location.href) {
             $('#search_patient').focus();
         }
-        $('.searchlist').btsListFilter('#searchinput', {initial: false});
+        $('.searchlist').btsListFilter('.searchinput', {initial: false});
         $('[data-toggle=offcanvas]').css('cursor', 'pointer').click(function() {
             $('.row-offcanvas').toggleClass('active');
         });

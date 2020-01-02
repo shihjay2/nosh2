@@ -583,7 +583,7 @@ class CoreController extends Controller
         $arr = [];
         $mailbox = [];
         $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
-        $data = $request->all();
+        $data = $request->post();
         unset($data['_token']);
         foreach ($date_convert_array as $key) {
             if (array_key_exists($key, $data)) {

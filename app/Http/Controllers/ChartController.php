@@ -1322,7 +1322,7 @@ class ChartController extends Controller {
         $arr = [];
         $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
         $pid = Session::get('pid');
-        $data = $request->all();
+        $data = $request->post();
         unset($data['_token']);
         $next_action = '';
         // Handle multiple submit buttons if exisiting
@@ -4752,7 +4752,7 @@ class ChartController extends Controller {
                 'user_id' => $user_id,
                 'practice_id' => Session::get('practice_id'),
             ];
-            $data = $request->all();
+            $data = $request->post();
             if ($request->has('encounter_type')) {
                 unset($data['encounter_type']);
             }
@@ -5785,7 +5785,7 @@ class ChartController extends Controller {
     {
         if ($request->isMethod('post')) {
             $oh = DB::table('other_history')->where('pid', '=', Session::get('pid'))->where('eid', '=', '0')->first();
-            $data = $request->all();
+            $data = $request->post();
             if (isset($data['label'])) {
                 $name = 'Family History from Trustee';
                 $icon = 'https://cloud.noshchartingsystem.com/i-family-practice.png';

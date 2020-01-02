@@ -2912,7 +2912,7 @@ class Controller extends BaseController
     protected function assets_js($type='')
     {
         $return = [
-            '/assets/js/jquery-3.1.1.min.js',
+            '/assets/js/jquery-3.4.1.min.js',
             '/assets/js/bootstrap.min.js',
             '/assets/js/moment.min.js',
             '/assets/js/jquery.maskedinput.min.js',
@@ -13945,21 +13945,25 @@ class Controller extends BaseController
             curl_setopt($ch,CURLOPT_TIMEOUT, 60);
             curl_setopt($ch,CURLOPT_CONNECTTIMEOUT ,0);
             $result = curl_exec($ch);
-            $html = HTMLDomParser::str_get_html($result);
-            if (isset($html)) {
-                // Get pages_data
-                $pagination = $html->find('ul.pagination', 0);
-                if ($pagination) {
-                    $i = 1;
-                    foreach ($pagination->find('li') as $page_icd) {
-                        // Limit searh to 3 pages or less
-                        if ($i < 3) {
-                            $data = $this->icd10data_get($i, $data, $icd10q);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close ($ch);
+            if ($httpCode !== 404 && $httpCode !== 0) {
+                $html = HTMLDomParser::str_get_html($result);
+                if (isset($html)) {
+                    // Get pages_data
+                    $pagination = $html->find('ul.pagination', 0);
+                    if ($pagination) {
+                        $i = 1;
+                        foreach ($pagination->find('li') as $page_icd) {
+                            // Limit searh to 3 pages or less
+                            if ($i < 3) {
+                                $data = $this->icd10data_get($i, $data, $icd10q);
+                            }
+                            $i++;
                         }
-                        $i++;
+                    } else {
+                        $data = $this->icd10data_get('1', $data, $icd10q);
                     }
-                } else {
-                    $data = $this->icd10data_get('1', $data, $icd10q);
                 }
             }
         }
@@ -13980,21 +13984,20 @@ class Controller extends BaseController
             $result = curl_exec($ch);
             $html = HTMLDomParser::str_get_html($result);
             if (isset($html)) {
-                foreach ($html->find('div.SearchResultItem') as $link) {
-                    $status1 = $link->find('img.img2', 0);
-                    if (isset($status1->src)) {
-                        $status = $status1->src;
-                        if ($status == '/images/bullet_triangle_green.png') {
-                            $code1 = $link->find('span.identifier', 0);
-                            $code = $code1->innertext;
-                            $desc1 = $link->find('div.SearchResultDescription', 0);
-                            $desc = $desc1->plaintext;
-                            $common_records = $desc . ' [' . $code . ']';
-                            $data[] = [
-                                'code' => $code,
-                                'desc' => $common_records
-                            ];
-                        }
+                foreach ($html->find('div.searchLine') as $link) {
+                    $status = $link->find('i.success', 0);
+                    if ($status) {
+                        $code1 = $link->find('span.identifier', 0);
+                        $code = $code1->innertext;
+                        $desc1 = $link->find('div.searchPadded', 0);
+                        $desc2 = $desc1->find('div', 0);
+                        $desc = $desc2->plaintext;
+                        $desc = preg_replace('/\s+/', ' ',$desc);
+                        $common_records = $desc . ' [' . $code . ']';
+                        $data[] = [
+                            'code' => $code,
+                            'desc' => $common_records
+                        ];
                     }
                 }
             }
@@ -17116,7 +17119,7 @@ class Controller extends BaseController
     {
         $return = '';
         if ($nosearch == false) {
-            $return .= '<form role="form"><div class="form-group"><input class="form-control" id="searchinput" type="search" placeholder="Filter Results..." /></div>';
+            $return .= '<form role="form"><div class="form-group"><input class="form-control searchinput" type="search" placeholder="Filter Results..." /></div>';
         }
         $return .= '<ul class="list-group searchlist" id="' . $id . '">';
         if (is_array($list_array)) {

@@ -93,7 +93,7 @@ class LoginController extends Controller {
 
     public function api_login(Request $request)
 	{
-		$data = $request->all();
+		$data = $request->post();
 		$practice = DB::table('practiceinfo')->where('npi', '=', $data['npi'])->where('practice_api_key', '=', $data['api_key'])->first();
         $statusCode = 200;
         if ($practice) {
@@ -123,7 +123,7 @@ class LoginController extends Controller {
 
 	public function api_logout(Request $request)
 	{
-		$data = $request->all();
+		$data = $request->post();
 		$practice = DB::table('practiceinfo')->where('npi', '=', $data['npi'])->where('practice_api_key', '=', $data['api_key'])->first();
         $statusCode = 200;
         if ($practice) {
@@ -144,7 +144,7 @@ class LoginController extends Controller {
 
     public function api_register(Request $request)
 	{
-		$data = $request->all();
+		$data = $request->post();
 		if ($data['practicehandle'] == '0') {
 			$query = DB::table('practiceinfo')->where('practice_id', '=', '1')->first();
 		} else {

@@ -1611,9 +1611,5 @@ class InstallController extends Controller {
 
     public function test1(Request $request)
     {
-        if (Session::has('messaging_add_photo')) {
-            return Session::get('messaging_add_photo');
-        }
-        // Session::forget('messaging_add_photo');
     }
 }

@@ -142,7 +142,7 @@ class AjaxChartController extends Controller
 
     public function set_ccda_data(Request $request)
     {
-        $data = $request->all();
+        $data = $request->post();
         if (Session::get('patient_centric') == 'y') {
             if ($data['type'] == 'rx_list') {
                 $reason = 'N/A';
