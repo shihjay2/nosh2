@@ -1,0 +1,19 @@
+{
+    "/assets/css/builds/base.css": "/assets/css/builds/base.css",
+    "/assets/css/builds/chart.css": "/assets/css/builds/chart.css",
+    "/assets/css/builds/image.css": "/assets/css/builds/image.css",
+    "/assets/css/builds/schedule.css": "/assets/css/builds/schedule.css",
+    "/assets/css/builds/document_upload.css": "/assets/css/builds/document_upload.css",
+    "/assets/css/builds/login.css": "/assets/css/builds/login.css",
+    "/assets/css/builds/signature.css": "/assets/css/builds/signature.css",
+    "/assets/js/builds/base.js": "/assets/js/builds/base.js",
+    "/assets/js/builds/chart.js": "/assets/js/builds/chart.js",
+    "/assets/js/builds/schedule.js": "/assets/js/builds/schedule.js",
+    "/assets/js/builds/document_upload.js": "/assets/js/builds/document_upload.js",
+    "/assets/js/builds/documents.js": "/assets/js/builds/documents.js",
+    "/assets/js/builds/graph.js": "/assets/js/builds/graph.js",
+    "/assets/js/builds/image.js": "/assets/js/builds/image.js",
+    "/assets/js/builds/login.js": "/assets/js/builds/login.js",
+    "/assets/js/builds/sigma.js": "/assets/js/builds/sigma.js",
+    "/assets/js/builds/signature.js": "/assets/js/builds/signature.js"
+}

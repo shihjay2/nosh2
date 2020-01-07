@@ -27,9 +27,9 @@
 @endsection
 
 @section('view.scripts')
-<script src="{{ asset('assets/js/highcharts.js') }}"></script>
+<!-- <script src="{{ asset('assets/js/highcharts.js') }}"></script>
 <script src="{{ asset('assets/js/exporting.js') }}"></script>
-<script src="{{ asset('assets/js/offline-exporting.js') }}"></script>
+<script src="{{ asset('assets/js/offline-exporting.js') }}"></script> -->
 <script type="text/javascript">
     var nosh_chart_options = {};
     if (noshdata.graph_type === 'data-to-time') {

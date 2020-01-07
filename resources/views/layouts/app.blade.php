@@ -13,7 +13,7 @@
             NOSH ChartingSystem
         @endif
     </title>
-    {!! Minify::stylesheet($assets_css)->withFullUrl() !!}
+    {!! $assets_css !!}
     @yield('view.stylesheet')
     <style>
 		@import url(https://fonts.googleapis.com/css?family=Nunito);
@@ -723,7 +723,7 @@
             'error_text': '<?php echo trans('noshform.error') . " - "; ?>',
         };
     </script>
-    {!! Minify::javascript($assets_js)->withFullUrl() !!}
+    {!! $assets_js !!}
     <script type="text/javascript">
         toastr.options = {
             'closeButton': true,

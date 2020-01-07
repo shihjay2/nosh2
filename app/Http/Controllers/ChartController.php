@@ -5655,7 +5655,7 @@ class ChartController extends Controller {
         $data['results_active'] = true;
         $data['panel_header'] = $vitals_arr[$type]['name'];
         $data = array_merge($data, $this->sidebar_build('chart'));
-        $data['assets_js'] = $this->assets_js();
+        $data['assets_js'] = $this->assets_js('graph');
         $data['assets_css'] = $this->assets_css();
         return view('graph', $data);
     }
@@ -6613,7 +6613,7 @@ class ChartController extends Controller {
         // $data['results_active'] = true;
         $data['panel_header'] = $data['title'];
         $data = array_merge($data, $this->sidebar_build('chart'));
-        $data['assets_js'] = $this->assets_js();
+        $data['assets_js'] = $this->assets_js('graph');
         $data['assets_css'] = $this->assets_css();
         return view('graph', $data);
     }
@@ -7815,8 +7815,8 @@ class ChartController extends Controller {
         $data['results_active'] = true;
         $data['panel_header'] = $row0->test_name;
         $data = array_merge($data, $this->sidebar_build('chart'));
-        $data['assets_js'] = $this->assets_js('');
-        $data['assets_css'] = $this->assets_css('');
+        $data['assets_js'] = $this->assets_js('graph');
+        $data['assets_css'] = $this->assets_css();
         return view('graph', $data);
     }
 

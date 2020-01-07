@@ -165,8 +165,6 @@ return [
         Collective\Html\HtmlServiceProvider::class,
         SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class,
         Jenssegers\Date\DateServiceProvider::class,
-        // Yangqi\Htmldom\HtmldomServiceProvider::class,
-        Devfactory\Minify\MinifyServiceProvider::class,
         Elibyy\TCPDF\ServiceProvider::class
     ],
 
@@ -218,8 +216,6 @@ return [
         'HTML' => Collective\Html\HtmlFacade::class,
         'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class,
         'Date' => Jenssegers\Date\Date::class,
-        // 'Htmldom' => Yangqi\Htmldom\Htmldom::class,
-        'Minify' => Devfactory\Minify\Facades\MinifyFacade::class,
         'PDF' => Elibyy\TCPDF\Facades\TCPDF::class,
     ],
 

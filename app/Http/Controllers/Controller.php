@@ -2881,90 +2881,25 @@ class Controller extends BaseController
 
     protected function assets_css($type='')
     {
-        $return = [
-            '/assets/css/font-awesome.min.css',
-            '/assets/css/bootstrap.min.css',
-            '/assets/css/toastr.min.css',
-            '/assets/css/nosh-timeline.css',
-            '/assets/css/bootstrap-select.min.css',
-            '/assets/css/bootstrap-tagsinput.css',
-            '/assets/css/bootstrap-datetimepicker.css',
-            '/assets/css/jquery.fancybox.css'
-        ];
-        if ($type == 'chart') {
+        if ($type == '') {
+            $type = 'base';
         }
-        if ($type == 'schedule') {
-            $return[] = '/assets/css/fullcalendar.min.css';
+        if (!file_exists(public_path() . '/assets/css/builds/' . $type . '.css')) {
+            $type = 'base';
         }
-        if ($type == 'document_upload') {
-            $return[] = '/assets/css/fileinput.min.css';
-        }
-        if ($type == 'login') {
-            $return[] = '/assets/css/jquery.realperson.css';
-        }
-        if ($type == 'signature') {
-            $return[] = '/assets/css/jquery.signaturepad.css';
-        }
-        $return[] = '/assets/css/main.css';
+        $return = '<link href="'. asset('assets/css/builds/' . $type . '.css') . '" rel="stylesheet">';
         return $return;
     }
 
     protected function assets_js($type='')
     {
-        $return = [
-            '/assets/js/jquery-3.4.1.min.js',
-            '/assets/js/bootstrap.min.js',
-            '/assets/js/moment.min.js',
-            '/assets/js/jquery.maskedinput.min.js',
-            '/assets/js/toastr.min.js',
-            '/assets/js/bootstrap3-typeahead.min.js',
-            '/assets/js/jquery.cookie.js',
-            '/assets/js/bootstrap-list-filter.min.js',
-            '/assets/js/jquery-idleTimeout.js',
-            '/assets/js/bootstrap-tagsinput.js',
-            '/assets/js/jquery.selectboxes.js',
-            '/assets/js/bootstrap-select.min.js',
-            '/assets/js/bootstrap-datetimepicker.min.js',
-            '/assets/js/jquery.fileDownload.js',
-            '/assets/js/jstz-1.0.4.min.js',
-            '/assets/js/jquery.fancybox.js'
-        ];
-        if ($type == 'chart') {
-            $return[] = '/assets/js/bluebutton.js';
-            $return[] = '/assets/js/pediatric-immunizations.min.js';
+        if ($type == '') {
+            $type = 'base';
         }
-        if ($type == 'schedule') {
-            $return[] = '/assets/js/fullcalendar.min.js';
+        if (!file_exists(public_path() . '/assets/js/builds/' . $type . '.js')) {
+            $type = 'base';
         }
-        if ($type == 'document_upload') {
-            $return[] = '/assets/js/canvas-to-blob.min.js';
-            $return[] = '/assets/js/sortable.min.js';
-            $return[] = '/assets/js/purify.min.js';
-            $return[] = '/assets/js/fileinput.min.js';
-        }
-        if ($type == 'documents') {
-            $return[] = '/assets/js/pdfobject.min.js';
-        }
-        if ($type == 'image') {
-            $return[] = '/assets/js/jcanvas.min.js';
-        }
-        if ($type == 'login') {
-            $return[] = '/assets/js/jquery.realperson.js';
-        }
-        if ($type == 'sigma') {
-            $return[] = '/assets/js/sigma.min.js';
-            // $return[] = '/assets/js/plugins/sigma.layout.forceAtlas2.min.js';
-            // $return[] = '/assets/js/plugins/sigma.layout.noverlap.min.js';
-            $return[] = '/assets/js/plugins/sigma.parsers.json.min.js';
-            $return[] = '/assets/js/plugins/sigma.plugins.dragNodes.min.js';
-            // $return[] = '/assets/js/plugins/sigma.renderers.customEdgeShapes.min.js';
-            // $return[] = '/assets/js/plugins/sigma.renderers.edgeDots.min.js';
-            // $return[] = '/assets/js/plugins/sigma.renderers.edgeLabels.min.js';
-            // $return[] = '/assets/js/plugins/sigma.renderers.parallelEdges.min.js';
-        }
-        if ($type == 'signature') {
-            $return[] = '/assets/js/jquery.signaturepad.min.js';
-        }
+        $return = '<script src="'. asset('assets/js/builds/' . $type . '.js') . '"></script>';
         return $return;
     }
 
