@@ -18797,6 +18797,9 @@ class Controller extends BaseController
         $oidc1 = new OpenIDConnectUMAClient($open_id_url, $client_id, $client_secret);
         $oidc->startSession();
         $oidc->setSessionName('pnosh');
+        if (file_exists(base_path() . '/fakelerootx1.pem')) {
+            $oidc->setCertPath(base_path() . '/fakelerootx1.pem');
+        }
         $oidc1->setUMA(true);
         $oidc1->refreshToken($refresh_token);
         if ($oidc1->getRefreshToken() != '') {
@@ -18827,6 +18830,9 @@ class Controller extends BaseController
             $oidc = new OpenIDConnectUMAClient($open_id_url, $client_id, $client_secret);
             $oidc->startSession();
             $oidc->setSessionName('pnosh');
+            if (file_exists(base_path() . '/fakelerootx1.pem')) {
+                $oidc->setCertPath(base_path() . '/fakelerootx1.pem');
+            }
             $oidc->setUMA(true);
             $oidc->refreshToken($practice->uma_refresh_token);
             $oidc->setUMAType('resource_server');

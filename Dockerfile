@@ -63,6 +63,9 @@ RUN docker-php-ext-configure \
 RUN pecl install imagick &&\
     docker-php-ext-enable imagick
 
+# set config
+RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+
 # Cleanup
 RUN apk del .build-deps
 

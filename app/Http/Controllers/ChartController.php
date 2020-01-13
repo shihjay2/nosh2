@@ -5955,6 +5955,9 @@ class ChartController extends Controller {
             $url = route('fhir_api');
             $oidc = new OpenIDConnectUMAClient($as_uri, $client_id, $client_secret);
             $oidc->setSessionName('nosh');
+            if (file_exists(base_path() . '/fakelerootx1.pem')) {
+                $oidc->setCertPath(base_path() . '/fakelerootx1.pem');
+            }
             $oidc->setRedirectURL($url);
             $result1 = $oidc->rpt_request($permission_ticket);
             if (isset($result1['error'])) {
@@ -9284,6 +9287,9 @@ class ChartController extends Controller {
                 $oidc->startSession();
                 $oidc->setClientName($client_name);
                 $oidc->setSessionName('pnosh');
+                if (file_exists(base_path() . '/fakelerootx1.pem')) {
+                    $oidc->setCertPath(base_path() . '/fakelerootx1.pem');
+                }
                 $oidc->addRedirectURLs($url1);
                 $oidc->addRedirectURLs(route('uma_api'));
                 $oidc->addRedirectURLs(route('uma_logout'));
@@ -9340,6 +9346,9 @@ class ChartController extends Controller {
         $oidc->startSession();
         $oidc->setRedirectURL($url);
         $oidc->setSessionName('pnosh');
+        if (file_exists(base_path() . '/fakelerootx1.pem')) {
+            $oidc->setCertPath(base_path() . '/fakelerootx1.pem');
+        }
         $oidc->addScope('openid');
         $oidc->addScope('email');
         $oidc->addScope('profile');
