@@ -56,8 +56,7 @@ class CoreController extends Controller
                 'sexuallyactive' => 'no',
                 'tobacco' => 'no',
                 'pregnant' => 'no',
-                'country' => $result->country,
-                'date_added' => date('Y-m-d H:i:s')
+                'country' => $result->country
             ];
             $pid = DB::table('demographics')->insertGetId($data);
             $this->audit('Add');

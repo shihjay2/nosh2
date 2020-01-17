@@ -1127,6 +1127,9 @@ class InstallController extends Controller {
                     curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
                     curl_setopt($ch,CURLOPT_TIMEOUT, 60);
                     curl_setopt($ch,CURLOPT_CONNECTTIMEOUT ,0);
+                    if (file_exists(base_path() . '/fakelerootx1.pem')) {
+                        curl_setopt($ch, CURLOPT_CAINFO, base_path() . '/fakelerootx1.pem');
+                    }
                     $check_exec = curl_exec($ch);
                     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
                     curl_close ($ch);
