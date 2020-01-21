@@ -14007,7 +14007,7 @@ class Controller extends BaseController
         if ($pnosh_url == 'shihjay.xyz/nosh') {
             $final_root_url = 'hieofone.org';
         }
-        if ($final_root_url == 'hieofone.org') {
+        if ($final_root_url == 'hieofone.org' || $final_root_url == 'trustee.ai') {
             $relay_url = 'https://dir.' . $final_root_url . '/oidc_relay';
             if ($status == false) {
                 $state = md5(uniqid(rand(), TRUE));
