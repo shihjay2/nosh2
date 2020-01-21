@@ -201,6 +201,7 @@
 @endsection
 
 @section('view.scripts')
+<script src="{{ asset('assets/js/fullcalendar.min.js') }}"></script>
 <script type="text/javascript">
     function addMinutes(date, minutes) {
         var d = new Date(date);

@@ -132,7 +132,6 @@ mix.scripts([
     'public/assets/js/jquery.fileDownload.js',
     'public/assets/js/jstz-1.0.4.min.js',
     'public/assets/js/jquery.fancybox.js',
-    'public/assets/js/fullcalendar.min.js',
 ], 'public/assets/js/builds/schedule.js');
 
 mix.scripts([
