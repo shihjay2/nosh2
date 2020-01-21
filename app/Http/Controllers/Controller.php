@@ -2887,7 +2887,7 @@ class Controller extends BaseController
         if (!file_exists(public_path() . '/assets/css/builds/' . $type . '.css')) {
             $type = 'base';
         }
-        $return = '<link href="'. asset('assets/css/builds/' . $type . '.css') . '" rel="stylesheet">';
+        $return = '<link href="'. asset(mix('/assets/css/builds/' . $type . '.css')) . '" rel="stylesheet">';
         return $return;
     }
 
@@ -2899,7 +2899,7 @@ class Controller extends BaseController
         if (!file_exists(public_path() . '/assets/js/builds/' . $type . '.js')) {
             $type = 'base';
         }
-        $return = '<script src="'. asset('assets/js/builds/' . $type . '.js') . '"></script>';
+        $return = '<script src="'. asset(mix('/assets/js/builds/' . $type . '.js')) . '"></script>';
         return $return;
     }
 

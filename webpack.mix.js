@@ -281,3 +281,5 @@ mix.scripts([
     'public/assets/js/jquery.fancybox.js',
     'public/assets/js/jquery.signaturepad.min.js',
 ], 'public/assets/js/builds/signature.js');
+
+mix.version();
