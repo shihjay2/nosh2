@@ -56,9 +56,6 @@ RUN rm -f /etc/apk/repositories &&\
     mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" &&\
     apk del .build-deps
 
-# Copy composer.lock and composer.json
-COPY composer.lock composer.json /var/www/nosh/
-
 WORKDIR "/var/www/nosh"
 
 # Install composer
@@ -66,15 +63,15 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 ENV COMPOSER_ALLOW_SUPERUSER=1
 ENV PATH="./vendor/bin:$PATH"
 
-# Copy source files and run composer
-COPY . /var/www/nosh
-RUN mkdir /var/www/nosh/vendor
-
 # Copy existing application directory permissions
 COPY --chown=www-data:www-data . /var/www/nosh
-RUN chmod 777 /var/www/nosh/storage &&\
+RUN mkdir /var/www/nosh/vendor &&\
+    chmod 777 /var/www/nosh/storage &&\
     chmod 777 /var/www/nosh/public &&\
-    chmod 777 /var/www/nosh/vendor
+    chmod 777 /var/www/nosh/vendor &&\
+    mkdir /noshdocuments &&\
+    chown -R www-data:www-data /noshdocuments &&\
+    chmod -R 755 /noshdocuments
 
 USER www-data
 
@@ -89,10 +86,6 @@ RUN ["chmod", "+x", "/usr/local/bin/docker-entrypoint.sh"]
 COPY supervisord.conf /etc/supervisord.conf
 COPY schedule.sh /usr/local/bin/schedule.sh
 RUN ["chmod", "+x", "/usr/local/bin/schedule.sh"]
-
-RUN mkdir /noshdocuments &&\
-    chown -R www-data:www-data /noshdocuments &&\
-    chmod -R 755 /noshdocuments
 
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 
