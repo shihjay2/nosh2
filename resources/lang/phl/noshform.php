@@ -1885,7 +1885,8 @@ return [
     "update_system2" => "Wrong version number",
     "update_system3" => "No update needed",
     "start" => "Start",
-    "stop" => "Stop",
+    "snap" => "Snap",
+    "retake" => "Retake",
     "upload_photo" => "or Upload a Picture",
     "snapshot" => "Take a Snapshot",
 ];

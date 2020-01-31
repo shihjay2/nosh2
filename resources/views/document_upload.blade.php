@@ -74,6 +74,8 @@
 			const input = document.querySelector('#img');
 			const canvas = document.createElement('canvas');
 			const saveButton = document.querySelector('#save_picture');
+			const restartButton = document.querySelector('#restart_picture');
+			const cancelButton = document.querySelector('#cancel_picture');
 
 			function handleSuccess(stream) {
 				screenshotButton.disabled = false;
@@ -81,6 +83,13 @@
 			}
 
 			captureVideoButton.onclick = function() {
+				video.style.display = "block";
+				navigator.mediaDevices.getUserMedia(constraints).
+				then(handleSuccess).catch(handleError);
+				img.style.display = "none";
+			};
+
+			restartButton.onclick = function() {
 				video.style.display = "block";
 				navigator.mediaDevices.getUserMedia(constraints).
 				then(handleSuccess).catch(handleError);
@@ -95,8 +104,17 @@
 				input.value = img.src;
 				img.style.display = "block";
 				saveButton.style.display = "inline";
+				restartButton.style.display = "inline";
+				cancelButton.style.display = "inline";
 				video.style.display = "none";
 			};
+
+			cancelButton.onclick = function() {
+				video.style.display = "none";
+				img.style.display = "none";
+				saveButton.style.display = "none";
+				restartButton.style.display = "none";
+			}
 		})();
 		@endif
     });
