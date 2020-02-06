@@ -240,6 +240,7 @@ Route::any('immunizations_notes', ['as' => 'immunizations_notes', 'uses' => 'Cha
 Route::get('immunizations_print', ['as' => 'immunizations_print', 'uses' => 'ChartController@immunizations_print']);
 Route::any('inventory/{action}/{id}/{pid}/{subtype?}', ['as' => 'inventory', 'uses' => 'ChartController@inventory']);
 Route::get('patient', ['as' => 'patient', 'uses' => 'ChartController@patient']);
+Route::get('patient_data_export', ['as' => 'patient_data_export', 'uses' => 'ChartController@patient_data_export']);
 Route::get('payors_list/{type}', ['as' => 'payors_list', 'uses' => 'ChartController@payors_list']);
 Route::get('print_action/{action}/{id}/{pid}/{subtype?}', ['as' => 'print_action', 'uses' => 'ChartController@print_action']);
 Route::get('print_chart_action/{hippa_id}/{type}', ['as' => 'print_chart_action', 'uses' => 'ChartController@print_chart_action']);

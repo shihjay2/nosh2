@@ -1887,4 +1887,6 @@ return [
     "retake" => "Retake",
     "upload_photo" => "or Upload a Picture",
     "snapshot" => "Take a Snapshot",
+    "not_allowed" => "Not allowed to perform this function",
+    "patient_data_export" => "Backup Patient Data"
 ];

@@ -14724,7 +14724,7 @@ class Controller extends BaseController
             App::setLocale(Session::get('patient_locale'));
         }
         $data = $this->page_default();
-        $test_arr = $this->test_flag_arr();
+        $test_arr = $this->array_test_flag();
         $row0 = DB::table('tests')->where('tests_id', '=', $id)->first();
         $query1 = DB::table('tests')
             ->where('test_name', '=', $row0->test_name)

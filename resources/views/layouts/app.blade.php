@@ -183,6 +183,9 @@
                                     @endif
                                     <li><a href="{{ route('demographics_add_photo') }}"><i class="fa fa-fw fa-btn fa-camera"></i>{{ trans('nosh.add_photo') }}</a></li>
                                 @endif
+                                @if (Session::get('patient_centric') == 'y' || Session::get('patient_centric') == 'yp')
+                                    <li><a href="{{ route('patient_data_export') }}"><i class="fa fa-fw fa-btn fa-medkit"></i>{{ trans('noshform.patient_data_export') }}</a></li>
+                                @endif
                                 @if (Session::get('group_id') == '2' || Session::get('group_id') == '3')
                                     <li><a href="{{ route('template_restore', ['backup']) }}" class="nosh-no-load"><i class="fa fa-fw fa-btn fa-cloud-download"></i>{{ trans('nosh.template_restore_backup') }}</a></li>
                                     <li><a href="{{ route('template_restore', ['upload']) }}"><i class="fa fa-fw fa-btn fa-cloud-upload"></i>{{ trans('nosh.template_restore_upload') }}</a></li>

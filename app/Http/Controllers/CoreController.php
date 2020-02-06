@@ -16,7 +16,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\MessageBag;
 use Imagick;
-use Minify;
 use Shihjay2\OpenIDConnectUMAClient;
 use shihjay2\tcpdi_merger\MyTCPDI;
 use shihjay2\tcpdi_merger\Merger;
