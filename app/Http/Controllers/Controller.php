@@ -11947,7 +11947,11 @@ class Controller extends BaseController
                 if ($row->reminder_method == 'Cellular Phone') {
                     $data_message['item'] = 'New Medication: ' . $rx . '; ' . $link;
                     $message = view('emails.blank', $data_message)->render();
-                    $this->textbelt($to, $message, $row2->practice_id);
+                    if (env('NEXMO_API') == null) {
+						$this->textbelt($to, $message, $row2->practice_id);
+					} else {
+						$this->nexmo($to, $message);
+					}
                 } else {
                     $data_message['item'] = 'You have a new medication prescribed to you: ' . $rx . '; For more details, click here: ' . $link;
                     $this->send_mail('emails.blank', $data_message, 'New Medication', $to, Session::get('practice_id'));
@@ -13957,6 +13961,26 @@ class Controller extends BaseController
         return $parts[0] . $parts[1] . $parts[2];
     }
 
+    protected function nexmo($number, $message)
+	{
+		$url = "https://rest.nexmo.com/sms/json";
+		$post = http_build_query([
+			'api_key' => env('NEXMO_API'),
+			'api_secret' => env('NEXMO_SECRET'),
+			'to' => '1' . $number,
+			'from' => '15709315960',
+			'text' => $message
+		]);
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		$output = curl_exec($ch);
+		curl_close($ch);
+		return $output;
+	}
+
     /**
     * NPI lookup
     * @param string  $npi - NPI number
@@ -13964,7 +13988,7 @@ class Controller extends BaseController
     */
     protected function npi_lookup($npi)
     {
-        $url = 'https://npiregistry.cms.hhs.gov/api/?number=' . $npi . '&enumeration_type=&taxonomy_description=&first_name=&last_name=&organization_name=&address_purpose=&city=&state=&postal_code=&country_code=&limit=&skip=';
+        $url = 'https://npiregistry.cms.hhs.gov/api/?version=2.1&number=' . $npi . '&enumeration_type=&taxonomy_description=&first_name=&last_name=&organization_name=&address_purpose=&city=&state=&postal_code=&country_code=&limit=&skip=';
         $ch = curl_init();
         curl_setopt($ch,CURLOPT_URL, $url);
         curl_setopt($ch,CURLOPT_FAILONERROR,1);
@@ -15738,7 +15762,11 @@ class Controller extends BaseController
             if ($reminder_method == 'Cellular Phone') {
                 $data_message['item'] = trans('noshform.prescription_notification1') . ': ' . $link;
                 $message = view('emails.blank', $data_message)->render();
-                $this->textbelt($to, $message, $row2->practice_id);
+                if (env('NEXMO_API') == null) {
+					$this->textbelt($to, $message, $row2->practice_id);
+				} else {
+					$this->nexmo($to, $message);
+				}
             } else {
                 $data_message['item'] = trans('noshform.prescription_notification2') . ', <a href="' . $link . '" target="_blank">' . trans('noshform.prescription_notification3') . '</a>';
                 $this->send_mail('emails.blank', $data_message, trans('noshform.prescription_notification1'), $to, Session::get('practice_id'));
@@ -17322,7 +17350,11 @@ class Controller extends BaseController
                     $data_message['additional_message'] = $practice->additional_message;
                     if ($patient->reminder_method == 'Cellular Phone') {
                         $message = view('emails.remindertext', $data_message)->render();
-                        $this->textbelt($patient->reminder_to, $message, Session::get('practice_id'));
+                        if (env('NEXMO_API') == null) {
+        					$this->textbelt($patient->reminder_to, $message, Session::get('practice_id'));
+        				} else {
+        					$this->nexmo($patient->reminder_to, $message);
+        				}
                     } else {
                         $this->send_mail('emails.reminder', $data_message, trans('noshform.schedule_notification1'), $patient->reminder_to, Session::get('practice_id'));
                     }
@@ -18520,8 +18552,8 @@ class Controller extends BaseController
             foreach ($nodes_placeholder as $node5) {
                 $orig_x = 0;
                 foreach ($return as $k => $v) {
-                    if ($v['id'] == $node5['orig_x']) {
-                        $orig_x = $return[$k]['x'];
+                    if ($v['id'] === $node5['orig_x']) {
+                        $orig_x = $v['x'];
                         break;
                     }
                 }
@@ -18652,7 +18684,7 @@ class Controller extends BaseController
         if (! empty($parents_arr)) {
             $father = array_search($parents_arr[0], array_column($arr, 'Relationship'));
             $mother = array_search($parents_arr[1], array_column($arr, 'Relationship'));
-            if ($father) {
+            if ($father !== FALSE) {
                 $edges_arr[] = [
                     'id' => $this->gen_uuid(),
                     'source' => $father,
@@ -18665,7 +18697,7 @@ class Controller extends BaseController
             } else {
                 // Check if placeholder node already exists
                 $placeholder_node = array_search($parents_arr[0], array_column($nodes_arr, 'label'));
-                if ($placeholder_node) {
+                if ($placeholder_node !== FALSE) {
                     $placeholder_id = $nodes_arr[$placeholder_node]['id'];
                 } else {
                     // Make node
@@ -18694,7 +18726,7 @@ class Controller extends BaseController
                     'color' => '#bbb'
                 ];
             }
-            if ($mother) {
+            if ($mother !== FALSE) {
                 $edges_arr[] = [
                     'id' => $this->gen_uuid(),
                     'source' => $mother,
@@ -18706,7 +18738,7 @@ class Controller extends BaseController
                 ];
             } else {
                 $placeholder_node = array_search($parents_arr[1], array_column($nodes_arr, 'label'));
-                if ($placeholder_node) {
+                if ($placeholder_node !== FALSE) {
                     $placeholder_id = $nodes_arr[$placeholder_node]['id'];
                 } else {
                     // Make node
@@ -18748,7 +18780,7 @@ class Controller extends BaseController
                     'color' => '#bbb'
                 ];
                 $mother = array_search($parents1_arr[1], array_column($arr, 'Name'));
-                if ($mother) {
+                if ($mother !== FALSE) {
                     $edges_arr[] = [
                         'id' => $this->gen_uuid(),
                         'source' => $mother,
@@ -18771,7 +18803,7 @@ class Controller extends BaseController
                     'color' => '#bbb'
                 ];
                 $father = array_search($parents1_arr[0], array_column($arr, 'Name'));
-                if ($father) {
+                if ($father !== FALSE) {
                     $edges_arr[] = [
                         'id' => $this->gen_uuid(),
                         'source' => $father,

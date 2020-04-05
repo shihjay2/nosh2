@@ -6672,7 +6672,7 @@ class ChartController extends Controller {
         $return = '';
         $edit = $this->access_level('7');
         $notes = DB::table('demographics_notes')->where('pid', '=', Session::get('pid'))->where('practice_id', '=', Session::get('practice_id'))->first();
-        if ($notes->imm_notes !== '' && $notes->imm_notes !== null) {
+        if (!empty($notes->imm_notes)) {
             $return .= '<div class="alert alert-success"><h5>' . trans('noshform.imm_notes') . '</h5>';
             $return .= nl2br($notes->imm_notes);
             $return .= '</div>';
@@ -7400,7 +7400,7 @@ class ChartController extends Controller {
             $documents_dir = Session::get('documents_dir');
             $sqlfilename = time() . '_noshexport.sql';
             $sqlfile = $documents_dir . $sqlfilename;
-            $command = "mysqldump -u " . env('DB_USERNAME') . " -p". env('DB_PASSWORD') . " " . env('DB_DATABASE') . " > " . $sqlfile;
+            $command = "mysqldump -h " . env('DB_HOST') . " -u " . env('DB_USERNAME') . " -p". env('DB_PASSWORD') . " " . env('DB_DATABASE') . " > " . $sqlfile;
             system($command);
             if (!file_exists($sqlfile)) {
                 sleep(2);
@@ -8565,7 +8565,7 @@ class ChartController extends Controller {
                 ];
                 foreach ($issues as $issues_row) {
                     $arr = [];
-                    $arr['label'] = '<br>' . $issues_row->type . ' - </b>' . $issues_row->issue;
+                    $arr['label'] = '<b>' . $issues_row->type . ' - </b>' . $issues_row->issue;
                     if ($edit == true) {
                         $arr['edit'] = route('chart_form', ['issues', 'issue_id', $issues_row->issue_id, $issue_arr[$issues_row->type]]);
                     }
@@ -9259,7 +9259,11 @@ class ChartController extends Controller {
             } else {
                 $email = $request->input('sms');
                 $message = trans('noshform.sms_invite1') . $data_message['patient'] . trans('noshform.sms_invite2') . " " . $data_message['temp_url'] . " " . trans('noshform.sms_invite3');
-                $this->textbelt($request->input('sms'), $message, Session::get('practice_id'));
+                if (env('NEXMO_API') == null) {
+					$this->textbelt($request->input('sms'), $message, Session::get('practice_id'));
+				} else {
+					$this->nexmo($request->input('sms'), $message);
+				}
             }
             $data = [
                 'email' => $request->input('email'),

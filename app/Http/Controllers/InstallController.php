@@ -693,7 +693,12 @@ class InstallController extends Controller {
             'vivacare' => '',
             'version' => '2.0.0',
             'active' => 'Y',
-            'patient_centric' => $patient_centric
+            'patient_centric' => $patient_centric,
+            'weight_unit' => 'lbs',
+            'height_unit' => 'in',
+            'temp_unit' => 'F',
+            'hc_unit' => 'cm',
+            'default_pos_id' => '11'
         ];
         DB::table('practiceinfo')->insert($data2);
         $this->audit('Add');

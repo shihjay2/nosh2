@@ -1453,15 +1453,27 @@ class LoginController extends Controller {
             // } else {
             //     return redirect()->route('uma_invitation_request');
             // }
-
-            // Temporary Hayward Demo code
+            $practice_arr = $this->npi_lookup($practice_npi);
+            if (isset($practice_arr['type'])) {
+                if ($practice_arr['type'] == 'Practice') {
+                    $practicename = $practice_arr['practice_name'];
+                } else {
+                    $practicename = $practice_arr['first_name'] . ' ' . $practice_arr['last_name'] . ', ' . $practice_arr['title'];
+                }
+                $street_address1 = $practice_arr['address'];
+                $city = $practice_arr['city'];
+                $state = $practice_arr['state'];
+                $zip = $practice_arr['zip'];
+            } else {
+                return 'NPI Lookup is not working.  Please request assistance by submitting <a href"https://github.com/shihjay2/nosh2/issues/new"> a problem ticket.</a>';
+            }
             $practice_data = [
                 'npi' => $practice_npi,
-                'practice_name' => 'Demo Practice',
-                'street_address1' => '123 Main',
-                'city' => 'Busytown',
-                'state' => 'MA',
-                'zip' => '12345',
+                'practice_name' => $practicename,
+                'street_address1' => $street_address1,
+                'city' => $city,
+                'state' => $state,
+                'zip' => $zip,
                 'documents_dir' => $practice->documents_dir,
                 'version' => $practice->version,
                 'active' => 'Y',
@@ -1469,7 +1481,12 @@ class LoginController extends Controller {
                 'vivacare' => '',
                 'patient_centric' => 'yp',
                 'smtp_user' => $practice->smtp_user,
-                'smtp_pass' => $practice->smtp_pass
+                'smtp_pass' => $practice->smtp_pass,
+                'weight_unit' => $practice->weight_unit,
+                'height_unit' => $practice->height_unit,
+                'temp_unit' => $practice->temp_unit,
+                'hc_unit' => $practice->hc_unit,
+                'default_pos_id' => $practice->default_pos_id
             ];
             $practice_id = DB::table('practiceinfo')->insertGetId($practice_data);
             $this->audit('Add');
