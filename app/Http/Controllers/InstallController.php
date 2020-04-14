@@ -655,6 +655,7 @@ class InstallController extends Controller {
         $username = $request->input('username');
         $password = substr_replace(Hash::make($request->input('password')),"$2a",0,3);
         $email = $request->input('email');
+        $mobile = $request->input('mobile');
         $practice_name = "NOSH for Patient: " . $request->input('firstname') . ' ' . $request->input('lastname');
         $street_address1 = $request->input('address');
         $street_address2 = '';
@@ -717,7 +718,9 @@ class InstallController extends Controller {
             'address' => $street_address1,
             'city' => $city,
             'state' => $state,
-            'zip' => $zip
+            'zip' => $zip,
+            'email' => $email,
+            'phone_cell' => $mobile
         ];
         $pid = DB::table('demographics')->insertGetId($patient_data);
         $this->audit('Add');

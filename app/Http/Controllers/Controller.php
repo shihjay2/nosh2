@@ -13964,6 +13964,7 @@ class Controller extends BaseController
     protected function nexmo($number, $message)
 	{
 		$url = "https://rest.nexmo.com/sms/json";
+        $number = preg_replace("/[^0-9]/", "", $number);
 		$post = http_build_query([
 			'api_key' => env('NEXMO_API'),
 			'api_secret' => env('NEXMO_SECRET'),
@@ -17743,9 +17744,18 @@ class Controller extends BaseController
             // }
         }
         if (env('MAIL_DRIVER') !== 'none') {
+            $from_email = $practice->email;
+            $from_name = $practice->practice_name;
+            $root = DB::table('practiceinfo')->first();
+            if ($root->patient_centric == 'y') {
+                if (env('MAILGUN_DOMAIN') !== null) {
+                    $from_email = 'donotreply@mg.hieofone.org';
+                    $from_name = 'Trustee Health Record for ' . $practice->practice_name;
+                }
+            }
             Mail::send($template, $data_message, function ($message) use ($to, $subject, $practice) {
     			$message->to($to)
-    				->from($practice->email, $practice->practice_name)
+    				->from($from_email, $from_name)
     				->subject($subject);
     		});
             App::setLocale(Session::get('user_locale'));
