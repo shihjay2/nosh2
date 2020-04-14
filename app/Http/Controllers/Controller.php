@@ -17753,7 +17753,7 @@ class Controller extends BaseController
                     $from_name = 'Trustee Health Record for ' . $practice->practice_name;
                 }
             }
-            Mail::send($template, $data_message, function ($message) use ($to, $subject, $practice) {
+            Mail::send($template, $data_message, function ($message) use ($to, $subject, $from_email, $from_name) {
     			$message->to($to)
     				->from($from_email, $from_name)
     				->subject($subject);
