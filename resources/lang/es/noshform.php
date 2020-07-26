@@ -333,6 +333,7 @@ return [
     "male" => "Male",
     "female" => "Female",
     "undifferentiated" => "Undifferentiated",
+    "administrator" => "Administrator",
     "physician" => "Physician",
     "assistant" => "Assistant",
     "patient" => "Patient",

@@ -1596,6 +1596,7 @@ class Controller extends BaseController
     protected function array_groups()
     {
         $user_arr = [
+            '1' => trans('noshform.administrator'),
             '2' => trans('noshform.physician'),
             '3' => trans('noshform.assistant'),
             '4' => trans('noshform.billing'),
