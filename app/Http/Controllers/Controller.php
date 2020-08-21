@@ -7621,7 +7621,7 @@ class Controller extends BaseController
         $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
         $type_arr = [
             'orders_labs' => ['Laboratory', 'Laboratory results pending.', 'orders_labs_icd', trans('noshform.orders_labs'), trans('noshform.laboratory')],
-            'orders_radiology' => ['Imaging', 'Imaging results pending.', 'orders_radiology_icd', trans('noshform.orders_radiology'), trans('noshform.imaging')],
+            'orders_radiology' => ['Imaging', 'Imaging results pending.', 'orders_radiology_icd', trans('noshform.orders_radiology'), trans('noshform.radiology')],
             'orders_cp' => ['Cardiopulmonary', 'Cardiopulmonary results pending.', 'orders_cp_icd', trans('noshform.orders_cp'), trans('noshform.cardiopulmonary')],
             'orders_referrals' => ['Referrals', 'Referral pending.', 'orders_referrals_icd', trans('noshform.orders_referrals'), trans('noshform.referral')]
         ];
