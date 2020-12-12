@@ -1108,13 +1108,17 @@ class InstallController extends Controller {
         $data_message['item'] = 'This is a test';
         $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
         $message_action = trans('noshform.setup_mail_test1');
-        try {
-            $this->send_mail('emails.blank', $data_message, 'Test E-mail', $practice->email, Session::get('practice_id'));
-        } catch(\Exception $e){
-            $message_action = trans('noshform.error') . ' - ' . trans('noshform.setup_mail_test2');
-            Session::put('message_action', $message_action);
+        $mail = $this->send_mail('emails.blank', $data_message, 'Test E-mail', $practice->email, Session::get('practice_id'));
+        if (!$mail) {
             return redirect()->route('setup_mail');
         }
+        // try {
+        //     $this->send_mail('emails.blank', $data_message, 'Test E-mail', $practice->email, Session::get('practice_id'));
+        // } catch(\Exception $e){
+        //     $message_action = trans('noshform.error') . ' - ' . trans('noshform.setup_mail_test2');
+        //     Session::put('message_action', $message_action);
+        //     return redirect()->route('setup_mail');
+        // }
         Session::put('message_action', $message_action);
         return redirect()->route('dashboard');
     }

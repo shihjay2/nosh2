@@ -17753,13 +17753,19 @@ class Controller extends BaseController
                     $from_email = 'donotreply@mg.hieofone.org';
                     $from_name = 'Trustee Health Record for ' . $practice->practice_name;
                 }
+            } try {
+                Mail::send($template, $data_message, function ($message) use ($to, $subject, $from_email, $from_name) {
+        			$message->to($to)
+        				->from($from_email, $from_name)
+        				->subject($subject);
+        		});
+            } catch(\Exception $e){
+                $message_action = trans('noshform.error') . ' - ' . trans('noshform.setup_mail_test2');
+                Session::put('message_action', $message_action);
+                // App::setLocale(Session::get('user_locale'));
+                return false;
             }
-            Mail::send($template, $data_message, function ($message) use ($to, $subject, $from_email, $from_name) {
-    			$message->to($to)
-    				->from($from_email, $from_name)
-    				->subject($subject);
-    		});
-            App::setLocale(Session::get('user_locale'));
+            // App::setLocale(Session::get('user_locale'));
 		    return trans('noshform.email_sent1') . ".";
         }
         return true;

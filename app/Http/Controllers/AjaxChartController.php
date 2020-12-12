@@ -283,8 +283,13 @@ class AjaxChartController extends Controller
 				}
                 $result = trans('nosh.sms_success');
             } else {
-                $this->send_mail('emails.blank', $data_message, 'Test Notification', $to, Session::get('practice_id'));
-                $result = trans('nosh.email_success');
+                $mail = $this->send_mail('emails.blank', $data_message, 'Test Notification', $to, Session::get('practice_id'));
+                if (!$mail) {
+                    $result = Session::get('message_action');
+                    Session::forget('message_action');
+                } else {
+                    $result = trans('nosh.email_success');
+                }
             }
         }
         return $result;

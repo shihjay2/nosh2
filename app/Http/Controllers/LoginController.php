@@ -900,6 +900,9 @@ class LoginController extends Controller {
             } else {
                 $message = trans('noshform.error') . ' - ' . trans('noshform.password_email1');
             }
+            if (Session::has('message_action')) {
+                $message = Session::get('message_action') . '<br>' . $message;
+            }
             Session::put('message_action', $message);
             return redirect()->route('login');
         } else {
@@ -1173,7 +1176,11 @@ class LoginController extends Controller {
                                     $this->send_mail('emails.loginregistration', $data_message, 'Patient Portal Registration Message', $request->input('email'), $demographics_relate_row->practice_id);
                                 }
                             }
-                            Session::put('message_action', 'Your account has been activated.  Please log in');
+                            $message_pre = '';
+                            if (Session::has('message_action')) {
+                                $message_pre = Session::get('message_action') . '<br>';
+                            }
+                            Session::put('message_action', $message_pre . 'Your account has been activated.  Please log in');
                             return redirect()->route('login');
                         } else {
                             if (array_key_exists('login_attempts', $_COOKIE)) {
@@ -1194,9 +1201,14 @@ class LoginController extends Controller {
                             'username' => $request->input('username1'),
                             'email' => $request->input('email')
                         ];
-                        $this->send_mail('emails.loginregistrationrequest', $data_message2, 'New User Request', $row3->email, '1');
-                        $view_data1['panel_header'] = 'Registration Sent';
-                        $view_data1['content'] = "<div>Your registration information has been sent to the administrator and you will receive your registration code within 48-72 hours by e-mail after confirmation of your idenity.<br>Thank you!</div>";
+                        $mail = $this->send_mail('emails.loginregistrationrequest', $data_message2, 'New User Request', $row3->email, '1');
+                        if (!$mail) {
+                            $view_data1['panel_header'] = 'Registration Problem';
+                            $view_data1['content'] = "<div>There is a problem with the email server.  Please try again later.</div>";
+                        } else {
+                            $view_data1['panel_header'] = 'Registration Sent';
+                            $view_data1['content'] = "<div>Your registration information has been sent to the administrator and you will receive your registration code within 48-72 hours by e-mail after confirmation of your idenity.<br>Thank you!</div>";
+                        }
                         $view_data1['assets_js'] = $this->assets_js();
                         $view_data1['assets_css'] = $this->assets_css();
                         return view('welcome', $view_data1);

@@ -7818,7 +7818,11 @@ class ChartController extends Controller {
             ];
             $this->send_mail('emails.loginregistrationcode', $data1, 'Patient Portal Registration Code', $result->email, Session::get('practice_id'));
         }
-        Session::put('message_action', trans('noshform.registration_code') . ": " . $token);
+        $message =  trans('noshform.registration_code') . ": " . $token;
+        if (Session::has('message_action')) {
+            $message = Session::get('message_action') . '<br>' . $message;
+        }
+        Session::put('message_action', $message);
         return redirect(Session::get('last_page'));
     }
 
@@ -8055,9 +8059,14 @@ class ChartController extends Controller {
                         } else {
                             App::setLocale(Session::get('practice_locale'));
                         }
-                        $this->send_mail('emails.newresult', $data_message, trans('noshform.test_results_available'), $patient->email, Session::get('practice_id'));
+                        $mail = $this->send_mail('emails.newresult', $data_message, trans('noshform.test_results_available'), $patient->email, Session::get('practice_id'));
                         App::setLocale(Session::get('user_locale'));
-                        $message = trans('noshform.email_sent');
+                        if (!$mail) {
+                            $message = Session::get('message_action');
+                            Session::forget('message_action');
+                        } else {
+                            $message = trans('noshform.email_sent');
+                        }
                     }
                 } else {
                     $from = Session::get('user_id');
@@ -8102,9 +8111,14 @@ class ChartController extends Controller {
                         $message = trans('noshform.internal_message_sent');
                     } else {
                         $data_message['portal'] = true;
-                        $this->send_mail('emails.newresult', $data_message, trans('noshform.test_results_available'), $patient->email, Session::get('practice_id'));
+                        $mail1 = $this->send_mail('emails.newresult', $data_message, trans('noshform.test_results_available'), $patient->email, Session::get('practice_id'));
                         App::setLocale(Session::get('user_locale'));
-                        $message = trans('noshform.internal_message_sent_notify');
+                        if (!$mail1) {
+                            $message = Session::get('message_action');
+                            Session::forget('message_action');
+                        } else {
+                            $message = trans('noshform.internal_message_sent_notify');
+                        }
                     }
                 }
             }
@@ -9255,7 +9269,7 @@ class ChartController extends Controller {
             $data_message['patient'] = Session::get('displayname');
             if ($request->input('email') !== '') {
                 $email = $request->input('email');
-                $mesg  = $this->send_mail('emails.apiregister', $data_message, trans('noshform.email_invite1') . ' ' . Session::get('displayname'), $request->input('email'), '1');
+                $this->send_mail('emails.apiregister', $data_message, trans('noshform.email_invite1') . ' ' . Session::get('displayname'), $request->input('email'), '1');
             } else {
                 $email = $request->input('sms');
                 $message = trans('noshform.sms_invite1') . $data_message['patient'] . trans('noshform.sms_invite2') . " " . $data_message['temp_url'] . " " . trans('noshform.sms_invite3');
@@ -9273,7 +9287,11 @@ class ChartController extends Controller {
             ];
             DB::table('uma_invitation')->insert($data);
             $this->audit('Add');
-            Session::put('message_action', trans('noshform.uma_invite_message') . ' ' . $email);
+            $message_pre = '';
+            if (Session::has('message_action')) {
+                $message_pre = Session::get('message_action') . '<br>';
+            }
+            Session::put('message_action', $message_pre . trans('noshform.uma_invite_message') . ' ' . $email);
             return redirect(Session::get('last_page'));
         } else {
             $items[] = [

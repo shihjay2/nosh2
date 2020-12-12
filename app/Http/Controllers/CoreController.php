@@ -997,6 +997,9 @@ class CoreController extends Controller
             $arr['message'] = $message . trans('noshform.marked_completed') . '!';
         }
         $arr['response'] = 'OK';
+        if (Session::has('message_action')) {
+            $arr['message'] = Session::get('message_action') . '<br>' . $arr['message'];
+        }
         Session::put('message_action', $arr['message']);
         if ($table == 'recipients') {
             return redirect(Session::get('messaging_last_page'));
@@ -5594,9 +5597,11 @@ class CoreController extends Controller
         $data2['message_data'] = trans('noshform.password_reset1') . '.<br>';
         $data2['message_data'] .= trans('noshform.password_reset2') . ':<br>';
         $data2['message_data'] .= $url;
-        $this->send_mail('auth.emails.generic', $data2, trans('noshform.password_reset3'), $query->email, $query->practice_id);
+        $mail = $this->send_mail('auth.emails.generic', $data2, trans('noshform.password_reset3'), $query->email, $query->practice_id);
         App::setLocale(Session::get('user_locale'));
-        Session::put('message_action', trans('noshform.password_reset4'));
+        if ($mail) {
+            Session::put('message_action', trans('noshform.password_reset4'));
+        }
         return redirect(Session::get('last_page'));
     }
 
