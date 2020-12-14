@@ -50,6 +50,7 @@ RUN rm -f /etc/apk/repositories &&\
     pcntl \
     soap \
     imap \
+    exif \
     bcmath &&\
     pecl install imagick &&\
     docker-php-ext-enable imagick &&\
