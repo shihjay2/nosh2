@@ -41,7 +41,6 @@ RUN rm -f /etc/apk/repositories &&\
     pdo \
     pdo_mysql \
     sockets \
-    json \
     intl \
     gd \
     xml \
