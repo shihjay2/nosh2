@@ -11,7 +11,7 @@ RUN rm -f /etc/apk/repositories &&\
     libjpeg-turbo-dev \
     libpng-dev \
     libxml2-dev \
-    php8-dev \
+    php-dev \
     autoconf \
     gcc \
     g++ \
