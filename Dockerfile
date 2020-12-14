@@ -6,11 +6,12 @@ RUN rm -f /etc/apk/repositories &&\
     echo "http://dl-cdn.alpinelinux.org/alpine/v3.9/main" >> /etc/apk/repositories &&\
     echo "http://dl-cdn.alpinelinux.org/alpine/v3.9/community" >> /etc/apk/repositories &&\
     apk add --no-cache --virtual .build-deps \
+    git \
     zlib-dev \
     libjpeg-turbo-dev \
     libpng-dev \
     libxml2-dev \
-    php7-dev \
+    php8-dev \
     autoconf \
     gcc \
     g++ \
@@ -51,8 +52,17 @@ RUN rm -f /etc/apk/repositories &&\
     imap \
     exif \
     bcmath &&\
-    pecl install imagick &&\
-    docker-php-ext-enable imagick &&\
+    cd /tmp && \
+    git clone https://github.com/Imagick/imagick && \
+    cd imagick && \
+    phpize && \
+    ./configure && \
+    make && \
+    make install && \
+    echo "extension=imagick.so" > /usr/local/etc/php/conf.d/ext-imagick.ini && \
+    rm -rf /tmp/* && \
+    # pecl install imagick &&\
+    # docker-php-ext-enable imagick &&\
     mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" &&\
     apk del .build-deps
 
