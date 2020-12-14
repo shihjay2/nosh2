@@ -1,4 +1,4 @@
-FROM php:fpm-alpine
+FROM php:7.4.13-fpm-alpine
 
 LABEL Maintainer Michael Shihjay Chen <shihjay2@gmail.com>
 
@@ -12,7 +12,7 @@ RUN rm -f /etc/apk/repositories &&\
     libjpeg-turbo-dev \
     libpng-dev \
     libxml2-dev \
-    php8-dev \
+    php7-dev \
     autoconf \
     gcc \
     g++ \
@@ -52,18 +52,10 @@ RUN rm -f /etc/apk/repositories &&\
     soap \
     imap \
     exif \
+    json \
     bcmath &&\
-    cd /tmp && \
-    git clone https://github.com/Imagick/imagick && \
-    cd imagick && \
-    phpize && \
-    ./configure && \
-    make && \
-    make install && \
-    echo "extension=imagick.so" > /usr/local/etc/php/conf.d/ext-imagick.ini && \
-    rm -rf /tmp/* && \
-    # pecl install imagick &&\
-    # docker-php-ext-enable imagick &&\
+    pecl install imagick &&\
+    docker-php-ext-enable imagick &&\
     mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" &&\
     apk del .build-deps
 
