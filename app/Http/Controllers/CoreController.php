@@ -6259,7 +6259,7 @@ class CoreController extends Controller
             $command = "mysql -u " . env('DB_USERNAME') . " -p". env('DB_PASSWORD') . " " . env('DB_DATABASE') . " < " . $file;
             system($command);
             // Do migrations if needed
-            $migrate = new Process("php artisan migrate --force");
+            $migrate = new Process(["php artisan migrate --force"]);
             $migrate->setWorkingDirectory(base_path());
             $migrate->setTimeout(null);
             $migrate->run();

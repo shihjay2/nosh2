@@ -3682,7 +3682,7 @@ class ChartController extends Controller {
             if ($encounter->encounter_template !== 'standardmtm') {
                 $images = DB::table('image')->where('eid', '=', Session::get('eid'))->get();
                 if ($images->count()) {
-                    $return .= '<div class="list-group gallery">';
+                    $return .= '<div style="overflow:auto;padding-top:20px;"><div class="list-group gallery">';
                     foreach ($images as $image) {
                         $file_path1 = '/temp/' . time() . '_' . basename($image->image_location);
                         $file_path = public_path() . $file_path1;
@@ -3693,7 +3693,7 @@ class ChartController extends Controller {
                         $return .= '<a href="' . route('encounter_edit_image', [$image->image_id]) . '" class="edit-icon btn btn-success"><i class="glyphicon glyphicon-pencil"></i></a>';
                         $return .= '<a href="' . route('encounter_delete_photo', [$image->image_id]) . '" class="close-icon btn btn-danger"><i class="glyphicon glyphicon-remove"></i></a></div>';
                     }
-                    $return .= '</div>';
+                    $return .= '</div></div>';
                 }
                 $pe_val = null;
                 $pe = DB::table('pe')->where('eid', '=', $eid)->first();

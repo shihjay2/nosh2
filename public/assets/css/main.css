@@ -278,6 +278,12 @@ div.list-category li.list-group-item:first-child {
  * off Canvas sidebar
  * --------------------------------------------------
  */
+.row-offcanvas-left {
+    left: 0;
+}
+.row-offcanvas-left.active {
+    left: 0;
+}
 @media screen and (max-width: 768px) {
     .row-offcanvas {
         position: relative;

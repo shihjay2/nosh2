@@ -1056,7 +1056,7 @@ class InstallController extends Controller {
                     ],
                 ];
                 $this->changeEnv($mail_arr[$request->input('mail_type')]);
-                $clear = new Process("php artisan config:clear");
+                $clear = new Process(["php artisan config:clear"]);
                 if ($request->input('mail_type') == 'gmail') {
                     return redirect()->route('googleoauth');
                 } else {
@@ -1467,7 +1467,7 @@ class InstallController extends Controller {
             if ($type !== '') {
                 if ($type == 'composer_install' || $type == 'migrate' || $type == 'clear_cache') {
                     if ($type == 'composer_install') {
-                        $install = new Process("/usr/local/bin/composer install");
+                        $install = new Process(["/usr/local/bin/composer install"]);
                         $install->setWorkingDirectory(base_path());
                         $install->setEnv(['COMPOSER_HOME' => '/usr/local/bin/composer']);
                         $install->setTimeout(null);
@@ -1475,19 +1475,19 @@ class InstallController extends Controller {
                         $return = nl2br($install->getOutput());
                     }
                     if ($type == 'migrate') {
-                        $migrate = new Process("php artisan migrate --force");
+                        $migrate = new Process(["php artisan migrate --force"]);
                         $migrate->setWorkingDirectory(base_path());
                         $migrate->setTimeout(null);
                         $migrate->run();
                         $return = nl2br($migrate->getOutput());
                     }
                     if ($type == 'clear_cache') {
-                        $clear_cache = new Process("php artisan cache:clear");
+                        $clear_cache = new Process(["php artisan cache:clear"]);
                         $clear_cache->setWorkingDirectory(base_path());
                         $clear_cache->setTimeout(null);
                         $clear_cache->run();
                         $return = nl2br($clear_cache->getOutput());
-                        $clear_view = new Process("php artisan view:clear");
+                        $clear_view = new Process(["php artisan view:clear"]);
                         $clear_view->setWorkingDirectory(base_path());
                         $clear_view->setTimeout(null);
                         $clear_view->run();
@@ -1527,13 +1527,13 @@ class InstallController extends Controller {
                         define('STDIN',fopen("php://stdin","r"));
                         File::put(base_path() . "/.version", $type);
                         $return = trans('noshform.update_system1') . " " . $type . " " . trans('noshform.from1') . " " . $current_version;
-                        $migrate = new Process("php artisan migrate --force");
+                        $migrate = new Process(["php artisan migrate --force"]);
                         $migrate->setWorkingDirectory(base_path());
                         $migrate->setTimeout(null);
                         $migrate->run();
                         $return .= '<br>' . nl2br($migrate->getOutput());
                         if ($composer == true) {
-                            $install = new Process("/usr/local/bin/composer install");
+                            $install = new Process(["/usr/local/bin/composer install"]);
                             $install->setWorkingDirectory(base_path());
                             $install->setEnv(['COMPOSER_HOME' => '/usr/local/bin/composer']);
                             $install->setTimeout(null);
@@ -1591,25 +1591,25 @@ class InstallController extends Controller {
                     define('STDIN',fopen("php://stdin","r"));
                     File::put(base_path() . '/.version', $result[0]['sha']);
                     $return = trans('noshform.update_system1') . " " . $result[0]['sha'] . " " . trans('noshform.from1') . " " . $current_version;
-                    $migrate = new Process("php artisan migrate --force");
+                    $migrate = new Process(["php artisan migrate --force"]);
                     $migrate->setWorkingDirectory(base_path());
                     $migrate->setTimeout(null);
                     $migrate->run();
                     $return .= '<br>' .  nl2br($migrate->getOutput());
                     if ($composer == true) {
-                        $install = new Process("/usr/local/bin/composer install");
+                        $install = new Process(["/usr/local/bin/composer install"]);
                         $install->setWorkingDirectory(base_path());
                         $install->setEnv(['COMPOSER_HOME' => '/usr/local/bin/composer']);
                         $install->setTimeout(null);
                         $install->run();
                         $return .= '<br>' . nl2br($install->getOutput());
                     }
-                    $clear_cache = new Process("php artisan cache:clear");
+                    $clear_cache = new Process(["php artisan cache:clear"]);
                     $clear_cache->setWorkingDirectory(base_path());
                     $clear_cache->setTimeout(null);
                     $clear_cache->run();
                     $return .= '<br>' . nl2br($clear_cache->getOutput());
-                    $clear_view = new Process("php artisan view:clear");
+                    $clear_view = new Process(["php artisan view:clear"]);
                     $clear_view->setWorkingDirectory(base_path());
                     $clear_view->setTimeout(null);
                     $clear_view->run();

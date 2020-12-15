@@ -66,13 +66,13 @@ class CheckInstall
         if (env('DOCKER') == null || env('DOCKER') == '0') {
             define('STDIN',fopen("php://stdin","r"));
             if (!Schema::hasTable('migrations')) {
-                $migrate = new Process("php artisan migrate:install --force");
+                $migrate = new Process(["php artisan migrate:install --force"]);
                 $migrate->setWorkingDirectory(base_path());
                 $migrate->setTimeout(null);
                 $migrate->run();
                 // Artisan::call('migrate:install', ['--force' => true]);
             }
-            $migrate1 = new Process("php artisan migrate --force");
+            $migrate1 = new Process(["php artisan migrate --force"]);
             $migrate1->setWorkingDirectory(base_path());
             $migrate1->setTimeout(null);
             $migrate1->run();
