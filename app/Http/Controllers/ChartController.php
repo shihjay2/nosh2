@@ -1711,6 +1711,28 @@ class ChartController extends Controller {
                     }
                 }
             }
+            // Immunizations and Orders - post save handling
+            if ($table == 'immunizations' || $table == 'orders') {
+                if ($next_action === 'electronic_sign') {
+                    $fhir_resource_arr = [
+                        'immunizations' => 'Immunization',
+                        'orders' => 'ServiceRequest'
+                    ];
+                    // Create FHIR JSON resource
+            		$json_row = DB::table($table)->where($index, '=', $row_id1)->first();
+            		$json = $this->resource_detail($json_row, $fhir_resource_arr[$table]);
+                    $json_data['json'] = json_encode($json);
+                    $json_data['table'] = $table;
+                    $json_data['index'] = $row_id1;
+                    $json_query = DB::table('fhir_json')->where('table', '=', $table)->where('index', '=', $row_id1)->first();
+                    if ($json_query) {
+                        DB::table('fhir_json')->where('id', '=', $json_query->id)->update($json_data);
+                    } else {
+                        DB::table('fhir_json')->insert($json_data);
+                    }
+                    $this->audit('Update');
+                }
+            }
             // Orders - post save handling
             if ($table == 'orders') {
                 $orders_type_arr = [
@@ -2241,6 +2263,7 @@ class ChartController extends Controller {
         }
         // Medications, Prescriptions
         if ($table == 'rx_list') {
+            $edit = $this->access_level('2');
             $data['search_rx'] = 'rxl_medication';
             $rx_array = [
                 'prescribe' => trans('noshform.new') . ' ' . trans('noshform.prescription'),
@@ -2262,11 +2285,13 @@ class ChartController extends Controller {
                 if ($subtype !== '') {
                     $data['panel_header'] = $rx_array[$subtype];
                 } else {
-                    $dropdown_array = [
-                        'default_button_text' => trans('noshform.refill') . ' ' . trans('noshform.medication'),
-                        'default_button_text_url' => route('chart_form', ['rx_list', $index, $id, 'refill'])
-                    ];
-                    $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
+                    if ($edit == true) {
+                        $dropdown_array = [
+                            'default_button_text' => trans('noshform.refill') . ' ' . trans('noshform.medication'),
+                            'default_button_text_url' => route('chart_form', ['rx_list', $index, $id, 'refill'])
+                        ];
+                        $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
+                    }
                 }
             }
         }
@@ -3327,7 +3352,8 @@ class ChartController extends Controller {
         $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
         $result = $query->get();
         $return = '';
-        $edit = $this->access_level('7');
+        $edit = $this->access_level('2');
+        $edit1 = $this->access_level('4');
         $columns = Schema::getColumnListing('documents');
         $row_index = $columns[0];
         if ($result->count()) {
@@ -3400,6 +3426,31 @@ class ChartController extends Controller {
             ];
             $dropdown_array1['items'] = $items1;
             $data['panel_dropdown'] .= '<span class="fa-btn"></span>' . $this->dropdown_build($dropdown_array1);
+        } elseif ($edit1 == true) {
+            $dropdown_array1 = [
+                'items_button_icon' => 'fa-plus'
+            ];
+            $items1 = [];
+            $items1[] = [
+                'type' => 'item',
+                'label' => trans('noshform.upload_document'),
+                'icon' => 'fa-plus',
+                'url' => route('document_upload')
+            ];
+            $items1[] = [
+                'type' => 'item',
+                'label' => trans('noshform.upload_ccda'),
+                'icon' => 'fa-upload',
+                'url' => route('upload_ccda')
+            ];
+            $items1[] = [
+                'type' => 'item',
+                'label' => trans('noshform.upload_ccr'),
+                'icon' => 'fa-upload',
+                'url' => route('upload_ccr')
+            ];
+            $dropdown_array1['items'] = $items1;
+            $data['panel_dropdown'] .= '<span class="fa-btn"></span>' . $this->dropdown_build($dropdown_array1);
         }
         Session::put('last_page', $request->fullUrl());
         $data['assets_js'] = $this->assets_js('chart');
@@ -3441,6 +3492,11 @@ class ChartController extends Controller {
             $data['orders_active'] = true;
             $data['panel_header'] = trans('noshform.sign_order');
             $index = 'orders_id';
+        }
+        if ($action == 'immunizations') {
+            $data['immunizations_active'] = true;
+            $data['panel_header'] = trans('noshform.sign_immunization');
+            $index = 'imm_id';
         }
         $raw = DB::table($action)->where($index, '=', $id)->first();
         $data['hash'] = hash('sha256', $raw->json);
