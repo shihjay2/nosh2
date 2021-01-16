@@ -14759,7 +14759,7 @@ class Controller extends BaseController
             ->get();
         $data['body'] = $row0->test_name . ' ' . trans('noshform.page_results2') . ' ' . $data['firstname'] . ' ' . $data['lastname'] . ':<br />';
         if ($query1->count()) {
-            $data['body'] .= '<table border="1" cellpadding="5"><thead><tr><th>' . trans('noshform.date') . '</th><th>' . trans('noshform.test_result') . '</th><th>' . trans('noshform.unit') . '</th><th>' . trans('noshform.range') . '</th><th>' . trans('noshform.flags') . '</th></thead><tbody>';
+            $data['body'] .= '<table border="1" cellpadding="5"><thead><tr><th>' . trans('noshform.date') . '</th><th>' . trans('noshform.test_result') . '</th><th>' . trans('noshform.unit') . '</th><th>' . trans('noshform.range') . '</th><th>' . trans('noshform.flags') . '</th></tr></thead><tbody>';
             foreach ($query1 as $row1) {
                 $data['body'] .= '<tr><td>' . date('Y-m-d', $this->human_to_unix($row1->test_datetime)) . '</td>';
                 $data['body'] .= '<td>' . $row1->test_result . '</td>';
