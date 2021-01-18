@@ -391,8 +391,7 @@ class ChartController extends Controller {
                 'cpt_charge' => 'numeric'
             ]);
             $id = $request->input('other_billing_id');
-            $query = Billing_core::find($id);
-            $data = array(
+            $data = [
                 'eid' => '0',
                 'pid' => Session::get('pid'),
                 'dos_f' => $request->input('dos_f'),
@@ -401,7 +400,7 @@ class ChartController extends Controller {
                 'unit' => '1',
                 'payment' => '0',
                 'practice_id' => Session::get('practice_id')
-            );
+            ];
             if ($id !== 'new') {
                 DB::table('billing_core')->where('billing_core_id', '=', $id)->update($data);
                 $this->audit('Update');
