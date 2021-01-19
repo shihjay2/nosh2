@@ -17,7 +17,7 @@ mysql, imap, mcrypt, imagick, gd, cli, curl, soap, pear
 ##### 8. cURL
 
 ## Installation
-Installing NOSH ChartingSystem is easy to install if you run [NOSH-in-a-Box](https://github.com/shihjay2/nosh-in-a-box).  NOSH and all its dependencies are already configured and installed properly.  Just deploy the Vagrant virtual machine and you're ready to start.  The previous method through Ubuntu Linux PPA's is now depreciated.  If you have access to a terminal shell for your server (any distro for Linux or Mac OS-X), you can [install NOSH](https://github.com/shihjay2/nosh2/wiki/Installation).  
+Installing NOSH ChartingSystem is easy to install if you run [Docker NOSH](https://github.com/shihjay2/docker-nosh).  NOSH and all its dependencies are already configured and installed properly.  Just deploy the Vagrant virtual machine and you're ready to start.  The previous method through Ubuntu Linux PPA's is now depreciated.  If you have access to a terminal shell for your server (any distro for Linux or Mac OS-X), you can [install NOSH](https://github.com/shihjay2/nosh2/wiki/Installation).  
 The installation script automatically adds scheduled task commands (cron files) and web server configuration files to make NOSH
 work seamlessly the first time.  The script also determines if your system meets all the package dependencies before installation.
 For detailed information, go to the [Wiki link](https://github.com/shihjay2/nosh2/wiki/Installation).
