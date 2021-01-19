@@ -103,6 +103,12 @@ class CheckInstall
             }
         }
 
+        // Check jwk
+        $install2 = DB::table('practiceinfo_plus')->first();
+        if (!$install2) {
+            return redirect()->route('jwk_install');
+        }
+
         return $next($request);
     }
 }

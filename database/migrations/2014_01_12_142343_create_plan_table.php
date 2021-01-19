@@ -16,7 +16,7 @@ class CreatePlanTable extends Migration {
 				$table->bigInteger('eid')->primary();
 				$table->bigInteger('pid')->nullable();
 				$table->string('encounter_provider', 255)->nullable();
-				$table->timestamp('plan_date')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
+				$table->timestamp('plan_date')->useCurrentOnUpdate();
 				$table->longtext('plan')->nullable();
 				$table->string('duration', 100)->nullable();
 				$table->longtext('followup')->nullable();

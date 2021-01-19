@@ -14,8 +14,9 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\MessageBag;
 use Schema;
 use Session;
-use SoapBox\Formatter\Formatter;
+// use SoapBox\Formatter\Formatter;
 use URL;
+use Symfony\Component\Yaml\Yaml;
 
 class AjaxSearchController extends Controller {
 
@@ -261,9 +262,10 @@ class AjaxSearchController extends Controller {
         if (!$q) return;
         $data['response'] = 'false';
         $data['message'] = [];
-        $yaml = File::get(resource_path() . '/healthwise.yaml');
-        $formatter = Formatter::make($yaml, Formatter::YAML);
-        $arr = $formatter->toArray();
+        // $yaml = File::get(resource_path() . '/healthwise.yaml');
+        // $formatter = Formatter::make($yaml, Formatter::YAML);
+        // $arr = $formatter->toArray();
+        $arr = Yaml::parseFile(resource_path() . '/healthwise.yaml');
         $pos1 = explode(',', $q);
         if (count($pos1) == 1) {
             $result1 = Arr::where($arr, function($value, $key) use ($q) {
@@ -368,9 +370,10 @@ class AjaxSearchController extends Controller {
                 }
             }
             // Get common codes
-            $common = File::get(resource_path() . '/common_icd.yaml');
-            $formatter = Formatter::make($common, Formatter::YAML);
-            $common_arr_pre = $formatter->toArray();
+            // $common = File::get(resource_path() . '/common_icd.yaml');
+            // $formatter = Formatter::make($common, Formatter::YAML);
+            // $common_arr_pre = $formatter->toArray();
+            $common_arr_pre = Yaml::parseFile(resource_path() . '/common_icd.yaml');
             $common_arr = [];
             // Add all primary care codes
             $default_arr = ['Family Practice', 'Internal Medicine', 'Obstetrics & Gynaecology', 'Primary Care', 'Pediatrics'];
@@ -606,11 +609,11 @@ class AjaxSearchController extends Controller {
         $pos1 = explode(',', $q);
         $arr = $this->csv_to_array(resource_path() . '/cvx.txt', "|", false);
         foreach ($arr as $row) {
-            if ($row[6] == 'Active') {
+            if ($row[4] == 'Active') {
                 $pre[] = [
-                    'cvx' => rtrim($row[2]),
+                    'cvx' => rtrim($row[0]),
                     'short_desc' => $row[1],
-                    'long_desc' => ucfirst($row[0])
+                    'long_desc' => ucfirst($row[2])
                 ];
             }
         }
@@ -1223,9 +1226,10 @@ class AjaxSearchController extends Controller {
                 }
             }
         }
-        $yaml = File::get(resource_path() . '/supplements.yaml');
-        $formatter = Formatter::make($yaml, Formatter::YAML);
-        $arr = $formatter->toArray();
+        // $yaml = File::get(resource_path() . '/supplements.yaml');
+        // $formatter = Formatter::make($yaml, Formatter::YAML);
+        // $arr = $formatter->toArray();
+        $arr = Yaml::parseFile(resource_path() . '/supplements.yaml');
         $result1 = Arr::where($arr, function($value, $key) use ($q) {
             if (stripos($value , $q) !== false) {
                 return true;
@@ -1389,18 +1393,21 @@ class AjaxSearchController extends Controller {
             DB::table('users')->where('id', '=', Session::get('user_id'))->update($data1);
             $yaml = $data1['template'];
         }
-        $formatter = Formatter::make($yaml, Formatter::YAML);
-        $array = $formatter->toArray();
+        // $formatter = Formatter::make($yaml, Formatter::YAML);
+        // $array = $formatter->toArray();
+        $array = Yaml::parse($yaml);
         // If target doesn't exist, make one in template.yaml
         if (!isset($array[$request->input('id')])) {
             $array[$request->input('id')] = [];
-            $formatter1 = Formatter::make($array, Formatter::ARR);
-            $user_data['template'] = $formatter1->toYaml();
+            // $formatter1 = Formatter::make($array, Formatter::ARR);
+            // $user_data['template'] = $formatter1->toYaml();
+            $user_data['template'] = Yaml::dump($array);
             DB::table('users')->where('id', '=', Session::get('user_id'))->update($user_data);
             $user = DB::table('users')->where('id', '=', Session::get('user_id'))->first();
             $yaml = $user->template;
-            $formatter = Formatter::make($yaml, Formatter::YAML);
-            $array = $formatter->toArray();
+            // $formatter = Formatter::make($yaml, Formatter::YAML);
+            // $array = $formatter->toArray();
+            $array = Yaml::parse($yaml);
         }
         $replace_arr = $this->array_template();
         if (is_array($array[$request->input('id')])) {
@@ -1534,8 +1541,9 @@ class AjaxSearchController extends Controller {
     public function template_edit(Request $request)
     {
         $user = DB::table('users')->where('id', '=', Session::get('user_id'))->first();
-        $formatter = Formatter::make($user->template, Formatter::YAML);
-        $array = $formatter->toArray();
+        // $formatter = Formatter::make($user->template, Formatter::YAML);
+        // $array = $formatter->toArray();
+        $array = Yaml::parse($user->template);
         $arr['response'] = 'yes';
         if ($request->input('template_edit_type') == 'item') {
             $new['text'] =  $request->input('template_text');
@@ -1607,8 +1615,9 @@ class AjaxSearchController extends Controller {
             }
         }
         if ($arr['response'] == 'yes') {
-            $formatter1 = Formatter::make($array, Formatter::ARR);
-            $data['template'] = $formatter1->toYaml();
+            // $formatter1 = Formatter::make($array, Formatter::ARR);
+            // $data['template'] = $formatter1->toYaml();
+            $data['template'] = Yaml::dump($array);
             $data['template_updated_at'] = date('Y-m-d H:i:s', time());
             DB::table('users')->where('id', '=', Session::get('user_id'))->update($data);
         }
@@ -1618,8 +1627,9 @@ class AjaxSearchController extends Controller {
     public function template_normal(Request $request)
     {
         $user = DB::table('users')->where('id', '=', Session::get('user_id'))->first();
-        $formatter = Formatter::make($user->template, Formatter::YAML);
-        $array = $formatter->toArray();
+        // $formatter = Formatter::make($user->template, Formatter::YAML);
+        // $array = $formatter->toArray();
+        $array = Yaml::parse($user->template);
         $data = [];
         foreach ($array[$request->input('category')][$request->input('group_name')] as $row) {
             if (isset($row['normal'])) {
@@ -1634,8 +1644,9 @@ class AjaxSearchController extends Controller {
     public function template_normal_change(Request $request)
     {
         $user = DB::table('users')->where('id', '=', Session::get('user_id'))->first();
-        $formatter = Formatter::make($user->template, Formatter::YAML);
-        $array = $formatter->toArray();
+        // $formatter = Formatter::make($user->template, Formatter::YAML);
+        // $array = $formatter->toArray();
+        $array = Yaml::parse($user->template);
         if ($request->input('template_normal_item') == 'y') {
             unset($array[$request->input('category')][$request->input('group_name')][$request->input('id')]['normal']);
             $message = 'Template unset as normal';
@@ -1643,8 +1654,9 @@ class AjaxSearchController extends Controller {
             $array[$request->input('category')][$request->input('group_name')][$request->input('id')]['normal'] = true;
             $message = 'Template set as normal';
         }
-        $formatter1 = Formatter::make($array, Formatter::ARR);
-        $data['template'] = $formatter1->toYaml();
+        // $formatter1 = Formatter::make($array, Formatter::ARR);
+        // $data['template'] = $formatter1->toYaml();
+        $data['template'] = Yaml::dump($array);
         $data['template_updated_at'] = date('Y-m-d H:i:s', time());
         DB::table('users')->where('id', '=', Session::get('user_id'))->update($data);
         return $message;
@@ -1653,8 +1665,9 @@ class AjaxSearchController extends Controller {
     public function template_remove(Request $request)
     {
         $user = DB::table('users')->where('id', '=', Session::get('user_id'))->first();
-        $formatter = Formatter::make($user->template, Formatter::YAML);
-        $array = $formatter->toArray();
+        // $formatter = Formatter::make($user->template, Formatter::YAML);
+        // $array = $formatter->toArray();
+        $array = Yaml::parse($user->template);
         if ($request->input('template_edit_type') == 'item') {
             unset($array[$request->input('category')][$request->input('group_name')][$request->input('id')]);
             $message = 'Template deleted';
@@ -1662,8 +1675,9 @@ class AjaxSearchController extends Controller {
             unset($array[$request->input('category')][$request->input('group_name')]);
             $message = 'Template group deleted';
         }
-        $formatter1 = Formatter::make($array, Formatter::ARR);
-        $data['template'] = $formatter1->toYaml();
+        // $formatter1 = Formatter::make($array, Formatter::ARR);
+        // $data['template'] = $formatter1->toYaml();
+        $data['template'] = Yaml::dump($array);
         $data['template_updated_at'] = date('Y-m-d H:i:s', time());
         DB::table('users')->where('id', '=', Session::get('user_id'))->update($data);
         return $message;

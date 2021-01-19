@@ -17,7 +17,7 @@ class CreateEncountersTable extends Migration {
 				$table->bigInteger('pid')->nullable();
 				$table->bigInteger('appt_id')->nullable();
 				$table->string('encounter_provider', 255)->nullable();
-				$table->timestamp('encounter_date')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
+				$table->timestamp('encounter_date')->useCurrentOnUpdate();
 				$table->string('encounter_signed', 4)->nullable();
 				$table->timestamp('date_signed')->default("0000-00-00 00:00:00");
 				$table->dateTime('encounter_DOS')->nullable();

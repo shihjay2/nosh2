@@ -100,14 +100,21 @@ class AjaxChartController extends Controller
     {
         $message_arr = [
             'rx_list' => 'Prescription digitally signed',
-            'orders' => 'Order digitally signed'
+            'orders' => 'Order digitally signed',
+            'immunizations' => 'Immunization digitally signed'
         ];
         $data['transaction'] = $request->input('txHash');
-        DB::table($table)->where($index, '=', $id)->update($data);
+        if ($table == 'rx_list') {
+            DB::table($table)->where($index, '=', $id)->update($data);
+        } else {
+            DB::table('fhir_json')->where('index', '=', $id)->where('table', '=', $table)->update($data);
+        }
         $this->audit('Update');
-        $to = Session::get('prescription_notification_to');
-        Session::forget('prescription_notification_to');
-        $this->prescription_notification($id, $to);
+        if ($table == 'rx_list') {
+            $to = Session::get('prescription_notification_to');
+            Session::forget('prescription_notification_to');
+            $this->prescription_notification($id, $to);
+        }
         Session::put('message_action', $message_arr[$table]);
         $return['message'] = 'OK';
         $return['url'] = Session::get('last_page');
@@ -131,6 +138,11 @@ class AjaxChartController extends Controller
             }
         }
         return $data;
+    }
+
+    public function gnap_sync(Request $request)
+    {
+
     }
 
     public function remove_smart_on_fhir(Request $request)

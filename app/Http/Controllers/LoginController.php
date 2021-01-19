@@ -181,8 +181,7 @@ class LoginController extends Controller {
 			];
 			DB::table('demographics_relate')->insert($data2);
 			$this->audit('Add');
-			$directory = $query->documents_dir . $pid;
-			mkdir($directory, 0775);
+			Storage::makeDirectory($pid);
 			$return['status'] = 'Patient newly created in the chart.';
 		}
 		DB::table('demographics_relate')->where('pid', '=', $pid)->where('practice_id', '=', $practice_id)->update($patient_data);
@@ -244,7 +243,6 @@ class LoginController extends Controller {
             Session::put('version', $practice->version);
             Session::put('practice_active', $practice->active);
             Session::put('displayname', $user->displayname);
-            Session::put('documents_dir', $practice->documents_dir);
             Session::put('rcopia', $practice->rcopia_extension);
             Session::put('mtm_extension', $practice->mtm_extension);
             Session::put('patient_centric', $practice->patient_centric);
@@ -362,7 +360,6 @@ class LoginController extends Controller {
                     Session::put('version', $practice->version);
                     Session::put('practice_active', $practice->active);
                     Session::put('displayname', $user->displayname);
-                    Session::put('documents_dir', $practice->documents_dir);
                     Session::put('rcopia', $practice->rcopia_extension);
                     Session::put('mtm_extension', $practice->mtm_extension);
                     Session::put('patient_centric', $practice->patient_centric);
@@ -485,7 +482,6 @@ class LoginController extends Controller {
                 Session::put('version', $practice->version);
                 Session::put('practice_active', $practice->active);
                 Session::put('displayname', $user->displayname);
-                Session::put('documents_dir', $practice->documents_dir);
                 Session::put('rcopia', $practice->rcopia_extension);
                 Session::put('mtm_extension', $practice->mtm_extension);
                 Session::put('patient_centric', $practice->patient_centric);
@@ -619,7 +615,6 @@ class LoginController extends Controller {
             Session::put('version', $practice1->version);
             Session::put('practice_active', $practice1->active);
             Session::put('displayname', $user->displayname);
-            Session::put('documents_dir', $practice1->documents_dir);
             Session::put('rcopia', $practice1->rcopia_extension);
             Session::put('mtm_extension', $practice1->mtm_extension);
             Session::put('patient_centric', $practice1->patient_centric);
@@ -702,7 +697,6 @@ class LoginController extends Controller {
                             'city' => $city,
                             'state' => $state,
                             'zip' => $zip,
-                            'documents_dir' => $practice->documents_dir,
                             'version' => $practice->version,
                             'active' => 'Y',
                             'fax_type' => '',
@@ -761,7 +755,6 @@ class LoginController extends Controller {
                 Session::put('version', $practice2->version);
                 Session::put('practice_active', $practice2->active);
                 Session::put('displayname', $user1->displayname);
-                Session::put('documents_dir', $practice2->documents_dir);
                 Session::put('rcopia', $practice2->rcopia_extension);
                 Session::put('mtm_extension', $practice2->mtm_extension);
                 Session::put('patient_centric', $practice2->patient_centric);
@@ -973,7 +966,6 @@ class LoginController extends Controller {
                 'city' => $city,
                 'state' => $state,
                 'zip' => $zip,
-                'documents_dir' => $practice->documents_dir,
                 'version' => $practice->version,
                 'active' => 'Y',
                 'fax_type' => '',
@@ -1021,7 +1013,6 @@ class LoginController extends Controller {
             Session::put('version', $practice1->version);
             Session::put('practice_active', $practice1->active);
             Session::put('displayname', $user1->displayname);
-            Session::put('documents_dir', $practice1->documents_dir);
             Session::put('rcopia', $practice1->rcopia_extension);
             Session::put('mtm_extension', $practice1->mtm_extension);
             Session::put('patient_centric', $practice1->patient_centric);
@@ -1405,7 +1396,6 @@ class LoginController extends Controller {
             Session::put('version', $practice1->version);
             Session::put('practice_active', $practice1->active);
             Session::put('displayname', $user->displayname);
-            Session::put('documents_dir', $practice->documents_dir);
             Session::put('rcopia', $practice1->rcopia_extension);
             Session::put('mtm_extension', $practice1->mtm_extension);
             Session::put('patient_centric', $practice1->patient_centric);
@@ -1486,7 +1476,6 @@ class LoginController extends Controller {
                 'city' => $city,
                 'state' => $state,
                 'zip' => $zip,
-                'documents_dir' => $practice->documents_dir,
                 'version' => $practice->version,
                 'active' => 'Y',
                 'fax_type' => '',
@@ -1533,7 +1522,6 @@ class LoginController extends Controller {
             Session::put('version', $practice2->version);
             Session::put('practice_active', $practice2->active);
             Session::put('displayname', $user1->displayname);
-            Session::put('documents_dir', $practice2->documents_dir);
             Session::put('rcopia', $practice2->rcopia_extension);
             Session::put('mtm_extension', $practice2->mtm_extension);
             Session::put('patient_centric', $practice2->patient_centric);

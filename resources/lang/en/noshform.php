@@ -788,6 +788,16 @@ return [
     "vaccine_inventory_updated" => "Vaccine inventory updated",
     "immunization_given" => "Immunization Given",
     "given_on" => "given on",
+    "sign_immunization" => "Sign Immunization",
+    "immunization_view1" => "This is not an attested immunization",
+    "immunization_view2" => "Immunization Error",
+    "immunization_view3" => "Immunization Passport Validation",
+    "imm_json" => "Immunization in FHIR JSON",
+    "imm_hash" => "Immunization Hash",
+    "imm_hash1" => "Immunization Hash from Blockchain",
+    "immunization_view4" => "Immunization Invalid",
+    "immunization_view5" => "It may have been tampered with",
+    "immunization_view6" => "Immunization is Signed and Valid",
 
     // Insurance
     "primary" => "Primary",
@@ -1139,6 +1149,7 @@ return [
     "prescription_pharmacy_view6" => "Prescription has been inactivated",
     "prescription_pharmacy_view7" => "This medication was never prescribed",
     "prescription_pharmacy_view8" => "No prescription exists",
+    "prescription_pharmacy_view9" => "Prescription Validation",
     "days_ago" => "days ago",
 
     // Supplements
@@ -1542,6 +1553,8 @@ return [
     "fhir_sens_diag" => "Diagnosis",
     "fhir_sens_drgis" => "Drug information",
     "fhir_sens_emp" => "Employee",
+    "gnap_rs1" => "URL of Patient's Health Record",
+    "gnap_error1" => "Not a GNAP Authorization Server",
 
     // Forms
     "forms" => "Forms",

@@ -41,8 +41,10 @@ Route::any('uma_logout', ['as' => 'uma_logout', 'uses' => 'LoginController@uma_l
 // Install routes
 Route::any('backup', ['as' => 'backup', 'uses' => 'InstallController@backup']);
 Route::any('google_start', ['as' => 'google_start', 'uses' => 'InstallController@google_start']);
+Route::any('immunization_verify/{id}/{ret?}/{did?}', ['as' => 'immunization_verify', 'uses' => 'InstallController@immunization_verify']);
 Route::any('install/{type}', ['as' => 'install', 'uses' => 'InstallController@install']);
 Route::any('install_fix', ['as' => 'install_fix', 'uses' => 'InstallController@install_fix']);
+Route::get('jwk_install', ['as' => 'jwk_install', 'uses' => 'InstallController@jwk_install']);
 Route::post('pnosh_install', ['as' => 'pnosh_install', 'uses' => 'InstallController@pnosh_install']);
 Route::any('prescription_pharmacy_view/{id}/{ret?}/{did?}', ['as' => 'prescription_pharmacy_view', 'uses' => 'InstallController@prescription_pharmacy_view']);
 Route::get('set_version', ['as' => 'set_version', 'uses' => 'InstallController@set_version']);
@@ -97,6 +99,9 @@ Route::post('financial_query', ['as' => 'financial_query', 'uses' => 'CoreContro
 Route::get('financial_resubmit/{eid}', ['as' => 'financial_resubmit', 'uses' => 'CoreController@financial_resubmit']);
 Route::any('financial_upload_era', ['as' => 'financial_upload_era', 'uses' => 'CoreController@financial_upload_era']);
 Route::get('generate_hcfa/{eid}', ['as' => 'generate_hcfa', 'uses' => 'CoreController@generate_hcfa']);
+Route::get('gnap_resources/{id}', ['as' => 'gnap_resources', 'uses' => 'CoreController@gnap_resources']);
+Route::get('gnap_resource_view/{type}', ['as' => 'gnap_resource_view', 'uses' => 'CoreController@gnap_resource_view']);
+Route::get('immunization_view/{id?}', ['as' => 'immunization_view', 'uses' => 'CoreController@immunization_view']);
 Route::get('messaging/{type}', ['as' => 'messaging', 'uses' => 'CoreController@messaging']);
 Route::any('messaging_add_photo/{message_id}', ['as' => 'messaging_add_photo', 'uses' => 'CoreController@messaging_add_photo']);
 Route::get('messaging_delete_photo/{id}/{type?}', ['as' => 'messaging_delete_photo', 'uses' => 'CoreController@messaging_delete_photo']);
@@ -203,7 +208,6 @@ Route::get('encounter_assessment_add/{type}/{id}', ['as' => 'encounter_assessmen
 Route::get('encounter_assessment_delete/{id}', ['as' => 'encounter_assessment_delete', 'uses' => 'ChartController@encounter_assessment_delete']);
 Route::any('encounter_assessment_edit/{id}', ['as' => 'encounter_assessment_edit', 'uses' => 'ChartController@encounter_assessment_edit']);
 Route::get('encounter_assessment_move/{id}/{direction}', ['as' => 'encounter_assessment_move', 'uses' => 'ChartController@encounter_assessment_move']);
-// GYN 20181007: Add Copy to Problem List
 Route::get('encounter_assessment_copy/{id}', ['as' => 'encounter_assessment_copy', 'uses' => 'ChartController@encounter_assessment_copy']);
 Route::any('encounter_billing/{eid}/{section?}', ['as' => 'encounter_billing', 'uses' => 'ChartController@encounter_billing']);
 Route::get('encounter_close', ['as' => 'encounter_close', 'uses' => 'ChartController@encounter_close']);
@@ -325,7 +329,7 @@ Route::post('phaxio/{practice_id}', ['as' => 'phaxio', 'uses' => 'FaxController@
 Route::get('reminder', ['as' => 'reminder', 'uses' => 'ReminderController@reminder']);
 
 // FHIR Endpoints
-// Route::group(['prefix' => 'fhir'], function () {
+// Route::group(['prefix' => 'fhir', 'middleware' => 'fhir_gnap'], function () {
 Route::group(['prefix' => 'fhir', 'middleware' => 'fhir'], function () {
     Route::resource('AdverseReaction', 'AdverseReactionController');
     Route::resource('Alert', 'AlertController');

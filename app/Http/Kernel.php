@@ -58,6 +58,7 @@ class Kernel extends HttpKernel
         'patient' => \App\Http\Middleware\CheckPatient::class,
         'fhir' => \App\Http\Middleware\Fhir::class,
         'checkinstall' => \App\Http\Middleware\CheckInstall::class,
-        'postauth' => \App\Http\Middleware\PostAuth::class
+        'postauth' => \App\Http\Middleware\PostAuth::class,
+        'fhir_gnap' => \App\Http\Middleware\Fhir_GNAP::class,
     ];
 }

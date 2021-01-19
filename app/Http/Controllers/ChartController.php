@@ -22,9 +22,11 @@ use RecursiveIteratorIterator;
 use Response;
 use Schema;
 use Session;
+use Illuminate\Support\Facades\Storage;
 use Shihjay2\OpenIDConnectUMAClient;
-use SoapBox\Formatter\Formatter;
+// use SoapBox\Formatter\Formatter;
 use URL;
+use Symfony\Component\Yaml\Yaml;
 use ZipArchive;
 
 class ChartController extends Controller {
@@ -44,8 +46,9 @@ class ChartController extends Controller {
         $query = DB::table($table)->where($index, '=', $id)->first();
         if ($query) {
             if ($query->{$column} !== '' && $query->{$column} !== null) {
-                $formatter = Formatter::make($query->{$column}, Formatter::YAML);
-                $arr = $formatter->toArray();
+                // $formatter = Formatter::make($query->{$column}, Formatter::YAML);
+                // $arr = $formatter->toArray();
+                $arr = Yaml::parse($query->{$column});
             }
         }
         $name = 'action';
@@ -68,8 +71,9 @@ class ChartController extends Controller {
                 $arr[$yaml_id] = $item;
                 $message = ucfirst(trans('noshform.updated')) . ' ' . $name;
             }
-            $formatter1 = Formatter::make($arr, Formatter::ARR);
-            $data1[$column] = $formatter1->toYaml();
+            // $formatter1 = Formatter::make($arr, Formatter::ARR);
+            // $data1[$column] = $formatter1->toYaml();
+            $data1[$column] = Yaml::dump($arr);
             $exist = DB::table($table)->where($index, '=', $id)->first();
             if ($exist) {
                 DB::table($table)->where($index, '=', $id)->update($data1);
@@ -3100,7 +3104,7 @@ class ChartController extends Controller {
     {
         if ($request->isMethod('post')) {
             $pid = Session::get('pid');
-            $directory = Session::get('documents_dir') . $pid;
+            $directory = Storage::path($pid);
             $postData = $request->post();
             $img = Arr::has($postData, 'img');
             if ($img) {
@@ -3113,7 +3117,7 @@ class ChartController extends Controller {
             }
             $file_path = $directory . "/" . $new_name;
             if ($img) {
-                File::put($file_path, $img_data);
+                Storage::put($file_path, $img_data);
             } else {
                 $file->move($directory, $new_name);
             }
@@ -3150,7 +3154,7 @@ class ChartController extends Controller {
             $html = $this->page_intro('Letter', Session::get('practice_id'))->render();
             $html .= $this->page_letter($request->input('letter_to'), $request->input('letter_body'), $request->input('address_id'));
             $user_id = Session::get('user_id');
-            $file_path = $result->documents_dir . $pid . '/letter_' . time() . '.pdf';
+            $file_path = Storage::path($pid . '/letter_' . time() . '.pdf');
             $this->generate_pdf($html, $file_path, 'footerpdf', '', '1');
             while(!file_exists($file_path)) {
                 sleep(2);
@@ -3227,7 +3231,7 @@ class ChartController extends Controller {
         ini_set('max_execution_time', '300');
         if ($request->isMethod('post')) {
             $pid = Session::get('pid');
-            $directory = Session::get('documents_dir') . $pid;
+            $directory = Storage::path($pid);
             $file = $request->file('file_input');
             $new_name = str_replace('.' . $file->getClientOriginalExtension(), '', $file->getClientOriginalName()) . '_' . time() . '.pdf';
             if ($file->getClientOriginalExtension() == 'pdf' || $file->getClientOriginalExtension() == 'PDF') {
@@ -4230,7 +4234,7 @@ class ChartController extends Controller {
     {
         if ($request->isMethod('post')) {
             $pid = Session::get('pid');
-            $directory = Session::get('documents_dir') . $pid;
+            $directory = Storage::path($pid);
             $file = $request->file('file_input');
             $new_name = str_replace('.' . $file->getClientOriginalExtension(), '', $file->getClientOriginalName()) . '_' . time() . '.' . $file->getClientOriginalExtension();
             $file->move($directory, $new_name);
@@ -5110,7 +5114,7 @@ class ChartController extends Controller {
                 return redirect(Session::get('last_page_encounter'));
             }
             $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
-            $directory = $practice->documents_dir . Session::get('pid') . "/";
+            $directory = Storage::path(Session::get('pid') . "/");
             $file_path = $directory . time() . '_patienteducation.pdf';
             App::setLocale(Session::get('practice_locale'));
             $html = $this->page_intro(trans('noshform.patient_education') . ': ' . $request->input('desc'), Session::get('practice_id'));
@@ -5192,7 +5196,7 @@ class ChartController extends Controller {
     public function encounter_edit_image(Request $request, $id, $t_messages_id='')
     {
         $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
-        $directory = $practice->documents_dir . Session::get('pid') . "/";
+        $directory = Storage::path(Session::get('pid') . "/");
         if ($request->isMethod('post')) {
             $image_id = $request->input('image_id');
             $file_path = $directory . 'image_' . time() . '.png';
@@ -5880,8 +5884,9 @@ class ChartController extends Controller {
             $fh_arr = [];
             if ($oh->oh_fh !== null) {
                 if ($this->yaml_check($oh->oh_fh)) {
-                    $formatter = Formatter::make($oh->oh_fh, Formatter::YAML);
-                    $fh_arr = $formatter->toArray();
+                    // $formatter = Formatter::make($oh->oh_fh, Formatter::YAML);
+                    // $fh_arr = $formatter->toArray();
+                    $fh_arr = Yaml::parse($oh->oh_fh);
                 }
             }
             if ($id == 'add') {
@@ -5891,8 +5896,9 @@ class ChartController extends Controller {
                 $fh_arr[$id] = $data;
                 $message = trans('noshform.updated_family_member');
             }
-            $formatter1 = Formatter::make($fh_arr, Formatter::ARR);
-            $data1['oh_fh'] = $formatter1->toYaml();
+            // $formatter1 = Formatter::make($fh_arr, Formatter::ARR);
+            // $data1['oh_fh'] = $formatter1->toYaml();
+            $data1['oh_fh'] = Yaml::dump($fh_arr);
             DB::table('other_history')->where('oh_id', '=', $oh->oh_id)->update($data1);
             $this->audit('Update');
             Session::put('message_action', $message);
@@ -5920,8 +5926,9 @@ class ChartController extends Controller {
                 $data['panel_header'] = trans('noshform.add_family_member');
             } else {
                 $oh = DB::table('other_history')->where('pid', '=', Session::get('pid'))->where('eid', '=', '0')->first();
-                $formatter = Formatter::make($oh->oh_fh, Formatter::YAML);
-                $fh_arr = $formatter->toArray();
+                // $formatter = Formatter::make($oh->oh_fh, Formatter::YAML);
+                // $fh_arr = $formatter->toArray();
+                $fh_arr = Yaml::parse($oh->oh_fh);
                 $fh = $fh_arr[$id];
                 $result = [
                     'name' => $fh['Name'],
@@ -6359,8 +6366,9 @@ class ChartController extends Controller {
                 }
             }
             foreach ($form_arr as $form) {
-                $formatter = Formatter::make($form['form'], Formatter::YAML);
-                $array = $formatter->toArray();
+                // $formatter = Formatter::make($form['form'], Formatter::YAML);
+                // $array = $formatter->toArray();
+                $array = Yaml::parse($form['form']);
                 foreach ($array as $row_k => $row_v) {
                     $arr = [];
                     $proceed = true;
@@ -6472,12 +6480,14 @@ class ChartController extends Controller {
     {
         if ($origin == 'users') {
             $user = DB::table('users')->where('id', '=', $id)->first();
-            $formatter = Formatter::make($user->forms, Formatter::YAML);
+            // $formatter = Formatter::make($user->forms, Formatter::YAML);
+            $array = Yaml::parse($user->forms);
         } else {
             $forms = DB::table('forms')->where('forms_id', '=', $id)->first();
-            $formatter = Formatter::make($forms->forms_content, Formatter::YAML);
+            // $formatter = Formatter::make($forms->forms_content, Formatter::YAML);
+            $array = Yaml::parse($forms->forms_content);
         }
-        $array = $formatter->toArray();
+        // $array = $formatter->toArray();
         $edit = $this->access_level('1');
         if ($request->isMethod('post')) {
             $score_arr = [];
@@ -6519,8 +6529,9 @@ class ChartController extends Controller {
                 }
             }
             App::setLocale(Session::get('user_locale'));
-            $formatter1 = Formatter::make($response_array, Formatter::ARR);
-            $data['forms_content'] = $formatter1->toYaml();
+            // $formatter1 = Formatter::make($response_array, Formatter::ARR);
+            // $data['forms_content'] = $formatter1->toYaml();
+            $data['forms_content'] = Yaml::dump($response_array);
             $data['pid'] = Session::get('pid');
             $data['forms_title'] = $array[$type]['forms_title'];
             $data['forms_content_text'] = implode("\n", $text_arr);
@@ -7281,7 +7292,7 @@ class ChartController extends Controller {
         $practiceInfo = DB::table('practiceinfo')->first();
         if ($demographics->photo !== null) {
             if (file_exists($demographics->photo)) {
-                $directory = $practiceInfo->documents_dir . Session::get('pid') . "/";
+                $directory = Storage::path(Session::get('pid') . "/");
                 $new_directory = public_path() . '/temp/';
                 $new_directory1 = '/temp/';
                 $file_path = str_replace($directory, $new_directory, $demographics->photo);
@@ -7452,7 +7463,7 @@ class ChartController extends Controller {
             $zip_file = public_path() . '/temp/' . $zip_file_name;
             $zip = new ZipArchive;
             $zip->open($zip_file, ZipArchive::CREATE);
-            $documents_dir = Session::get('documents_dir');
+            $documents_dir = Storage::path('');
             $sqlfilename = time() . '_noshexport.sql';
             $sqlfile = $documents_dir . $sqlfilename;
             $command = "mysqldump -h " . env('DB_HOST') . " -u " . env('DB_USERNAME') . " -p". env('DB_PASSWORD') . " " . env('DB_DATABASE') . " > " . $sqlfile;
@@ -8037,7 +8048,7 @@ class ChartController extends Controller {
         if ($request->isMethod('post')) {
             $pid = Session::get('pid');
             $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
-            $file_path = $practice->documents_dir . $pid . '/letter_' . time() . '.pdf';
+            $file_path = Storage::path($pid . '/letter_' . time() . '.pdf');
             $tests_performed = $request->input('tests_performed');
             $body = '';
             if (! empty($tests_performed)) {
@@ -8099,11 +8110,11 @@ class ChartController extends Controller {
                     ->where('pid', '=', $pid)
                     ->where('practice_id', '=', Session::get('practice_id'))
                     ->first();
-                $data_message = array(
+                $data_message = [
                     'displayname' => Session::get('displayname'),
                     'email' => $practice->email,
                     'patient_portal' => $practice->patient_portal
-                );
+                ];
                 if ($row_relate->id == '') {
                     if ($row->email == '') {
                         $message = trans('noshform.error') . ' - ' . trans('noshform.no_email');
@@ -9290,8 +9301,9 @@ class ChartController extends Controller {
                 $nodes_arr = [];
                 $edges_arr = [];
                 $placeholder_count = 0;
-                $formatter = Formatter::make($oh->oh_fh, Formatter::YAML);
-                $fh_arr = $formatter->toArray();
+                // $formatter = Formatter::make($oh->oh_fh, Formatter::YAML);
+                // $fh_arr = $formatter->toArray();
+                $fh_arr = Yaml::parse($oh->oh_fh);
                 $ret_arr = $this->treedata_build($fh_arr, 'patient', [], [], 0);
                 $nodes_arr = $ret_arr[0];
                 $edges_arr = $ret_arr[1];
@@ -9518,7 +9530,7 @@ class ChartController extends Controller {
     {
         if ($request->isMethod('post')) {
             $pid = Session::get('pid');
-            $directory = Session::get('documents_dir') . $pid;
+            $directory = Storage::path($pid);
             $file = $request->file('file_input');
             $new_name = str_replace('.' . $file->getClientOriginalExtension(), '', $file->getClientOriginalName()) . '_' . time() . '.xml';
             $file->move($directory, $new_name);
@@ -9795,7 +9807,7 @@ class ChartController extends Controller {
     {
         if ($request->isMethod('post')) {
             $pid = Session::get('pid');
-            $directory = Session::get('documents_dir') . $pid;
+            $directory = Storage::path($pid);
             $file = $request->file('file_input');
             $new_name = str_replace('.' . $file->getClientOriginalExtension(), '', $file->getClientOriginalName()) . '_' . time() . '.xml';
             $file->move($directory, $new_name);

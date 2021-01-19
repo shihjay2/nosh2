@@ -16,7 +16,7 @@ class CreatePeTable extends Migration {
 				$table->bigInteger('eid')->primary();
 				$table->bigInteger('pid')->nullable();
 				$table->string('encounter_provider', 255)->nullable();
-				$table->timestamp('pe_date')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
+				$table->timestamp('pe_date')->useCurrentOnUpdate();
 				$table->longtext('pe_gen1')->nullable();
 				$table->longtext('pe_eye1')->nullable();
 				$table->longtext('pe_eye2')->nullable();

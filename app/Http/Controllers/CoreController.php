@@ -3,32 +3,35 @@
 namespace App\Http\Controllers;
 
 use App;
-use App\Events\ProcessEvent;
-use App\Http\Requests;
+use Illuminate\Support\Arr;
 use Date;
 use DB;
 use Event;
 use File;
 use Form;
+// use SoapBox\Formatter\Formatter;
 use Hash;
 use HTML;
-use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
-use Illuminate\Support\MessageBag;
 use Imagick;
-use Shihjay2\OpenIDConnectUMAClient;
-use shihjay2\tcpdi_merger\MyTCPDI;
+use Jose\Component\KeyManagement\JWKFactory;
 use shihjay2\tcpdi_merger\Merger;
+use Illuminate\Support\MessageBag;
+use shihjay2\tcpdi_merger\MyTCPDI;
+use Shihjay2\OpenIDConnectUMAClient;
+use Symfony\Component\Process\Process;
+use App\Events\ProcessEvent;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 use QrCode;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use Illuminate\Http\Request;
+use App\Http\Requests;
 use Schema;
 use Session;
-use Storage;
-use SoapBox\Formatter\Formatter;
-use Symfony\Component\Process\Process;
-use Symfony\Component\Process\Exception\ProcessFailedException;
+// use Storage;
+use Illuminate\Support\Facades\Storage;
 use URL;
+use Symfony\Component\Yaml\Yaml;
 use ZipArchive;
 
 class CoreController extends Controller
@@ -79,8 +82,7 @@ class CoreController extends Controller
             ];
             DB::table('demographics_plus')->insert($data3);
             $this->audit('Add');
-            $directory = $result->documents_dir . $pid;
-            mkdir($directory, 0775);
+            Storage::makeDirectory($pid);
             Session::put('message_action', $data['lastname'] . ' ' . $data['firstname'] . ' added');
             $this->setpatient($pid);
             return redirect()->route('patient');
@@ -701,9 +703,9 @@ class CoreController extends Controller
                             $message_add_photo_arr = Session::get('messaging_add_photo');
                             foreach ($message_add_photo_arr as $photo_file_path) {
                                 if ($data['pid'] !== '') {
-                                    $directory = Session::get('documents_dir') . $data['pid'] . '/';
+                                    $directory = Storage::path($data['pid'] . '/');
                                 } else {
-                                    $directory = Session::get('documents_dir');
+                                    $directory = Storage::path('');
                                 }
                                 $new_name = str_replace(public_path() . '/temp/', '', $photo_file_path);
                                 $new_photo_file_path = $directory . $new_name;
@@ -849,9 +851,9 @@ class CoreController extends Controller
                         Session::forget('messaging_add_photo');
                         foreach ($message_add_photo_arr as $photo_file_path) {
                             if ($data['pid'] !== '') {
-                                $directory = Session::get('documents_dir') . $data['pid'] . '/';
+                                $directory = Storage::path($data['pid'] . '/');
                             } else {
-                                $directory = Session::get('documents_dir');
+                                $directory = Storage::path('');
                             }
                             $new_name = str_replace(public_path() . '/temp/', '', $photo_file_path);
                             $new_photo_file_path = $directory . $new_name;
@@ -1289,11 +1291,13 @@ class CoreController extends Controller
     public function configure_form_delete(Request $request, $type)
     {
         $user = DB::table('users')->where('id', '=', Session::get('user_id'))->first();
-        $formatter = Formatter::make($user->forms, Formatter::YAML);
-        $array = $formatter->toArray();
+        // $formatter = Formatter::make($user->forms, Formatter::YAML);
+        // $array = $formatter->toArray();
+        $array = Yaml::parse($user->forms);
         unset($array[$type]);
-        $formatter1 = Formatter::make($array, Formatter::ARR);
-        $data1['forms'] = $formatter1->toYaml();
+        // $formatter1 = Formatter::make($array, Formatter::ARR);
+        // $data1['forms'] = $formatter1->toYaml();
+        $data1['forms'] = Yaml::dump($array);
         $data1['forms_updated_at'] = date('Y-m-d H:i:s', time());
         DB::table('users')->where('id', '=', Session::get('user_id'))->update($data1);
         Session::put('message_action', trans('noshform.form_deleted'));
@@ -1304,8 +1308,9 @@ class CoreController extends Controller
     {
         $id = Session::get('user_id');
         $user = DB::table('users')->where('id', '=', $id)->first();
-        $formatter = Formatter::make($user->forms, Formatter::YAML);
-        $array = $formatter->toArray();
+        // $formatter = Formatter::make($user->forms, Formatter::YAML);
+        // $array = $formatter->toArray();
+        $array = Yaml::parse($user->forms);
         if ($request->isMethod('post')) {
             $message = trans('noshform.form_updated');
             if ($type == '0') {
@@ -1332,8 +1337,9 @@ class CoreController extends Controller
             if ($request->has('forms_scoring')) {
                 $array[$type]['scoring'] = $request->input('forms_scoring');
             }
-            $formatter1 = Formatter::make($array, Formatter::ARR);
-            $data['forms'] = $formatter1->toYaml();
+            // $formatter1 = Formatter::make($array, Formatter::ARR);
+            // $data['forms'] = $formatter1->toYaml();
+            $data['forms'] = Yaml::dump($array);
             $data['forms_updated_at'] = date('Y-m-d H:i:s', time());
             DB::table('users')->where('id', '=', $id)->update($data);
             Session::put('message_action', $message);
@@ -1427,8 +1433,9 @@ class CoreController extends Controller
     {
         $id = Session::get('user_id');
         $user = DB::table('users')->where('id', '=', $id)->first();
-        $formatter = Formatter::make($user->forms, Formatter::YAML);
-        $array = $formatter->toArray();
+        // $formatter = Formatter::make($user->forms, Formatter::YAML);
+        // $array = $formatter->toArray();
+        $array = Yaml::parse($user->forms);
         if ($request->isMethod('post')) {
             $data['input'] = $request->input('form_type');
             $data['text'] = $request->input('form_label');
@@ -1445,8 +1452,9 @@ class CoreController extends Controller
                 $array[$type][$item] = $data;
                 $message = trans('noshform.configure_form_edit2');
             }
-            $formatter1 = Formatter::make($array, Formatter::ARR);
-            $data1['forms'] = $formatter1->toYaml();
+            // $formatter1 = Formatter::make($array, Formatter::ARR);
+            // $data1['forms'] = $formatter1->toYaml();
+            $data1['forms'] = Yaml::dump($array);
             $data1['forms_updated_at'] = date('Y-m-d H:i:s', time());
             DB::table('users')->where('id', '=', $id)->update($data1);
             Session::put('message_action', $message);
@@ -1523,8 +1531,9 @@ class CoreController extends Controller
             DB::table('users')->where('id', '=', Session::get('user_id'))->update($data1);
             $yaml = $data1['forms'];
         }
-        $formatter = Formatter::make($yaml, Formatter::YAML);
-        $array = $formatter->toArray();
+        // $formatter = Formatter::make($yaml, Formatter::YAML);
+        // $array = $formatter->toArray();
+        $array = Yaml::parse($yaml);
         foreach ($array as $row_k => $row_v) {
             $arr = [];
             $arr['label'] = $row_k;
@@ -1559,11 +1568,13 @@ class CoreController extends Controller
     public function configure_form_remove(Request $request, $type, $item)
     {
         $user = DB::table('users')->where('id', '=', Session::get('user_id'))->first();
-        $formatter = Formatter::make($user->forms, Formatter::YAML);
-        $array = $formatter->toArray();
+        // $formatter = Formatter::make($user->forms, Formatter::YAML);
+        // $array = $formatter->toArray();
+        $array = Yaml::parse($user->forms);
         unset($array[$type][$item]);
-        $formatter1 = Formatter::make($array, Formatter::ARR);
-        $data1['forms'] = $formatter1->toYaml();
+        // $formatter1 = Formatter::make($array, Formatter::ARR);
+        // $data1['forms'] = $formatter1->toYaml();
+        $data1['forms'] = Yaml::dump($array);
         $data1['forms_updated_at'] = date('Y-m-d H:i:s', time());
         DB::table('users')->where('id', '=', Session::get('user_id'))->update($data1);
         Session::put('message_action', trans('noshform.configure_form_remove'));
@@ -1574,8 +1585,9 @@ class CoreController extends Controller
     {
         $id = Session::get('user_id');
         $user = DB::table('users')->where('id', '=', $id)->first();
-        $formatter = Formatter::make($user->forms, Formatter::YAML);
-        $array = $formatter->toArray();
+        // $formatter = Formatter::make($user->forms, Formatter::YAML);
+        // $array = $formatter->toArray();
+        $array = Yaml::parse($user->forms);
         if ($request->isMethod('post')) {
             $this->validate($request, [
                 'min' => 'numeric',
@@ -1591,8 +1603,9 @@ class CoreController extends Controller
                 $message = trans('noshform.configure_form_scoring2');
             }
             $array[$type]['scoring'][$new_item] = $request->input('description');
-            $formatter1 = Formatter::make($array, Formatter::ARR);
-            $data1['forms'] = $formatter1->toYaml();
+            // $formatter1 = Formatter::make($array, Formatter::ARR);
+            // $data1['forms'] = $formatter1->toYaml();
+            $data1['forms'] = Yaml::dump($array);
             $data1['forms_updated_at'] = date('Y-m-d H:i:s', time());
             DB::table('users')->where('id', '=', $id)->update($data1);
             Session::put('message_action', $message);
@@ -1647,11 +1660,13 @@ class CoreController extends Controller
     {
         $id = Session::get('user_id');
         $user = DB::table('users')->where('id', '=', $id)->first();
-        $formatter = Formatter::make($user->forms, Formatter::YAML);
-        $array = $formatter->toArray();
+        // $formatter = Formatter::make($user->forms, Formatter::YAML);
+        // $array = $formatter->toArray();
+        $array = Yaml::parse($user->forms);
         unset($array[$type]['scoring'][$item]);
-        $formatter1 = Formatter::make($array, Formatter::ARR);
-        $data1['forms'] = $formatter1->toYaml();
+        // $formatter1 = Formatter::make($array, Formatter::ARR);
+        // $data1['forms'] = $formatter1->toYaml();
+        $data1['forms'] = Yaml::dump($array);
         $data1['forms_updated_at'] = date('Y-m-d H:i:s', time());
         DB::table('users')->where('id', '=', $id)->update($data1);
         Session::put('message_action', trans('noshform.configure_form_scoring_delete'));
@@ -1664,8 +1679,9 @@ class CoreController extends Controller
         $data['panel_header'] = trans('noshform.configure_form_scoring_list');
         $id = Session::get('user_id');
         $user = DB::table('users')->where('id', '=', $id)->first();
-        $formatter = Formatter::make($user->forms, Formatter::YAML);
-        $array = $formatter->toArray();
+        // $formatter = Formatter::make($user->forms, Formatter::YAML);
+        // $array = $formatter->toArray();
+        $array = Yaml::parse($user->forms);
         if (isset($array[$type]['scoring'])) {
             $list_array = [];
             foreach ($array[$type]['scoring'] as $row_k => $row_v) {
@@ -1706,8 +1722,9 @@ class CoreController extends Controller
     public function configure_form_show(Request $request, $type)
     {
         $user = DB::table('users')->where('id', '=', Session::get('user_id'))->first();
-        $formatter = Formatter::make($user->forms, Formatter::YAML);
-        $array = $formatter->toArray();
+        // $formatter = Formatter::make($user->forms, Formatter::YAML);
+        // $array = $formatter->toArray();
+        $array = Yaml::parse($user->forms);
         $items = [];
         foreach ($array[$type] as $row_k => $row_v) {
             if ($row_k !== 'forms_title' && $row_k !== 'forms_destination' && $row_k !== 'scoring' && $row_k !== 'gender' && $row_k !== 'age') {
@@ -2109,7 +2126,7 @@ class CoreController extends Controller
             $dob_message = date("m/d/Y", strtotime($patient_row->DOB));
             $patient_name =  $patient_row->lastname . ', ' . $patient_row->firstname . ' (DOB: ' . $dob_message . ') (ID: ' . $pid . ')';
             $practice_row = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
-            $directory = $practice_row->documents_dir . $pid;
+            $directory = Storage::path($pid);
             $file_path = $directory . '/tests_' . time() . '.pdf';
             $html = $this->page_intro('Test Results', Session::get('practice_id'));
             $html .= $this->page_results($pid, $results, $patient_name, $from);
@@ -2274,7 +2291,7 @@ class CoreController extends Controller
             $zip_file = public_path() . '/temp/' . $zip_file_name;
             $zip = new ZipArchive;
             $zip->open($zip_file, ZipArchive::CREATE);
-            $documents_dir = Session::get('documents_dir');
+            $documents_dir = Storage::path('');
             $database = env('DB_DATABASE') . "_copy";
             $connect = mysqli_connect('localhost', env('DB_USERNAME'), env('DB_PASSWORD'));
             if ($connect) {
@@ -2799,7 +2816,7 @@ class CoreController extends Controller
             return redirect(Session::get('last_page'));
         } else {
             $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
-			$dir = $practice->documents_dir;
+            $dir = Storage::path('');
 			$files = glob($dir . "*.sql");
 			arsort($files);
             $backups_arr = [];
@@ -2854,7 +2871,7 @@ class CoreController extends Controller
                         system($command);
                         unlink($sqlfile);
                     }
-                    $zip->extractTo(Session::get('documents_dir'));
+                    $zip->extractTo(Storage::path(''));
                     $zip->close();
                     unlink($directory . '/' . $file->getClientOriginalName());
                     $message = trans('noshform.database_import_cloud1');
@@ -4391,8 +4408,6 @@ class CoreController extends Controller
     {
         if ($request->isMethod('post')) {
             $file = $request->file('file_input');
-            // $pid = Session::get('pid');
-            // $directory = Session::get('documents_dir') . $pid;
             $new_directory = public_path() . '/temp';
             $new_name = time() . '_' . str_replace('.' . $file->getClientOriginalExtension(), '', $file->getClientOriginalName()) . '.era';
             $file->move($new_directory, $new_name);
@@ -4511,6 +4526,368 @@ class CoreController extends Controller
         } else {
             Session::put('message_action', trans('noshform.error') . ' - ' . trans('noshform.no_hcfa_print') . '.');
             return redirect(Session::get('last_page'));
+        }
+    }
+
+    public function gnap_list(Request $request)
+    {
+        if ($request->isMethod('post')) {
+            $this->validate($request, [
+                'url' => 'required|url'
+            ]);
+            // Insufficient access to RS
+            $result = $this->fhir_request($request->input('url'), true);
+            if ($result['www_auth_type'] == 'GNAP') {
+                if (isset($result['as_uri'])) {
+                    // Save AS URL
+                    $data['gnap_uri'] = $result['as_uri'];
+                    if (isset($result['resource'])) {
+                        $data['resource_handle'] = $result['resource'];
+                    }
+                    DB::table('demographics_plus')->where('pid', '=', Session::get('pid'))->update($data);
+                    $this->audit('Update');
+                    return redirect()->route('gnap_resources', $id);
+                }
+            } else {
+                Session::put('message_action', trans('noshform.error') . ' - ' . trans('noshform.gnap_error1') . '.');
+                return redirect()->route('gnap_list');
+            }
+
+            // Register to HIE of One AS - confirm it
+            $this->clean_uma_sessions();
+            $test_uri = rtrim($request->input('url'), '/') . "/.well-known/uma2-configuration";
+            $url_arr = parse_url($test_uri);
+            if (!isset($url_arr['scheme'])) {
+                $test_uri = 'https://' . $test_uri;
+            }
+            $ch = curl_init($test_uri);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $data = curl_exec($ch);
+            $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+            if($httpcode>=200 && $httpcode<302){
+                $url_arr = parse_url($test_uri);
+                $as_uri = $url_arr['scheme'] . '://' . $url_arr['host'];
+            } else {
+                return redirect()->back()->withErrors(['url' => 'Try again, URL is invalid, httpcode: ' . $httpcode . ', URL: ' . $request->input('url')]);
+            }
+            $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
+            $client_name = 'mdNOSH - ' . $practice->practice_name;
+            $url1 = route('uma_auth');
+            $oidc = new OpenIDConnectUMAClient($as_uri);
+            $oidc->startSession();
+            $oidc->setClientName($client_name);
+            $oidc->setSessionName('nosh');
+            if (file_exists(base_path() . '/fakelerootx1.pem')) {
+                $oidc->setCertPath(base_path() . '/fakelerootx1.pem');
+            }
+            $oidc->addRedirectURLs($url1);
+            $oidc->addRedirectURLs(route('uma_api'));
+            $oidc->addRedirectURLs(route('uma_aat'));
+            $oidc->addRedirectURLs(route('uma_register_auth'));
+            // $oidc->addRedirectURLs(route('uma_resources'));
+            // $oidc->addRedirectURLs(route('uma_resource_view'));
+            $oidc->addScope('openid');
+            $oidc->addScope('email');
+            $oidc->addScope('profile');
+            $oidc->addScope('address');
+            $oidc->addScope('phone');
+            $oidc->addScope('offline_access');
+            $oidc->addScope('uma_authorization');
+            $oidc->setLogo('https://cloud.noshchartingsystem.com/SAAS-Logo.jpg');
+            $oidc->setClientURI(str_replace('/uma_auth', '', $url1));
+            $oidc->setUMA(true);
+            $oidc->register();
+            $client_id = $oidc->getClientID();
+            $client_secret = $oidc->getClientSecret();
+            $data1 = [
+                'hieofone_as_client_id' => $client_id,
+                'hieofone_as_client_secret' => $client_secret,
+                'hieofone_as_url' => $as_uri
+            ];
+            Session::put('uma_add_patient', $data1);
+            Session::save();
+            return redirect()->route('uma_resource_view', ['new']);
+        } else {
+            $items[] = [
+                'name' => 'url',
+                'label' => trans('noshform.gnap_rs1'),
+                'type' => 'text',
+                'required' => true,
+                'default_value' => 'https://'
+            ];
+            $form_array = [
+                'form_id' => 'uma_list_form',
+                'action' => route('gnap_list'),
+                'items' => $items,
+                'save_button_label' => trans('noshform.uma_list2')
+            ];
+            $data['panel_header'] = trans('noshform.uma_list3');
+            $data['content'] = $this->form_build($form_array);
+            $query = DB::table('demographics_plus')->where('gnap_uri', '!=', '')->orWhere('gnap_uri', '!=', null)->get();
+            if ($query->count()) {
+                $list_array = [];
+                foreach ($query as $row) {
+                    $arr = [];
+                    $dob = date('m/d/Y', strtotime($row->DOB));
+                    $arr['label'] = $row->lastname . ', ' . $row->firstname . ' (DOB: ' . $dob . ') (ID: ' . $row->pid . ')';
+                    $arr['view'] = route('gnap_resources', [$row->pid]);
+                    // $arr['jump'] = $row->hieofone_as_url . '/nosh/uma_auth';
+                    $list_array[] = $arr;
+                }
+                $data['content'] .= $this->result_build($list_array, 'fhir_list');
+            }
+            $data['message_action'] = Session::get('message_action');
+            Session::forget('message_action');
+            $data['assets_js'] = $this->assets_js();
+            $data['assets_css'] = $this->assets_css();
+            return view('core', $data);
+        }
+    }
+
+    public function gnap_resources(Request $request, $id)
+    {
+        $gnap_url = DB::table('demographics_plus')->where('pid', '=', Session::get('pid'))->first();
+        if (Session::has('gnap_continue_uri') && Session::has('gnap_access_token') && Session::has('gnap_rc_nonce') && Session::has('gnap_as_nonce') && $request->has('hash') && $request->has('interact_ref')) {
+            $interact_arr = [
+                'interact_ref' => $request->input('interact_ref')
+            ];
+            // Check hash
+            $hash_arr = [Session::get('gnap_rc_nonce'), Session::get('gnap_as_nonce'), $request->input('interact_ref')];
+            $hash_str = implode("\n", $hash_arr);
+            $hash = hash('sha3-512', $hash_str);
+            if ($hash === $request->input('hash')) {
+                if (Session::has('gnap_continue_wait')) {
+                    while (time() < Session::has('gnap_continue_wait')) {
+                        sleep(2);
+                    }
+                }
+                $gnap_result1 = $this->gnap_connect($interact_arr, Session::get('gnap_continue_uri'), Session::get('gnap_access_token'), true);
+                $access_token = $gnap_result1['access_token'];
+                Session::put('rs_access_token', $access_token);
+            } else {
+                // fail, try again
+                Session::forget('gnap_rc_nonce');
+                Session::forget('gnap_as_nonce');
+                Session::forget('gnap_access_token');
+                Session::forget('gnap_continue_uri');
+                Session::forget('gnap_continue_wait');
+                return redirect()->route('gnap_resources', [$id]);
+            }
+        } else {
+            $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
+            $practice1 = DB::table('practiceinfo_plus')->where('practice_id', '=', Session::get('practice_id'))->first();
+            $client_name = 'mdNOSH - ' . $practice->practice_name;
+            $nonce = $this->generate_nonce();
+            Session::put('gnap_nonce', $nonce);
+            // GNAP request access to resource
+            $request_access_arr = [
+                "resources" => [
+                    [
+                        "type" => "photo-api",
+                        "actions" => [
+                            "read",
+                            "write",
+                            "dolphin"
+                        ],
+                        "locations" => [
+                            "https://server.example.net/",
+                            "https://resource.local/other"
+                        ],
+                        "datatypes" => [
+                            "metadata",
+                            "images"
+                        ]
+                    ],
+                    "dolphin-metadata"
+                ],
+                "client" => [
+                    "display" => [
+                        "name" => $client_name,
+                        "uri" => route('dashboard')
+                    ],
+                    "key" => [
+                        "proof" => "jwsd",
+                        "jwk" => json_decode($practice1->public_jwk, true)
+                    ]
+                ],
+                "interact" => [
+                    "redirect" => true,
+                    "callback" => [
+                        "method" => "redirect",
+                        "uri" => route('gnap_resources', [$id]),
+                        "nonce" => $nonce
+                    ]
+                ],
+                "capabilities" => ["ext1", "ext2"],
+                "subject" => [
+                    "sub_ids" => ["iss-sub", "email"],
+                    "assertions" => ["id_token"]
+                ]
+            ];
+            $gnap_result = $this->gnap_connect($request_access_arr, $gnap_url->gnap_uri);
+            if (isset($gnap_result['error'])) {
+
+            } else {
+                if (isset($gnap_result['continue']['access_token'])) {
+                    Session::put('gnap_access_token', $gnap_result['continue']['access_token']);
+                }
+                if (isset($gnap_result['continue']['uri'])) {
+                    Session::put('gnap_continue_uri', $gnap_result['continue']['uri']);
+                }
+                if (isset($gnap_result['continue']['wait'])) {
+                    Session::put('gnap_continue_wait', time() + $gnap_result['continue']['wait']);
+                } else {
+                    Session::put('gnap_continue_wait', time() + 5);
+                }
+                if (isset($gnap_result['interact']['callback'])) {
+                    Session::put('gnap_as_nonce', $gnap_result['interact']['callback']);
+                }
+
+                // Redirect to AS for RQ interaction
+                return redirect($gnap_result['interact']['redirect']);
+            }
+        }
+
+        $patient = DB::table('demographics')->where('pid', '=', $id)->first();
+        // Get access token from AS in anticipation for geting the RPT; if no refresh token before, get it too.
+        if ($patient->hieofone_as_refresh_token == '' || $patient->hieofone_as_refresh_token == null) {
+            Session::put('uma_resources_start', $id);
+            return redirect()->route('uma_register_auth');
+        }
+        $oidc = new OpenIDConnectUMAClient($patient->hieofone_as_url, $patient->hieofone_as_client_id, $patient->hieofone_as_client_secret);
+        $oidc->startSession();
+        $oidc->setSessionName('nosh');
+        if (file_exists(base_path() . '/fakelerootx1.pem')) {
+            $oidc->setCertPath(base_path() . '/fakelerootx1.pem');
+        }
+        $oidc->setUMA(true);
+        $oidc->refreshToken($patient->hieofone_as_refresh_token);
+        Session::put('uma_auth_access_token_nosh', $oidc->getAccessToken());
+        $resources = $oidc->get_resources(true);
+        Session::put('uma_auth_resources', $resources);
+        $resources_array = $this->fhir_resources();
+        $data['panel_header'] = $patient->firstname . ' ' . $patient->lastname . trans('noshform.uma_resources1');
+        $data['content'] = trans('noshform.uma_resources2') . '.';
+        $data['message_action'] = Session::get('message_action');
+        Session::forget('message_action');
+        $dropdown_array = [];
+        $items = [];
+        $items[] = [
+            'type' => 'item',
+            'label' => trans('noshform.back'),
+            'icon' => 'fa-chevron-left',
+            'url' => route('uma_list')
+        ];
+        $dropdown_array['items'] = $items;
+        $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
+        // Look for pNOSH link through registered client to mdNOSH Gateway
+        $data['content'] = '<div class="list-group">';
+        $i = 0;
+        foreach($resources as $resource) {
+            foreach ($resource['resource_scopes'] as $scope) {
+                if (parse_url($scope, PHP_URL_HOST) !== null) {
+                    $fhir_arr = explode('/', $scope);
+                    $resource_type = array_pop($fhir_arr);
+                    if (strpos($resource['name'], 'from Trustee') && $i == 0) {
+                        array_pop($fhir_arr);
+                        $data['content'] .= '<a href="' . implode('/', $fhir_arr) . '/uma_auth" target="_blank" class="list-group-item nosh-no-load"><span style="margin:10px;">Patient Centered Health Record (pNOSH) for ' . $patient->hieofone_as_name . '</span><span class="label label-success">Patient Centered Health Record</span></a>';
+                        $i++;
+                    }
+                    break;
+                }
+            }
+            $data['content'] .= '<a href="' . route('uma_resource_view', [$resource['_id']]) . '" class="list-group-item"><i class="fa ' . $resources_array[$resource_type]['icon'] . ' fa-fw"></i><span style="margin:10px;">' . $resources_array[$resource_type]['name'] . '</span></a>';
+        }
+        $data['content'] .= '</div>';
+        Session::put('uma_pid', $id);
+        Session::put('last_page', $request->fullUrl());
+        if ($id == Session::get('pid')) {
+            $data = array_merge($data, $this->sidebar_build('chart'));
+            $data['assets_js'] = $this->assets_js('chart');
+            $data['assets_css'] = $this->assets_css('chart');
+        } else {
+            $data['assets_js'] = $this->assets_js();
+            $data['assets_css'] = $this->assets_css();
+        }
+        return view('core', $data);
+    }
+
+    public function gnap_resource_view(Request $request, $type)
+    {
+        if (Session::has('uma_add_patient')) {
+            $data = Session::get('uma_add_patient');
+            Session::put('uma_uri', $data['hieofone_as_url']);
+            Session::put('uma_client_id', $data['hieofone_as_client_id']);
+            Session::put('uma_client_secret', $data['hieofone_as_client_secret']);
+            Session::put('type', 'Patient');
+        } else {
+            $patient = DB::table('demographics')->where('pid', '=', Session::get('uma_pid'))->first();
+            Session::put('uma_uri', $patient->hieofone_as_url);
+            Session::put('uma_client_id', $patient->hieofone_as_client_id);
+            Session::put('uma_client_secret', $patient->hieofone_as_client_secret);
+            Session::put('uma_as_name', $patient->hieofone_as_name);
+            $resources = Session::get('uma_auth_resources');
+            $key = array_search($type, array_column($resources, '_id'));
+            foreach ($resources[$key]['resource_scopes'] as $scope) {
+                if (parse_url($scope, PHP_URL_HOST) !== null) {
+                    $fhir_arr = explode('/', $scope);
+                    $resource_type = array_pop($fhir_arr);
+                    Session::put('type', $resource_type);
+                    if (strpos($resources[$key]['name'], 'from Trustee')) {
+                        if ($resource_type == 'Patient') {
+                            $scope .= '?subject:Patient=1';
+                        }
+                        Session::put('uma_resource_uri', $scope);
+                        break;
+                    } else {
+                        Session::put('uma_resource_uri', $scope);
+                    }
+                    $name_arr = explode(' from ', $resources[$key]['name']);
+                    Session::put('fhir_name', $name_arr[1]);
+                }
+            }
+        }
+        Session::save();
+        if (Session::has('rpt')) {
+            return redirect()->route('uma_api');
+        } else {
+            if (Session::has('uma_add_patient')) {
+                return redirect()->route('uma_register_auth');
+            } else {
+                return redirect()->route('uma_aat');
+            }
+        }
+    }
+
+    public function immunization_view(Request $request, $id='')
+    {
+        $query = DB::table('immunizations')->where('imm_id', '=', $id)->first();
+        $data['assets_js'] = $this->assets_js();
+        $data['assets_css'] = $this->assets_css();
+        if ($query) {
+            $data['content'] = '<div style="text-align: center;">';
+            $url = route('immunization_verify', [$id]);
+            $data['content'] .= QrCode::size(300)->generate($url);
+            $data['content'] .= '</div>';
+            ini_set('memory_limit','196M');
+            $dropdown_array = [];
+            $items = [];
+            $items[] = [
+                'type' => 'item',
+                'label' => trans('noshform.goodrx'),
+                'icon' => 'fa-chevron-down',
+                'url' => '#goodrx_container'
+            ];
+            $dropdown_array['items'] = $items;
+            $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
+            return view('immunization', $data);
+        } else {
+            $data['content'] = trans('noshform.immunization_view1');
+            $data['panel_header'] = trans('noshform.immunization_view2');
+            return view('core', $data);
         }
     }
 
@@ -4741,10 +5118,10 @@ class CoreController extends Controller
             } else {
                 if (Session::has('pid')) {
                     $pid = Session::get('pid');
-                    $directory = Session::get('documents_dir') . $pid . '/';
+                    $directory = Storage::path($pid . '/');
                 } else {
                     $pid = '';
-                    $directory = Session::get('documents_dir');
+                    $directory = Storage::path('');
                 }
                 if ($img) {
                     $new_name = time() . '_photo_' . Session::get('user_id') . ".png";
@@ -4811,7 +5188,7 @@ class CoreController extends Controller
     {
         ini_set('memory_limit','196M');
         $practice = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
-        $directory = $practice->documents_dir . Session::get('pid') . "/";
+        $directory = Storage::path(Session::get('pid') . "/");
         if ($request->isMethod('post')) {
             $arr = Session::get('messaging_editdoc_pages_list');
             $arr1 = Session::get('messaging_editdoc_pages');
@@ -5013,7 +5390,7 @@ class CoreController extends Controller
             $page1->writeImages($file_path, true);
             $pid = $request->input('pid');
             $patient = DB::table('demographics')->where('pid', '=', $pid)->first();
-            $directory = Session::get('documents_dir') . $pid;
+            $directory = Storage::path($pid);
             $new_file_path = $directory . "/" . $name . '_new.pdf';
             copy($file_path, $new_file_path);
             $pages_data2 = [
@@ -5217,7 +5594,7 @@ class CoreController extends Controller
                 ];
                 $id = DB::table('sendfax')->insertGetId($fax_data);
                 $this->audit('Add');
-                $directory = Session::get('documents_dir') . 'sentfax/' . $id;
+                $directory = Storage::path('sentfax/' . $id);
                 mkdir($directory, 0777);
                 $sendfax = [
                     'faxsubject' => null,
@@ -5358,7 +5735,7 @@ class CoreController extends Controller
     {
         if ($request->isMethod('post')) {
             $file = $request->file('file_input');
-            $directory = Session::get('documents_dir') . 'sentfax/' . $job_id . '/';
+            $directory = Storage::path('sentfax/' . $job_id . '/');
             $file_size = $file->getSize();
             $file_original = str_replace('.' . $file->getClientOriginalExtension(), '', $file->getClientOriginalName()) . '_' . time() . '.pdf';
             $file->move($directory, $file_original);
@@ -5712,7 +6089,6 @@ class CoreController extends Controller
                 'city' => $practice->city,
                 'state' => $practice->state,
                 'zip' => $practice->zip,
-                'documents_dir' => $practice->documents_dir,
                 'version' => $practice->version,
                 'active' => 'Y',
                 'fax_type' => '',
@@ -5749,6 +6125,18 @@ class CoreController extends Controller
                 'reminder_interval' => $practice->reminder_interval
             ];
             $practice_id = DB::table('practiceinfo')->insertGetId($practice_data);
+            $this->audit('Add');
+            $data_jwk = [];
+            $data_jwk['private_jwk'] = JWKFactory::createRSAKey(
+            4096, // Size in bits of the key. We recommend at least 2048 bits.
+            [
+                'alg' => 'RS256',
+                'use' => 'sig',
+                'kid' => $this->gen_uuid()
+            ]);
+            $data_jwk['public_jwk'] = $data_jwk['private_jwk']->toPublic();
+            $data_jwk['practice_id'] = $practice_id;
+            DB::table('practiceinfo_plus')->insert($practice_id);
             $this->audit('Add');
             Session::put('message_action', trans('noshform.practice') . " #" . $practice_id . " " . trans('noshform.practice_create1'));
             return redirect()->route('setup', [$practice_id]);
@@ -6268,7 +6656,7 @@ class CoreController extends Controller
             return redirect()->route('dashboard');
         } else {
             $practice = DB::table('practiceinfo')->first();
-            $dir = $practice->documents_dir;
+            $dir = Storage::path('');
             $files = glob($dir . "*.sql");
             $backup_arr = [];
             arsort($files);
@@ -6622,7 +7010,6 @@ class CoreController extends Controller
                 trans('noshform.practice_medicare') => $result->medicare,
                 trans('noshform.tax_id') => $result->tax_id,
                 trans('noshform.default_pos_id') => $result->default_pos_id,
-                trans('noshform.documents_dir') => $result->documents_dir,
                 trans('noshform.weight_unit') => $unit_arr[$result->weight_unit],
                 trans('noshform.height_unit') => $unit_arr[$result->height_unit],
                 trans('noshform.temp_unit') => $unit_arr[$result->temp_unit],
@@ -6731,9 +7118,10 @@ class CoreController extends Controller
     {
         $user = DB::table('users')->where('id', '=', Session::get('user_id'))->first();
         if (!empty($user->reports)) {
-            $yaml = $user->reports;
-            $formatter = Formatter::make($yaml, Formatter::YAML);
-            $array = $formatter->toArray();
+            // $yaml = $user->reports;
+            // $formatter = Formatter::make($yaml, Formatter::YAML);
+            // $array = $formatter->toArray();
+            $array = Yaml::parse($user->reports);
         } else {
             $array = [];
         }
@@ -6770,8 +7158,9 @@ class CoreController extends Controller
                         'search_join' => $search_join[$j]
                     ];
                 }
-                $formatter1 = Formatter::make($array, Formatter::ARR);
-                $data['reports'] = $formatter1->toYaml();
+                // $formatter1 = Formatter::make($array, Formatter::ARR);
+                // $data['reports'] = $formatter1->toYaml();
+                $data['reports'] = Yaml::dump($array);
                 $data['reports_updated_at'] = date('Y-m-d H:i:s', time());
                 DB::table('users')->where('id', '=', Session::get('user_id'))->update($data);
                 Session::put('message_action', $message);
@@ -7484,12 +7873,14 @@ class CoreController extends Controller
     public function superquery_delete(Request $request, $type)
     {
         $user = DB::table('users')->where('id', '=', Session::get('user_id'))->first();
-        $yaml = $user->reports;
-        $formatter = Formatter::make($yaml, Formatter::YAML);
-        $array = $formatter->toArray();
+        // $yaml = $user->reports;
+        // $formatter = Formatter::make($yaml, Formatter::YAML);
+        // $array = $formatter->toArray();
+        $array = Yaml::parse($user->reports);
         unset($array[$type]);
-        $formatter1 = Formatter::make($array, Formatter::ARR);
-        $data['reports'] = $formatter1->toYaml();
+        // $formatter1 = Formatter::make($array, Formatter::ARR);
+        // $data['reports'] = $formatter1->toYaml();
+        $data['reports'] = Yaml::dump($array);
         $data['reports_updated_at'] = date('Y-m-d H:i:s', time());
         DB::table('users')->where('id', '=', Session::get('user_id'))->update($data);
         Session::put('message_action', trans('noshform.superquery_delete'));
@@ -7773,9 +8164,10 @@ class CoreController extends Controller
         if ($user->reports == null || $user->reports == '') {
             $array = [];
         } else {
-            $yaml = $user->reports;
-            $formatter = Formatter::make($yaml, Formatter::YAML);
-            $array = $formatter->toArray();
+            // $yaml = $user->reports;
+            // $formatter = Formatter::make($yaml, Formatter::YAML);
+            // $array = $formatter->toArray();
+            $array = Yaml::parse($user->reports);
         }
         $list_array = [];
         $list_array[] = [
@@ -8298,9 +8690,7 @@ class CoreController extends Controller
             ];
             DB::table('demographics_relate')->insert($data2);
             $this->audit('Add');
-            $result = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
-            $directory = $result->documents_dir . $pid;
-            mkdir($directory, 0775);
+            Storage::makeDirectory($pid);
             $message = $data['lastname'] . ' ' . $data['firstname'] . ' added';
         }
         $this->clean_uma_sessions();
@@ -8971,7 +9361,7 @@ class CoreController extends Controller
                 if (file_exists($signature->signature)) {
                     unlink($signature->signature);
                 }
-                $file_path = Session::get('documents_dir') . 'signature_' . $id . '_' . time() . '.png';
+                $file_path = Storage::path('signature_' . $id . '_' . time() . '.png');
                 $img = $this->sigJsonToImage($request->input('output'));
                 imagepng($img, $file_path);
                 imagedestroy($img);

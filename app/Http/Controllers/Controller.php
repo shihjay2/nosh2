@@ -38,8 +38,15 @@ use Shihjay2\OpenIDConnectUMAClient;
 use Swift_Mailer;
 use Swift_SmtpTransport;
 use Session;
-use SoapBox\Formatter\Formatter;
+use Illuminate\Support\Facades\Storage;
+// use SoapBox\Formatter\Formatter;
 use URL;
+use Symfony\Component\Yaml\Yaml;
+use Jose\Component\Core\JWK;
+use Jose\Component\Core\AlgorithmManager;
+use Jose\Component\Signature\Algorithm\RS256;
+use Jose\Component\Signature\JWSBuilder;
+use Jose\Component\Signature\Serializer\CompactSerializer;
 
 class Controller extends BaseController
 {
@@ -108,8 +115,9 @@ class Controller extends BaseController
         if ($query) {
             if ($query->{$column} !== '' && $query->{$column} !== null) {
                 if ($this->yaml_check($query->{$column})) {
-                    $formatter = Formatter::make($query->{$column}, Formatter::YAML);
-                    $arr = $formatter->toArray();
+                    // $formatter = Formatter::make($query->{$column}, Formatter::YAML);
+                    // $arr = $formatter->toArray();
+                    $arr = Yaml::parse($query->{$column});
                     $list_array = [];
                     foreach ($arr as $k=>$v) {
                         if ($column == 'proc_description') {
@@ -2284,9 +2292,10 @@ class Controller extends BaseController
 
     protected function array_route()
     {
-        $yaml = File::get(resource_path() . '/routes.yaml');
-        $formatter = Formatter::make($yaml, Formatter::YAML);
-        $arr = $formatter->toArray();
+        // $yaml = File::get(resource_path() . '/routes.yaml');
+        // $formatter = Formatter::make($yaml, Formatter::YAML);
+        // $arr = $formatter->toArray();
+        $arr = Yaml::parseFile(resource_path() . '/routes.yaml');
         $route[''] = '';
         foreach ($arr as $row) {
             $route[$row['desc']] = $row['desc'];
@@ -2306,9 +2315,10 @@ class Controller extends BaseController
             'intramuscularly' => ['C1556154', 'Intravascular Route of Administration'],
             'intravenously' => ['C2960476', 'Intramuscular Route of Administration']
         ];
-        $yaml = File::get(resource_path() . '/routes.yaml');
-        $formatter = Formatter::make($yaml, Formatter::YAML);
-        $arr = $formatter->toArray();
+        // $yaml = File::get(resource_path() . '/routes.yaml');
+        // $formatter = Formatter::make($yaml, Formatter::YAML);
+        // $arr = $formatter->toArray();
+        $arr = Yaml::parseFile(resource_path() . '/routes.yaml');
         foreach ($arr as $row) {
             $route[$row['desc']] = [$row['code'], $row['desc']];
         }
@@ -3600,8 +3610,9 @@ class Controller extends BaseController
                 }
             }
         }
-        $formatter1 = Formatter::make($data3, Formatter::ARR);
-        $text = $formatter1->toYaml();
+        // $formatter1 = Formatter::make($data3, Formatter::ARR);
+        // $text = $formatter1->toYaml();
+        $text = Yaml::dump($data3);
         $file_path = resource_path() . '/common_icd.yaml';
         File::put($file_path, $text);
         return 'OK';
@@ -3686,8 +3697,9 @@ class Controller extends BaseController
             }
             $data[$key] = $form;
         }
-        $formatter1 = Formatter::make($data, Formatter::ARR);
-        $text = $formatter1->toYaml();
+        // $formatter1 = Formatter::make($data, Formatter::ARR);
+        // $text = $formatter1->toYaml();
+        $text = Yaml::dump($data);
         $file_path = resource_path() . '/forms.yaml';
         File::put($file_path, $text);
         return $data;
@@ -3895,8 +3907,9 @@ class Controller extends BaseController
             }
         }
         $arr = $this->super_unique($arr);
-        $formatter1 = Formatter::make($arr, Formatter::ARR);
-        $text = $formatter1->toYaml();
+        // $formatter1 = Formatter::make($arr, Formatter::ARR);
+        // $text = $formatter1->toYaml();
+        $text = Yaml::dump($arr);
         $file_path = resource_path() . '/test.yaml';
         File::put($file_path, $text);
         return $arr_options;
@@ -4263,7 +4276,7 @@ class Controller extends BaseController
             $data['images'] = '<br><h4>' . trans('noshform.images') . ':</h4><p class="view">';
             $k = 0;
             foreach ($imagesInfo as $imagesInfo_row) {
-                $directory = $practiceInfo->documents_dir . $pid . "/";
+                $directory = Storage::path($pid . "/");
                 $new_directory = public_path() . '/temp/';
                 $new_directory1 = '/temp/';
                 $file_path = str_replace($directory, $new_directory, $imagesInfo_row->image_location);
@@ -4496,8 +4509,10 @@ class Controller extends BaseController
             ];
             $job_id = DB::table('sendfax')->insertGetId($fax_data);
             $this->audit('Add');
-            $fax_directory = Session::get('documents_dir') . 'sentfax/' . $job_id;
+            $fax_directory = Storage::path('sentfax/' . $job_id);
             mkdir($fax_directory, 0777);
+        } else {
+            $fax_directory = Storage::path('sentfax/' . $job_id);
         }
         $filename_parts = explode("/", $filename);
         $fax_filename = $fax_directory . "/" . end($filename_parts);
@@ -4682,9 +4697,10 @@ class Controller extends BaseController
                                 $route = '';
                                 if (isset($row2['resource']['dosage'][0]['route']['coding'][0])) {
                                     if ($row2['resource']['dosage'][0]['route']['coding'][0]['system'] == 'http://snomed.info/sct') {
-                                        $yaml = File::get(resource_path() . '/routes.yaml');
-                                        $formatter = Formatter::make($yaml, Formatter::YAML);
-                                        $route_arr = $formatter->toArray();
+                                        // $yaml = File::get(resource_path() . '/routes.yaml');
+                                        // $formatter = Formatter::make($yaml, Formatter::YAML);
+                                        // $route_arr = $formatter->toArray();
+                                        $route_arr = Yaml::parseFile(resource_path() . '/routes.yaml');
                                         $q = $row2['resource']['dosage'][0]['route']['coding'][0]['code'];
                                         $route_result = Arr::where($route_arr, function($value, $key) use ($q) {
                                             if (stripos($value['code'], (string)$q) !== false) {
@@ -4849,24 +4865,22 @@ class Controller extends BaseController
             }
         }
         $output = curl_exec($ch);
-        // if ($response_header == true) {
-            //$info = curl_getinfo($ch);
-            $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
-            $header = substr($output, 0, $header_size);
-            $headers = $this->get_headers_from_curl_response($header);
-            if (empty($headers)) {
-                $result = json_decode($output, true);
-            } else {
-                $header_val_arr = explode(', ', $headers[0]['WWW-Authenticate']);
-                $header_val_arr1 = explode('=', $header_val_arr[1]);
-                $body = substr($output, $header_size);
-                $result = json_decode($body, true);
-                $result['as_uri'] = trim(str_replace('"', '', $header_val_arr1[1]));
+        $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+        $header = substr($output, 0, $header_size);
+        $headers = $this->get_headers_from_curl_response($header);
+        if (empty($headers)) {
+            $result = json_decode($output, true);
+        } else {
+            $body = substr($output, $header_size);
+            $result = json_decode($body, true);
+            $result['www_auth_type'] = strstr($headers[0]['WWW-Authenticate'], ' ', true);
+            $header_str = strstr($headers[0]['WWW-Authenticate'], ' ');
+            $header_arr = explode(',', $header_str);
+            foreach ($header_arr as $header_row) {
+                $header_row_arr = explode('=', $header_row);
+                $result[$header_row_arr[0]] = trim(str_replace('"', '', $header_row_arr[1]));
             }
-            //$result['error'] = $output;
-        // } else {
-        //    $result = json_decode($output, true);
-        // }
+        }
         curl_close($ch);
         return $result;
     }
@@ -6859,6 +6873,7 @@ class Controller extends BaseController
     {
         $nosh_action_arr = [
             '' => trans('noshform.do_nothing'),
+            'electronic_sign' => trans('noshform.electronically_sign'),
             'inventory' => trans('noshform.pull_inventory')
         ];
         if (Session::get('group_id') == '100') {
@@ -7627,6 +7642,7 @@ class Controller extends BaseController
         ];
         $nosh_action_arr = [
             '' => trans('noshform.save_only'),
+            'electronic_sign' => trans('noshform.electronically_sign'),
             'print_action' => trans('noshform.print'),
             'print_queue' => trans('noshform.add_print_queue')
         ];
@@ -8049,7 +8065,6 @@ class Controller extends BaseController
                 'medicare' => $result->medicare,
                 'tax_id' => $result->tax_id,
                 'default_pos_id' => $result->default_pos_id,
-                'documents_dir' => $result->documents_dir,
                 'weight_unit' => $result->weight_unit,
                 'height_unit' => $result->height_unit,
                 'temp_unit' => $result->temp_unit,
@@ -8090,24 +8105,6 @@ class Controller extends BaseController
                 'select_items' => $this->array_pos(),
                 'default_value' => $settings_arr['default_pos_id']
             ];
-            if (Session::get('practice_id') == '1') {
-                $items[] = [
-                    'name' => 'documents_dir',
-                    'label' => trans('noshform.documents_dir'),
-                    'type' => 'text',
-                    'required' => true,
-                    'default_value' => $settings_arr['documents_dir']
-                ];
-            } else {
-                $items[] = [
-                    'name' => 'documents_dir',
-                    'label' => trans('noshform.documents_dir'),
-                    'type' => 'text',
-                    'required' => true,
-                    'readonly' => true,
-                    'default_value' => $settings_arr['documents_dir']
-                ];
-            }
             $items[] = [
                 'name' => 'weight_unit',
                 'label' => trans('noshform.weight_unit'),
@@ -11397,6 +11394,11 @@ class Controller extends BaseController
         return $ccda;
     }
 
+    protected function generate_nonce()
+    {
+		return md5(uniqid(rand(), TRUE));
+	}
+
     protected function generate_pdf($html, $filepath, $footer='footerpdf', $header='', $type='1', $headerparam='', $watermark='')
     {
         // if ($header != '') {
@@ -11679,7 +11681,7 @@ class Controller extends BaseController
                         }
                         $k++;
                     }
-                    $directory = $practice_row->documents_dir . $pid;
+                    $directory = Storage::path($pid);
                     $file_path = $directory . '/tests_' . time() . '.pdf';
                     $html = $this->page_intro('Test Results', $practice_id);
                     $html .= $this->page_results($pid, $results, $patient_name);
@@ -11746,11 +11748,11 @@ class Controller extends BaseController
                     $this->audit('Add');
                 }
                 $file1 = str_replace('/srv/ftp/shared/import/', '', $file);
-                rename($file, $practice_row->documents_dir . $file1);
+                rename($file, Storage::path($file1));
                 $full_count++;
             } else {
                 $file1 = str_replace('/srv/ftp/shared/import/', '', $file);
-                rename($file, $practice_row->documents_dir . $file1 . '.error');
+                rename($file, Storage::path($file1 . '.error'));
             }
         }
         return $full_count;
@@ -11760,7 +11762,7 @@ class Controller extends BaseController
     {
         $result = DB::table('practiceinfo')->where('practice_id', '=', $practice_id)->first();
         Config::set('app.timezone' , $result->timezone);
-        $dir = $result->documents_dir . 'scans/' . $practice_id;
+        $dir = Storage::path('scans/' . $practice_id);
         if (!file_exists($dir)) {
             mkdir($dir, 0777);
         }
@@ -11861,6 +11863,58 @@ class Controller extends BaseController
         $result = $client->api('repo')->commits()->show('shihjay2', 'nosh2', $sha);
         $client->removeCache();
         return $result;
+    }
+
+    protected function gnap_connect($post_body_arr, $uri, $token='', $jws=false)
+    {
+        $post_body = json_encode($post_body_arr);
+        $content_type = 'application/json';
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $uri);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_body);
+        $header_arr = [
+            "Content-Type: {$content_type}",
+            'Content-Length: ' . strlen($post_body)
+        ];
+        if ($token != '') {
+            $header_arr[] = 'Authorization: GNAP ' . $token;
+        }
+        if ($jws == true) {
+            $algorithmManager = new AlgorithmManager([
+                new RS256(),
+            ]);
+            $jwsBuilder = new JWSBuilder(
+                $algorithmManager
+            );
+            $serializer = new CompactSerializer();
+            $practice = DB::table('practiceinfo_plus')->where('practice_id', '=', Session::get('practice_id'))->first();
+            $jwk = new JWK(json_decode($practice->private_jwk, true));
+            $jws = $jwsBuilder
+                ->create()
+                ->withPayload(json_encode($post_body_arr), true)
+                ->addSignature($jwk, ['alg' => 'RS256'])
+                ->build();
+            $jwsd = $serializer->serialize($jws, 0);
+            $header_arr[] = 'Detached-JWS: ' . $jwsd;
+        }
+        curl_setopt($ch, CURLOPT_HEADER, 1);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $header_arr);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($ch, CURLOPT_FAILONERROR,1);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION,1);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT ,0);
+        $json = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close ($ch);
+        if ($httpCode !== 404 && $httpCode !== 0) {
+            $gnap_result = json_decode($json, true);
+        } else {
+            $gnap_result = ['Error'];
+        }
+        return $gnap_result;
     }
 
     protected function goodrx($rx, $command, $api_key='46e983ffba', $secret_key='3QmFl8W7Y2Mb655bn++NNA==')
@@ -13779,8 +13833,9 @@ class Controller extends BaseController
                 ];
             }
         }
-        $formatter1 = Formatter::make($data1, Formatter::ARR);
-        $text = $formatter1->toYaml();
+        // $formatter1 = Formatter::make($data1, Formatter::ARR);
+        // $text = $formatter1->toYaml();
+        $text = Yaml::dump($data1);
         $file_path = resource_path() . '/healthwise.yaml';
         File::put($file_path, $text);
         return 'OK';
@@ -15948,7 +16003,7 @@ class Controller extends BaseController
         while (!file_exists($file_path)) {
             sleep(2);
         }
-        $new_file_path = Session::get('documents_dir') . $pid . '/' . $file_name;
+        $new_file_path = Storage::path($pid . '/' . $file_name);
         File::copy($file_path, $new_file_path);
         App::setLocale(Session::get('practice_locale'));
         $pages_data = [
@@ -16007,8 +16062,9 @@ class Controller extends BaseController
                 if ($proc_row->{$procedure_k} !== '' && $proc_row->{$procedure_k} !== null) {
                     if ($procedure_k == 'proc_description') {
                         if ($this->yaml_check($proc_row->{$procedure_k})) {
-                            $formatter = Formatter::make($proc_row->{$procedure_k}, Formatter::YAML);
-                            $arr = $formatter->toArray();
+                            // $formatter = Formatter::make($proc_row->{$procedure_k}, Formatter::YAML);
+                            // $arr = $formatter->toArray();
+                            $arr = Yaml::parse($proc_row->{$procedure_k});
                             foreach ($arr as $arr_item) {
                                 $pre_proc[$m]['code'] = $arr_item['code'];
                                 $pre_proc[$m]['type'] = $arr_item['type'];
@@ -16721,6 +16777,9 @@ class Controller extends BaseController
                 $sequence = ', fifth';
             }
             $response['text']['div'] = '<div>' . $row->imm_immunization . $sequence . ', Given: ' . date('Y-m-d', $this->human_to_unix($row->imm_date)) . '</div>';
+        }
+        // ServiceRequest (Orders)
+        if ($resource_type == 'ServiceRequest') {
         }
         return $response;
     }
@@ -17658,7 +17717,7 @@ class Controller extends BaseController
             $totalpages = $totalpages + $row4->pagecount;
         }
         if ($fax_data->faxcoverpage == 'yes') {
-            $cover_filename = Session::get('documents_dir') . 'sentfax/' . $job_id . '/coverpage.pdf';
+            $cover_filename = Storage::path('sentfax/' . $job_id . '/coverpage.pdf');
             if(file_exists($cover_filename)) {
                 unlink($cover_filename);
             }
@@ -18037,8 +18096,9 @@ class Controller extends BaseController
                 }
             }
         }
-        $formatter1 = Formatter::make($data1, Formatter::ARR);
-        $text = $formatter1->toYaml();
+        // $formatter1 = Formatter::make($data1, Formatter::ARR);
+        // $text = $formatter1->toYaml();
+        $text = Yaml::dump($data1);
         $file_path = resource_path() . '/supplements.yaml';
         File::put($file_path, $text);
         return 'OK';

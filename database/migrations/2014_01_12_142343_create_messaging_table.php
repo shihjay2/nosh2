@@ -17,7 +17,7 @@ class CreateMessagingTable extends Migration {
 				$table->integer('pid')->nullable();
 				$table->string('message_to', 255)->nullable();
 				$table->integer('message_from')->nullable();
-				$table->timestamp('date')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
+				$table->timestamp('date')->useCurrentOnUpdate();
 				$table->string('cc', 255)->nullable();
 				$table->string('subject', 255)->nullable();
 				$table->longtext('body')->nullable();

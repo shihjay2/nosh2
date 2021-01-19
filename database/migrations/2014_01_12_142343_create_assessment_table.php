@@ -16,7 +16,7 @@ class CreateAssessmentTable extends Migration {
 				$table->bigInteger('eid')->primary();
 				$table->bigInteger('pid')->nullable();
 				$table->string('encounter_provider', 255)->nullable();
-				$table->timestamp('assessment_date')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
+				$table->timestamp('assessment_date')->useCurrentOnUpdate();
 				$table->string('assessment_icd1', 20)->nullable();
 				$table->string('assessment_icd2', 20)->nullable();
 				$table->string('assessment_icd3', 20)->nullable();

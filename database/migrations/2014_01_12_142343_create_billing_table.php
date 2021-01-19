@@ -18,7 +18,7 @@ class CreateBillingTable extends Migration {
 				$table->bigInteger('pid')->nullable();
 				$table->integer('insurance_id_1')->nullable();
 				$table->integer('insurance_id_2')->nullable();
-				$table->timestamp('bill_date')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
+				$table->timestamp('bill_date')->useCurrentOnUpdate();
 				$table->string('bill_complex', 255)->nullable();
 				$table->string('bill_Box11C', 29)->nullable();
 				$table->string('bill_payor_id', 5)->nullable();

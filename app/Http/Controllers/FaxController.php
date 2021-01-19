@@ -9,6 +9,7 @@ use App\Libraries\Phaxio;
 use DB;
 use File;
 use Response;
+use Illuminate\Support\Facades\Storage;
 use URL;
 
 class FaxController extends Controller {
@@ -55,7 +56,7 @@ class FaxController extends Controller {
 		$row = DB::table('practiceinfo')->where('practice_id', '=', $practice_id)->first();
 		if ($row->fax_type == 'phaxio') {
 			if ($request->input('success') == 'true' && $request->input('direction') == 'received') {
-				$received_dir = $row->documents_dir . 'received/' . $practice_id;
+				$received_dir = Storage::path('received/' . $practice_id);
 				if (! file_exists($received_dir)) {
 					mkdir($received_dir, 0777);
 				}

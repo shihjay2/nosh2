@@ -377,6 +377,9 @@ return [
     "save_pdf" => "Save as PDF",
     "no_transaction" => "Transaction receipt not found",
 
+    // Immunization
+    "present_immunization" => "Immunization Passport",
+
     // Email
     "api_provider_register1" => "This message is sent to you from one of your patients who has a NOSH ChartingSystem electronic health record system.",
     "api_provider_register2" => "Your account has been added to your patient's system, but you'll need to click on the following link to complete your registration.",

@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use App;
-use App\Http\Requests;
+use Illuminate\Support\Arr;
 // use App\Libraries\OpenIDConnectUMAClient;
 use Artisan;
 use Auth;
 use Config;
+use PragmaRX\Countries\Package\Countries;
 use Crypt;
 use Date;
 use DateTime;
@@ -15,32 +16,38 @@ use DateTimeZone;
 use DB;
 use File;
 use Form;
+use SoapBox\Formatter\Formatter;
 use Google_Client;
 use Hash;
 use HTML;
 use KubAT\PhpSimple\HtmlDomParser;
-use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
-use Illuminate\Support\MessageBag;
 use Imagick;
 use Laravel\LegacyEncrypter\McryptEncrypter;
-use PragmaRX\Countries\Package\Countries;
+use Illuminate\Support\MessageBag;
+use Shihjay2\OpenIDConnectUMAClient;
+use Symfony\Component\Process\Process;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 use QrCode;
+use Illuminate\Http\Request;
+use App\Http\Requests;
 use Response;
 use Schema;
 use Session;
-use Shihjay2\OpenIDConnectUMAClient;
-use SoapBox\Formatter\Formatter;
-use Symfony\Component\Process\Process;
-use Symfony\Component\Process\Exception\ProcessFailedException;
+use Illuminate\Support\Facades\Storage;
 use URL;
+
+use Jose\Component\Core\JWK;
+use Jose\Component\Core\AlgorithmManager;
+use Jose\Component\Signature\Algorithm\RS256;
+use Jose\Component\Signature\JWSBuilder;
+use Jose\Component\Signature\Serializer\CompactSerializer;
+use Jose\Component\KeyManagement\JWKFactory;
 
 class InstallController extends Controller {
 
     public function backup()
     {
-        $row2 = DB::table('practiceinfo')->first();
-        $dir = $row2->documents_dir;
+        $dir = Storage::path('');
         $file = $dir . "noshbackup_" . time() . ".sql";
         $command = "mysqldump -u " . env('DB_USERNAME') . " -p". env('DB_PASSWORD') . " " . env('DB_DATABASE') . " > " . $file;
         system($command);
@@ -56,6 +63,233 @@ class InstallController extends Controller {
         DB::delete('delete from extensions_log where DATE_SUB(CURDATE(), INTERVAL 30 DAY) >= timestamp');
         $this->clean_temp_dir();
         $this->healthwise_compile();
+    }
+
+    public function gnap_patient_centric(Request $request)
+    {
+        $query = DB::table('practiceinfo')->where('practice_id', '=', '1')->first();
+        if ($query->patient_centric == 'y') {
+            $query1 = DB::table('practiceinfo')->where('practice_id', '=', '1')->first();
+            if ($query1->gnap_client_id == '') {
+                // Register with AS
+
+
+                if ($query->uma_uri == '' || $query->uma_uri == null) {
+                    // Check if AS is on the same $domain_name
+                    $check_open_id_url = str_replace('/nosh', '/.well-known/uma2-configuration', URL::to('/'));
+                    $ch = curl_init();
+                    curl_setopt($ch,CURLOPT_URL, $check_open_id_url);
+                    curl_setopt($ch,CURLOPT_FAILONERROR,1);
+                    curl_setopt($ch,CURLOPT_FOLLOWLOCATION,1);
+                    curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+                    curl_setopt($ch,CURLOPT_TIMEOUT, 60);
+                    curl_setopt($ch,CURLOPT_CONNECTTIMEOUT ,0);
+                    if (file_exists(base_path() . '/fakelerootx1.pem')) {
+                        curl_setopt($ch, CURLOPT_CAINFO, base_path() . '/fakelerootx1.pem');
+                    }
+                    $check_exec = curl_exec($ch);
+                    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                    curl_close ($ch);
+                    if ($httpCode == 404 || $httpCode == 0) {
+                        return redirect()->route('uma_patient_centric_designate');
+                    }
+                    $data['uma_uri'] = str_replace('/nosh', '', URL::to('/'));
+                } else {
+                    $data['uma_uri'] = $query->uma_uri;
+                }
+                // Register as resource server
+                $patient = DB::table('demographics')->where('pid', '=', '1')->first();
+                // $client_name = 'Patient NOSH for ' .  $patient->firstname . ' ' . $patient->lastname . ', DOB: ' . date('Y-m-d', strtotime($patient->DOB));
+                $client_name = 'Patient NOSH for ' .  $patient->firstname . ' ' . $patient->lastname;
+                $url = route('uma_auth');
+                $oidc = new OpenIDConnectUMAClient($data['uma_uri']);
+                $oidc->startSession();
+                $oidc->setClientName($client_name);
+                $oidc->setSessionName('pnosh');
+                $oidc->addRedirectURLs($url);
+                $oidc->addRedirectURLs(route('uma_api'));
+                $oidc->addRedirectURLs(route('uma_logout'));
+                $oidc->addRedirectURLs(route('uma_patient_centric'));
+                $oidc->addRedirectURLs(route('uma_register_auth'));
+                $oidc->addRedirectURLs(route('oidc'));
+                $oidc->addRedirectURLs(route('oidc_api'));
+                $oidc->addRedirectURLs(str_replace('uma_auth', 'fhir', $url));
+                $oidc->addScope('openid');
+                $oidc->addScope('email');
+                $oidc->addScope('profile');
+                $oidc->addScope('address');
+                $oidc->addScope('phone');
+                $oidc->addScope('offline_access');
+                $oidc->addScope('uma_protection');
+                $oidc->addScope('uma_authorization');
+                $oidc->addGrantType('authorization_code');
+                $oidc->addGrantType('password');
+                $oidc->addGrantType('client_credentials');
+                $oidc->addGrantType('implicit');
+                $oidc->addGrantType('jwt-bearer');
+                $oidc->addGrantType('refresh_token');
+                $oidc->setLogo('https://cloud.noshchartingsystem.com/SAAS-Logo.jpg');
+                $oidc->setClientURI(str_replace('/uma_auth', '', $url));
+                $oidc->setUMA(true);
+                $oidc->register();
+                $data['uma_client_id']  = $oidc->getClientID();
+                $data['uma_client_secret'] = $oidc->getClientSecret();
+                DB::table('practiceinfo')->where('practice_id', '=', '1')->update($data);
+                $this->audit('Update');
+                return redirect()->route('uma_patient_centric');
+            } else {
+                if ($query->uma_refresh_token == '') {
+                    // Get refresh token and link patient with user
+                    $client_id = $query->uma_client_id;
+                    $client_secret = $query->uma_client_secret;
+                    $open_id_url = $query->uma_uri;
+                    $url = route('uma_patient_centric');
+                    $oidc = new OpenIDConnectUMAClient($open_id_url, $client_id, $client_secret);
+                    $oidc->startSession();
+                    $oidc->setRedirectURL($url);
+                    $oidc->setSessionName('pnosh');
+                    $oidc->setUMA(true);
+                    $oidc->setUMAType('resource_server');
+                    $oidc->authenticate();
+                    $user_data['uid']  = $oidc->requestUserInfo('sub');
+                    DB::table('users')->where('id', '=', '2')->update($user_data);
+                    $access_token = $oidc->getAccessToken();
+                    $uport_id = $oidc->requestUserInfo('uport_id');
+                    if ($oidc->getRefreshToken() != '') {
+                        $refresh_data['uma_refresh_token'] = $oidc->getRefreshToken();
+                        DB::table('practiceinfo')->where('practice_id', '=', '1')->update($refresh_data);
+                        $this->audit('Update');
+                    }
+                    // Register resource sets
+                    $uma = DB::table('uma')->first();
+                    if (!$uma) {
+                        // First time
+                        $resource_set_array[] = [
+                            'name' => 'Patient from Trustee',
+                            'icon' => 'https://cloud.noshchartingsystem.com/i-patient.png',
+                            'scopes' => [
+                                URL::to('/') . '/fhir/Patient',
+                                URL::to('/') . '/fhir/Medication',
+                                URL::to('/') . '/fhir/Practitioner',
+                                'view',
+                                'edit'
+                            ]
+                        ];
+                        $resource_set_array[] = [
+                            'name' => 'Conditions from Trustee',
+                            'icon' => 'https://cloud.noshchartingsystem.com/i-condition.png',
+                            'scopes' => [
+                                URL::to('/') . '/fhir/Condition',
+                                'view',
+                                'edit'
+                            ]
+                        ];
+                        $resource_set_array[] = [
+                            'name' => 'Medications from Trustee',
+                            'icon' => 'https://cloud.noshchartingsystem.com/i-pharmacy.png',
+                            'scopes' => [
+                                URL::to('/') . '/fhir/MedicationStatement',
+                                'view',
+                                'edit'
+                            ]
+                        ];
+                        $resource_set_array[] = [
+                            'name' => 'Allergies from Trustee',
+                            'icon' => 'https://cloud.noshchartingsystem.com/i-allergy.png',
+                            'scopes' => [
+                                URL::to('/') . '/fhir/AllergyIntolerance',
+                                'view',
+                                'edit'
+                            ]
+                        ];
+                        $resource_set_array[] = [
+                            'name' => 'Immunizations from Trustee',
+                            'icon' => 'https://cloud.noshchartingsystem.com/i-immunizations.png',
+                            'scopes' => [
+                                URL::to('/') . '/fhir/Immunization',
+                                'view',
+                                'edit'
+                            ]
+                        ];
+                        $resource_set_array[] = [
+                            'name' => 'Encounters from Trustee',
+                            'icon' => 'https://cloud.noshchartingsystem.com/i-medical-records.png',
+                            'scopes' => [
+                                URL::to('/') . '/fhir/Encounter',
+                                'view',
+                                'edit'
+                            ]
+                        ];
+                        $resource_set_array[] = [
+                            'name' => 'Family History from Trustee',
+                            'icon' => 'https://cloud.noshchartingsystem.com/i-family-practice.png',
+                            'scopes' => [
+                                URL::to('/') . '/fhir/FamilyHistory',
+                                'view',
+                                'edit'
+                            ]
+                        ];
+                        $resource_set_array[] = [
+                            'name' => 'Documents from Trustee',
+                            'icon' => 'https://cloud.noshchartingsystem.com/i-file.png',
+                            'scopes' => [
+                                URL::to('/') . '/fhir/Binary',
+                                'view',
+                                'edit'
+                            ]
+                        ];
+                        $resource_set_array[] = [
+                            'name' => 'Observations from Trustee',
+                            'icon' => 'https://cloud.noshchartingsystem.com/i-cardiology.png',
+                            'scopes' => [
+                                URL::to('/') . '/fhir/Observation',
+                                'view',
+                                'edit'
+                            ]
+                        ];
+                        foreach ($resource_set_array as $resource_set_item) {
+                            $response = $oidc->resource_set($resource_set_item['name'], $resource_set_item['icon'], $resource_set_item['scopes']);
+                            if (isset($response['resource_set_id'])) {
+                                foreach ($resource_set_item['scopes'] as $scope_item) {
+                                    $response_data1 = [
+                                        'resource_set_id' => $response['resource_set_id'],
+                                        'scope' => $scope_item,
+                                        'user_access_policy_uri' => $response['user_access_policy_uri']
+                                    ];
+                                    DB::table('uma')->insert($response_data1);
+                                    $this->audit('Add');
+                                }
+                            }
+                        }
+                    }
+                    // Login as owner
+                    $user = DB::table('users')->where('id', '=', '2')->first();
+                    Auth::loginUsingId($user->id);
+                    $practice1 = DB::table('practiceinfo')->where('practice_id', '=', $user->practice_id)->first();
+                    Session::put('user_id', $user->id);
+                    Session::put('group_id', $user->group_id);
+                    Session::put('practice_id', $user->practice_id);
+                    Session::put('version', $practice1->version);
+                    Session::put('practice_active', $practice1->active);
+                    Session::put('displayname', $user->displayname);
+                    Session::put('rcopia', $practice1->rcopia_extension);
+                    Session::put('mtm_extension', $practice1->mtm_extension);
+                    Session::put('patient_centric', $practice1->patient_centric);
+                    Session::put('uma_auth_access_token', $access_token);
+                    Session::put('uport_id', $uport_id);
+                    $url_hieofoneas = str_replace('/nosh', '/resources/' . $practice1->uma_client_id, URL::to('/'));
+                    Session::put('url_hieofoneas', $url_hieofoneas);
+                    if ($practice1->patient_centric == 'y') {
+                        if ($practice1->uma_uri !== null && $practice1->uma_uri !== '') {
+                            Session::put('uma_uri', $practice1->uma_uri);
+                        }
+                    }
+                    setcookie("login_attempts", 0, time()+900, '/');
+                    // return redirect($open_id_url);
+                }
+            }
+        }
+        return redirect()->route('dashboard');
     }
 
     public function google_start(Request $request)
@@ -126,6 +360,124 @@ class InstallController extends Controller {
         // }
     }
 
+    public function immunization_verify(Request $request, $id, $ret='', $did='')
+    {
+        $data['hash'] = '';
+        $data['ajax'] = route('dashboard');
+        $data['ajax1'] = route('dashboard');
+        $data['uport_need'] = '';
+        $data['uport_id'] = '';
+        $data['panel_header'] = trans('noshform.immunization_view3');
+        $data['url'] = route('immunization_verify', [$id]);
+        $query = DB::table('immunizations')->where('imm_id', '=', $id)->first();
+        $query1 = DB::table('fhir_json')->where('table', '=', 'immunizations')->where('index', '=', $id)->first();
+        $data['content'] = '';
+        $outcome = '';
+        if ($query) {
+            if ($query->id !== null && $query->id !== '') {
+                if ($query1->transaction !== '' && $query1->transaction !== null) {
+                    $data['tx_hash'] = $query->transaction;
+                    $data['imm_json'] = $query->json;
+                    $hash = hash('sha256', $query->json);
+                    $etherscan_uri = "https://rinkeby.etherscan.io/tx/" . $query->transaction;
+                    $ch = curl_init();
+                    curl_setopt($ch,CURLOPT_URL, $etherscan_uri);
+                    curl_setopt($ch,CURLOPT_FAILONERROR,1);
+                    curl_setopt($ch,CURLOPT_FOLLOWLOCATION,1);
+                    curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+                    curl_setopt($ch,CURLOPT_TIMEOUT, 60);
+                    curl_setopt($ch,CURLOPT_CONNECTTIMEOUT ,0);
+                    $return_data = curl_exec($ch);
+                    curl_close($ch);
+                    $html = HTMLDomParser::str_get_html($return_data);
+                    $data_row = $html->find('span[id=rawinput]',0);
+                    $data['inputdata'] = $data_row->innertext;
+                    $outcome = '';
+                    $items[] = [
+                        'name' => 'imm_json',
+                        'label' => trans('noshform.imm_json'),
+                        'type' => 'textarea',
+                        // 'readonly' => true,
+                        'default_value' => $query->json
+                    ];
+                    $items[] = [
+                        'name' => 'hash',
+                        'label' => trans('noshform.imm_hash'),
+                        'type' => 'text',
+                        'readonly' => true,
+                        'default_value' => $hash
+                    ];
+                    $items[] = [
+                        'name' => 'tx_hash',
+                        'label' => trans('noshform.tx_hash'),
+                        'type' => 'text',
+                        'readonly' => true,
+                        'default_value' => $query->transaction
+                    ];
+                    $items[] = [
+                        'name' => 'tx_data',
+                        'label' => trans('noshform.tx_data'),
+                        'type' => 'textarea',
+                        'readonly' => true,
+                        'default_value' => $data['inputdata']
+                    ];
+                    if ($request->isMethod('post')) {
+                        $data['uport_need'] = 'validate';
+                        Session::put('imm_json', $request->input('imm_json'));
+                        Session::put('hash', hash('sha256', $request->input('imm_json')));
+                    }
+                    if (Session::has('imm_json')) {
+                        if ($ret !== '') {
+                            $items[0]['default_value'] = Session::get('imm_json');
+                            $items[1]['default_value'] = Session::get('hash');
+                            Session::forget('imm_json');
+                            Session::forget('hash');
+                            // $bytes = 13 * 64;
+                            // $rx_hash = substr(substr(substr($ret, 18), $bytes), 0, -56);
+                            $imm_hash1 = $ret;
+                            $items[] = [
+                                'name' => 'imm_hash1',
+                                'label' => trans('noshform.imm_hash1'),
+                                'type' => 'text',
+                                'readonly' => true,
+                                'default_value' => $imm_hash1
+                            ];
+                            $items[] = [
+                                'name' => 'did',
+                                'label' => trans('noshform.did'),
+                                'type' => 'text',
+                                'readonly' => true,
+                                'default_value' => $did
+                            ];
+                            $outcome = '<div class="alert alert-danger"><strong>' . trans('noshform.immunization_view4') . '</strong> - ' . trans('noshform.immunization_view5') . '.</div>';
+                            if ($rx_hash == $items[1]['default_value']) {
+                                $outcome = '<div class="alert alert-success"><strong>' . trans('noshform.immunization_view6') . '</strong></div>';
+                            }
+                        }
+                    }
+                    $form_array = [
+                        'form_id' => 'immunization_form',
+                        'action' => route('immunization_verify', [$id]),
+                        'items' => $items,
+                        'save_button_label' => trans('noshform.validate'),
+                        'remove_cancel' => true
+                    ];
+                    $data['content'] .= $this->form_build($form_array);
+                } else {
+                    $outcome = '<div class="alert alert-danger"><strong>' . trans('noshform.prescription_pharmacy_view1') . '</strong> - ' . trans('noshform.prescription_pharmacy_view4') . '.</div>';
+                }
+            } else {
+                $outcome = '<div class="alert alert-danger"><strong>' . trans('noshform.prescription_pharmacy_view1') . '</strong> - ' . trans('noshform.prescription_pharmacy_view7') . '.</div>';
+            }
+        } else {
+            $outcome = '<div class="alert alert-danger"><strong>' . trans('noshform.prescription_pharmacy_view1') . '</strong> - ' . trans('noshform.prescription_pharmacy_view8') . '.</div>';
+        }
+        $data['content'] .= $outcome;
+        $data['assets_js'] = $this->assets_js();
+        $data['assets_css'] = $this->assets_css();
+        return view('credible', $data);
+    }
+
     public function install(Request $request, $type)
     {
         $query = DB::table('practiceinfo')->first();
@@ -171,13 +523,6 @@ class InstallController extends Controller {
             $city = $request->input('city');
             $state = $request->input('state');
             $zip = $request->input('zip');
-            $documents_dir = $request->input('documents_dir');
-            // Clean up documents directory string
-            $check_string = substr($documents_dir, -1);
-            if ($check_string != '/') {
-                $documents_dir .= '/';
-            }
-            // Insert Administrator
             $data1 = [
                 'username' => $username,
                 'password' => $password,
@@ -201,14 +546,25 @@ class InstallController extends Controller {
                 'phone' => $phone,
                 'fax' => $fax,
                 'email' => $email,
-                'documents_dir' => $documents_dir,
                 'fax_type' => '',
                 'vivacare' => '',
                 'version' => '2.0.0',
                 'active' => 'Y',
                 'patient_centric' => $patient_centric
             ];
-            DB::table('practiceinfo')->insert($data2);
+            $practice_id = DB::table('practiceinfo')->insertGetId($data2);
+            $this->audit('Add');
+            $data_jwk = [];
+            $data_jwk['private_jwk'] = JWKFactory::createRSAKey(
+            4096, // Size in bits of the key. We recommend at least 2048 bits.
+            [
+                'alg' => 'RS256',
+                'use' => 'sig',
+                'kid' => $this->gen_uuid()
+            ]);
+            $data_jwk['public_jwk'] = $data_jwk['private_jwk']->toPublic();
+            $data_jwk['practice_id'] = $practice_id;
+            DB::table('practiceinfo_plus')->insert($practice_id);
             $this->audit('Add');
             // Insert patient
             if ($type == 'patient') {
@@ -261,8 +617,7 @@ class InstallController extends Controller {
                 ];
                 DB::table('demographics_relate')->insert($patient_data3);
                 $this->audit('Add');
-                $directory = $documents_dir . $pid;
-                mkdir($directory, 0775);
+                Storage::makeDirectory($pid);
                 $pnosh_url = $request->root();
                 $pnosh_url = str_replace(array('http://','https://'), '', $pnosh_url);
                 $root_url = explode('/', $pnosh_url);
@@ -365,7 +720,6 @@ class InstallController extends Controller {
                 Session::put('version', $data2['version']);
                 Session::put('practice_active', $data2['active']);
                 Session::put('displayname', $displayname);
-                Session::put('documents_dir', $data2['documents_dir']);
                 Session::put('patient_centric', $data2['patient_centric']);
             }
             return redirect()->route('dashboard');
@@ -535,17 +889,6 @@ class InstallController extends Controller {
                     'default_value' => null
                 ];
             }
-            $documents_dir = '/noshdocuments/';
-            if (file_exists(base_path() . '/.noshdir')) {
-                $documents_dir = trim(File::get(base_path() . '/.noshdir'));
-            }
-            $items[] = [
-                'name' => 'documents_dir',
-                'label' => trans('noshform.documents_dir'),
-                'type' => 'text',
-                'required' => true,
-                'default_value' => $documents_dir
-            ];
             $form_array = [
                 'form_id' => 'install_form',
                 'action' => route('install', [$type]),
@@ -623,6 +966,29 @@ class InstallController extends Controller {
         }
     }
 
+    public function jwk_install(Request $request)
+    {
+        $query = DB::table('practiceinfo')->get();
+        if ($query->count()) {
+            foreach ($query as $row) {
+                $data = [];
+                $data['private_jwk'] = JWKFactory::createRSAKey(
+                4096, // Size in bits of the key. We recommend at least 2048 bits.
+                [
+                    'alg' => 'RS256',
+                    'use' => 'sig',
+                    'kid' => $this->gen_uuid()
+                ]);
+                $data['public_jwk'] = json_encode($data['private_jwk']->toPublic());
+                $data['private_jwk'] = json_encode($data['private_jwk']);
+                $data['practice_id'] = $row->practice_id;
+                DB::table('practiceinfo_plus')->insert($data);
+                $this->audit('Add');
+            }
+        }
+        return redirect()->route('dashboard');
+    }
+
     public function pnosh_install(Request $request)
     {
         $query = DB::table('practiceinfo')->first();
@@ -665,7 +1031,6 @@ class InstallController extends Controller {
         $city = $request->input('city');
         $state = $request->input('state');
         $zip = $request->input('zip');
-        $documents_dir = '/noshdocuments/';
         // Insert Administrator
         $data1 = [
             'username' => $username,
@@ -689,7 +1054,6 @@ class InstallController extends Controller {
             'phone' => $phone,
             'fax' => $fax,
             'email' => $email,
-            'documents_dir' => $documents_dir,
             'fax_type' => '',
             'vivacare' => '',
             'version' => '2.0.0',
@@ -756,18 +1120,19 @@ class InstallController extends Controller {
         $this->audit('Add');
         $patient_data4 = [
             'pid' => $pid,
-            'date_added' => date('Y-m-d H:i:s')
+            'date_added' => date('Y-m-d H:i:s'),
+            'gnap_uri' => $request->input('gnap_uri'),
+            'gnap_client_id' => $request->input('gnap_client_id')
         ];
         DB::table('demographics_plus')->insert($patient_data4);
         $this->audit('Add');
-        $directory = $documents_dir . $pid;
-        mkdir($directory, 0775);
+        Storage::makeDirectory($pid);
         $postData = $request->post();
         $img = Arr::has($postData, 'photo_data');
         if ($img) {
             $img_data = substr($request->input('photo_data'), strpos($request->input('photo_data'), ',') + 1);
             $img_data = base64_decode($img_data);
-            $file_path = $documents_dir . $pid . "/" . $request->input('photo_filename');
+            $file_path = Storage::path($pid . "/" . $request->input('photo_filename'));
             $patient_data5['photo'] = $file_path;
             File::put($file_path, $img_data);
             DB::table('demographics')->where('pid', '=', $pid)->update($patient_data5);
@@ -838,7 +1203,7 @@ class InstallController extends Controller {
         $data['ajax1'] = route('dashboard');
         $data['uport_need'] = '';
         $data['uport_id'] = '';
-        $data['panel_header'] = 'Prescription Validation';
+        $data['panel_header'] = trans('noshform.prescription_pharmacy_view9');
         $data['url'] = route('prescription_pharmacy_view', [$id]);
         $query = DB::table('rx_list')->where('rxl_id', '=', $id)->first();
         $data['content'] = '';
@@ -1327,7 +1692,6 @@ class InstallController extends Controller {
                     Session::put('version', $practice1->version);
                     Session::put('practice_active', $practice1->active);
                     Session::put('displayname', $user->displayname);
-                    Session::put('documents_dir', $practice1->documents_dir);
                     Session::put('rcopia', $practice1->rcopia_extension);
                     Session::put('mtm_extension', $practice1->mtm_extension);
                     Session::put('patient_centric', $practice1->patient_centric);
@@ -1631,5 +1995,82 @@ class InstallController extends Controller {
 
     public function test1(Request $request)
     {
+        Storage::makeDirectory('directory');
+        chmod(Storage::path('directory'), 0777);
+        // Storage::deleteDirectory('directory');
+        $pid = '1';
+        return Storage::path($pid);
+        $private_key = JWKFactory::createRSAKey(
+        4096, // Size in bits of the key. We recommend at least 2048 bits.
+        [
+            'alg' => 'RS256',
+            'use' => 'sig',
+            'kid' => $this->gen_uuid()
+        ]);
+        $public_key = $private_key->toPublic();
+        return $public_key;
+        $time = time();
+        $algorithmManager = new AlgorithmManager([
+            new RS256(),
+        ]);
+        $jwsBuilder = new JWSBuilder(
+            $algorithmManager
+        );
+        $serializer = new CompactSerializer();
+        // Our key.
+        $jwk = new JWK([
+            'kty' => 'RSA',
+            'kid' => 'bilbo.baggins@hobbiton.example',
+            'use' => 'sig',
+            'n' => 'n4EPtAOCc9AlkeQHPzHStgAbgs7bTZLwUBZdR8_KuKPEHLd4rHVTeT-O-XV2jRojdNhxJWTDvNd7nqQ0VEiZQHz_AJmSCpMaJMRBSFKrKb2wqVwGU_NsYOYL-QtiWN2lbzcEe6XC0dApr5ydQLrHqkHHig3RBordaZ6Aj-oBHqFEHYpPe7Tpe-OfVfHd1E6cS6M1FZcD1NNLYD5lFHpPI9bTwJlsde3uhGqC0ZCuEHg8lhzwOHrtIQbS0FVbb9k3-tVTU4fg_3L_vniUFAKwuCLqKnS2BYwdq_mzSnbLY7h_qixoR7jig3__kRhuaxwUkRz5iaiQkqgc5gHdrNP5zw',
+            'e' => 'AQAB',
+            'd' => 'bWUC9B-EFRIo8kpGfh0ZuyGPvMNKvYWNtB_ikiH9k20eT-O1q_I78eiZkpXxXQ0UTEs2LsNRS-8uJbvQ-A1irkwMSMkK1J3XTGgdrhCku9gRldY7sNA_AKZGh-Q661_42rINLRCe8W-nZ34ui_qOfkLnK9QWDDqpaIsA-bMwWWSDFu2MUBYwkHTMEzLYGqOe04noqeq1hExBTHBOBdkMXiuFhUq1BU6l-DqEiWxqg82sXt2h-LMnT3046AOYJoRioz75tSUQfGCshWTBnP5uDjd18kKhyv07lhfSJdrPdM5Plyl21hsFf4L_mHCuoFau7gdsPfHPxxjVOcOpBrQzwQ',
+            'p' => '3Slxg_DwTXJcb6095RoXygQCAZ5RnAvZlno1yhHtnUex_fp7AZ_9nRaO7HX_-SFfGQeutao2TDjDAWU4Vupk8rw9JR0AzZ0N2fvuIAmr_WCsmGpeNqQnev1T7IyEsnh8UMt-n5CafhkikzhEsrmndH6LxOrvRJlsPp6Zv8bUq0k',
+            'q' => 'uKE2dh-cTf6ERF4k4e_jy78GfPYUIaUyoSSJuBzp3Cubk3OCqs6grT8bR_cu0Dm1MZwWmtdqDyI95HrUeq3MP15vMMON8lHTeZu2lmKvwqW7anV5UzhM1iZ7z4yMkuUwFWoBvyY898EXvRD-hdqRxHlSqAZ192zB3pVFJ0s7pFc',
+            'dp' => 'B8PVvXkvJrj2L-GYQ7v3y9r6Kw5g9SahXBwsWUzp19TVlgI-YV85q1NIb1rxQtD-IsXXR3-TanevuRPRt5OBOdiMGQp8pbt26gljYfKU_E9xn-RULHz0-ed9E9gXLKD4VGngpz-PfQ_q29pk5xWHoJp009Qf1HvChixRX59ehik',
+            'dq' => 'CLDmDGduhylc9o7r84rEUVn7pzQ6PF83Y-iBZx5NT-TpnOZKF1pErAMVeKzFEl41DlHHqqBLSM0W1sOFbwTxYWZDm6sI6og5iTbwQGIC3gnJKbi_7k_vJgGHwHxgPaX2PnvP-zyEkDERuf-ry4c_Z11Cq9AqC2yeL6kdKT1cYF8',
+            'qi' => '3PiqvXQN0zwMeE-sBvZgi289XP9XCQF3VWqPzMKnIgQp7_Tugo6-NZBKCQsMf3HaEGBjTVJs_jcK8-TRXvaKe-7ZMaQj8VfBdYkssbu0NKDDhjJ-GtiseaDVWt7dcH0cfwxgFUHpQh7FoCrjFJ6h6ZEpMF6xmujs4qMpPz8aaI4',
+        ]);
+        // The payload we want to sign
+        $payload = [
+            'iat' => $time,
+            'nbf' => $time,
+            'exp' => $time + 3600,
+            'iss' => 'My service',
+            'aud' => 'Your application',
+            'resources' => ['dolphin-metadata'],
+            'interact' => [
+                'redirect' => true,
+                'callback' => [
+                    'method' => 'redirect',
+                    'uri' => 'https://client.foo',
+                    'nonce' => 'VJLO6A4CAYLBXHTR0KRO'
+                ]
+            ],
+            'client' => [
+                'proof' => 'jwsd',
+                'key' => [
+                    'jwk' => [
+                        'kty' => 'RSA',
+                        'e' => 'AQAB',
+                        'kid' => 'xyz-1',
+                        'alg' => 'RS256',
+                        'n' => 'kOB5rR4Jv0GMeLaY6_It_r3ORwdf8ci_JtffXyaSx8xYJCNaOKNJn_Oz0YhdHbXTeWO5AoyspDWJbN5w_7bdWDxgpD-y6jnD1u9YhBOCWObNPFvpkTM8LC7SdXGRKx2k8Me2r_GssYlyRpqvpBlY5-ejCywKRBfctRcnhTTGNztbbDBUyDSWmFMVCHe5mXT4cL0BwrZC6S-uu-LAx06aKwQOPwYOGOslK8WPm1yGdkaA1uF_FpS6LS63WYPHi_Ap2B7_8Wbw4ttzbMS_doJvuDagW8A1Ip3fXFAHtRAcKw7rdI4_Xln66hJxFekpdfWdiPQddQ6Y1cK2U3obvUg7w'
+                    ]
+                ]
+            ],
+            'display' => [
+                'name' => 'My Client Display Name',
+                'uri' => 'https://example.net/client'
+            ]
+        ];
+        $jws = $jwsBuilder
+            ->create()                               // We want to create a new JWS
+            ->withPayload(json_encode($payload), true)            // /!\ Here is the change! We set the payload and we indicate it is detached
+            ->addSignature($jwk, ['alg' => 'RS256']) // We add a signature with a simple protected header
+            ->build();
+        $token = $serializer->serialize($jws, 0);
+        $statusCode = 200;
+        return response()->json($payload, $statusCode)->header('Content-Type', 'application/json')->header('Detached-JWS', $token);
     }
 }

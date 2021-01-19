@@ -29,13 +29,19 @@
         "laravel/socialite": "^5.0",
         "laravel/tinker": "^2.0",
         "laravelcollective/html": "^6.0.0",
+        "league/flysystem-aws-s3-v3": "^1.0",
         "php-http/guzzle6-adapter": "^1.1",
         "phpseclib/phpseclib": "~2.0",
         "pragmarx/countries": "^0.7",
         "shihjay2/openid-connect-uma-php": "dev-master",
         "shihjay2/tcpdi-merger": "dev-master",
         "simplesoftwareio/simple-qrcode": "~1.4",
-        "soapbox/laravel-formatter": "2.x"
+        "soapbox/laravel-formatter": "2.x",
+        "symfony/yaml": "^5.2",
+        "web-token/jwt-core": "^2.2",
+        "web-token/jwt-easy": "^2.2",
+        "web-token/jwt-key-mgmt": "^2.2",
+        "web-token/jwt-signature-algorithm-rsa": "^2.2"
     },
     "require-dev": {
         "facade/ignition": "^2.3.6",

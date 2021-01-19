@@ -18,6 +18,7 @@ RUN rm -f /etc/apk/repositories &&\
     g++ \
     make \
     pcre-dev \
+    postgresql-dev \
     bzip2-dev &&\
     apk add --update --no-cache \
     jpegoptim \
@@ -27,6 +28,8 @@ RUN rm -f /etc/apk/repositories &&\
     nano \
     icu-dev \
     mariadb-client \
+    postgresql-client \
+    gmp-dev \
     imagemagick-dev \
     libssh2-dev \
     libzip-dev \
@@ -40,8 +43,10 @@ RUN rm -f /etc/apk/repositories &&\
     docker-php-ext-install \
     opcache \
     mysqli \
+    pgsql \
     pdo \
     pdo_mysql \
+    pdo_pgsql \
     sockets \
     intl \
     gd \
@@ -53,6 +58,7 @@ RUN rm -f /etc/apk/repositories &&\
     imap \
     exif \
     json \
+    gmp \
     bcmath &&\
     pecl install imagick &&\
     docker-php-ext-enable imagick &&\

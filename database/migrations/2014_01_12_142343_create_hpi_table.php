@@ -16,7 +16,7 @@ class CreateHpiTable extends Migration {
 				$table->bigInteger('eid')->primary();
 				$table->bigInteger('pid')->nullable();
 				$table->string('encounter_provider', 255)->nullable();
-				$table->timestamp('hpi_date')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
+				$table->timestamp('hpi_date')->useCurrentOnUpdate();
 				$table->longtext('hpi')->nullable();
 			});
 		}

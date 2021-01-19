@@ -20,7 +20,7 @@ class CreateAuditTable extends Migration {
 				$table->bigInteger('pid')->nullable();
 				$table->string('action', 255)->nullable();
 				$table->longtext('query')->nullable();
-				$table->timestamp('timestamp')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
+				$table->timestamp('timestamp')->useCurrentOnUpdate();
 				$table->integer('practice_id')->nullable();
 			});
 		}

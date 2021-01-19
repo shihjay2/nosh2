@@ -16,7 +16,7 @@ class CreateLabsTable extends Migration {
 				$table->bigInteger('eid')->primary();
 				$table->bigInteger('pid')->nullable();
 				$table->string('encounter_provider', 255)->nullable();
-				$table->timestamp('labs_date')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
+				$table->timestamp('labs_date')->useCurrentOnUpdate();
 				$table->string('labs_ua_urobili', 100)->nullable();
 				$table->string('labs_ua_bilirubin', 100)->nullable();
 				$table->string('labs_ua_ketones', 100)->nullable();

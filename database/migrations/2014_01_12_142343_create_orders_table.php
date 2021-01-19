@@ -19,7 +19,7 @@ class CreateOrdersTable extends Migration {
 				$table->bigInteger('t_messages_id')->nullable();
 				$table->bigInteger('pid')->nullable();
 				$table->string('encounter_provider', 255)->nullable();
-				$table->timestamp('orders_date')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
+				$table->timestamp('orders_date')->useCurrentOnUpdate();
 				$table->string('orders_insurance', 255)->nullable();
 				$table->longtext('orders_referrals')->nullable();
 				$table->longtext('orders_labs')->nullable();
