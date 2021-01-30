@@ -1,76 +1,31 @@
-FROM php:7.4.13-fpm-alpine
+FROM php:7.4.14-fpm-alpine
 
 LABEL Maintainer Michael Shihjay Chen <shihjay2@gmail.com>
 
-RUN rm -f /etc/apk/repositories &&\
-    echo "https://dl-cdn.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories &&\
-    echo "https://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories &&\
-    echo "https://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories &&\
-    apk add --no-cache --virtual .build-deps \
-    git \
-    zlib-dev \
-    libjpeg-turbo-dev \
-    libpng-dev \
-    libxml2-dev \
-    php7-dev \
-    autoconf \
-    gcc \
-    g++ \
-    make \
-    pcre-dev \
-    postgresql-dev \
-    bzip2-dev &&\
-    apk add --update --no-cache \
-    jpegoptim \
-    pngquant \
-    optipng \
-    supervisor \
-    nano \
-    icu-dev \
-    mariadb-client \
-    postgresql-client \
-    gmp-dev \
-    imagemagick-dev \
-    libssh2-dev \
-    libzip-dev \
-    imap-dev \
-    libtool \
-    freetype-dev &&\
-    docker-php-ext-configure \
-    opcache --enable-opcache &&\
-    docker-php-ext-configure gd --with-freetype --with-jpeg &&\
-    PHP_OPENSSL=yes docker-php-ext-configure imap --with-imap --with-imap-ssl &&\
-    docker-php-ext-install \
+ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
+
+RUN chmod +x /usr/local/bin/install-php-extensions && sync && \
+    install-php-extensions \
     opcache \
     mysqli \
     pgsql \
-    pdo \
     pdo_mysql \
     pdo_pgsql \
     sockets \
     intl \
     gd \
-    xml \
     zip \
     bz2 \
     pcntl \
     soap \
     imap \
     exif \
-    json \
     gmp \
-    bcmath &&\
-    pecl install imagick &&\
-    docker-php-ext-enable imagick &&\
-    mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" &&\
-    apk del .build-deps
+    bcmath \
+    imagick \
+    @composer
 
 WORKDIR "/var/www/nosh"
-
-# Install composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-ENV COMPOSER_ALLOW_SUPERUSER=1
-ENV PATH="./vendor/bin:$PATH"
 
 # Copy existing application directory permissions
 COPY --chown=www-data:www-data . /var/www/nosh
