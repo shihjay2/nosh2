@@ -4,7 +4,7 @@ LABEL Maintainer Michael Shihjay Chen <shihjay2@gmail.com>
 
 ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
 
-RUN chmod +x /usr/local/bin/install-php-extensions && sync && \
+RUN apk add --no-cache bash && chmod +x /usr/local/bin/install-php-extensions && sync && \
     install-php-extensions \
     opcache \
     mysqli \
