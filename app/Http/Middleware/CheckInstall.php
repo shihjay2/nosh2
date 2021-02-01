@@ -21,6 +21,21 @@ class CheckInstall
      */
     public function handle($request, Closure $next)
     {
+        // Clean up orders database
+        $orders_data['orders_completed'] = 0;
+        DB::table('orders')->whereNull('orders_completed')->update($orders_data);
+
+        // Clean up orphaned alerts
+        $alerts = DB::table('alerts')->get();
+        if ($alerts->count()) {
+            foreach ($alerts as $alert) {
+                $order = DB::table('orders')->where('orders_id', '=', $alert->orders_id)->first();
+                if (!$order) {
+                    DB::table('alerts')->where('alert_id', '=', $alert->alert_id)->delete();
+                }
+            }
+        }
+
         // Check Database connection
         $env_file = base_path() . '/.env';
         if (file_exists($env_file)) {

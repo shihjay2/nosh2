@@ -7655,7 +7655,7 @@ class Controller extends BaseController
                 $subtype => null,
                 $subtype . '_icd' => null,
                 'address_id' => null,
-                'orders_completed' => 'No',
+                'orders_completed' => 0,
                 'encounter_provider' => Session::get('encounter_provider'),
                 'pid' => Session::get('pid'),
                 'eid' => Session::get('eid'),
@@ -7783,6 +7783,11 @@ class Controller extends BaseController
             'name' => 'eid',
             'type' => 'hidden',
             'default_value' => $orders['eid']
+        ];
+        $items[] = [
+            'name' => 'orders_completed',
+            'type' => 'hidden',
+            'default_value' => $orders['orders_completed']
         ];
         if (Session::get('group_id') == '2') {
             $items[] = [

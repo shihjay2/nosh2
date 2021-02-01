@@ -1969,6 +1969,9 @@ class ChartController extends Controller {
                     unlink($image->image_location);
                 }
             }
+            if ($table == 'orders') {
+                DB::table('alerts')->where('orders_id', '=', $id)->delete();
+            }
             if (Session::has('eid')) {
                 App::setLocale(Session::get('practice_locale'));
                 if ($table == 'immunizations') {
