@@ -6,9 +6,6 @@ ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/do
 
 RUN apk add --update --no-cache \
     bash \
-    jpegoptim \
-    pngquant \
-    optipng \
     supervisor \
     nano \
     mariadb-client \

@@ -1826,7 +1826,7 @@ class CoreController extends Controller
             $data['number_reminders'] = DB::table('alerts')
                 ->join('demographics', 'alerts.pid', '=', 'demographics.pid')
                 ->whereRaw("find_in_set($user_id,alerts.alert_providers)")
-                ->where('alerts.alert_date_complete', '=', '0000-00-00 00:00:00')
+                ->whereNull('alerts.alert_date_complete')
                 ->where('alerts.alert_reason_not_complete', '=', '')
                 ->where(function($query_array) {
                     $query_array->where('alerts.alert', '=', 'Laboratory results pending')
@@ -1846,7 +1846,7 @@ class CoreController extends Controller
             if($data['practiceinfo']->mtm_extension == 'y') {
                 $mtm_users_array = explode(",", $data['practiceinfo']->mtm_alert_users);
                 if (in_array($user_id, $mtm_users_array)) {
-                    $data['mtm_alerts'] = DB::table('alerts')->where('alert_date_complete', '=', '0000-00-00 00:00:00')
+                    $data['mtm_alerts'] = DB::table('alerts')->whereNull('alert_date_complete')
                         ->where('alert_reason_not_complete', '=', '')
                         ->where('alert', '=', 'Medication Therapy Management')
                         ->where('practice_id', '=', $practice_id)
@@ -1875,7 +1875,7 @@ class CoreController extends Controller
             $data['number_reminders'] = DB::table('alerts')
                 ->join('demographics', 'alerts.pid', '=', 'demographics.pid')
                 ->whereRaw("find_in_set($user_id,alerts.alert_providers)")
-                ->where('alerts.alert_date_complete', '=', '0000-00-00 00:00:00')
+                ->whereNull('alerts.alert_date_complete')
                 ->where('alerts.alert_reason_not_complete', '=', '')
                 ->where(function($query_array) {
                     $query_array->where('alerts.alert', '=', 'Laboratory results pending')
@@ -2021,7 +2021,7 @@ class CoreController extends Controller
         $query = DB::table('alerts')
             ->join('demographics', 'alerts.pid', '=', 'demographics.pid')
             ->whereRaw("find_in_set($user_id,alerts.alert_providers)")
-            ->where('alerts.alert_date_complete', '=', '0000-00-00 00:00:00')
+            ->whereNull('alerts.alert_date_complete')
             ->where('alerts.alert_reason_not_complete', '=', '')
             ->where(function($query_array) {
                 $query_array->where('alerts.alert', '=', 'Laboratory results pending')
@@ -7317,7 +7317,7 @@ class CoreController extends Controller
                                     $query_array2->where('issues.issue', '!=', $search_desc[$i]);
                                 }
                             }
-                            $query_array2->where('issues.issue_date_inactive', '=', '0000-00-00 00:00:00');
+                            $query_array2->whereNull('issues.issue_date_inactive');
                         });
                     }
                     if($search_field[$i] == 'billing') {
@@ -7383,7 +7383,7 @@ class CoreController extends Controller
                                     $query_array4->where('rx_list.rxl_medication', '!=', $search_desc[$i]);
                                 }
                             }
-                            $query_array4->where('rx_list.rxl_date_inactive', '=', '0000-00-00 00:00:00')->where('rx_list.rxl_date_old', '=', '0000-00-00 00:00:00');
+                            $query_array4->whereNull('rx_list.rxl_date_inactive')->whereNull('rx_list.rxl_date_old');
                         });
                     }
                     if($search_field[$i] == 'imm_immunization') {
@@ -7460,7 +7460,7 @@ class CoreController extends Controller
                                     $query_array6->where('sup_list.sup_supplement', '!=', $search_desc[$i]);
                                 }
                             }
-                            $query_array6->where('sup_list.sup_date_inactive', '=', '0000-00-00 00:00:00');
+                            $query_array6->whereNull('sup_list.sup_date_inactive');
                         });
                     }
                     if($search_field[$i] == 'zip') {

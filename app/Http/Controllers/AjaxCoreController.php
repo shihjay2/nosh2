@@ -157,7 +157,7 @@ class AjaxCoreController extends Controller
         }
         $query1 = DB::table('alerts')
             ->where('pid', '=', $pid)
-            ->where('alert_date_complete', '=', '0000-00-00 00:00:00')
+            ->whereNull('alert_date_complete')
             ->where('alert_reason_not_complete', '=', '')
             ->where('practice_id', '=', $practice_id)
             ->get();

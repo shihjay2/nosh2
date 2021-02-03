@@ -185,16 +185,16 @@ class Controller extends BaseController
     {
         $practice_id = Session::get('practice_id');
         if ($type == 'issues') {
-            $query = DB::table('issues')->where('pid', '=', $pid)->where('issue_date_inactive', '=', '0000-00-00 00:00:00')->first();
+            $query = DB::table('issues')->where('pid', '=', $pid)->whereNull('issue_date_inactive')->first();
         }
         if ($type == 'medications') {
-            $query = DB::table('rx_list')->where('pid', '=', $pid)->where('rxl_date_inactive', '=', '0000-00-00 00:00:00')->where('rxl_date_old', '=', '0000-00-00 00:00:00')->first();
+            $query = DB::table('rx_list')->where('pid', '=', $pid)->whereNull('rxl_date_inactive')->whereNull('rxl_date_old')->first();
         }
         if($query) {
             App::setLocale(Session::get('practice_locale'));
             $query1 = DB::table('alerts')
                 ->where('pid', '=', $pid)
-                ->where('alert_date_complete', '=', '0000-00-00 00:00:00')
+                ->whereNull('alert_date_complete')
                 ->where('alert_reason_not_complete', '=', '')
                 ->where('alert', '=', trans('noshform.alert_mtm'))
                 ->where('practice_id', '=', $practice_id)
@@ -204,7 +204,7 @@ class Controller extends BaseController
                     'alert' => trans('noshform.alert_mtm'),
                     'alert_description' => trans('noshform.alert_mtm1'),
                     'alert_date_active' => date('Y-m-d H:i:s', time()),
-                    'alert_date_complete' => '',
+                    'alert_date_complete' => null,
                     'alert_reason_not_complete' => '',
                     'pid' => $pid,
                     'practice_id' => $practice_id
@@ -234,7 +234,7 @@ class Controller extends BaseController
         $i = 0;
         $query = DB::table('alerts')
             ->where('alert_send_message', '=', 'y')
-            ->where('alert_date_complete', '=', '0000-00-00 00:00:00')
+            ->whereNull('alert_date_complete')
             ->where('alert_reason_not_complete', '=', '')
             ->where('alert_date_active', '<=', date('Y-m-d H:i:s', time() + 604800))
             ->get();
@@ -2490,7 +2490,7 @@ class Controller extends BaseController
                 $lastvisit =  $patient->firstname . ' ' . trans('noshform.last_seen') . ' ' . date('F jS, Y', strtotime($encounter->encounter_DOS));
             }
             $problem = trans('noshform.active_issues') . ':';
-            $problems = DB::table('issues')->where('pid', '=', $pid)->where('issue_date_inactive', '=', '0000-00-00 00:00:00')->get();
+            $problems = DB::table('issues')->where('pid', '=', $pid)->whereNull('issue_date_inactive')->get();
             if ($problems) {
                 foreach ($problems as $problems_row) {
                     $problem .= "\n". $problems_row->issue;
@@ -2499,7 +2499,7 @@ class Controller extends BaseController
                 $problem .= ' ' . trans('noshform.none') . '.';
             }
             $med = trans('noshform.active_medications') . ':';
-            $meds = DB::table('rx_list')->where('pid', '=', $pid)->where('rxl_date_inactive', '=', '0000-00-00 00:00:00')->where('rxl_date_old', '=', '0000-00-00 00:00:00')->get();
+            $meds = DB::table('rx_list')->where('pid', '=', $pid)->whereNull('rxl_date_inactive')->whereNull('rxl_date_old')->get();
             if ($meds) {
                 foreach ($meds as $meds_row) {
                     if ($meds_row->rxl_sig == '') {
@@ -2538,7 +2538,7 @@ class Controller extends BaseController
                 $imm .= ' ' . trans('noshform.none') . '.';
             }
             $allergy = trans('noshform.allergies') . ':';
-            $allergies = DB::table('allergies')->where('pid', '=', $pid)->where('allergies_date_inactive', '=', '0000-00-00 00:00:00')->get();
+            $allergies = DB::table('allergies')->where('pid', '=', $pid)->whereNull('allergies_date_inactive')->get();
             if ($allergies) {
                 foreach ($allergies as $allergies_row) {
                     $allergy .= "\n" . $allergies_row->allergies_med . ' - ' . $allergies_row->allergies_reaction;
@@ -2776,7 +2776,7 @@ class Controller extends BaseController
             $diabetes = true;
         }
         $aspirin = false;
-        $aspirin_q = DB::table('rx_list')->where('pid', '=', Session::get('pid'))->where('rxl_date_inactive', '=', '0000-00-00 00:00:00')->where('rxl_date_old', '=', '0000-00-00 00:00:00')->where('rxl_medication', 'LIKE', "%aspirin%")->first();
+        $aspirin_q = DB::table('rx_list')->where('pid', '=', Session::get('pid'))->whereNull('rxl_date_inactive')->whereNull('rxl_date_old')->where('rxl_medication', 'LIKE', "%aspirin%")->first();
         if ($aspirin_q) {
             $aspirin = true;
         }
@@ -2794,7 +2794,7 @@ class Controller extends BaseController
         }
         $htn = false;
         $chol = false;
-        $rx = DB::table('rx_list')->where('pid', '=', Session::get('pid'))->where('rxl_date_inactive', '=', '0000-00-00 00:00:00')->where('rxl_date_old', '=', '0000-00-00 00:00:00')->get();
+        $rx = DB::table('rx_list')->where('pid', '=', Session::get('pid'))->whereNull('rxl_date_inactive')->whereNull('rxl_date_old')->get();
         if ($rx->count()) {
             $htn_url = 'https://rxnav.nlm.nih.gov/REST/rxclass/classMembers.json?classId=N0000001616&relaSource=NDFRT&rela=may_treat';
             $htn_ch = curl_init();
@@ -4561,16 +4561,16 @@ class Controller extends BaseController
         } else {
             $query = DB::table($title_array[$type]['table'])->where('pid', '=', Session::get('pid'))->orderBy($title_array[$type]['order'], 'asc');
             if ($type == 'Condition') {
-                $query->where('issue_date_inactive', '=', '0000-00-00 00:00:00');
+                $query->whereNull('issue_date_inactive');
             }
             if ($type == 'MedicationStatement') {
-                $query->where('rxl_date_inactive', '=', '0000-00-00 00:00:00')->where('rxl_date_old', '=', '0000-00-00 00:00:00');
+                $query->whereNull('rxl_date_inactive')->whereNull('rxl_date_old');
             }
             if ($type == 'Immunization') {
                 $query->orderBy('imm_sequence', 'asc');
             }
             if ($type == 'AllergyIntolerance') {
-                $query->where('allergies_date_inactive', '=', '0000-00-00 00:00:00');
+                $query->whereNull('allergies_date_inactive');
             }
             $result1 = $query->get();
             $list_array = [];
@@ -5621,7 +5621,7 @@ class Controller extends BaseController
                 'allergies_severity' => null,
                 'meds_ndcid' => null,
                 'allergies_date_active' => date('Y-m-d'),
-                'allergies_date_inactive' => '',
+                'allergies_date_inactive' => null,
                 'allergies_provider' => $allergies_provider,
                 'notes' => null,
                 'label' => null,
@@ -5654,8 +5654,8 @@ class Controller extends BaseController
                 'label' => $label,
                 'provider_id' => $provider_id
             ];
-            if ($result->allergies_date_inactive == '0000-00-00 00:00:00') {
-                $allergy['allergies_date_inactive'] = '';
+            if ($result->allergies_date_inactive == null) {
+                $allergy['allergies_date_inactive'] = null;
             } else {
                 $allergy['allergies_date_inactive'] = date('Y-m-d', $this->human_to_unix($result->allergies_date_inactive));
             }
@@ -7279,7 +7279,7 @@ class Controller extends BaseController
                 'issue' => null,
                 'type' => $issue_type_arr[$subtype],
                 'issue_date_active' => date('Y-m-d'),
-                'issue_date_inactive' => '',
+                'issue_date_inactive' => null,
                 'issue_provider' => Session::get('displayname'),
                 'notes' => null,
                 'label' => null
@@ -7306,8 +7306,8 @@ class Controller extends BaseController
                 'notes' => $result->notes,
                 'label' => $label
             ];
-            if ($result->issue_date_inactive == '0000-00-00 00:00:00') {
-                $issue['issue_date_inactive'] = '';
+            if ($result->issue_date_inactive == null) {
+                $issue['issue_date_inactive'] = null;
             } else {
                 $issue['issue_date_inactive'] = date('Y-m-d', $this->human_to_unix($result->issue_date_inactive));
             }
@@ -8747,9 +8747,9 @@ class Controller extends BaseController
                 'rxl_instructions' => null,
                 'rxl_reason' => null,
                 'rxl_date_active' => date('Y-m-d'),
-                'rxl_date_prescribed' => '',
-                'rxl_date_inactive' => '',
-                'rxl_date_old' => '',
+                'rxl_date_prescribed' => null,
+                'rxl_date_inactive' => null,
+                'rxl_date_old' => null,
                 'rxl_provider' => $rxl_provider,
                 'id' => $user_id,
                 'rxl_ndcid' => null,
@@ -8821,22 +8821,22 @@ class Controller extends BaseController
                 'rxl_ndcid' => $result->rxl_ndcid,
                 'label' => $label
             ];
-            if ($result->rxl_date_inactive == '0000-00-00 00:00:00') {
-                $rx['rxl_date_inactive'] = '';
+            if ($result->rxl_date_inactive == null) {
+                $rx['rxl_date_inactive'] = null;
             } else {
                 $rx['rxl_date_inactive'] = date('Y-m-d', $this->human_to_unix($result->rxl_date_inactive));
             }
             if ($subtype !== '') {
                 $rx['rxl_date_prescribed'] = date('Y-m-d');
             } else {
-                if ($result->rxl_date_prescribed == '0000-00-00 00:00:00') {
-                    $rx['rxl_date_prescribed'] = '';
+                if ($result->rxl_date_prescribed == null) {
+                    $rx['rxl_date_prescribed'] = null;
                 } else {
                     $rx['rxl_date_prescribed'] = date('Y-m-d', $this->human_to_unix($result->rxl_date_prescribed));
                 }
             }
-            if ($result->rxl_date_old == '0000-00-00 00:00:00') {
-                $rx['rxl_date_old'] = '';
+            if ($result->rxl_date_old == null) {
+                $rx['rxl_date_old'] = null;
             } else {
                 $rx['rxl_date_old'] = date('Y-m-d', $this->human_to_unix($result->rxl_date_old));
             }
@@ -9053,7 +9053,7 @@ class Controller extends BaseController
                 'sup_instructions' => null,
                 'sup_reason' => null,
                 'sup_date_active' => date('Y-m-d'),
-                'sup_date_inactive' => '',
+                'sup_date_inactive' => null,
                 'sup_provider' => Session::get('displayname'),
                 'id' => Session::get('user_id'),
                 'supplement_id' => null
@@ -9085,8 +9085,8 @@ class Controller extends BaseController
                 'id' => Session::get('user_id'),
                 'supplement_id' => $result->supplement_id
             ];
-            if ($result->sup_date_inactive == '0000-00-00 00:00:00') {
-                $sup['sup_date_inactive'] = '';
+            if ($result->sup_date_inactive == null) {
+                $sup['sup_date_inactive'] = null;
             } else {
                 $sup['sup_date_inactive'] = date('Y-m-d', $this->human_to_unix($result->sup_date_inactive));
             }
@@ -10806,7 +10806,7 @@ class Controller extends BaseController
                 $allergies_table .= "<td>" . $allergies_row->allergies_med . "</td>";
                 $allergies_table .= "<td><content ID='reaction" . $i . "'>" . $allergies_row->allergies_reaction . "</content></td>";
                 $allergies_table .= "<td><content ID='severity" . $i . "'>" . $allergies_row->allergies_severity . "</content></td>";
-                if ($allergies_row->allergies_date_inactive == '0000-00-00 00:00:00') {
+                if ($allergies_row->allergies_date_inactive == null) {
                     $allergies_table .= "<td>Active</td>";
                     $allergies_status = "Active";
                     $allergies_file = File::get(resource_path() . '/allergies_active.xml');
@@ -10973,8 +10973,8 @@ class Controller extends BaseController
         }
         $ccda = str_replace('?imm_table?', $imm_table, $ccda);
         $ccda = str_replace('?imm_file?', $imm_file_final, $ccda);
-        $med_query = DB::table('rx_list')->where('pid', '=', $pid)->where('rxl_date_inactive', '=', '0000-00-00 00:00:00')->where('rxl_date_old', '=', '0000-00-00 00:00:00')->get();
-        $sup_query = DB::table('sup_list')->where('pid', '=', $pid)->where('sup_date_inactive', '=', '0000-00-00 00:00:00')->get();
+        $med_query = DB::table('rx_list')->where('pid', '=', $pid)->whereNull('rxl_date_inactive')->whereNull('rxl_date_old')->get();
+        $sup_query = DB::table('sup_list')->where('pid', '=', $pid)->whereNull('sup_date_inactive')->get();
         $med_table = "";
         $med_file_final = "";
         $k = 1;
@@ -11247,7 +11247,7 @@ class Controller extends BaseController
                     $issue_code = str_replace("]", "", $issues_array[1]);
                 }
                 $issue_code_description = $issues_array[0];
-                if ($issues_row->issue_date_inactive != '0000-00-00 00:00:00') {
+                if ($issues_row->issue_date_inactive != null) {
                     $issues_table .= "<item><content ID='problem" . $l . "'>" . $issues_row->issue . ": Status - Resolved</content></item>";
                     $issues_status = "Resolved";
                     $issues_code = "413322009";
@@ -12183,7 +12183,7 @@ class Controller extends BaseController
         $data['goal'] = 'n';
         $data['fix'] = [];
         $score = 0;
-        $query1 = DB::table('rx_list')->where('pid', '=', $pid)->where('rxl_date_inactive', '=', '0000-00-00 00:00:00')->where('rxl_date_old', '=', '0000-00-00 00:00:00')->first();
+        $query1 = DB::table('rx_list')->where('pid', '=', $pid)->whereNull('rxl_date_inactive')->whereNull('rxl_date_old')->first();
         if ($query1) {
             $search = ['celexa','opram','prozac','fluoxetine','lexapro','luvox','paroxetine','paxil','pexeva','sarafem','sertraline','symbyax','viibryd','zoloft','cymbalta','effexor','pristiq','venlafaxine','khedezla','ptyline','amoxapine','anafranil','pramine','doxepin','elavil','limbitrol','norpramin','pamelor','surmontil','tofranil','vivactil','emsam','marplan','nardil','parnate','tranylcypromine','bupropion','aplenzin','budeprion','maprotiline','mirtazapine','nefazodone','oleptro','remeron','serzone','trazodone','wellbutrin','forfivo'];
             foreach ($search as $needle) {
@@ -12209,7 +12209,7 @@ class Controller extends BaseController
         $data['goal'] = 'n';
         $data['fix'] = [];
         $score = 0;
-        $query1 = DB::table('rx_list')->where('pid', '=', $pid)->where('rxl_date_inactive', '=', '0000-00-00 00:00:00')->where('rxl_date_old', '=', '0000-00-00 00:00:00')->first();
+        $query1 = DB::table('rx_list')->where('pid', '=', $pid)->whereNull('rxl_date_inactive')->whereNull('rxl_date_old')->first();
         if ($query1) {
             $controller_count = 0;
             $rescue_count = 0;
@@ -12252,7 +12252,7 @@ class Controller extends BaseController
         $data['goal'] = 'n';
         $data['fix'] = [];
         $score = 0;
-        $query1 = DB::table('rx_list')->where('pid', '=', $pid)->where('rxl_date_inactive', '=', '0000-00-00 00:00:00')->where('rxl_date_old', '=', '0000-00-00 00:00:00')->first();
+        $query1 = DB::table('rx_list')->where('pid', '=', $pid)->whereNull('rxl_date_inactive')->whereNull('rxl_date_old')->first();
         if ($query1) {
             $search = ['methotrexate','azathioprine','cyclophosphamide','cyclosporine','azasan','cytoxan','gengraf','imuran','neoral','rheumatrex','trexall','embrel','remicade','cimzia','humira','simponi','cuprimine','hydroxychloroquine','sulfasalazine','actemra','arava','azulfidine','kineret','leflunomide','myochrysine','orencia','plaquenil','ridaura'];
             foreach ($search as $needle) {
@@ -12278,7 +12278,7 @@ class Controller extends BaseController
         $data['goal'] = 'n';
         $data['fix'] = [];
         $score = 0;
-        $query1 = DB::table('rx_list')->where('pid', '=', $pid)->where('rxl_date_inactive', '=', '0000-00-00 00:00:00')->where('rxl_date_old', '=', '0000-00-00 00:00:00')->first();
+        $query1 = DB::table('rx_list')->where('pid', '=', $pid)->whereNull('rxl_date_inactive')->whereNull('rxl_date_old')->first();
         if ($query1) {
             $med_count = 0;
             $search = ['budesonide','flovent','pulmicort','qvar','advair','aerobid','alvesco','asmanex','dulera','pulmicort','symbicort','breo','fluticasone','beclomethasone','flunisolide','ciclesonide','mometasone','cromolyn','phylline','lukast','singulair','accolate','theo'];
@@ -13363,7 +13363,7 @@ class Controller extends BaseController
     {
         $query = DB::table('issues')
             ->where('pid','=', $pid)
-            ->where('issue_date_inactive', '=', '0000-00-00 00:00:00')
+            ->whereNull('issue_date_inactive')
             ->where(function($query_array) use ($issues_item_array) {
                 $count = 0;
                 foreach ($issues_item_array as $issues_item) {
@@ -13526,7 +13526,7 @@ class Controller extends BaseController
         $data['goal'] = 'n';
         $data['fix'] = [];
         $score = 0;
-        $query1 = DB::table('rx_list')->where('pid', '=', $pid)->where('rxl_date_inactive', '=', '0000-00-00 00:00:00')->where('rxl_date_old', '=', '0000-00-00 00:00:00')->first();
+        $query1 = DB::table('rx_list')->where('pid', '=', $pid)->whereNull('rxl_date_inactive')->whereNull('rxl_date_old')->first();
         if ($query1) {
             $search = array('actonel','dronate','atelvia','boniva','fosamax','reclast','binosto','zoledronic','estraderm','estradiol','estropipate','femhrt','jinteli','menest','premarin','premphase','vivelle','activella','alora','cenestin','climara','estrace','gynodiol','menostar','mimvey','ogen','prefest','minivelle','evista','forteo','prolia');
             foreach ($search as $needle) {
@@ -13588,7 +13588,7 @@ class Controller extends BaseController
         $data['goal'] = 'n';
         $data['fix'] = [];
         $score = 0;
-        $query1 = DB::table('rx_list')->where('pid', '=', $pid)->where('rxl_date_inactive', '=', '0000-00-00 00:00:00')->where('rxl_date_old', '=', '0000-00-00 00:00:00')->first();
+        $query1 = DB::table('rx_list')->where('pid', '=', $pid)->whereNull('rxl_date_inactive')->whereNull('rxl_date_old')->first();
         if ($query1) {
             $search = array('olol','ilol','alol','betapace','brevibloc','bystolic','coreg','corgard','inderal','innopran','kerlone','levatol','lopressor','sectral','tenormin','oprol','trandate','zebeta','sorine','corzide','tenoretic','ziac');
             foreach ($search as $needle) {
@@ -14193,7 +14193,7 @@ class Controller extends BaseController
             }
         }
         $body = trans('noshform.active_issues') . ':<br />';
-        $query = DB::table('issues')->where('pid', '=', $pid)->where('issue_date_inactive', '=', '0000-00-00 00:00:00')->get();
+        $query = DB::table('issues')->where('pid', '=', $pid)->whereNull('issue_date_inactive')->get();
         if ($query) {
             $body .= '<ul>';
             foreach ($query as $row) {
@@ -14204,7 +14204,7 @@ class Controller extends BaseController
             $body .= trans('noshform.none') . '.';
         }
         $body .= '<hr />' . trans('noshform.active_medications') . ':<br />';
-        $query1 = DB::table('rx_list')->where('pid', '=', $pid)->where('rxl_date_inactive', '=', '0000-00-00 00:00:00')->where('rxl_date_old', '=', '0000-00-00 00:00:00')->get();
+        $query1 = DB::table('rx_list')->where('pid', '=', $pid)->whereNull('rxl_date_inactive')->whereNull('rxl_date_old')->get();
         if ($query1) {
             $body .= '<ul>';
             foreach ($query1 as $row1) {
@@ -14246,7 +14246,7 @@ class Controller extends BaseController
             $body .= trans('noshform.none') . '.';
         }
         $body .= '<hr />' . trans('noshform.allergies') . ':<br />';
-        $query3 = DB::table('allergies')->where('pid', '=', $pid)->where('allergies_date_inactive', '=', '0000-00-00 00:00:00')->get();
+        $query3 = DB::table('allergies')->where('pid', '=', $pid)->whereNull('allergies_date_inactive')->get();
         if ($query3) {
             $body .= '<ul>';
             foreach ($query3 as $row3) {
@@ -14647,7 +14647,7 @@ class Controller extends BaseController
                 $data['insuranceInfo'] .= $row->insurance_plan_name . '; ID: ' . $row->insurance_id_num . '; ' . trans('noshform.group') . ': ' . $row->insurance_group . '; ' . $row->insurance_insu_lastname . ', ' . $row->insurance_insu_firstname . '<br><br>';
             }
         }
-        $query2 = DB::table('allergies')->where('pid', '=', $pid)->where('allergies_date_inactive', '=', '0000-00-00 00:00:00')->get();
+        $query2 = DB::table('allergies')->where('pid', '=', $pid)->whereNull('allergies_date_inactive')->get();
         $data['allergyInfo'] = '';
         if ($query2->count()) {
             $data['allergyInfo'] .= '<ul>';
@@ -14721,7 +14721,7 @@ class Controller extends BaseController
                 $data['insuranceInfo'] .= $row->insurance_plan_name . '; ID: ' . $row->insurance_id_num . '; ' . trans('noshform.group') . ': ' . $row->insurance_group . '; ' . $row->insurance_insu_lastname . ', ' . $row->insurance_insu_firstname . '<br><br>';
             }
         }
-        $query2 = DB::table('allergies')->where('pid', '=', $pid)->where('allergies_date_inactive', '=', '0000-00-00 00:00:00')->get();
+        $query2 = DB::table('allergies')->where('pid', '=', $pid)->whereNull('allergies_date_inactive')->get();
         $data['allergyInfo'] = '';
         if ($query2->count()) {
             $data['allergyInfo'] .= '<ul>';
@@ -15127,7 +15127,7 @@ class Controller extends BaseController
 		$data['patientInfo3'] = $row->city . ', ' . $row->state . ' ' . $row->zip;
 		$data['date'] = date('F jS, Y');
 		$data['practicePhone'] = $practice->phone;
-		$allergies_query = DB::table('allergies')->where('pid', '=', $pid)->where('allergies_date_inactive', '=', '0000-00-00 00:00:00')->get();
+		$allergies_query = DB::table('allergies')->where('pid', '=', $pid)->whereNull('allergies_date_inactive')->get();
 		if ($allergies_query) {
 			$data['allergies'] = '<ol>';
 			foreach ($allergies_query as $allergies_row) {
@@ -15137,7 +15137,7 @@ class Controller extends BaseController
 		} else {
 			$data['allergies'] = trans('noshform.none') . '.';
 		}
-		$rx_query = DB::table('rx_list')->where('pid', '=', $pid)->where('rxl_date_inactive', '=', '0000-00-00 00:00:00')->where('rxl_date_old', '=', '0000-00-00 00:00:00')->get();
+		$rx_query = DB::table('rx_list')->where('pid', '=', $pid)->whereNull('rxl_date_inactive')->whereNull('rxl_date_old')->get();
 		$data['pmlItems'] = '';
 		if ($rx_query) {
 			foreach ($rx_query as $rx_row) {
@@ -15604,7 +15604,7 @@ class Controller extends BaseController
         }
         if ($type == 'sup') {
             $sup_orders_summary_text = "";
-            $query = DB::table('sup_list')->where('pid', '=', $pid)->where('sup_date_inactive', '=', '0000-00-00 00:00:00')->get();
+            $query = DB::table('sup_list')->where('pid', '=', $pid)->whereNull('sup_date_inactive')->get();
             if ($query->count()) {
                 foreach ($query as $query_row) {
                     $sup_orders_summary_text .= $query_row->sup_supplement . ' ' . $query_row->sup_dosage . ' ' . $query_row->sup_dosage_unit;
@@ -16511,11 +16511,11 @@ class Controller extends BaseController
                 }
             }
             $response['medicationCodeableConcept']['text'] = $rx_text;
-            if ($row->rxl_date_inactive == '0000-00-00 00:00:00' && $row->rxl_date_old == '0000-00-00 00:00:00') {
+            if ($row->rxl_date_inactive == null && $row->rxl_date_old == null) {
                 $response['status'] = 'active';
                 $response['wasNotTaken'] = false;
             }
-            if ($row->rxl_date_inactive != '0000-00-00 00:00:00') {
+            if ($row->rxl_date_inactive != null) {
                 $response['status'] = 'completed';
                 $response['wasNotTaken'] = true;
             }
@@ -16645,10 +16645,10 @@ class Controller extends BaseController
                 'value' => $row->rxl_dosage,
                 'unit' => $row->rxl_dosage_unit
             ];
-            if ($row->rxl_date_inactive == '0000-00-00 00:00:00' && $row->rxl_date_old == '0000-00-00 00:00:00') {
+            if ($row->rxl_date_inactive == null && $row->rxl_date_old == null) {
                 $response['status'] = 'active';
             }
-            if ($row->rxl_date_inactive != '0000-00-00 00:00:00') {
+            if ($row->rxl_date_inactive != null) {
                 $response['status'] = 'completed';
             }
             $response['dosageInstruction'][] = $dosage_array;
@@ -16844,10 +16844,10 @@ class Controller extends BaseController
         if ($resource == 'MedicationStatement') {
             if ($key1 == 'status') {
                 if ($value1 == 'active') {
-                    $query->where('rxl_date_inactive', '=', '0000-00-00 00:00:00')->where('rxl_date_old', '=', '0000-00-00 00:00:00');
+                    $query->whereNull('rxl_date_inactive')->whereNull('rxl_date_old');
                 }
                 if ($value1 == 'completed') {
-                    $query->where('rxl_date_inactive', '!=', '0000-00-00 00:00:00');
+                    $query->whereNotNull('rxl_date_inactive');
                 }
                 if ($value1 == 'entered-in-error') {
                     //not functional
@@ -16860,7 +16860,7 @@ class Controller extends BaseController
         if ($resource == 'MedicationRequest') {
             if ($key1 == 'status') {
                 if ($value1 == 'active') {
-                    $query->where('rxl_date_inactive', '=', '0000-00-00 00:00:00')->where('rxl_date_old', '=', '0000-00-00 00:00:00')->where('prescription', '=', 'pending');
+                    $query->whereNull('rxl_date_inactive')->whereNull('rxl_date_old')->where('prescription', '=', 'pending');
                 }
                 if ($value1 == 'on-hold') {
                     //not functional
@@ -17464,7 +17464,7 @@ class Controller extends BaseController
             $return['demographics_quick'] .= '<p style="margin:2px"><strong>' . trans('noshform.sidebar1') . ': </strong>' . Session::get('age') . '</p>';
             $return['demographics_quick'] .= '<p style="margin-top:2px; margin-bottom:8px;"><strong>' . trans('noshform.sex') . ': </strong>' . ucfirst(Session::get('gender')) . '</p>';
             // Conditions
-            $conditions = DB::table('issues')->where('pid', '=', Session::get('pid'))->where('issue_date_inactive', '=', '0000-00-00 00:00:00')->orderBy('issue', 'asc')->get();
+            $conditions = DB::table('issues')->where('pid', '=', Session::get('pid'))->whereNull('issue_date_inactive')->orderBy('issue', 'asc')->get();
             $return['conditions_badge'] = '0';
             $return['conditions_preview'] = trans('noshform.none');
             if ($conditions->count()) {
@@ -17476,7 +17476,7 @@ class Controller extends BaseController
                 $return['conditions_preview'] .= '</ul>';
             }
             // Medications
-            $medications = DB::table('rx_list')->where('pid', '=', Session::get('pid'))->where('rxl_date_inactive', '=', '0000-00-00 00:00:00')->where('rxl_date_old', '=', '0000-00-00 00:00:00')->orderBy('rxl_medication', 'asc')->get();
+            $medications = DB::table('rx_list')->where('pid', '=', Session::get('pid'))->whereNull('rxl_date_inactive')->whereNull('rxl_date_old')->orderBy('rxl_medication', 'asc')->get();
             $return['medications_badge'] = '0';
             $return['medications_preview'] = trans('noshform.none');
             if ($medications->count()) {
@@ -17488,7 +17488,7 @@ class Controller extends BaseController
                 $return['medications_preview'] .= '</ul>';
             }
             // Supplements
-            $supplements = DB::table('sup_list')->where('pid', '=', Session::get('pid'))->where('sup_date_inactive', '=', '0000-00-00 00:00:00')->orderBy('sup_supplement', 'asc')->get();
+            $supplements = DB::table('sup_list')->where('pid', '=', Session::get('pid'))->whereNull('sup_date_inactive')->orderBy('sup_supplement', 'asc')->get();
             $return['supplements_badge'] = '0';
             $return['supplements_preview'] = trans('noshform.none');
             if ($supplements->count()) {
@@ -17500,7 +17500,7 @@ class Controller extends BaseController
                 $return['supplements_preview'] .= '</ul>';
             }
             // Allergies
-            $allergies = DB::table('allergies')->where('pid', '=', Session::get('pid'))->where('allergies_date_inactive', '=', '0000-00-00 00:00:00')->orderBy('allergies_med', 'asc')->get();
+            $allergies = DB::table('allergies')->where('pid', '=', Session::get('pid'))->whereNull('allergies_date_inactive')->orderBy('allergies_med', 'asc')->get();
             $return['allergies_badge'] = '0';
             $return['allergies_preview'] = trans('noshform.none');
             if ($allergies->count()) {
@@ -18301,7 +18301,7 @@ class Controller extends BaseController
                     }
                 }
                 $description2 = $row2->rxl_medication . ' ' . $row2->rxl_dosage . ' ' . $row2->rxl_dosage_unit . ', ' . $instructions . ' ' . trans('noshform.for') . ' ' . $row2->rxl_reason;
-                if ($row2->rxl_date_prescribed == null || $row2->rxl_date_prescribed == '0000-00-00 00:00:00') {
+                if ($row2->rxl_date_prescribed == null || $row2->rxl_date_prescribed == null) {
                     $div2 = $this->timeline_item($row2->rxl_id, 'rxl_id', 'New Medication', $this->human_to_unix($row2->rxl_date_active), trans('noshform.new_medication'), $description2);
                 } else {
                     $description2 .= '<br>Status: ' . ucfirst($row2->prescription);
@@ -18352,7 +18352,7 @@ class Controller extends BaseController
                 $date_arr[] = $this->human_to_unix($row4->imm_date);
             }
         }
-        $query5 = DB::table('rx_list')->where('pid', '=', $pid)->where('rxl_date_inactive', '!=', '0000-00-00 00:00:00')->get();
+        $query5 = DB::table('rx_list')->where('pid', '=', $pid)->whereNotNull('rxl_date_inactive')->get();
         if ($query5->count()) {
             foreach ($query5 as $row5) {
                 $row5a = DB::table('rx_list')->where('rxl_id', '=', $row5->rxl_id)->first();
@@ -18373,7 +18373,7 @@ class Controller extends BaseController
                 $date_arr[] = $this->human_to_unix($row5->rxl_date_inactive);
             }
         }
-        $query6 = DB::table('allergies')->where('pid', '=', $pid)->where('allergies_date_inactive', '=', '0000-00-00 00:00:00')->get();
+        $query6 = DB::table('allergies')->where('pid', '=', $pid)->whereNull('allergies_date_inactive')->get();
         if ($query6->count()) {
             foreach ($query6 as $row6) {
                 $description6 = $row6->allergies_med;

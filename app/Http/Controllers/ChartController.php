@@ -175,24 +175,24 @@ class ChartController extends Controller {
         }
         if ($type == 'active') {
             $query->where('alert_date_active', '<=', date('Y-m-d H:i:s', time() + 1209600))
-                ->where('alert_date_complete', '=', '0000-00-00 00:00:00')
+                ->whereNull('alert_date_complete')
                 ->where('alert_reason_not_complete', '=', '');
         }
         if ($type == 'completed') {
-            $query->where('alert_date_complete', '!=', '0000-00-00 00:00:00')
+            $query->whereNotNull('alert_date_complete')
                 ->where('alert_reason_not_complete', '=', '');
         }
         if ($type == 'canceled') {
-            $query->where('alert_date_complete', '=', '0000-00-00 00:00:00')
+            $query->whereNull('alert_date_complete')
                 ->where('alert_reason_not_complete', '!=', '');
         }
         if ($type == 'pending') {
             $query->where('alert_date_active', '>', date('Y-m-d H:i:s', time() + 1209600))
-                ->where('alert_date_complete', '=', '0000-00-00 00:00:00')
+                ->whereNull('alert_date_complete')
                 ->where('alert_reason_not_complete', '=', '');
         }
         if ($type == 'results') {
-            $query->where('alert_date_complete', '=', '0000-00-00 00:00:00')
+            $query->whereNull('alert_date_complete')
                 ->where('alert_reason_not_complete', '=', '')
                 ->where(function($query_array1) {
                     $query_array1->where('alert', '=', 'Laboratory results pending')
@@ -266,7 +266,7 @@ class ChartController extends Controller {
         Session::forget('message_action');
         $query = DB::table('allergies')->where('pid', '=', Session::get('pid'))->orderBy('allergies_med', 'asc');
         if ($type == 'active') {
-            $query->where('allergies_date_inactive', '=', '0000-00-00 00:00:00');
+            $query->whereNull('allergies_date_inactive');
             $dropdown_array = [
                 'items_button_text' => trans('noshform.allergies_active')
             ];
@@ -277,7 +277,7 @@ class ChartController extends Controller {
                 'url' => route('allergies_list', ['inactive'])
             ];
         } else {
-            $query->where('allergies_date_inactive', '!=', '0000-00-00 00:00:00');
+            $query->whereNotNull('allergies_date_inactive');
             $dropdown_array = [
                 'items_button_text' => trans('noshform.allergies_inactive')
             ];
@@ -1484,7 +1484,6 @@ class ChartController extends Controller {
         // Alerts-specific data handling
         if ($table == 'alerts') {
             if ($id == '0') {
-                $data['alert_date_complete'] = '0000-00-00 00:00:00';
                 $data['alert_reason_not_complete'] = '';
             }
         }
@@ -1766,7 +1765,7 @@ class ChartController extends Controller {
                                 'alert' => $alert_subject,
                                 'alert_description' => $description,
                                 'alert_date_active' => date('Y-m-d H:i:s', time()),
-                                'alert_date_complete' => '',
+                                'alert_date_complete' => null,
                                 'alert_reason_not_complete' => '',
                                 'alert_providers' => Session::get('user_id'),
                                 'orders_id' => $row_id1,
@@ -1787,7 +1786,7 @@ class ChartController extends Controller {
                                     'alert' => $alert_subject,
                                     'alert_description' => $description,
                                     'alert_date_active' => date('Y-m-d H:i:s', time()),
-                                    'alert_date_complete' => '',
+                                    'alert_date_complete' => null,
                                     'alert_reason_not_complete' => '',
                                     'alert_providers' => Session::get('user_id'),
                                     'results' => 1
@@ -1872,10 +1871,10 @@ class ChartController extends Controller {
         }
         if ($action == 'reactivate') {
             if ($table == 'issues') {
-                $data2['issue_date_inactive'] = '0000-00-00 00:00:00';
+                $data2['issue_date_inactive'] = null;
             }
             if ($table == 'rx_list') {
-                $data2['rxl_date_inactive'] = '0000-00-00 00:00:00';
+                $data2['rxl_date_inactive'] = null;
                 if (Session::has('eid')) {
                     $rx_query = DB::table($table)->where($index, '=', $id)->first();
                     $encounter_text = $rx_query->rxl_medication . ' ' . $rx_query->rxl_dosage . ' ' . $rx_query->rxl_dosage_unit;
@@ -1883,7 +1882,7 @@ class ChartController extends Controller {
                 }
             }
             if ($table == 'sup_list') {
-                $data2['sup_date_inactive'] = '0000-00-00 00:00:00';
+                $data2['sup_date_inactive'] = null;
                 if (Session::has('eid')) {
                     $sup_query = DB::table($table)->where($index, '=', $id)->first();
                     $encounter_text = $sup_query->sup_supplement . ' ' . $sup_query->sup_dosage . ' ' . $sup_query->sup_dosage_unit;
@@ -1891,7 +1890,7 @@ class ChartController extends Controller {
                 }
             }
             if ($table == 'allergies') {
-                $data2['allergies_date_inactive'] = '0000-00-00 00:00:00';
+                $data2['allergies_date_inactive'] = null;
             }
             if ($table == 'alerts') {
                 $data2['alert_reason_not_complete'] = '';
@@ -2167,14 +2166,14 @@ class ChartController extends Controller {
             }
             $row1 = DB::table('rx_list')
                 ->where('rxl_medication', '=', $row->rxl_medication)
-                ->where('rxl_date_inactive', '=', '0000-00-00 00:00:00')
-                ->where('rxl_date_old', '!=', '0000-00-00 00:00:00')
+                ->whereNull('rxl_date_inactive')
+                ->whereNotNull('rxl_date_old')
                 ->orderBy('rxl_date_old', 'desc')
                 ->first();
             if ($row1) {
                 $rxl_id = $row1->rxl_id;
                 $eie_data = [
-                    'rxl_date_old' => '0000-00-00 00:00:00',
+                    'rxl_date_old' => null,
                     'rcopia_sync' => 'nd1'
                 ];
                 DB::table('rx_list')->where('rxl_id', '=', $row1->rxl_id)->update($eie_data);
@@ -2772,7 +2771,7 @@ class ChartController extends Controller {
         Session::forget('message_action');
         $query = DB::table('issues')->where('pid', '=', Session::get('pid'))->orderBy('issue', 'asc');
         if ($type == 'active') {
-            $query->where('issue_date_inactive', '=', '0000-00-00 00:00:00');
+            $query->whereNull('issue_date_inactive');
             $dropdown_array = [
                 'items_button_text' => trans('noshform.active')
             ];
@@ -2783,7 +2782,7 @@ class ChartController extends Controller {
                 'url' => route('conditions_list', ['inactive'])
             ];
         } else {
-            $query->where('issue_date_inactive', '!=', '0000-00-00 00:00:00');
+            $query->whereNotNull('issue_date_inactive');
             $dropdown_array = [
                 'items_button_text' => trans('noshform.inactive')
             ];
@@ -4299,7 +4298,7 @@ class ChartController extends Controller {
                     'mh' => 'Medical History',
                     'sh' => 'Surgical History'
                 ];
-                $issues = DB::table('issues')->where('type', '=', $arr[$id])->where('issue_date_inactive', '=', '0000-00-00 00:00:00')->get();
+                $issues = DB::table('issues')->where('type', '=', $arr[$id])->whereNull('issue_date_inactive')->get();
                 if ($issues->count()) {
                     foreach ($issues as $issue) {
                         $issue_arr = explode('[', $issue->issue);
@@ -4429,12 +4428,12 @@ class ChartController extends Controller {
 				if ($issue_icd == $query->{$assess_icd_key}) {
 					// Found a matching ICD code
 					$message = trans('noshform.already_active');
-					// Is it active: NULL, '', or "0000-00-00 00:00:00"
-					if ($issues_row->issue_date_inactive != "0000-00-00 00:00:00") {
+					// Is it active
+					if ($issues_row->issue_date_inactive != null) {
 						// Yes, then activate it
 						$issue_data = [
 							'issue_date_active' => date("Y-m-d"),
-							'issue_date_inactive' => "0000-00-00 00:00:00",
+							'issue_date_inactive' => null,
 							'issue_provider' => Session::get('displayname')
 						];
 						$message = trans('noshform.activated');
@@ -4451,7 +4450,7 @@ class ChartController extends Controller {
 			'pid' => $query->{'pid'},
 			'issue' => $query->{$assess_desc_key} . ' [' . $query->{$assess_icd_key} . ']',
 			'issue_date_active' => date("Y-m-d"),
-			'issue_date_inactive' => "0000-00-00 00:00:00",
+			'issue_date_inactive' => null,
 			'issue_provider' => Session::get('displayname'),
 			'rcopia_sync' => 'n',
 			'type' => "Problem List",
@@ -5505,7 +5504,7 @@ class ChartController extends Controller {
                     'alert' => trans('noshform.annual_psych_reminder'),
                     'alert_description' => $description,
                     'alert_date_active' => date('Y-m-d H:i:s', time()),
-                    'alert_date_complete' => '',
+                    'alert_date_complete' => null,
                     'alert_reason_not_complete' => '',
                     'alert_providers' => Session::get('user_id'),
                     'orders_id' => '',
@@ -7093,7 +7092,7 @@ class ChartController extends Controller {
         Session::forget('message_action');
         $query = DB::table('rx_list')->where('pid', '=', Session::get('pid'))->orderBy('rxl_medication', 'asc');
         if ($type == 'active') {
-            $query->where('rxl_date_inactive', '=', '0000-00-00 00:00:00')->where('rxl_date_old', '=', '0000-00-00 00:00:00');
+            $query->whereNull('rxl_date_inactive')->whereNull('rxl_date_old');
             $dropdown_array = [
                 'items_button_text' => trans('noshform.active')
             ];
@@ -7104,7 +7103,7 @@ class ChartController extends Controller {
                 'url' => route('medications_list', ['inactive'])
             ];
         } else {
-            $query->where('rxl_date_inactive', '!=', '0000-00-00 00:00:00');
+            $query->whereNotNull('rxl_date_inactive');
             $dropdown_array = [
                 'items_button_text' => trans('noshform.inactive')
             ];
@@ -7139,7 +7138,7 @@ class ChartController extends Controller {
                     ->orderBy('rxl_date_prescribed', 'desc')
         			->first();
                 if ($previous) {
-                    if ($previous->rxl_date_prescribed !== null && $previous->rxl_date_prescribed !== '0000-00-00 00:00:00') {
+                    if ($previous->rxl_date_prescribed !== null && $previous->rxl_date_prescribed !== null) {
                         $previous_date = new Date($this->human_to_unix($previous->rxl_date_prescribed));
                         $ago = $previous_date->diffInDays();
                         $arr['label'] .= '<br><strong>' . trans('noshform.last_prescribed') . ':</strong> ' . date('Y-m-d', $this->human_to_unix($previous->rxl_date_prescribed)) . ', ' . $ago . ' ' . trans('noshform.days_ago');
@@ -8198,7 +8197,7 @@ class ChartController extends Controller {
             $query = DB::table('alerts')
                 ->where('pid', '=', Session::get('pid'))
                 ->where('practice_id', '=', Session::get('practice_id'))
-                ->where('alert_date_complete', '=', '0000-00-00 00:00:00')
+                ->whereNull('alert_date_complete')
                 ->where('alert_reason_not_complete', '=', '')
                 ->where(function($query_array1) {
                     $query_array1->where('alert', '=', 'Laboratory results pending')
@@ -8414,7 +8413,7 @@ class ChartController extends Controller {
         }
         $allergies = DB::table('allergies')
             ->where('pid', '=', Session::get('pid'))
-            ->where('allergies_date_inactive', '=', '0000-00-00 00:00:00')
+            ->whereNull('allergies_date_inactive')
             ->where(function($allergies1) use ($q) {
                 $allergies1->where('allergies_med', 'LIKE', "%$q%")
                 ->orWhere('allergies_reaction', 'LIKE', "%$q%");
@@ -8422,7 +8421,7 @@ class ChartController extends Controller {
             ->get();
         $issues = DB::table('issues')
             ->where('pid', '=', Session::get('pid'))
-            ->where('issue_date_inactive', '=', '0000-00-00 00:00:00')
+            ->whereNull('issue_date_inactive')
             ->where(function($issues1) use ($q) {
                 $issues1->where('issue', 'LIKE', "%$q%")
                 ->orWhere('notes', 'LIKE', "%$q%");
@@ -8430,8 +8429,8 @@ class ChartController extends Controller {
             ->get();
         $rx = DB::table('rx_list')
             ->where('pid', '=', Session::get('pid'))
-            ->where('rxl_date_inactive', '=', '0000-00-00 00:00:00')
-            ->where('rxl_date_old', '=', '0000-00-00 00:00:00')
+            ->whereNull('rxl_date_inactive')
+            ->whereNull('rxl_date_old')
             ->where(function($rx1) use ($q) {
                 $rx1->where('rxl_medication', 'LIKE', "%$q%")
                 ->orWhere('rxl_sig', 'LIKE', "%$q%")
@@ -8441,7 +8440,7 @@ class ChartController extends Controller {
             ->get();
         $sup = DB::table('sup_list')
             ->where('pid', '=', Session::get('pid'))
-            ->where('sup_date_inactive', '=', '0000-00-00 00:00:00')
+            ->whereNull('sup_date_inactive')
             ->where(function($sup1) use ($q) {
                 $sup1->where('sup_supplement', 'LIKE', "%$q%")
                 ->orWhere('sup_sig', 'LIKE', "%$q%")
@@ -8531,7 +8530,7 @@ class ChartController extends Controller {
         $alerts = DB::table('alerts')
             ->where('pid', '=', Session::get('pid'))
             ->where('practice_id', '=', Session::get('practice_id'))
-            ->where('alert_date_complete', '=', '0000-00-00 00:00:00')
+            ->whereNull('alert_date_complete')
             ->where('alert_reason_not_complete', '=', '')
             ->where(function($alerts1) use ($q) {
                 $alerts1->where('alert', 'LIKE', "%$q%")
@@ -8687,7 +8686,7 @@ class ChartController extends Controller {
                         ->orderBy('rxl_date_prescribed', 'desc')
             			->first();
                     if ($previous) {
-                        if ($previous->rxl_date_prescribed !== null && $previous->rxl_date_prescribed !== '0000-00-00 00:00:00') {
+                        if ($previous->rxl_date_prescribed !== null && $previous->rxl_date_prescribed !== null) {
                             $previous_date = new Date($this->human_to_unix($previous->rxl_date_prescribed));
                             $ago = $previous_date->diffInDays();
                             $arr['label'] .= '<br><strong>' . trans('noshform.last_prescribed') . ':</strong> ' . date('Y-m-d', $this->human_to_unix($previous->rxl_date_prescribed)) . ', ' . $ago . ' ' . trans('noshform.days_ago');
@@ -9055,7 +9054,7 @@ class ChartController extends Controller {
         Session::forget('message_action');
         $query = DB::table('sup_list')->where('pid', '=', Session::get('pid'))->orderBy('sup_supplement', 'asc');
         if ($type == 'active') {
-            $query->where('sup_date_inactive', '=', '0000-00-00 00:00:00');
+            $query->whereNull('sup_date_inactive');
             $dropdown_array = [
                 'items_button_text' => trans('noshform.active')
             ];
@@ -9066,7 +9065,7 @@ class ChartController extends Controller {
                 'url' => route('supplements_list', ['inactive'])
             ];
         } else {
-            $query->where('sup_date_inactive', '!=', '0000-00-00 00:00:00');
+            $query->whereNotNull('sup_date_inactive');
             $dropdown_array = [
                 'items_button_text' => trans('noshform.inactive')
             ];
@@ -9605,16 +9604,16 @@ class ChartController extends Controller {
         $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
         $query = DB::table($type)->where('pid', '=', Session::get('pid'))->orderBy($type_arr[$type][2], 'asc');
         if ($type == 'issues') {
-            $query->where('issue_date_inactive', '=', '0000-00-00 00:00:00');
+            $query->whereNull('issue_date_inactive');
         }
         if ($type == 'rx_list') {
-            $query->where('rxl_date_inactive', '=', '0000-00-00 00:00:00')->where('rxl_date_old', '=', '0000-00-00 00:00:00');
+            $query->whereNull('rxl_date_inactive')->whereNull('rxl_date_old');
         }
         if ($type == 'immunizations') {
             $query->orderBy('imm_sequence', 'asc');
         }
         if ($type == 'allergies') {
-            $query->where('allergies_date_inactive', '=', '0000-00-00 00:00:00');
+            $query->whereNull('allergies_date_inactive');
         }
         $result = $query->get();
         $list_array = [];

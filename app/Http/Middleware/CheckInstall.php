@@ -26,15 +26,17 @@ class CheckInstall
         DB::table('orders')->whereNull('orders_completed')->update($orders_data);
 
         // Clean up orphaned alerts
-        // $alerts = DB::table('alerts')->get();
-        // if ($alerts->count()) {
-        //     foreach ($alerts as $alert) {
-        //         $order = DB::table('orders')->where('orders_id', '=', $alert->orders_id)->first();
-        //         if (!$order) {
-        //             DB::table('alerts')->where('alert_id', '=', $alert->alert_id)->delete();
-        //         }
-        //     }
-        // }
+        $alerts = DB::table('alerts')->get();
+        if ($alerts->count()) {
+            foreach ($alerts as $alert) {
+                if ($alert->orders_id !== null) {
+                    $order = DB::table('orders')->where('orders_id', '=', $alert->orders_id)->first();
+                    if (!$order) {
+                        DB::table('alerts')->where('alert_id', '=', $alert->alert_id)->delete();
+                    }
+                }
+            }
+        }
 
         // Check Database connection
         $env_file = base_path() . '/.env';
