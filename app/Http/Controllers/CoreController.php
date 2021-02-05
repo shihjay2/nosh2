@@ -8593,6 +8593,126 @@ class CoreController extends Controller
         return redirect(Session::get('last_page'));
     }
 
+    public function syncthing(Request $request)
+    {
+        $config = $this->syncthing_api('config_get');
+        if ($config) {
+            $arr = json_decode($config, true);
+            $status = $this->syncthing_api('status');
+            if ($status) {
+                $status_arr = json_decode($status, true);
+            }
+        } else {
+            $arr['error'] = 'Connection problem';
+        }
+        $data['name'] = Session::get('owner');
+        $data['title'] = 'Connected Backups';
+        $data['content'] = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>';
+        $data['content'] .= '<p>Below are the list of servers that hold your backups for the authorization server and NOSH</p>';
+        $data['content'] .= '</div>';
+        $data['message_action'] = Session::get('message_action');
+        Session::forget('message_action');
+        if (!isset($arr['error'])) {
+            $data['content'] .= '<ul class="list-group">';
+            $i = 0;
+            foreach ($arr['devices'] as $device) {
+                if ($device['deviceID'] !== $status_arr['myID']) {
+                    // Label
+                    $logo = '<div style="display:inline-block;float:none;margin-right:10px;"><i class="fa fa-fw fa-lg fa-exchange" style="height:30px;width:30px;color#000000;"></i></div>';
+                    $data['content'] .= '<li class="list-group-item container-fluid"><span>' . $logo . '<b>' . $device['name'] . '</b>';
+                    // Info
+                    $data['content'] .= '<br><span style="margin-left:30px;"><b>ID: </b>' . $device['deviceID'] . '</span>';
+                    // Actions
+                    $data['content'] .= '<span class="pull-right">';
+                    $data['content'] .= '<a href="' . route('syncthing_remove', [$i]) . '" class="btn fa-btn uma-delete" data-toggle="tooltip" title="Remove"><i class="fa fa-times fa-lg" style="color:red"></i></a>';
+                    $data['content'] .= '</span></li>';
+                }
+                $i++;
+            }
+            $data['content'] .= '</ul>';
+        } else {
+            $data['content'] .= $arr['error'];
+        }
+        $data['back'] = '<a href="' . route('syncthing_add') . '" class="btn btn-default" role="button"><i class="fa fa-btn fa-plus"></i> Add Backup</a>';
+        return view('core', $data);
+    }
+
+    public function syncthing_add(Request $request)
+    {
+        if (!empty(env('SYNCTHING_HOST'))) {
+            $data['name'] = Session::get('owner');
+            $data['title'] = 'Add Trustee Mouse';
+            if ($request->isMethod('post')) {
+                $this->validate($request, [
+                    'deviceID' => 'required'
+                ]);
+                $config = $this->syncthing_api('config_get');
+                if ($config) {
+                    $arr = json_decode($config, true);
+                    $new_device = [
+                        'deviceID' => $request->input('deviceID'),
+                        'name' => $request->input('name'),
+                        'addresses' => [
+                            'dynamic'
+                        ],
+                        'compression' => 'metadata',
+                        'certName' => '',
+                        'introducer' => false,
+                        'skipIntroductionRemovals' => false,
+                        'introducedBy' => '',
+                        'paused' => false,
+                        'allowedNetworks' => [],
+                        'autoAcceptFolders' => false,
+                        'maxSendKbps' => 0,
+                        'maxRecvKbps' => 0,
+                        'ignoredFolders' => [],
+                        'pendingFolders' => [],
+                        'maxRequestKiB' => 0
+                    ];
+                    $arr['devices'][] = $new_device;
+                    $new_device_folder = [
+                        'deviceID' => $request->input('deviceID'),
+                        'introducedBy' => ''
+                    ];
+                    $arr['folders'][0]['devices'][] = $new_device_folder;
+                    $arr['folders'][0]['versioning']['params'] = (object) null;
+                    $post_body = json_encode($arr);
+                    $set = $this->syncthing_api('config_set', $post_body);
+                }
+                return redirect()->route('syncthing');
+            } else {
+                $data['deviceID'] = $request->input('deviceID');
+                $data['name'] = $request->input('name');
+                return view('syncthing', $data);
+            }
+        } else {
+            return redirect()->route('dashboard');
+        }
+    }
+
+    public function syncthing_remove(Request $request, $id)
+    {
+        if (!empty(env('SYNCTHING_HOST'))) {
+            $config = $this->syncthing_api('config_get');
+            if ($config) {
+                $arr = json_decode($config, true);
+                $deviceID = $arr['devices'][$id]['deviceID'];
+                foreach ($arr['folders']['devices'] as $row_k => $row_v) {
+                    if ($row_v['deviceID'] == $deviceID) {
+                        unset($arr['folders']['devices'][$row_k]);
+                    }
+                }
+                unset($arr['devices'][$id]);
+                $arr['folders'][0]['versioning']['params'] = (object) null;
+                $post_body = json_encode($arr);
+                $set = $this->syncthing_api('config_set', $post_body);
+            }
+            return redirect()->route('syncthing');
+        } else {
+            return redirect()->route('dashboard');
+        }
+    }
+
     public function uma_aat(Request $request)
     {
         // Check if call comes from rqp_claims redirect

@@ -18167,6 +18167,45 @@ class Controller extends BaseController
         }
     }
 
+    protected function syncthing_api($action, $json='')
+	{
+		$url = 'http://' . env('SYNCTHING_HOST') . ":8384/rest/";
+		$action_arr = [
+			'config_get' => 'system/config',
+			'config_set' => 'system/config',
+			'status' => 'system/status'
+		];
+		$headers = [
+			"X-API-Key: " . env('SYNCTHING_APIKEY')
+		];
+		$url .= $action_arr[$action];
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		if ($json !== '') {
+			$content_type = 'application/json';
+			$headers[] = "Content-Type: {$content_type}";
+			$headers[] = 'Content-Length: ' . strlen($json);
+			curl_setopt($ch, CURLOPT_POST, 1);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+		}
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+		curl_setopt($ch, CURLOPT_HEADER, 0);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+		curl_setopt($ch, CURLOPT_FAILONERROR,1);
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION,1);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+		curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT ,0);
+		$response = curl_exec($ch);
+		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		curl_close ($ch);
+		if ($httpCode !== 404 && $httpCode !== 0) {
+			return $response;
+		} else {
+			return false;
+		}
+	}
+
     protected function tables_oboslete()
     {
         $data = [
