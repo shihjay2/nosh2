@@ -23,19 +23,21 @@ class ChangeTimestampToScheduleTable extends Migration
                     DB::table('schedule')->where('appt_id', '=', $schedule->appt_id)->update($schedule_data);
             }
         }
-        $date_null_arr = [
-            ['alerts', 'alert_date_complete'],
-            ['issues', 'issue_date_inactive'],
-            ['allergies', 'allergies_date_inactive'],
-            ['rx_list', 'rxl_date_inactive'],
-            ['rx_list', 'rxl_date_old'],
-            ['rx_list', 'rxl_date_prescribed'],
-            ['sup_list', 'sup_date_inactive']
-        ];
-        foreach ($date_null_arr as $date_null) {
-            $date_null_data = [];
-            $date_null_data[$date_null[1]] = null;
-            DB::table($date_null[0])->where($date_null[1], '=', '0000-00-00 00:00:00')->update($date_null_data);
+        if (config('database.default') == 'mysql') {
+            $date_null_arr = [
+                ['alerts', 'alert_date_complete'],
+                ['issues', 'issue_date_inactive'],
+                ['allergies', 'allergies_date_inactive'],
+                ['rx_list', 'rxl_date_inactive'],
+                ['rx_list', 'rxl_date_old'],
+                ['rx_list', 'rxl_date_prescribed'],
+                ['sup_list', 'sup_date_inactive']
+            ];
+            foreach ($date_null_arr as $date_null) {
+                $date_null_data = [];
+                $date_null_data[$date_null[1]] = null;
+                DB::table($date_null[0])->where($date_null[1], '=', '0000-00-00 00:00:00')->update($date_null_data);
+            }
         }
     }
 
@@ -49,19 +51,21 @@ class ChangeTimestampToScheduleTable extends Migration
         Schema::table('schedule', function (Blueprint $table) {
             $table->dropColumn('event_timestamp');
         });
-        $date_null_arr = [
-            ['alerts', 'alert_date_complete'],
-            ['issues', 'issue_date_inactive'],
-            ['allergies', 'allergies_date_inactive'],
-            ['rx_list', 'rxl_date_inactive'],
-            ['rx_list', 'rxl_date_old'],
-            ['rx_list', 'rxl_date_prescribed'],
-            ['sup_list', 'sup_date_inactive']
-        ];
-        foreach ($date_null_arr as $date_null) {
-            $date_null_data = [];
-            $date_null_data[$date_null[1]] = '0000-00-00 00:00:00';
-            DB::table($date_null[0])->whereNull($date_null[1])->update($date_null_data);
+        if (config('database.default') == 'mysql') {
+            $date_null_arr = [
+                ['alerts', 'alert_date_complete'],
+                ['issues', 'issue_date_inactive'],
+                ['allergies', 'allergies_date_inactive'],
+                ['rx_list', 'rxl_date_inactive'],
+                ['rx_list', 'rxl_date_old'],
+                ['rx_list', 'rxl_date_prescribed'],
+                ['sup_list', 'sup_date_inactive']
+            ];
+            foreach ($date_null_arr as $date_null) {
+                $date_null_data = [];
+                $date_null_data[$date_null[1]] = '0000-00-00 00:00:00';
+                DB::table($date_null[0])->whereNull($date_null[1])->update($date_null_data);
+            }
         }
     }
 }
