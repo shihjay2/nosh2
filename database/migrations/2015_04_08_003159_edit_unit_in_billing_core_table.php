@@ -12,8 +12,10 @@ class EditUnitInBillingCoreTable extends Migration {
 	 */
 	public function up()
 	{
-		
-		DB::statement('ALTER TABLE billing_core MODIFY COLUMN unit VARCHAR(255)');
+		Schema::table('billing_core', function(Blueprint $table)
+		{
+			$table->string('unit', 255)->nullable()->change();
+		});
 	}
 
 	/**
@@ -23,7 +25,10 @@ class EditUnitInBillingCoreTable extends Migration {
 	 */
 	public function down()
 	{
-		DB::statement('ALTER TABLE billing_core MODIFY COLUMN unit VARCHAR(1)');
+		Schema::table('billing_core', function(Blueprint $table)
+		{
+			$table->string('unit', 1)->nullable()->change();
+		});
 	}
 
 }
