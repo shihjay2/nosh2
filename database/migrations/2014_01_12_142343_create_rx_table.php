@@ -16,7 +16,7 @@ class CreateRxTable extends Migration {
 				$table->bigInteger('eid')->primary();
 				$table->bigInteger('pid')->nullable();
 				$table->string('encounter_provider', 255)->nullable();
-				$table->timestamp('rx_date')->useCurrentOnUpdate();
+				$table->timestamp('rx_date')->useCurrent();
 				$table->longtext('rx_rx')->nullable();
 				$table->longtext('rx_supplements')->nullable();
 				$table->longtext('rx_immunizations')->nullable();

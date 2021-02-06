@@ -16,7 +16,7 @@ class CreateEraTable extends Migration {
 		{
 			$table->bigIncrements('era_id');
 			$table->longtext('era')->nullable();
-			$table->timestamp('era_date')->useCurrentOnUpdate();
+			$table->timestamp('era_date')->useCurrent();
 			$table->integer('practice_id')->nullable();
 		});
 	}

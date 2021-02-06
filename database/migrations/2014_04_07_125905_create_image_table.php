@@ -22,7 +22,7 @@ class CreateImageTable extends Migration {
 			$table->bigInteger('pid')->nullable();
 			$table->bigInteger('id')->nullable();
 			$table->string('encounter_provider', 255)->nullable();
-			$table->timestamp('image_date')->useCurrentOnUpdate();
+			$table->timestamp('image_date')->useCurrent();
 			$table->string('image_location', 255)->nullable();
 			$table->longtext('image_description')->nullable();
 		});

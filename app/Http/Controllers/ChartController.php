@@ -24,7 +24,6 @@ use Schema;
 use Session;
 use Illuminate\Support\Facades\Storage;
 use Shihjay2\OpenIDConnectUMAClient;
-// use SoapBox\Formatter\Formatter;
 use URL;
 use Symfony\Component\Yaml\Yaml;
 use ZipArchive;
@@ -46,8 +45,6 @@ class ChartController extends Controller {
         $query = DB::table($table)->where($index, '=', $id)->first();
         if ($query) {
             if ($query->{$column} !== '' && $query->{$column} !== null) {
-                // $formatter = Formatter::make($query->{$column}, Formatter::YAML);
-                // $arr = $formatter->toArray();
                 $arr = Yaml::parse($query->{$column});
             }
         }
@@ -71,11 +68,12 @@ class ChartController extends Controller {
                 $arr[$yaml_id] = $item;
                 $message = ucfirst(trans('noshform.updated')) . ' ' . $name;
             }
-            // $formatter1 = Formatter::make($arr, Formatter::ARR);
-            // $data1[$column] = $formatter1->toYaml();
             $data1[$column] = Yaml::dump($arr);
             $exist = DB::table($table)->where($index, '=', $id)->first();
             if ($exist) {
+                if ($table == 'procedure') {
+                    $data1['proc_date'] = date("Y-m-d H:i:s", time());
+                }
                 DB::table($table)->where($index, '=', $id)->update($data1);
                 $this->audit('Update');
             } else {
@@ -351,6 +349,7 @@ class ChartController extends Controller {
                 $encounter_query = DB::table('other_history')->where('eid', '=', Session::get('eid'))->first();
                 $encounter_data['oh_allergies'] = $allergies_encounter;
                 if ($encounter_query) {
+                    $encounter_data['oh_date'] = date("Y-m-d H:i:s", time());
                     DB::table('other_history')->where('eid', '=', Session::get('eid'))->update($encounter_data);
                 } else {
                     $encounter_data['eid'] = Session::get('eid');
@@ -410,7 +409,7 @@ class ChartController extends Controller {
                 $this->audit('Update');
                 $message = trans('billing_message_action_update');
             } else {
-                $id1 = DB::table('billing_core')->insertGetId($data);
+                $id1 = DB::table('billing_core')->insertGetId($data, 'billing_core_id');
                 $this->audit('Add');
                 $data1['other_billing_id'] = $id1;
                 DB::table('billing_core')->where('billing_core_id', '=', $id1)->update($data1);
@@ -1536,7 +1535,7 @@ class ChartController extends Controller {
                     unset($data[$index]);
                 }
                 $data['pid'] = $pid;
-                $row_id1 = DB::table($table)->insertGetId($data);
+                $row_id1 = DB::table($table)->insertGetId($data, $index);
                 $this->audit('Add');
                 // foreach ($api_tables as $api_table) {
                 //     if ($api_table == $table) {
@@ -1592,6 +1591,12 @@ class ChartController extends Controller {
                             $sync_message = $this->pnosh_sync($sync_data);
                         }
                     }
+                }
+                if ($table == 'orders') {
+                    $data['orders_date'] = date("Y-m-d H:i:s", time());
+                }
+                if ($table == 't_messages') {
+                    $data['t_messages_date'] = date("Y-m-d H:i:s", time());
                 }
                 DB::table($table)->where($index, '=', $id)->update($data);
                 $this->audit('Update');
@@ -2031,7 +2036,7 @@ class ChartController extends Controller {
             }
             if ($id == '0') {
                 $data['pid'] = $pid;
-                $row_id1 = DB::table($table)->insertGetId($data);
+                $row_id1 = DB::table($table)->insertGetId($data, $index);
                 $this->audit('Add');
                 // foreach ($good_rx_tables as $good_rx_table) {
                 //     if ($good_rx_table == $table) {
@@ -2071,7 +2076,7 @@ class ChartController extends Controller {
                 $data['rxl_date_active'] = $old_rx->rxl_date_active;
                 unset($data['rxl_id']);
                 $data['pid'] = $pid;
-                $row_id1 = DB::table($table)->insertGetId($data);
+                $row_id1 = DB::table($table)->insertGetId($data, $index);
                 $this->audit('Add');
                 // FHIR resource post-save handling
                 if (isset($data['label'])) {
@@ -3171,7 +3176,7 @@ class ChartController extends Controller {
                 'documents_viewed' => Session::get('displayname'),
                 'documents_date' => date('Y-m-d H:i:s', time())
             ];
-            $id = DB::table('documents')->insertGetId($pages_data);
+            $id = DB::table('documents')->insertGetId($pages_data, 'documents_id');
             $this->audit('Add');
             return redirect()->route('document_view', [$id]);
         } else {
@@ -3251,7 +3256,7 @@ class ChartController extends Controller {
                 'documents_url' => $directory . '/' . $new_name,
                 'pid' => $pid
             ];
-            $documents_id = DB::table('documents')->insertGetId($data);
+            $documents_id = DB::table('documents')->insertGetId($data, 'documents_id');
             $this->audit('Add');
             return redirect()->route('chart_form', ['documents', 'documents_id', $documents_id]);
         } else {
@@ -4160,7 +4165,7 @@ class ChartController extends Controller {
         unset($data['eid']);
         unset($data['encounter_signed']);
         $data['encounter_signed'] = 'No';
-        $new_eid = DB::table('encounters')->insertGetId($data);
+        $new_eid = DB::table('encounters')->insertGetId($data, 'eid');
         $this->audit('Add');
         $data1['addendum'] = 'y';
         DB::table('encounters')->where('eid', '=', $eid)->update($data1);
@@ -4255,7 +4260,7 @@ class ChartController extends Controller {
             } else {
                 $data['t_messages_id'] = $eid;
             }
-            $image_id = DB::table('image')->insertGetId($data);
+            $image_id = DB::table('image')->insertGetId($data, 'image_id');
             $this->audit('Add');
             if ($type == '') {
                 return redirect()->route('encounter_edit_image', [$image_id]);
@@ -4376,6 +4381,7 @@ class ChartController extends Controller {
                 $data1['assessment_other'] = $other;
             }
             if ($query1) {
+                $data1['assessment_date'] = date("Y-m-d H:i:s", time());
                 DB::table('assessment')->where('eid', '=', Session::get('eid'))->update($data1);
                 $this->audit('Update');
             } else {
@@ -4467,7 +4473,8 @@ class ChartController extends Controller {
     {
         $data = [
             'assessment_' . $id => '',
-            'assessment_icd' . $id => ''
+            'assessment_icd' . $id => '',
+            'assessment_date' => date("Y-m-d H:i:s", time())
         ];
         DB::table('assessment')->where('eid', '=', Session::get('eid'))->update($data);
         $this->audit('Update');
@@ -4481,7 +4488,8 @@ class ChartController extends Controller {
             if ($query->{$item} !== '') {
                 $data1 = [
                     'assessment_' . $cur_id => $query->{$item},
-                    'assessment_icd' . $cur_id => $query->{$item1}
+                    'assessment_icd' . $cur_id => $query->{$item1},
+                    'assessment_date' => date("Y-m-d H:i:s", time())
                 ];
                 DB::table('assessment')->where('eid', '=', Session::get('eid'))->update($data1);
                 $this->audit('Update');
@@ -4490,6 +4498,7 @@ class ChartController extends Controller {
                 $data2 = [
                     'assessment_' . $cur_id => '',
                     'assessment_icd' . $cur_id => '',
+                    'assessment_date' => date("Y-m-d H:i:s", time())
                 ];
                 DB::table('assessment')->where('eid', '=', Session::get('eid'))->update($data2);
                 $this->audit('Update');
@@ -4508,6 +4517,7 @@ class ChartController extends Controller {
                 'assessment_icd' . $id => $request->input('assessment_icd' . $id)
             ];
             if ($query) {
+                $data1['assessment_date'] = date("Y-m-d H:i:s", time());
                 DB::table('assessment')->where('eid', '=', Session::get('eid'))->update($data1);
                 $this->audit('Update');
                 Session::put('message_action', trans('noshform.assessment_updated'));
@@ -4595,6 +4605,7 @@ class ChartController extends Controller {
             'assessment_' . $id => $query->{$new_key},
             'assessment_icd' . $id => $query->{$new_key1}
         ];
+        $data['assessment_date'] = date("Y-m-d H:i:s", time());
         DB::table('assessment')->where('eid', '=', Session::get('eid'))->update($data);
         $this->audit('Update');
         Session::put('message_action', trans('noshform.assessment_updated'));
@@ -4829,7 +4840,7 @@ class ChartController extends Controller {
             }
             $data = array_merge($data, $data_add);
             if ($eid == '0') {
-                $eid = DB::table('encounters')->insertGetId($data);
+                $eid = DB::table('encounters')->insertGetId($data, 'eid');
                 $this->audit('Add');
                 // $this->api_data('add', 'encounters', 'eid', $eid);
                 $data2['status'] = 'Attended';
@@ -5229,6 +5240,7 @@ class ChartController extends Controller {
                 $this->audit('Add');
                 Session::put('message_action', trans('noshform.image_added'));
             } else {
+                $data['image_date'] = date("Y-m-d H:i:s", time());
                 DB::table('image')->where("image_id", '=', $request->input('image_id'))->update($data);
                 $this->audit('Update');
                 Session::put('message_action', trans('noshform.image_updated'));
@@ -5421,6 +5433,12 @@ class ChartController extends Controller {
                     $data[$column] = $request->input($column);
                     $query = DB::table($table)->where('eid', '=', $eid)->first();
                     if ($query) {
+                        if ($table !== 'encounters') {
+                            $prefix = $table;
+                        } else {
+                            $prefix = 'encounter';
+                        }
+                        $data[$prefix . '_date'] = date("Y-m-d H:i:s", time());
                         DB::table($table)->where('eid', '=', $eid)->update($data);
                         $this->audit('Update');
                     } else {
@@ -5512,7 +5530,7 @@ class ChartController extends Controller {
                     'practice_id' => Session::get('practice_id'),
                     'alert_send_message' => $alert_send_message
                 ];
-                $id = DB::table('alerts')->insertGetId($data1);
+                $id = DB::table('alerts')->insertGetId($data1, 'alert_id');
                 $this->audit('Add');
                 App::setLocale(Session::get('user_locale'));
                 // $this->api_data('add', 'alerts', 'alert_id', $id);
@@ -5886,8 +5904,6 @@ class ChartController extends Controller {
             $fh_arr = [];
             if ($oh->oh_fh !== null) {
                 if ($this->yaml_check($oh->oh_fh)) {
-                    // $formatter = Formatter::make($oh->oh_fh, Formatter::YAML);
-                    // $fh_arr = $formatter->toArray();
                     $fh_arr = Yaml::parse($oh->oh_fh);
                 }
             }
@@ -5898,8 +5914,6 @@ class ChartController extends Controller {
                 $fh_arr[$id] = $data;
                 $message = trans('noshform.updated_family_member');
             }
-            // $formatter1 = Formatter::make($fh_arr, Formatter::ARR);
-            // $data1['oh_fh'] = $formatter1->toYaml();
             $data1['oh_fh'] = Yaml::dump($fh_arr);
             DB::table('other_history')->where('oh_id', '=', $oh->oh_id)->update($data1);
             $this->audit('Update');
@@ -5928,8 +5942,6 @@ class ChartController extends Controller {
                 $data['panel_header'] = trans('noshform.add_family_member');
             } else {
                 $oh = DB::table('other_history')->where('pid', '=', Session::get('pid'))->where('eid', '=', '0')->first();
-                // $formatter = Formatter::make($oh->oh_fh, Formatter::YAML);
-                // $fh_arr = $formatter->toArray();
                 $fh_arr = Yaml::parse($oh->oh_fh);
                 $fh = $fh_arr[$id];
                 $result = [
@@ -6368,8 +6380,6 @@ class ChartController extends Controller {
                 }
             }
             foreach ($form_arr as $form) {
-                // $formatter = Formatter::make($form['form'], Formatter::YAML);
-                // $array = $formatter->toArray();
                 $array = Yaml::parse($form['form']);
                 foreach ($array as $row_k => $row_v) {
                     $arr = [];
@@ -6482,14 +6492,11 @@ class ChartController extends Controller {
     {
         if ($origin == 'users') {
             $user = DB::table('users')->where('id', '=', $id)->first();
-            // $formatter = Formatter::make($user->forms, Formatter::YAML);
             $array = Yaml::parse($user->forms);
         } else {
             $forms = DB::table('forms')->where('forms_id', '=', $id)->first();
-            // $formatter = Formatter::make($forms->forms_content, Formatter::YAML);
             $array = Yaml::parse($forms->forms_content);
         }
-        // $array = $formatter->toArray();
         $edit = $this->access_level('1');
         if ($request->isMethod('post')) {
             $score_arr = [];
@@ -6531,8 +6538,6 @@ class ChartController extends Controller {
                 }
             }
             App::setLocale(Session::get('user_locale'));
-            // $formatter1 = Formatter::make($response_array, Formatter::ARR);
-            // $data['forms_content'] = $formatter1->toYaml();
             $data['forms_content'] = Yaml::dump($response_array);
             $data['pid'] = Session::get('pid');
             $data['forms_title'] = $array[$type]['forms_title'];
@@ -7006,7 +7011,7 @@ class ChartController extends Controller {
                         'unit' => $unit,
                         'practice_id' => Session::get('practice_id')
                     ];
-                    $id1 = DB::table('billing_core')->insertGetId($other_data);
+                    $id1 = DB::table('billing_core')->insertGetId($other_data, 'billing_core_id');
                     $this->audit('Add');
                     $data1['other_billing_id'] = $id1;
                     DB::table('billing_core')->where('billing_core_id', '=', $id1)->update($data1);
@@ -8100,7 +8105,7 @@ class ChartController extends Controller {
                     'documents_viewed' => Session::get('displayname'),
                     'documents_date' => date('Y-m-d H:i:s', time())
                 ];
-                $arr['id'] = DB::table('documents')->insertGetId($pages_data);
+                $arr['id'] = DB::table('documents')->insertGetId($pages_data, 'documents_id');
                 $this->audit('Add');
                 App::setLocale(Session::get('user_locale'));
                 $message = trans('noshform.letter_generated');
@@ -8379,6 +8384,7 @@ class ChartController extends Controller {
                     } else {
                         $encounter_data['oh_results'] = $results_encounter;
                     }
+                    $encounter_data['oh_date'] = date("Y-m-d H:i:s", time());
                     DB::table('other_history')->where('eid', '=', Session::get('eid'))->update($encounter_data);
                 } else {
                     $encounter_data['oh_results'] = $results_encounter;
@@ -9153,6 +9159,7 @@ class ChartController extends Controller {
                 $encounter_query = DB::table('other_history')->where('eid', '=', Session::get('eid'))->first();
                 $encounter_data['oh_supplements'] = $supplements_encounter;
                 if ($encounter_query) {
+                    $encounter_data['oh_date'] = date("Y-m-d H:i:s", time());
                     DB::table('other_history')->where('eid', '=', Session::get('eid'))->update($encounter_data);
                 } else {
                     $encounter_data['eid'] = Session::get('eid');
@@ -9303,8 +9310,6 @@ class ChartController extends Controller {
                 $nodes_arr = [];
                 $edges_arr = [];
                 $placeholder_count = 0;
-                // $formatter = Formatter::make($oh->oh_fh, Formatter::YAML);
-                // $fh_arr = $formatter->toArray();
                 $fh_arr = Yaml::parse($oh->oh_fh);
                 $ret_arr = $this->treedata_build($fh_arr, 'patient', [], [], 0);
                 $nodes_arr = $ret_arr[0];
@@ -9547,7 +9552,7 @@ class ChartController extends Controller {
                     'documents_date' => date("Y-m-d", strtotime($ccda->effectiveTime['value'])),
                     'pid' => $pid
                 ];
-                $documents_id = DB::table('documents')->insertGetId($data);
+                $documents_id = DB::table('documents')->insertGetId($data, 'documents_id');
                 $this->audit('Add');
                 Session::put('message_action', trans('noshform.ccda_uploaded'));
                 return redirect()->route('upload_ccda_view', [$documents_id, 'issues']);
@@ -9830,7 +9835,7 @@ class ChartController extends Controller {
                     'documents_date' => date("Y-m-d"),
                     'pid' => $pid
                 ];
-                $documents_id = DB::table('documents')->insertGetId($data);
+                $documents_id = DB::table('documents')->insertGetId($data, 'documents_id');
                 $this->audit('Add');
                 Session::put('message_action', trans('noshform.ccr_uploaded'));
                 return redirect()->route('upload_ccda_view', [$documents_id, 'issues']);

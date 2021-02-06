@@ -165,7 +165,7 @@ class LoginController extends Controller {
 			$return['status'] = 'Patient already exists, updated API Key and URL';
 		} else {
 			// If patient doesn't exist, create a new one
-			$pid = DB::table('demographics')->insertGetId($data);
+			$pid = DB::table('demographics')->insertGetId($data, 'pid');
 			$this->audit('Add');
 			$data1 = [
 				'billing_notes' => '',
@@ -705,7 +705,7 @@ class LoginController extends Controller {
                             'smtp_user' => $practice->smtp_user,
                             'smtp_pass' => $practice->smtp_pass
                         ];
-                        $practice_id = DB::table('practiceinfo')->insertGetId($practice_data);
+                        $practice_id = DB::table('practiceinfo')->insertGetId($practice_data, 'practice_id');
                         $this->audit('Add');
                     } else {
                         // Ask for provider to choose which practice to link with pNOSH
@@ -974,7 +974,7 @@ class LoginController extends Controller {
                 'smtp_user' => $practice->smtp_user,
                 'smtp_pass' => $practice->smtp_pass
             ];
-            $practice_id = DB::table('practiceinfo')->insertGetId($practice_data);
+            $practice_id = DB::table('practiceinfo')->insertGetId($practice_data, 'practice_id');
             $this->audit('Add');
             $data = [
                 'username' => Session::get('username'),
@@ -1489,7 +1489,7 @@ class LoginController extends Controller {
                 'hc_unit' => $practice->hc_unit,
                 'default_pos_id' => $practice->default_pos_id
             ];
-            $practice_id = DB::table('practiceinfo')->insertGetId($practice_data);
+            $practice_id = DB::table('practiceinfo')->insertGetId($practice_data, 'practice_id');
             $this->audit('Add');
             $data = [
                 'username' => $oidc->requestUserInfo('sub'),

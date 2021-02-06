@@ -1285,7 +1285,7 @@ class AjaxSearchController extends Controller {
             $tags_id = $row1->tags_id;
         } else {
             $data1['tag'] = $request->input('tag');
-            $tags_id = DB::table('tags')->insertGetId($data1);
+            $tags_id = DB::table('tags')->insertGetId($data1, 'tags_id');
             $this->audit('Add');
         }
         $data2 = [

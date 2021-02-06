@@ -552,7 +552,7 @@ class InstallController extends Controller {
                 'active' => 'Y',
                 'patient_centric' => $patient_centric
             ];
-            $practice_id = DB::table('practiceinfo')->insertGetId($data2);
+            $practice_id = DB::table('practiceinfo')->insertGetId($data2, 'practice_id');
             $this->audit('Add');
             $data_jwk = [];
             $data_jwk['private_jwk'] = JWKFactory::createRSAKey(
@@ -585,7 +585,7 @@ class InstallController extends Controller {
                     'state' => $state,
                     'zip' => $zip
                 ];
-                $pid = DB::table('demographics')->insertGetId($patient_data);
+                $pid = DB::table('demographics')->insertGetId($patient_data, 'pid');
                 $this->audit('Add');
                 $patient_data1 = [
                     'billing_notes' => '',
@@ -1086,7 +1086,7 @@ class InstallController extends Controller {
             'email' => $email,
             'phone_cell' => $mobile
         ];
-        $pid = DB::table('demographics')->insertGetId($patient_data);
+        $pid = DB::table('demographics')->insertGetId($patient_data, 'pid');
         $this->audit('Add');
         $patient_data1 = [
             'billing_notes' => '',

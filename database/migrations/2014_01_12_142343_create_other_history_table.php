@@ -17,7 +17,7 @@ class CreateOtherhistoryTable extends Migration {
 				$table->bigInteger('eid')->nullable();
 				$table->bigInteger('pid')->nullable();
 				$table->string('encounter_provider', 255)->nullable();
-				$table->timestamp('oh_date')->useCurrentOnUpdate();
+				$table->timestamp('oh_date')->useCurrent();
 				$table->longtext('oh_pmh')->nullable();
 				$table->longtext('oh_psh')->nullable();
 				$table->longtext('oh_fh')->nullable();

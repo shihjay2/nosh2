@@ -214,7 +214,7 @@ class AjaxChartController extends Controller
                 $source_index = 'imm_id';
             }
             $data1['pid'] = Session::get('pid');
-            $source_id = DB::table($data['type'])->insertGetId($data1);
+            $source_id = DB::table($data['type'])->insertGetId($data1, $source_index);
             if (isset($data['from'])) {
                 $data_sync = [
                     'pid' => Session::get('pid'),

@@ -16,7 +16,7 @@ class CreateProcedureTable extends Migration {
 				$table->bigInteger('eid')->primary();
 				$table->bigInteger('pid')->nullable();
 				$table->string('encounter_provider', 255)->nullable();
-				$table->timestamp('proc_date')->useCurrentOnUpdate();
+				$table->timestamp('proc_date')->useCurrent();
 				$table->string('proc_type', 100)->nullable();
 				$table->string('proc_cpt', 5)->nullable();
 				$table->longtext('proc_description')->nullable();

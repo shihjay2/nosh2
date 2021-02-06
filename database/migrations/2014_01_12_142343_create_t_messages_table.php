@@ -19,7 +19,7 @@ class CreateTmessagesTable extends Migration {
 				$table->string('t_messages_from', 255)->nullable();
 				$table->string('t_messages_provider', 255)->nullable();
 				$table->string('t_messages_signed', 4)->nullable();
-				$table->timestamp('t_messages_date')->useCurrentOnUpdate();
+				$table->timestamp('t_messages_date')->useCurrent();
 				$table->dateTime('t_messages_dos')->nullable();
 				$table->string('t_messages_subject', 255)->nullable();
 				$table->longtext('t_messages_message')->nullable();

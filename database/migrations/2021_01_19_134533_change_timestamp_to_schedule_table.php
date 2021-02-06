@@ -14,7 +14,7 @@ class ChangeTimestampToScheduleTable extends Migration
     public function up()
     {
         Schema::table('schedule', function (Blueprint $table) {
-             $table->timestamp('event_timestamp')->useCurrentOnUpdate();
+             $table->timestamp('event_timestamp')->useCurrent();
         });
         $schedules = DB::table('schedule')->get();
         if ($schedules->count()) {

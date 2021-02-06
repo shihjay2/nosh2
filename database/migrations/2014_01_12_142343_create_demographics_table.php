@@ -46,7 +46,7 @@ class CreateDemographicsTable extends Migration {
 				$table->string('preferred_provider', 255)->nullable();
 				$table->string('preferred_pharmacy', 255)->nullable();
 				$table->boolean('active')->nullable();
-				$table->timestamp('date')->useCurrentOnUpdate();
+				$table->timestamp('date')->useCurrent();
 				$table->string('other1', 255)->nullable();
 				$table->string('other2', 255)->nullable();
 				$table->longtext('comments')->nullable();

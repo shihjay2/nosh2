@@ -9,7 +9,6 @@ use DB;
 use Event;
 use File;
 use Form;
-// use SoapBox\Formatter\Formatter;
 use Hash;
 use HTML;
 use Imagick;
@@ -60,7 +59,7 @@ class CoreController extends Controller
                 'pregnant' => 'no',
                 'country' => $result->country
             ];
-            $pid = DB::table('demographics')->insertGetId($data);
+            $pid = DB::table('demographics')->insertGetId($data, 'pid');
             $this->audit('Add');
             $data1 = [
                 'billing_notes' => '',
@@ -697,7 +696,7 @@ class CoreController extends Controller
                         if (isset($data['cc'])) {
                             $send_data['cc'] = $data['cc'];
                         }
-                        $send_id = DB::table('messaging')->insertGetId($send_data);
+                        $send_id = DB::table('messaging')->insertGetId($send_data, 'message_id');
                         $this->audit('Add');
                         if (Session::has('messaging_add_photo')) {
                             $message_add_photo_arr = Session::get('messaging_add_photo');
@@ -721,7 +720,7 @@ class CoreController extends Controller
                                     'id' => Session::get('user_id')
                                 ];
                                 App::setLocale(Session::get('user_locale'));
-                                $image_id = DB::table('image')->insertGetId($image_data);
+                                $image_id = DB::table('image')->insertGetId($image_data, 'image_id');
                                 $this->audit('Add');
                             }
                         }
@@ -837,7 +836,7 @@ class CoreController extends Controller
             }
             if ($id == '0') {
                 unset($data[$index]);
-                $row_id1 = DB::table($table)->insertGetId($data);
+                $row_id1 = DB::table($table)->insertGetId($data, $index);
                 $this->audit('Add');
                 $arr['message'] = $message . trans('noshform.added') . '!';
                 if ($table == 'messaging') {
@@ -868,7 +867,7 @@ class CoreController extends Controller
                                 'image_description' => trans('noshform.photo_uploaded') . ' ' . date('F jS, Y'),
                                 'id' => Session::get('user_id')
                             ];
-                            $image_id = DB::table('image')->insertGetId($image_data);
+                            $image_id = DB::table('image')->insertGetId($image_data, 'image_id');
                             $this->audit('Add');
                             App::setLocale(Session::get('user_locale'));
                         }
@@ -1291,12 +1290,8 @@ class CoreController extends Controller
     public function configure_form_delete(Request $request, $type)
     {
         $user = DB::table('users')->where('id', '=', Session::get('user_id'))->first();
-        // $formatter = Formatter::make($user->forms, Formatter::YAML);
-        // $array = $formatter->toArray();
         $array = Yaml::parse($user->forms);
         unset($array[$type]);
-        // $formatter1 = Formatter::make($array, Formatter::ARR);
-        // $data1['forms'] = $formatter1->toYaml();
         $data1['forms'] = Yaml::dump($array);
         $data1['forms_updated_at'] = date('Y-m-d H:i:s', time());
         DB::table('users')->where('id', '=', Session::get('user_id'))->update($data1);
@@ -1308,8 +1303,6 @@ class CoreController extends Controller
     {
         $id = Session::get('user_id');
         $user = DB::table('users')->where('id', '=', $id)->first();
-        // $formatter = Formatter::make($user->forms, Formatter::YAML);
-        // $array = $formatter->toArray();
         $array = Yaml::parse($user->forms);
         if ($request->isMethod('post')) {
             $message = trans('noshform.form_updated');
@@ -1337,8 +1330,6 @@ class CoreController extends Controller
             if ($request->has('forms_scoring')) {
                 $array[$type]['scoring'] = $request->input('forms_scoring');
             }
-            // $formatter1 = Formatter::make($array, Formatter::ARR);
-            // $data['forms'] = $formatter1->toYaml();
             $data['forms'] = Yaml::dump($array);
             $data['forms_updated_at'] = date('Y-m-d H:i:s', time());
             DB::table('users')->where('id', '=', $id)->update($data);
@@ -1433,8 +1424,6 @@ class CoreController extends Controller
     {
         $id = Session::get('user_id');
         $user = DB::table('users')->where('id', '=', $id)->first();
-        // $formatter = Formatter::make($user->forms, Formatter::YAML);
-        // $array = $formatter->toArray();
         $array = Yaml::parse($user->forms);
         if ($request->isMethod('post')) {
             $data['input'] = $request->input('form_type');
@@ -1452,8 +1441,6 @@ class CoreController extends Controller
                 $array[$type][$item] = $data;
                 $message = trans('noshform.configure_form_edit2');
             }
-            // $formatter1 = Formatter::make($array, Formatter::ARR);
-            // $data1['forms'] = $formatter1->toYaml();
             $data1['forms'] = Yaml::dump($array);
             $data1['forms_updated_at'] = date('Y-m-d H:i:s', time());
             DB::table('users')->where('id', '=', $id)->update($data1);
@@ -1531,8 +1518,6 @@ class CoreController extends Controller
             DB::table('users')->where('id', '=', Session::get('user_id'))->update($data1);
             $yaml = $data1['forms'];
         }
-        // $formatter = Formatter::make($yaml, Formatter::YAML);
-        // $array = $formatter->toArray();
         $array = Yaml::parse($yaml);
         foreach ($array as $row_k => $row_v) {
             $arr = [];
@@ -1568,12 +1553,8 @@ class CoreController extends Controller
     public function configure_form_remove(Request $request, $type, $item)
     {
         $user = DB::table('users')->where('id', '=', Session::get('user_id'))->first();
-        // $formatter = Formatter::make($user->forms, Formatter::YAML);
-        // $array = $formatter->toArray();
         $array = Yaml::parse($user->forms);
         unset($array[$type][$item]);
-        // $formatter1 = Formatter::make($array, Formatter::ARR);
-        // $data1['forms'] = $formatter1->toYaml();
         $data1['forms'] = Yaml::dump($array);
         $data1['forms_updated_at'] = date('Y-m-d H:i:s', time());
         DB::table('users')->where('id', '=', Session::get('user_id'))->update($data1);
@@ -1585,8 +1566,6 @@ class CoreController extends Controller
     {
         $id = Session::get('user_id');
         $user = DB::table('users')->where('id', '=', $id)->first();
-        // $formatter = Formatter::make($user->forms, Formatter::YAML);
-        // $array = $formatter->toArray();
         $array = Yaml::parse($user->forms);
         if ($request->isMethod('post')) {
             $this->validate($request, [
@@ -1603,8 +1582,6 @@ class CoreController extends Controller
                 $message = trans('noshform.configure_form_scoring2');
             }
             $array[$type]['scoring'][$new_item] = $request->input('description');
-            // $formatter1 = Formatter::make($array, Formatter::ARR);
-            // $data1['forms'] = $formatter1->toYaml();
             $data1['forms'] = Yaml::dump($array);
             $data1['forms_updated_at'] = date('Y-m-d H:i:s', time());
             DB::table('users')->where('id', '=', $id)->update($data1);
@@ -1660,12 +1637,8 @@ class CoreController extends Controller
     {
         $id = Session::get('user_id');
         $user = DB::table('users')->where('id', '=', $id)->first();
-        // $formatter = Formatter::make($user->forms, Formatter::YAML);
-        // $array = $formatter->toArray();
         $array = Yaml::parse($user->forms);
         unset($array[$type]['scoring'][$item]);
-        // $formatter1 = Formatter::make($array, Formatter::ARR);
-        // $data1['forms'] = $formatter1->toYaml();
         $data1['forms'] = Yaml::dump($array);
         $data1['forms_updated_at'] = date('Y-m-d H:i:s', time());
         DB::table('users')->where('id', '=', $id)->update($data1);
@@ -1679,8 +1652,6 @@ class CoreController extends Controller
         $data['panel_header'] = trans('noshform.configure_form_scoring_list');
         $id = Session::get('user_id');
         $user = DB::table('users')->where('id', '=', $id)->first();
-        // $formatter = Formatter::make($user->forms, Formatter::YAML);
-        // $array = $formatter->toArray();
         $array = Yaml::parse($user->forms);
         if (isset($array[$type]['scoring'])) {
             $list_array = [];
@@ -1722,8 +1693,6 @@ class CoreController extends Controller
     public function configure_form_show(Request $request, $type)
     {
         $user = DB::table('users')->where('id', '=', Session::get('user_id'))->first();
-        // $formatter = Formatter::make($user->forms, Formatter::YAML);
-        // $array = $formatter->toArray();
         $array = Yaml::parse($user->forms);
         $items = [];
         foreach ($array[$type] as $row_k => $row_v) {
@@ -2142,7 +2111,7 @@ class CoreController extends Controller
             if (Session::get('group_id') == '2') {
                 $pages_data['documents_viewed'] = Session::get('displayname');
             }
-            $documents_id = DB::table('documents')->insertGetId($pages_data);
+            $documents_id = DB::table('documents')->insertGetId($pages_data, 'documents_id');
             $this->audit('Add');
             if (Session::get('group_id') == '3') {
                 $provider_row = DB::table('users')->where('id', '=', $provider_id)->first();
@@ -3129,7 +3098,7 @@ class CoreController extends Controller
                 'encounter_condition_work' => 'No',
                 'encounter_condition_auto' => 'No'
             ];
-            $eid = DB::table('encounters')->insertGetId($data);
+            $eid = DB::table('encounters')->insertGetId($data, 'eid');
             $this->audit('Add');
             // $this->api_data('add', 'encounters', 'eid', $eid);
             $data2['status'] = 'Attended';
@@ -4423,7 +4392,7 @@ class CoreController extends Controller
                     'era' => serialize(json_encode($result)),
                     'practice_id' => Session::get('practice_id')
                 ];
-                $era_id = DB::table('era')->insertGetId($era_data);
+                $era_id = DB::table('era')->insertGetId($era_data, 'era_id');
                 $this->audit('Add');
                 $message_arr = [];
                 $arr = [];
@@ -5137,7 +5106,7 @@ class CoreController extends Controller
                     'image_description' => trans('noshform.photo_uploaded') . ' ' . date('F jS, Y'),
                     'id' => Session::get('user_id')
                 ];
-                $image_id = DB::table('image')->insertGetId($data);
+                $image_id = DB::table('image')->insertGetId($data, 'image_id');
                 $this->audit('Add');
                 App::setLocale(Session::get('user_locale'));
             }
@@ -5402,7 +5371,7 @@ class CoreController extends Controller
                 'documents_viewed' => Session::get('displayname'),
                 'documents_date' => date('Y-m-d', strtotime($request->input('documents_date')))
             ];
-            $documents_id = DB::table('documents')->insertGetId($pages_data2);
+            $documents_id = DB::table('documents')->insertGetId($pages_data2, 'documents_id');
             $this->audit('Add');
             $origin = Session::get('last_page');
             if (Session::has('messaging_last_page')) {
@@ -5538,7 +5507,7 @@ class CoreController extends Controller
             'pid' => $query->pid,
             'practice_id' => Session::get('practice_id')
         ];
-        $t_messages_id = DB::table('t_messages')->insertGetId($data);
+        $t_messages_id = DB::table('t_messages')->insertGetId($data, 't_messages_id');
         $this->audit('Add');
         $images = DB::table('image')->where('message_id', '=', $id)->get();
         if ($images->count()) {
@@ -5592,7 +5561,7 @@ class CoreController extends Controller
                     'user' => Session::get('displayname'),
                     'practice_id' => Session::get('practice_id')
                 ];
-                $id = DB::table('sendfax')->insertGetId($fax_data);
+                $id = DB::table('sendfax')->insertGetId($fax_data, 'job_id');
                 $this->audit('Add');
                 $directory = Storage::path('sentfax/' . $id);
                 mkdir($directory, 0777);
@@ -6124,7 +6093,7 @@ class CoreController extends Controller
                 'sms_url' => $practice->sms_url,
                 'reminder_interval' => $practice->reminder_interval
             ];
-            $practice_id = DB::table('practiceinfo')->insertGetId($practice_data);
+            $practice_id = DB::table('practiceinfo')->insertGetId($practice_data, 'practice_id');
             $this->audit('Add');
             $data_jwk = [];
             $data_jwk['private_jwk'] = JWKFactory::createRSAKey(
@@ -7118,9 +7087,6 @@ class CoreController extends Controller
     {
         $user = DB::table('users')->where('id', '=', Session::get('user_id'))->first();
         if (!empty($user->reports)) {
-            // $yaml = $user->reports;
-            // $formatter = Formatter::make($yaml, Formatter::YAML);
-            // $array = $formatter->toArray();
             $array = Yaml::parse($user->reports);
         } else {
             $array = [];
@@ -7158,8 +7124,6 @@ class CoreController extends Controller
                         'search_join' => $search_join[$j]
                     ];
                 }
-                // $formatter1 = Formatter::make($array, Formatter::ARR);
-                // $data['reports'] = $formatter1->toYaml();
                 $data['reports'] = Yaml::dump($array);
                 $data['reports_updated_at'] = date('Y-m-d H:i:s', time());
                 DB::table('users')->where('id', '=', Session::get('user_id'))->update($data);
@@ -7873,13 +7837,8 @@ class CoreController extends Controller
     public function superquery_delete(Request $request, $type)
     {
         $user = DB::table('users')->where('id', '=', Session::get('user_id'))->first();
-        // $yaml = $user->reports;
-        // $formatter = Formatter::make($yaml, Formatter::YAML);
-        // $array = $formatter->toArray();
         $array = Yaml::parse($user->reports);
         unset($array[$type]);
-        // $formatter1 = Formatter::make($array, Formatter::ARR);
-        // $data['reports'] = $formatter1->toYaml();
         $data['reports'] = Yaml::dump($array);
         $data['reports_updated_at'] = date('Y-m-d H:i:s', time());
         DB::table('users')->where('id', '=', Session::get('user_id'))->update($data);
@@ -8164,9 +8123,6 @@ class CoreController extends Controller
         if ($user->reports == null || $user->reports == '') {
             $array = [];
         } else {
-            // $yaml = $user->reports;
-            // $formatter = Formatter::make($yaml, Formatter::YAML);
-            // $array = $formatter->toArray();
             $array = Yaml::parse($user->reports);
         }
         $list_array = [];
@@ -8794,7 +8750,7 @@ class CoreController extends Controller
         $message = trans('noshform.error') . ' - ' . trans('noshform.uma_add_patient1');
         if ($type == '') {
             $data = Session::get('uma_add_patient');
-            $pid = DB::table('demographics')->insertGetId($data);
+            $pid = DB::table('demographics')->insertGetId($data, 'pid');
             $this->audit('Add');
             $data1 = [
                 'billing_notes' => '',

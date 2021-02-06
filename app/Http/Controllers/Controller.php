@@ -39,7 +39,6 @@ use Swift_Mailer;
 use Swift_SmtpTransport;
 use Session;
 use Illuminate\Support\Facades\Storage;
-// use SoapBox\Formatter\Formatter;
 use URL;
 use Symfony\Component\Yaml\Yaml;
 use Jose\Component\Core\JWK;
@@ -115,8 +114,6 @@ class Controller extends BaseController
         if ($query) {
             if ($query->{$column} !== '' && $query->{$column} !== null) {
                 if ($this->yaml_check($query->{$column})) {
-                    // $formatter = Formatter::make($query->{$column}, Formatter::YAML);
-                    // $arr = $formatter->toArray();
                     $arr = Yaml::parse($query->{$column});
                     $list_array = [];
                     foreach ($arr as $k=>$v) {
@@ -2292,9 +2289,6 @@ class Controller extends BaseController
 
     protected function array_route()
     {
-        // $yaml = File::get(resource_path() . '/routes.yaml');
-        // $formatter = Formatter::make($yaml, Formatter::YAML);
-        // $arr = $formatter->toArray();
         $arr = Yaml::parseFile(resource_path() . '/routes.yaml');
         $route[''] = '';
         foreach ($arr as $row) {
@@ -2315,9 +2309,6 @@ class Controller extends BaseController
             'intramuscularly' => ['C1556154', 'Intravascular Route of Administration'],
             'intravenously' => ['C2960476', 'Intramuscular Route of Administration']
         ];
-        // $yaml = File::get(resource_path() . '/routes.yaml');
-        // $formatter = Formatter::make($yaml, Formatter::YAML);
-        // $arr = $formatter->toArray();
         $arr = Yaml::parseFile(resource_path() . '/routes.yaml');
         foreach ($arr as $row) {
             $route[$row['desc']] = [$row['code'], $row['desc']];
@@ -3610,8 +3601,6 @@ class Controller extends BaseController
                 }
             }
         }
-        // $formatter1 = Formatter::make($data3, Formatter::ARR);
-        // $text = $formatter1->toYaml();
         $text = Yaml::dump($data3);
         $file_path = resource_path() . '/common_icd.yaml';
         File::put($file_path, $text);
@@ -3697,8 +3686,6 @@ class Controller extends BaseController
             }
             $data[$key] = $form;
         }
-        // $formatter1 = Formatter::make($data, Formatter::ARR);
-        // $text = $formatter1->toYaml();
         $text = Yaml::dump($data);
         $file_path = resource_path() . '/forms.yaml';
         File::put($file_path, $text);
@@ -3907,8 +3894,6 @@ class Controller extends BaseController
             }
         }
         $arr = $this->super_unique($arr);
-        // $formatter1 = Formatter::make($arr, Formatter::ARR);
-        // $text = $formatter1->toYaml();
         $text = Yaml::dump($arr);
         $file_path = resource_path() . '/test.yaml';
         File::put($file_path, $text);
@@ -4507,7 +4492,7 @@ class Controller extends BaseController
                 'faxcoverpage' => $coverpage,
                 'practice_id' => Session::get('practice_id')
             ];
-            $job_id = DB::table('sendfax')->insertGetId($fax_data);
+            $job_id = DB::table('sendfax')->insertGetId($fax_data, 'job_id');
             $this->audit('Add');
             $fax_directory = Storage::path('sentfax/' . $job_id);
             mkdir($fax_directory, 0777);
@@ -4697,9 +4682,6 @@ class Controller extends BaseController
                                 $route = '';
                                 if (isset($row2['resource']['dosage'][0]['route']['coding'][0])) {
                                     if ($row2['resource']['dosage'][0]['route']['coding'][0]['system'] == 'http://snomed.info/sct') {
-                                        // $yaml = File::get(resource_path() . '/routes.yaml');
-                                        // $formatter = Formatter::make($yaml, Formatter::YAML);
-                                        // $route_arr = $formatter->toArray();
                                         $route_arr = Yaml::parseFile(resource_path() . '/routes.yaml');
                                         $q = $row2['resource']['dosage'][0]['route']['coding'][0]['code'];
                                         $route_result = Arr::where($route_arr, function($value, $key) use ($q) {
@@ -11701,7 +11683,7 @@ class Controller extends BaseController
                         'documents_from' => $from,
                         'documents_date' => $documents_date
                     ];
-                    $documents_id = DB::table('documents')->insertGetId($pages_data);
+                    $documents_id = DB::table('documents')->insertGetId($pages_data, 'documents_id');
                     $this->audit('Add');
                 } else {
                     $messages_pid = '';
@@ -13838,8 +13820,6 @@ class Controller extends BaseController
                 ];
             }
         }
-        // $formatter1 = Formatter::make($data1, Formatter::ARR);
-        // $text = $formatter1->toYaml();
         $text = Yaml::dump($data1);
         $file_path = resource_path() . '/healthwise.yaml';
         File::put($file_path, $text);
@@ -15561,6 +15541,7 @@ class Controller extends BaseController
                 'rx_orders_summary' => $rx_orders_summary_text
             ];
             if ($rx_row) {
+                $rx_data['rx_date'] = date("Y-m-d H:i:s", time());
                 DB::table('rx')->where('eid', '=', $eid)->update($rx_data);
                 $this->audit('Update');
                 // $this->api_data('update', 'rx', 'eid', $eid);
@@ -15591,6 +15572,7 @@ class Controller extends BaseController
                 'rx_immunizations' => implode("\n", $rx_immunizations_arr),
             ];
             if ($rx_row) {
+                $imm_date['rx_date'] = date("Y-m-d H:i:s", time());
                 DB::table('rx')->where('eid', '=', $eid)->update($imm_data);
                 $this->audit('Update');
                 // $this->api_data('update', 'rx', 'eid', $eid);
@@ -15694,6 +15676,7 @@ class Controller extends BaseController
                 'rx_supplements_orders_summary' => $sup_orders_summary_text
             ];
             if ($rx_row) {
+                $sup_data['rx_date'] = date("Y-m-d H:i:s", time());
                 DB::table('rx')->where('eid', '=', $eid)->update($sup_data);
                 $this->audit('Update');
                 // $this->api_data('update', 'rx', 'eid', $eid);
@@ -16020,7 +16003,7 @@ class Controller extends BaseController
             'documents_viewed' => Session::get('displayname'),
             'documents_date' => date('Y-m-d H:i:s', time())
         ];
-        $document_id = DB::table('documents')->insertGetId($pages_data);
+        $document_id = DB::table('documents')->insertGetId($pages_data, 'documents_id');
         App::setLocale(Session::get('user_locale'));
         return $file_path;
     }
@@ -16067,8 +16050,6 @@ class Controller extends BaseController
                 if ($proc_row->{$procedure_k} !== '' && $proc_row->{$procedure_k} !== null) {
                     if ($procedure_k == 'proc_description') {
                         if ($this->yaml_check($proc_row->{$procedure_k})) {
-                            // $formatter = Formatter::make($proc_row->{$procedure_k}, Formatter::YAML);
-                            // $arr = $formatter->toArray();
                             $arr = Yaml::parse($proc_row->{$procedure_k});
                             foreach ($arr as $arr_item) {
                                 $pre_proc[$m]['code'] = $arr_item['code'];
@@ -18101,8 +18082,6 @@ class Controller extends BaseController
                 }
             }
         }
-        // $formatter1 = Formatter::make($data1, Formatter::ARR);
-        // $text = $formatter1->toYaml();
         $text = Yaml::dump($data1);
         $file_path = resource_path() . '/supplements.yaml';
         File::put($file_path, $text);

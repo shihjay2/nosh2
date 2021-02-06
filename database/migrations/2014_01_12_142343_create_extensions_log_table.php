@@ -18,7 +18,7 @@ class CreateExtensionslogTable extends Migration {
 				$table->bigInteger('pid')->nullable();
 				$table->string('action', 255)->nullable();
 				$table->longtext('description')->nullable();
-				$table->timestamp('timestamp')->useCurrentOnUpdate();
+				$table->timestamp('timestamp')->useCurrent();
 				$table->integer('practice_id')->nullable();
 			});
 		}

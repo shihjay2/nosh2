@@ -16,7 +16,7 @@ class CreateFormsTable extends Migration {
 				$table->increments('forms_id');
 				$table->integer('pid')->nullable();
 				$table->integer('template_id')->nullable();
-				$table->timestamp('forms_date')->useCurrentOnUpdate();
+				$table->timestamp('forms_date')->useCurrent();
 				$table->string('forms_title', 255)->nullable();
 				$table->longtext('forms_content')->nullable();
 				$table->string('forms_destination', 255)->nullable();

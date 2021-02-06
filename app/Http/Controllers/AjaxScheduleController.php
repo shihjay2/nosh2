@@ -179,7 +179,7 @@ class AjaxScheduleController extends Controller {
             }
             if ($id == '') {
                 $data['timestamp'] = null;
-                $appt_id = DB::table('schedule')->insertGetId($data);
+                $appt_id = DB::table('schedule')->insertGetId($data, 'appt_id');
                 $this->audit('Add');
                 if ($pid != '0' && $pid !== '') {
                     $this->schedule_notification($appt_id);
