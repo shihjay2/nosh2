@@ -564,7 +564,7 @@ class InstallController extends Controller {
             ]);
             $data_jwk['public_jwk'] = $data_jwk['private_jwk']->toPublic();
             $data_jwk['practice_id'] = $practice_id;
-            DB::table('practiceinfo_plus')->insert($practice_id);
+            DB::table('practiceinfo_plus')->insert($data_jwk);
             $this->audit('Add');
             // Insert patient
             if ($type == 'patient') {
