@@ -562,7 +562,8 @@ class InstallController extends Controller {
                 'use' => 'sig',
                 'kid' => $this->gen_uuid()
             ]);
-            $data_jwk['public_jwk'] = $data_jwk['private_jwk']->toPublic();
+            $data_jwk['public_jwk'] = json_encode($data_jwk['private_jwk']->toPublic());
+            $data_jwk['private_jwk'] = json_encode($data_jwk['private_jwk']);
             $data_jwk['practice_id'] = $practice_id;
             DB::table('practiceinfo_plus')->insert($data_jwk);
             $this->audit('Add');
