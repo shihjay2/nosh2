@@ -306,7 +306,7 @@ return [
     "partner_name" => "Spouse/Partner Name",
     "employer" => "Employer",
     "ethnicity" => "Ethnicity",
-    "caregiver" => "Careiver(s)",
+    "caregiver" => "Caregiver(s)",
     "status" => "Status",
     "referred_by" => "Referred By",
     "language" => "Preferred Language",
