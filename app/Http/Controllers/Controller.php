@@ -7322,11 +7322,11 @@ class Controller extends BaseController
             'type' => 'textarea',
             'default_value' => $issue['notes']
         ];
-        $items[] = [
-            'name' => 'issue_date_inactive',
-            'type' => 'hidden',
-            'default_value' => $issue['issue_date_inactive']
-        ];
+        // $items[] = [
+        //     'name' => 'issue_date_inactive',
+        //     'type' => 'hidden',
+        //     'default_value' => $issue['issue_date_inactive']
+        // ];
         $items[] = [
             'name' => 'issue_provider',
             'type' => 'hidden',
