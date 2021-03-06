@@ -7322,11 +7322,11 @@ class Controller extends BaseController
             'type' => 'textarea',
             'default_value' => $issue['notes']
         ];
-        $items[] = [
-            'name' => 'issue_date_inactive',
-            'type' => 'hidden',
-            'default_value' => $issue['issue_date_inactive']
-        ];
+        // $items[] = [
+        //     'name' => 'issue_date_inactive',
+        //     'type' => 'hidden',
+        //     'default_value' => $issue['issue_date_inactive']
+        // ];
         $items[] = [
             'name' => 'issue_provider',
             'type' => 'hidden',
@@ -8918,11 +8918,13 @@ class Controller extends BaseController
             'selectpicker' => true,
             'default_value' => $rx['label']
         ];
-        $items[] = [
-            'name' => 'rxl_date_inactive',
-            'type' => 'hidden',
-            'default_value' => $rx['rxl_date_inactive']
-        ];
+        // DH Removed because it causes entry in rx_list
+        // of 0000-00-00. With code commented out entry is null. 
+        // $items[] = [ 
+        //     'name' => 'rxl_date_inactive',
+        //     'type' => 'hidden',
+        //     'default_value' => $rx['rxl_date_inactive']
+        // ];
         $items[] = [
             'name' => 'rxl_provider',
             'type' => 'hidden',
@@ -8934,11 +8936,13 @@ class Controller extends BaseController
             'type' => 'hidden',
             'default_value' => $rx['rxl_date_prescribed']
         ];
-        $items[] = [
-            'name' => 'rxl_date_old',
-            'type' => 'hidden',
-            'default_value' => $rx['rxl_date_old']
-        ];
+        // DH Removed because it causes entry in rx_list
+        // of 0000-00-00. With code commented out entry is null. 
+        // $items[] = [
+        //     'name' => 'rxl_date_old',
+        //     'type' => 'hidden',
+        //     'default_value' => $rx['rxl_date_old']
+        // ];
         if ($subtype !== '') {
             $items[] = [
                 'name' => 'rxl_days',
