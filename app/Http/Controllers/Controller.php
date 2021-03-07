@@ -7322,6 +7322,7 @@ class Controller extends BaseController
             'type' => 'textarea',
             'default_value' => $issue['notes']
         ];
+        // section removed because it creates 0000-00-00 entries in the database
         // $items[] = [
         //     'name' => 'issue_date_inactive',
         //     'type' => 'hidden',
