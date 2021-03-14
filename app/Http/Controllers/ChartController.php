@@ -756,9 +756,13 @@ class ChartController extends Controller {
         $dropdown_array['items'] = $items;
         $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
         if ($type == 'prevention') {
-            $key = '48126e4e8ea3b83bc808850c713a5743';
-            $url = 'https://epssdata.ahrq.gov/';
-            $post = http_build_query([
+            // $key = '48126e4e8ea3b83bc808850c713a5743'; //this is Dr. Chen's key
+            $key = '9e04432325ea887e326523fe3df40573'; //my personal key DH
+            // $url = 'https://epssdata.ahrq.gov/'; //updated on next line
+            $url = 'https://data.uspreventiveservicestaskforce.org/api/json';
+            // $url = 'https://epssdata.ahrq.gov/';
+            // $post = http_build_query([ //change from post to get
+            $get = http_build_query([
                 'key' => $key,
                 'age' => round($age, 0, PHP_ROUND_HALF_DOWN),
                 'sex' => $gender,
@@ -766,9 +770,9 @@ class ChartController extends Controller {
                 'sexuallyActive' => $row->sexuallyactive,
                 'tobacco' => $row->tobacco
             ]);
-            $cr = curl_init($url);
-            curl_setopt($cr, CURLOPT_POST, 1);
-            curl_setopt($cr, CURLOPT_POSTFIELDS, $post);
+            $cr = curl_init($url . '?' . $get);
+            // curl_setopt($cr, CURLOPT_POST, 1);  //not needed for get
+            // curl_setopt($cr, CURLOPT_POSTFIELDS, $post);  //not needed for get
             curl_setopt($cr, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($cr, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
             $data1 = curl_exec($cr);
@@ -801,7 +805,8 @@ class ChartController extends Controller {
                 $grade_i .= '</ul></div>';
                 $return .= $grade_ab . $grade_c . $grade_d . $grade_i;
             } else {
-                $return .= '<h4>' . trans('noshform.uspstf_none') . '</h4>';
+                // $return .= '<h4>' . trans('noshform.uspstf_none') . '</h4>';
+                $return .= '<h4>' . $url . '?' . $get . '</h4>';
             }
         }
         if ($type == 'immunizations') {
