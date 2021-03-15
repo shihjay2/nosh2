@@ -805,8 +805,7 @@ class ChartController extends Controller {
                 $grade_i .= '</ul></div>';
                 $return .= $grade_ab . $grade_c . $grade_d . $grade_i;
             } else {
-                // $return .= '<h4>' . trans('noshform.uspstf_none') . '</h4>';
-                $return .= '<h4>' . $url . '?' . $get . '</h4>';
+                $return .= '<h4>' . trans('noshform.uspstf_none') . '</h4>';
             }
         }
         if ($type == 'immunizations') {
