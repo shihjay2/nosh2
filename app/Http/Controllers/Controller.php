@@ -2793,23 +2793,29 @@ class Controller extends BaseController
         // {"userInput":{"classId":"N0000001592","trans":"0","relaSource":"NDFRT","rela":"may_treat","ttys":["IN","PIN","MIN"]}}
         // Comment out for now leaving
         // htn and chol as false
-        // $rx = DB::table('rx_list')->where('pid', '=', Session::get('pid'))->whereNull('rxl_date_inactive')->whereNull('rxl_date_old')->get();
-        // if ($rx->count()) {
-        //     $htn_url = 'https://rxnav.nlm.nih.gov/REST/rxclass/classMembers.json?classId=N0000001616&relaSource=NDFRT&rela=may_treat';
-        //     $htn_ch = curl_init();
-        //     curl_setopt($htn_ch,CURLOPT_URL, $htn_url);
-        //     curl_setopt($htn_ch,CURLOPT_FAILONERROR,1);
-        //     curl_setopt($htn_ch,CURLOPT_FOLLOWLOCATION,1);
-        //     curl_setopt($htn_ch,CURLOPT_RETURNTRANSFER,1);
-        //     curl_setopt($htn_ch,CURLOPT_TIMEOUT, 15);
-        //     $htn_json = curl_exec($htn_ch);
-        //     curl_close($htn_ch);
-        //     $htn_group = json_decode($htn_json, true);
-        //     $htn_arr = [];
-        //     foreach ($htn_group['drugMemberGroup']['drugMember'] as $htn_item) {
-        //         $htn_arr[] = strtolower($htn_item['minConcept']['name']);
-        //     }
+        $rx = DB::table('rx_list')->where('pid', '=', Session::get('pid'))->whereNull('rxl_date_inactive')->whereNull('rxl_date_old')->get();
+        if ($rx->count()) {
+        //     $htn_url = 'https://rxnav.nlm.nih.gov/REST/rxclass/classMembers.json?classId=N0000001616&relaSource=NDFRT&rela=may_treat'; 
+        //     according to https://rxnav.nlm.nih.gov/RxClassIntro.html NDFRT was replaced with MEDRT in 2018. In addition MESH identifiers
+        //     like D006973 for HTN replace the NDFRT ids like N0000001616
+        //     JSON structure appears to be the same.     
+            $htn_url = 'https://rxnav.nlm.nih.gov/REST/rxclass/classMembers.json?classId=D006973&relaSource=MEDRT&rela=may_treat';
+            $htn_ch = curl_init();
+            curl_setopt($htn_ch,CURLOPT_URL, $htn_url);
+            curl_setopt($htn_ch,CURLOPT_FAILONERROR,1);
+            curl_setopt($htn_ch,CURLOPT_FOLLOWLOCATION,1);
+            curl_setopt($htn_ch,CURLOPT_RETURNTRANSFER,1);
+            curl_setopt($htn_ch,CURLOPT_TIMEOUT, 15);
+            $htn_json = curl_exec($htn_ch);
+            curl_close($htn_ch);
+            $htn_group = json_decode($htn_json, true);
+            $htn_arr = [];
+            foreach ($htn_group['drugMemberGroup']['drugMember'] as $htn_item) {
+                $htn_arr[] = strtolower($htn_item['minConcept']['name']);
+            }
         //     $chol_url = 'https://rxnav.nlm.nih.gov/REST/rxclass/classMembers.json?classId=N0000001592&relaSource=NDFRT&rela=may_treat';
+        //     What is the MEDRT class for hyperlipidemia? D006937? D006949?
+        //     Handy for drug - disease NDFRT - MEDRT code lookups: https://bioportal.bioontology.org/ontologies/NDFRT?p=classes&conceptid=N0000001580
         //     $chol_ch = curl_init();
         //     curl_setopt($chol_ch,CURLOPT_URL, $chol_url);
         //     curl_setopt($chol_ch,CURLOPT_FAILONERROR,1);
@@ -2823,17 +2829,17 @@ class Controller extends BaseController
         //     foreach ($chol_group['drugMemberGroup']['drugMember'] as $chol_item) {
         //         $chol_arr[] = strtolower($chol_item['minConcept']['name']);
         //     }
-        //     foreach ($rx as $rx_item) {
-        //         $rx_name = explode(' ', $rx_item->rxl_medication);
-        //         $rx_name_first = strtolower($rx_name[0]);
-        //         if (in_array($rx_name_first, $htn_arr)) {
-        //             $htn = true;
-        //         }
+            foreach ($rx as $rx_item) {
+                $rx_name = explode(' ', $rx_item->rxl_medication);
+                $rx_name_first = strtolower($rx_name[0]);
+                if (in_array($rx_name_first, $htn_arr)) {
+                    $htn = true; // ...where $htn means 'being treated for HTN => taking antihypertensive medicine'
+                }
         //         if (in_array($rx_name_first, $chol_arr)) {
-        //             $chol = true;
+        //             $chol = true; // ...where $chol means 'taking a statin'
         //         }
-        //     }
-        // }
+            }
+        }
         $hdl = '45';
         $ldl = '90';
         $tc = '190';
@@ -2868,6 +2874,7 @@ class Controller extends BaseController
                 'age' => $age
             ];
             $data_string = json_encode($data);
+            // echo $data_string;
             $ch = curl_init($url);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
             curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);

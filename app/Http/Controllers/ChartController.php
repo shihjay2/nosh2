@@ -756,12 +756,10 @@ class ChartController extends Controller {
         $dropdown_array['items'] = $items;
         $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
         if ($type == 'prevention') {
-            // $key = '48126e4e8ea3b83bc808850c713a5743'; //this is Dr. Chen's key
-            $key = '9e04432325ea887e326523fe3df40573'; //my personal key DH
-            // $url = 'https://epssdata.ahrq.gov/'; //updated on next line
-            $url = 'https://data.uspreventiveservicestaskforce.org/api/json';
-            // $url = 'https://epssdata.ahrq.gov/';
-            // $post = http_build_query([ //change from post to get
+            $key = '48126e4e8ea3b83bc808850c713a5743'; //this is Dr. Chen's key DH
+            // $url = 'https://epssdata.ahrq.gov/'; //this may be an older url DH
+            $url = 'https://data.uspreventiveservicestaskforce.org/api/json'; //this is the one currently recommended on the uspstf web site DH
+            // $post = http_build_query([ //change from post to get DH
             $get = http_build_query([
                 'key' => $key,
                 'age' => round($age, 0, PHP_ROUND_HALF_DOWN),
