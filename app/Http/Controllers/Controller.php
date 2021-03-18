@@ -2785,20 +2785,12 @@ class Controller extends BaseController
         }
         $htn = false;
         $chol = false;
-        // the API in this commented-out section may have changed. 
-        // Is throwing a Undefined index: drugMemberGroup ag 2801
-        // Running the raw queries produces 
-        // {"userInput":{"classId":"N0000001616","trans":"0","relaSource":"NDFRT","rela":"may_treat","ttys":["IN","PIN","MIN"]}}
-        // and 
-        // {"userInput":{"classId":"N0000001592","trans":"0","relaSource":"NDFRT","rela":"may_treat","ttys":["IN","PIN","MIN"]}}
-        // Comment out for now leaving
-        // htn and chol as false
         $rx = DB::table('rx_list')->where('pid', '=', Session::get('pid'))->whereNull('rxl_date_inactive')->whereNull('rxl_date_old')->get();
         if ($rx->count()) {
-        //     $htn_url = 'https://rxnav.nlm.nih.gov/REST/rxclass/classMembers.json?classId=N0000001616&relaSource=NDFRT&rela=may_treat'; 
-        //     according to https://rxnav.nlm.nih.gov/RxClassIntro.html NDFRT was replaced with MEDRT in 2018. In addition MESH identifiers
-        //     like D006973 for HTN replace the NDFRT ids like N0000001616
-        //     JSON structure appears to be the same.     
+        //  $htn_url = 'https://rxnav.nlm.nih.gov/REST/rxclass/classMembers.json?classId=N0000001616&relaSource=NDFRT&rela=may_treat'; 
+        //  according to https://rxnav.nlm.nih.gov/RxClassIntro.html NDFRT was replaced with MEDRT in 2018. In addition MESH identifiers
+        //  like D006973 for HTN replace the NDFRT ids like N0000001616
+        //  JSON structure is the same.     
             $htn_url = 'https://rxnav.nlm.nih.gov/REST/rxclass/classMembers.json?classId=D006973&relaSource=MEDRT&rela=may_treat';
             $htn_ch = curl_init();
             curl_setopt($htn_ch,CURLOPT_URL, $htn_url);
@@ -2813,6 +2805,9 @@ class Controller extends BaseController
             foreach ($htn_group['drugMemberGroup']['drugMember'] as $htn_item) {
                 $htn_arr[] = strtolower($htn_item['minConcept']['name']);
             }
+        //     This hyperlipidemia Rx class search is replace with a simple statin array on line 2825. 
+        //     Reason - 1) many meds treat high cholesterol are not statins; 2) the list of statins
+        //     is pretty short!
         //     $chol_url = 'https://rxnav.nlm.nih.gov/REST/rxclass/classMembers.json?classId=N0000001592&relaSource=NDFRT&rela=may_treat';
         //     What is the MEDRT class for hyperlipidemia? D006937? D006949?
         //     Handy for drug - disease NDFRT - MEDRT code lookups: https://bioportal.bioontology.org/ontologies/NDFRT?p=classes&conceptid=N0000001580
@@ -2829,11 +2824,23 @@ class Controller extends BaseController
         //     foreach ($chol_group['drugMemberGroup']['drugMember'] as $chol_item) {
         //         $chol_arr[] = strtolower($chol_item['minConcept']['name']);
         //     }
+            $chol_arr = ['atorvastatin', 'fluvastatin', 'lovastatin', 'pitavastatin', 'pravastatin', 'rosuvastatin', 'simvastatin']; // DH
             foreach ($rx as $rx_item) {
-                $rx_name = explode(' ', $rx_item->rxl_medication);
+                $rx_full_name = $rx_item->rxl_medication;  // DH used for $chol; 
+                $rx_name = explode(' ', $rx_item->rxl_medication);  //DH used for $htn; the first word in $rx_item->rxl_medication
                 $rx_name_first = strtolower($rx_name[0]);
                 if (in_array($rx_name_first, $htn_arr)) {
                     $htn = true; // ...where $htn means 'being treated for HTN => taking antihypertensive medicine'
+                }
+                // if (in_array($rx_name_first, $chol_arr)) {
+                //     echo 'name in med list' . $rx_name_first . 'name in med list' .
+                //     $chol = true; // ...where $chol means 'taking a statin'
+                // }
+                foreach ($chol_arr as $ca) {
+                    // echo 'chol array entry: ' . $ca . ', med list entry: ' . $rx_full_name;
+                    if (stripos($rx_full_name, $ca) !== false) { //don't use rx_name_first! Stripos is case insensitive. 
+                        $chol = true;  // ...where $chol means 'taking a statin'
+                    }
                 }
         //         if (in_array($rx_name_first, $chol_arr)) {
         //             $chol = true; // ...where $chol means 'taking a statin'
@@ -2874,7 +2881,7 @@ class Controller extends BaseController
                 'age' => $age
             ];
             $data_string = json_encode($data);
-            // echo $data_string;
+            echo $data_string;
             $ch = curl_init($url);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
             curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
