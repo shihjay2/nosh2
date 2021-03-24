@@ -8933,7 +8933,7 @@ class Controller extends BaseController
             'selectpicker' => true,
             'default_value' => $rx['label']
         ];
-        // Removed because it causes entry in rx_list
+        // Removed because it causes error in rx_list
         // of 0000-00-00. With code commented out entry is null. 
         // which causes problems with the Conditions list. 
         // $items[] = [ 
