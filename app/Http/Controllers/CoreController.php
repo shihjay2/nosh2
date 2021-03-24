@@ -2262,7 +2262,7 @@ class CoreController extends Controller
             $zip->open($zip_file, ZipArchive::CREATE);
             $documents_dir = Storage::path('');
             $database = env('DB_DATABASE') . "_copy";
-            $connect = mysqli_connect('localhost', env('DB_USERNAME'), env('DB_PASSWORD'));
+            $connect = mysqli_connect(env('DB_HOST'), env('DB_USERNAME'), env('DB_PASSWORD'));
             if ($connect) {
                 if (mysqli_select_db($connect, $database)) {
                     $sql = "DROP DATABASE " . $database;
@@ -2270,7 +2270,7 @@ class CoreController extends Controller
                 }
                 $sql = "CREATE DATABASE " . $database;
                 if (mysqli_query($connect,$sql)) {
-                    $command = "mysqldump --no-data -u " . env('DB_USERNAME') . " -p". env('DB_PASSWORD') . " " . env('DB_DATABASE') . " | mysql -u " . env('DB_USERNAME') . " -p". env('DB_PASSWORD') . " " . $database;
+                    $command = "mysqldump --no-data -h " . env('DB_HOST') . " -u " . env('DB_USERNAME') . " -p". env('DB_PASSWORD') . " " . env('DB_DATABASE') . " | mysql -h " . env('DB_HOST') . " -u " . env('DB_USERNAME') . " -p". env('DB_PASSWORD') . " " . $database;
                     system($command);
                     Schema::connection('mysql2')->drop('audit');
                     Schema::connection('mysql2')->drop('ci_sessions');
@@ -2738,13 +2738,13 @@ class CoreController extends Controller
                                 DB::connection('mysql2')->table('vitals')->insert((array) $vitals);
                             }
                             $i++;
-                            $percent1 = round($j/$eid_count*25) + 70;
+                            $percent = round($j/$eid_count*25) + 70;
                             File::put(public_path() . '/temp/' . $track_id, $percent);
                         }
                     }
                     $sqlfilename = time() . '_noshexport.sql';
                     $sqlfile = public_path() . '/temp/' . $sqlfilename;
-                    $command = "mysqldump -u " . env('DB_USERNAME') . " -p". env('DB_PASSWORD') . " " . $database . " > " . $sqlfile;
+                    $command = "mysqldump -h " . env('DB_HOST') . " -u " . env('DB_USERNAME') . " -p". env('DB_PASSWORD') . " " . $database . " > " . $sqlfile;
                     system($command);
                     if (!file_exists($sqlfile)) {
                         sleep(2);
@@ -2778,7 +2778,7 @@ class CoreController extends Controller
         ini_set('max_execution_time', 300);
         if ($request->isMethod('post')) {
             $file = $request->input('backup');
-            $command = "mysql -u " . env('DB_USERNAME') . " -p". env('DB_PASSWORD') . " " . env('DB_DATABASE') . " < " . $file;
+            $command = "mysql -h " . env('DB_HOST') . " -u " . env('DB_USERNAME') . " -p". env('DB_PASSWORD') . " " . env('DB_DATABASE') . " < " . $file;
             system($command);
             $message = trans('noshform.database_import1');
             Session::put('message_action', $message);
@@ -2836,7 +2836,7 @@ class CoreController extends Controller
                 $sqlsearch = glob($directory . '/*_noshexport.sql');
                 if (! empty($sqlsearch)) {
                     foreach ($sqlsearch as $sqlfile) {
-                        $command = "mysql -u " . env('DB_USERNAME') . " -p". env('DB_PASSWORD') . " " . env('DB_DATABASE') . " < " . $sqlfile;
+                        $command = "mysql -h " . env('DB_HOST') . " -u " . env('DB_USERNAME') . " -p". env('DB_PASSWORD') . " " . env('DB_DATABASE') . " < " . $sqlfile;
                         system($command);
                         unlink($sqlfile);
                     }
@@ -2876,7 +2876,7 @@ class CoreController extends Controller
             $directory = public_path() . '/temp';
             $file->move($directory, $file->getClientOriginalName());
             $new_file = $directory . '/' . $file->getClientOriginalName();
-            $command = "mysql -u " . env('DB_USERNAME') . " -p". env('DB_PASSWORD') . " " . env('DB_DATABASE') . " < " . $new_file;
+            $command = "mysql -h " . env('DB_HOST') . " -u " . env('DB_USERNAME') . " -p". env('DB_PASSWORD') . " " . env('DB_DATABASE') . " < " . $new_file;
             system($command);
             unlink($new_file);
             $message = trans('noshform.database_import1');
@@ -6613,7 +6613,7 @@ class CoreController extends Controller
     {
         if ($request->isMethod('post')) {
             $file = $request->input('backup');
-            $command = "mysql -u " . env('DB_USERNAME') . " -p". env('DB_PASSWORD') . " " . env('DB_DATABASE') . " < " . $file;
+            $command = "mysql -h " . env('DB_HOST') . " -u " . env('DB_USERNAME') . " -p". env('DB_PASSWORD') . " " . env('DB_DATABASE') . " < " . $file;
             system($command);
             // Do migrations if needed
             $migrate = new Process(["php artisan migrate --force"]);
@@ -6968,7 +6968,7 @@ class CoreController extends Controller
                 trans('noshform.patient_portal') => $result->patient_portal
             ];
             $encounter_type_arr = $this->array_encounter_type();
-            // Remove depreciated encounter types for new encounters
+            // Remove deprecated encounter types for new encounters
             unset($encounter_type_arr['standardmedical']);
             unset($encounter_type_arr['standardmedical1']);
             $reminder_interval_arr = $this->array_reminder_interval();

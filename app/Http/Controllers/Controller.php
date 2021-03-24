@@ -1493,8 +1493,8 @@ class Controller extends BaseController
             'medical' => trans('noshform.medical_encounter'),
             'phone' => trans('noshform.phone_encounter'),
             'virtual' => trans('noshform.virtual_encounter'),
-            'standardmedical1' => 'Standard Medical Visit V2', // Depreciated
-            'standardmedical' => 'Standard Medical Visit V1', // Depreciated
+            'standardmedical1' => 'Standard Medical Visit V2', // deprecated
+            'standardmedical' => 'Standard Medical Visit V1', // deprecated
             'standardpsych' => trans('noshform.standardpsych'),
             'standardpsych1' => trans('noshform.standardpsych1'),
             'clinicalsupport' => trans('noshform.clinicalsupport'),
@@ -2778,9 +2778,9 @@ class Controller extends BaseController
             if ($vitals->bp_systolic > 200) {
                 $sbp = '200';
             } elseif ($vitals->bp_systolic < 90) {
-                $spb = '90';
+                $sbp = '90';
             } else {
-                $spb = $vitals->bp_systolic;
+                $sbp = $vitals->bp_systolic;
             }
         }
         $htn = false;
@@ -2805,11 +2805,10 @@ class Controller extends BaseController
             foreach ($htn_group['drugMemberGroup']['drugMember'] as $htn_item) {
                 $htn_arr[] = strtolower($htn_item['minConcept']['name']);
             }
-        //     This hyperlipidemia Rx class search is replace with a simple statin array on line 2825. 
-        //     Reason - 1) many meds treat high cholesterol are not statins; 2) the list of statins
-        //     is pretty short!
+        //     This hyperlipidemia Rx class search is replaced with a simple statin array on line 2825. 
+        //     Reason - 1) many meds which treat high cholesterol are not statins; 2) the list of statins
+        //     is pretty short.
         //     $chol_url = 'https://rxnav.nlm.nih.gov/REST/rxclass/classMembers.json?classId=N0000001592&relaSource=NDFRT&rela=may_treat';
-        //     What is the MEDRT class for hyperlipidemia? D006937? D006949?
         //     Handy for drug - disease NDFRT - MEDRT code lookups: https://bioportal.bioontology.org/ontologies/NDFRT?p=classes&conceptid=N0000001580
         //     $chol_ch = curl_init();
         //     curl_setopt($chol_ch,CURLOPT_URL, $chol_url);
@@ -2826,25 +2825,17 @@ class Controller extends BaseController
         //     }
             $chol_arr = ['atorvastatin', 'fluvastatin', 'lovastatin', 'pitavastatin', 'pravastatin', 'rosuvastatin', 'simvastatin']; // DH
             foreach ($rx as $rx_item) {
-                $rx_full_name = $rx_item->rxl_medication;  // DH used for $chol; 
-                $rx_name = explode(' ', $rx_item->rxl_medication);  //DH used for $htn; the first word in $rx_item->rxl_medication
+                $rx_full_name = $rx_item->rxl_medication; 
+                $rx_name = explode(' ', $rx_item->rxl_medication); 
                 $rx_name_first = strtolower($rx_name[0]);
                 if (in_array($rx_name_first, $htn_arr)) {
                     $htn = true; // ...where $htn means 'being treated for HTN => taking antihypertensive medicine'
                 }
-                // if (in_array($rx_name_first, $chol_arr)) {
-                //     echo 'name in med list' . $rx_name_first . 'name in med list' .
-                //     $chol = true; // ...where $chol means 'taking a statin'
-                // }
                 foreach ($chol_arr as $ca) {
-                    // echo 'chol array entry: ' . $ca . ', med list entry: ' . $rx_full_name;
                     if (stripos($rx_full_name, $ca) !== false) { //don't use rx_name_first! Stripos is case insensitive. 
                         $chol = true;  // ...where $chol means 'taking a statin'
                     }
                 }
-        //         if (in_array($rx_name_first, $chol_arr)) {
-        //             $chol = true; // ...where $chol means 'taking a statin'
-        //         }
             }
         }
         $hdl = '45';
@@ -8067,7 +8058,7 @@ class Controller extends BaseController
         }
         if ($subtype == 'settings') {
             $encounter_type_arr = $this->array_encounter_type();
-            // Remove depreciated encounter types for new encounters
+            // Remove deprecated encounter types for new encounters
             unset($encounter_type_arr['standardmedical']);
             unset($encounter_type_arr['standardmedical1']);
             $settings_arr = [
@@ -8942,7 +8933,7 @@ class Controller extends BaseController
             'selectpicker' => true,
             'default_value' => $rx['label']
         ];
-        // DH Removed because it causes entry in rx_list
+        // Removed because it causes entry in rx_list
         // of 0000-00-00. With code commented out entry is null. 
         // which causes problems with the Conditions list. 
         // $items[] = [ 
@@ -8963,7 +8954,7 @@ class Controller extends BaseController
         ];
         // DH Removed because it causes entry in rx_list
         // of 0000-00-00. With code commented out entry is null. 
-        // Was causes problems with the Medications list. 
+        // Was causing problems with the Medications list. 
         // $items[] = [
         //     'name' => 'rxl_date_old',
         //     'type' => 'hidden',

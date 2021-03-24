@@ -3581,7 +3581,7 @@ class ChartController extends Controller {
             'standardpsych',
             'standardpsych1'
         ];
-        $depreciated_array = [
+        $deprecated_array = [
             'standardmedical',
             'standardmedical1'
         ];
@@ -3637,8 +3637,8 @@ class ChartController extends Controller {
         }
         if ($ros) {
             $ros_val = $ros->ros;
-            // Convert depreciated encounter type to current
-            if (in_array($encounter->encounter_template, $depreciated_array)) {
+            // Convert deprecated encounter type to current
+            if (in_array($encounter->encounter_template, $deprecated_array)) {
                 $ros_arr = $this->array_ros();
                 foreach ($ros_arr as $ros_k => $ros_v) {
                     if ($ros->{$ros_k} !== '' && $ros->{$ros_k} !== null) {
@@ -3767,8 +3767,8 @@ class ChartController extends Controller {
                 $pe = DB::table('pe')->where('eid', '=', $eid)->first();
                 if ($pe) {
                     $pe_val = $pe->pe;
-                    // Convert depreciated encounter type to current
-                    if (in_array($encounter->encounter_template, $depreciated_array)) {
+                    // Convert deprecated encounter type to current
+                    if (in_array($encounter->encounter_template, $deprecated_array)) {
                         $pe_arr = $this->array_pe();
                         foreach ($pe_arr as $pe_k => $pe_v) {
                             if ($pe->{$pe_k} !== '' && $pe->{$pe_k} !== null) {
@@ -4947,7 +4947,7 @@ class ChartController extends Controller {
             $provider_arr = $this->array_providers();
             $encounter_type_arr = $this->array_encounter_type();
             if ($eid == '0') {
-                // Remove depreciated encounter types for new encounters
+                // Remove deprecated encounter types for new encounters
                 unset($encounter_type_arr['standardmedical']);
                 unset($encounter_type_arr['standardmedical1']);
             }
