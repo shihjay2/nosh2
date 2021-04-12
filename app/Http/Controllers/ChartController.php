@@ -2207,7 +2207,7 @@ class ChartController extends Controller {
             $this->audit('Delete');
 
             // $this->api_data('delete', 'rx_list', 'rxl_id', $old_rxl_id);
-            // UMA placeholder
+            // UMA (User-managed access) placeholder
             $arr['message'] = trans('noshform.eie') . "!";
         }
         $arr['response'] = 'OK';
@@ -3078,7 +3078,7 @@ class ChartController extends Controller {
             $return .= $this->header_build($header_arr, trans('noshform.contacts'));
             foreach ($contact_arr as $key2 => $value2) {
                 if ($value2 !== '' && $value2 !== null) {
-                    $return .= '<div class="row"><div class="col-md-3"><b>' . $key2 . '</b></div><div class="col-md-8">' . $value2 . '</div></div>';
+                    $return .= '<div class="row"><div class="col-md-3"><b>' . $key2 . '</b></div><">' . $value2 . '</div></div>';
                 }
             }
             $return .= '</div></div></div>';
@@ -3092,7 +3092,7 @@ class ChartController extends Controller {
             $return .= $this->header_build($header_arr, trans('noshform.other'));
             foreach ($other_arr as $key4 => $value4) {
                 if ($value4 !== '' && $value4 !== null) {
-                    $return .= '<div class="row"><div class="col-md-3"><b>' . $key4 . '</b></div><div class="col-md-8">' . $value4 . '</div></div>';
+                    $return .= '<div class="row"><div class="col-md-3"><b>' . $key4 . '</b></div><">' . $value4 . '</div></div>';
                 }
             }
             $return .= '</div></div></div>';
@@ -9007,7 +9007,7 @@ class ChartController extends Controller {
             $return .= $this->header_build($header_arr, trans('noshform.habits'));
             foreach ($habits_arr as $key2 => $value2) {
                 if ($value2 !== '' && $value2 !== null) {
-                    $return .= '<div class="col-md-3"><b>' . $key2 . '</b></div><div class="col-md-8">' . $value2 . '</div>';
+                    $return .= '<div class="col-md-3"><b>' . $key2 . '</b></div><">' . $value2 . '</div>';
                 }
             }
             $return .= '</div></div></div>';
