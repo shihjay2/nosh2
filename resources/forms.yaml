@@ -284,9 +284,10 @@ HPQ-How is Your Health:
     text: Head-Headaches or Migraines
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect is not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   1:
     input: radio
@@ -294,9 +295,10 @@ HPQ-How is Your Health:
     text: Head-Faintness
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect is not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   2:
     input: radio
@@ -304,9 +306,10 @@ HPQ-How is Your Health:
     text: Head-Dizziness
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   3:
     input: radio
@@ -314,9 +317,10 @@ HPQ-How is Your Health:
     text: Head-Insomnia
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   4:
     input: radio
@@ -324,9 +328,10 @@ HPQ-How is Your Health:
     text: Eyes-Watery or itchy eyes
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   5:
     input: radio
@@ -334,9 +339,10 @@ HPQ-How is Your Health:
     text: Eyes-Swollen, red or sticky eyes
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   6:
     input: radio
@@ -344,9 +350,10 @@ HPQ-How is Your Health:
     text: Eyes-Bags or dark circles under eyes
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   7:
     input: radio
@@ -354,9 +361,10 @@ HPQ-How is Your Health:
     text: Eyes-Blurred or tunnel vision
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   8:
     input: radio
@@ -364,9 +372,10 @@ HPQ-How is Your Health:
     text: Ears-Itchy ears
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   9:
     input: radio
@@ -374,9 +383,10 @@ HPQ-How is Your Health:
     text: Ears-Earache, ear infection
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   10:
     input: radio
@@ -384,9 +394,10 @@ HPQ-How is Your Health:
     text: Ears-Ear drainage or excessive wax
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   11:
     input: radio
@@ -394,19 +405,21 @@ HPQ-How is Your Health:
     text: Ears-Ear ringing or hearing loss
     options: >
       Never or almost never,Occasionally have
-      it, effect is not severe,Occasionally
-      have it, effect is severe,Frequently
-      have it, effect not severe,Frequently
-      have it, effect is severe
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
+      effect is severe
   12:
     input: radio
     name: nose-stuffy_nose
     text: Nose-Stuffy nose
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   13:
     input: radio
@@ -414,9 +427,10 @@ HPQ-How is Your Health:
     text: Nose-Sinus problems
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   14:
     input: radio
@@ -424,9 +438,10 @@ HPQ-How is Your Health:
     text: Nose-Hay fever
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is sever,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   15:
     input: radio
@@ -434,9 +449,10 @@ HPQ-How is Your Health:
     text: Nose-Sneezing attacks
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   16:
     input: radio
@@ -444,9 +460,10 @@ HPQ-How is Your Health:
     text: Nose-Excessive nasal mucous
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   17:
     input: radio
@@ -454,9 +471,10 @@ HPQ-How is Your Health:
     text: Oral-Chronic cough
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   18:
     input: radio
@@ -464,9 +482,10 @@ HPQ-How is Your Health:
     text: Oral-Gagging, clearing throat
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   19:
     input: radio
@@ -474,9 +493,10 @@ HPQ-How is Your Health:
     text: Oral-Sore throat, hoarse
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   20:
     input: radio
@@ -484,9 +504,10 @@ HPQ-How is Your Health:
     text: Oral-Swollen tongue, lips, gums
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   21:
     input: radio
@@ -494,9 +515,10 @@ HPQ-How is Your Health:
     text: Oral-Canker sores
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   22:
     input: radio
@@ -504,9 +526,10 @@ HPQ-How is Your Health:
     text: Skin-Acne
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   23:
     input: radio
@@ -514,9 +537,10 @@ HPQ-How is Your Health:
     text: Skin-Hives, rashes, dryness
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   24:
     input: radio
@@ -524,9 +548,10 @@ HPQ-How is Your Health:
     text: Skin-Hair loss
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   25:
     input: radio
@@ -534,9 +559,10 @@ HPQ-How is Your Health:
     text: Skin-Flushing, hot flashes
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   26:
     input: radio
@@ -544,9 +570,10 @@ HPQ-How is Your Health:
     text: Skin-Excessive sweating
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   27:
     input: radio
@@ -554,9 +581,10 @@ HPQ-How is Your Health:
     text: Heart-Irregular, skipped beats
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   28:
     input: radio
@@ -564,9 +592,10 @@ HPQ-How is Your Health:
     text: Heart-Rapid, pounding
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   29:
     input: radio
@@ -574,9 +603,10 @@ HPQ-How is Your Health:
     text: Heart-Chest pain
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   30:
     input: radio
@@ -584,9 +614,10 @@ HPQ-How is Your Health:
     text: Lungs-Chest congestion
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   31:
     input: radio
@@ -594,9 +625,10 @@ HPQ-How is Your Health:
     text: Lungs-Asthma, bronchitis
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   32:
     input: radio
@@ -604,9 +636,10 @@ HPQ-How is Your Health:
     text: Lungs-Shortness of breath
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   33:
     input: radio
@@ -614,9 +647,10 @@ HPQ-How is Your Health:
     text: Lungs-Difficulty breathing
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   34:
     input: radio
@@ -624,9 +658,10 @@ HPQ-How is Your Health:
     text: Other-Frequent illness
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   35:
     input: radio
@@ -634,9 +669,10 @@ HPQ-How is Your Health:
     text: Other-Frequent/urgent urination
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   36:
     input: radio
@@ -644,9 +680,10 @@ HPQ-How is Your Health:
     text: Other-Genital itch
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   37:
     input: radio
@@ -654,9 +691,10 @@ HPQ-How is Your Health:
     text: Digestion-Nausea, Vomiting
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   38:
     input: radio
@@ -664,9 +702,10 @@ HPQ-How is Your Health:
     text: Digestion-Diarrhea or loose stools
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect is not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   39:
     input: radio
@@ -674,9 +713,10 @@ HPQ-How is Your Health:
     text: Digestion-Constipation
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   40:
     input: radio
@@ -684,9 +724,10 @@ HPQ-How is Your Health:
     text: Digestion-Bloated feeling
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   41:
     input: radio
@@ -694,9 +735,10 @@ HPQ-How is Your Health:
     text: Digestion-Belching, passing gas
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   42:
     input: radio
@@ -704,9 +746,10 @@ HPQ-How is Your Health:
     text: Digestion-Heartburn, acid reflux
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   43:
     input: radio
@@ -714,9 +757,10 @@ HPQ-How is Your Health:
     text: Digestion-Stomach or Intestinal pain
     options: >
       Never or almost never,Occasionally have
-      it, effect not sever,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   44:
     input: radio
@@ -724,9 +768,10 @@ HPQ-How is Your Health:
     text: Joints/Muscle-Pain or aches in joints
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   45:
     input: radio
@@ -734,9 +779,10 @@ HPQ-How is Your Health:
     text: Joints/Muscles-Arthritis
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   46:
     input: radio
@@ -747,9 +793,10 @@ HPQ-How is Your Health:
       movement
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   47:
     input: radio
@@ -757,9 +804,10 @@ HPQ-How is Your Health:
     text: Joints/Muscles-Pain or aches in muscles
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   48:
     input: radio
@@ -770,9 +818,10 @@ HPQ-How is Your Health:
       tiredness
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   49:
     input: radio
@@ -780,9 +829,10 @@ HPQ-How is Your Health:
     text: Weight-Binge eating/drinking
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   50:
     input: radio
@@ -790,9 +840,10 @@ HPQ-How is Your Health:
     text: Weight-Craving certain foods
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   51:
     input: radio
@@ -800,9 +851,10 @@ HPQ-How is Your Health:
     text: Weight-Excess weight
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   52:
     input: radio
@@ -810,9 +862,10 @@ HPQ-How is Your Health:
     text: Weight-Compulsive eating
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   53:
     input: radio
@@ -820,9 +873,10 @@ HPQ-How is Your Health:
     text: Weight-Water retention
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   54:
     input: radio
@@ -830,9 +884,10 @@ HPQ-How is Your Health:
     text: Weight-Underweight
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   55:
     input: radio
@@ -840,9 +895,10 @@ HPQ-How is Your Health:
     text: Weight-Lack of appetite
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   56:
     input: radio
@@ -850,9 +906,10 @@ HPQ-How is Your Health:
     text: Energy/Activity-Fatigue, sluggishness
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   57:
     input: radio
@@ -860,9 +917,10 @@ HPQ-How is Your Health:
     text: Energy/Activity-Apathy, lethargy
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   58:
     input: radio
@@ -870,9 +928,10 @@ HPQ-How is Your Health:
     text: Energy/Activity-Hyperactivity
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   59:
     input: radio
@@ -880,9 +939,10 @@ HPQ-How is Your Health:
     text: Energy/Activity-Restlessness
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   60:
     input: radio
@@ -890,9 +950,10 @@ HPQ-How is Your Health:
     text: Mind-Poor memory
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   61:
     input: radio
@@ -900,9 +961,10 @@ HPQ-How is Your Health:
     text: Mind-Confusion, poor comprehension
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   62:
     input: radio
@@ -910,9 +972,10 @@ HPQ-How is Your Health:
     text: Mind-Poor concentration
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   63:
     input: radio
@@ -920,9 +983,10 @@ HPQ-How is Your Health:
     text: Mind-Poor physical coordination
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   64:
     input: radio
@@ -930,9 +994,10 @@ HPQ-How is Your Health:
     text: Mind-Difficulty making decisions
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   65:
     input: radio
@@ -940,9 +1005,10 @@ HPQ-How is Your Health:
     text: Mind-Stuttering or stammering
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   66:
     input: radio
@@ -950,9 +1016,10 @@ HPQ-How is Your Health:
     text: Mind-Slurred speach
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   67:
     input: radio
@@ -960,9 +1027,10 @@ HPQ-How is Your Health:
     text: Mind-Learning disabilities
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   68:
     input: radio
@@ -970,9 +1038,10 @@ HPQ-How is Your Health:
     text: Emotions-Mood swings
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   69:
     input: radio
@@ -980,9 +1049,10 @@ HPQ-How is Your Health:
     text: Emotions-Anxiety, fear, nervousness
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   70:
     input: radio
@@ -993,9 +1063,10 @@ HPQ-How is Your Health:
       aggressiveness
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   71:
     input: radio
@@ -1006,9 +1077,10 @@ HPQ-How is Your Health:
       joy
     options: >
       Never or almost never,Occasionally have
-      it, effect not severe,Occasionally have
-      it, effect is severe,Frequently have it,
-      effect not severe,Frequently have it,
+      it - effect not severe,Occasionally have
+      it - effect is severe,Frequently have it -
+      effect is not severe,
+      Frequently have it -
       effect is severe
   scoring: >
     1-15 Low toxic load, 15-49 Moderate
