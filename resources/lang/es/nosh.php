@@ -353,7 +353,7 @@ return [
     "text_instruct" => "Después de que haya terminado con su texto, haga clic en el lugar de la imagen para colocarlo en su lugar.",
     "text_placeholder" => "Texto para colocar en la imagen",
 
-    // UMA
+    // UMA - User Managed Access
     "uma_url" => "Copie el enlace (URL) de su correo electrónico o SMS que recibió de su paciente",
     "uma_error" => "Error",
     "uma_error_text1" => "Ha intentado iniciar sesión en el registro electrónico personal de salud de este paciente, pero no tiene los privilegios suficientes para acceder a él.",

@@ -354,7 +354,7 @@ return [
     "text_instruct" => "After you're done with your text, click on the spot of the image to drop it in place.",
     "text_placeholder" => "Text to Place in Image",
 
-    // UMA
+    // UMA - User Managed Access
     "uma_url" => "Copy the link (URL) from your email or SMS that you received from your patient",
     "uma_error" => "Error",
     "uma_error_text1" => "You have tried to login to this patient's personal electronic health record but you do not have sufficient priviledges to access it.",

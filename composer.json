@@ -12,6 +12,12 @@
 			"role": "Developer"
 		}
 	],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/dhes/tcpdi-merger"
+        }
+    ],
     "require": {
         "php": ">=5.5.9",
         "adci/full-name-parser": "^0.2.4",
@@ -35,7 +41,7 @@
         "phpseclib/phpseclib": "~2.0",
         "pragmarx/countries": "^0.7",
         "shihjay2/openid-connect-uma-php": "dev-master",
-        "shihjay2/tcpdi-merger": "dev-master",
+        "shihjay2/tcpdi-merger": "dev-bugfix", 
         "simplesoftwareio/simple-qrcode": "~1.4",
         "soapbox/laravel-formatter": "2.x",
         "symfony/yaml": "^5.2",

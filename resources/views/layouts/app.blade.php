@@ -13,7 +13,7 @@
             NOSH ChartingSystem
         @endif
     </title>
-    {!! $assets_css !!}
+    {!! $assets_css !!} {{-- renders html tags; {{ }} would not render html tags --}}
     @yield('view.stylesheet')
     <style>
 		@import url(https://fonts.googleapis.com/css?family=Nunito);
@@ -1074,11 +1074,13 @@
         function progressbartrack() {
             $.ajax({
                 type: "POST",
-                url: noshdata.progress,
-                data: "id=" + noshdata.progress_id,
+                url: noshdata.progress, // http://localhost/progress
+                data: "id=" + noshdata.progress_id, // e.g. 1617232007_1_track
+                // the response will be the content of the tracking file
+                // a number >= 0 and <= 100
                 success: function(data) {
                     var w = data + "%";
-                    $('#progressdata').attr('area-valuenow', data).text(w).css('width', w);
+                    $('#progressdata').attr('aria-valuenow', data).text(w).css('width', w);
                     if (parseInt(data) < 100) {
                         setTimeout(progressbartrack, 5000);
                     }
@@ -1150,7 +1152,7 @@
         });
 
         $(document).ready(function() {
-            var tz = jstz.determine();
+            var tz = jstz.determine(); // time zone detection
             $.cookie('nosh_tz', tz.name(), { path: '/' });
             $(".fancybox").fancybox({
                 openEffect: "none",
@@ -1214,7 +1216,7 @@
                     $('#loadingModal').modal('hide');
                 });
             });
-            $('a').css('cursor', 'pointer').on('click', function(event) {
+            $('a').css('cursor', 'pointer').on('click', function(event) { // changes cursor from arrow to pointer
                 if ($(this).attr('href') !== undefined) {
                     if ($(this).attr('id') == 'nosh_messaging_add_photo' || $(this).hasClass('nosh-photo-delete') || $(this).hasClass('nosh-photo-delete-t-message') || $(this).attr('id') == 'nosh_t_message_add_action' || $(this).attr('id') == 'nosh_t_message_add_photo') {
                         event.preventDefault();
@@ -1452,7 +1454,7 @@
                     },
                     successCallback: function (url) {
                         $('#progressModal').modal('hide');
-                        $('#progressdata').attr('area-valuenow', '0').text('0' + "%");
+                        $('#progressdata').attr('aria-valuenow', '0').text('0' + "%");
                     }
                 });
             }
