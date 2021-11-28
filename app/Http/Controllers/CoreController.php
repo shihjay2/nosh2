@@ -2253,7 +2253,7 @@ class CoreController extends Controller
     public function database_export(Request $request, $track_id='')
     {
         if ($track_id !== '') {
-            File::put(public_path() . '/temp/' . $track_id, '0');
+            File::put(public_path() . '/temp/' . $track_id, '0'); // initialize the progress bar value to zero; store value in public tracking file
             ini_set('memory_limit','196M');
             ini_set('max_execution_time', 300);
             $zip_file_name = time() . '_noshexport_' . Session::get('practice_id') . '.zip';
@@ -2262,7 +2262,7 @@ class CoreController extends Controller
             $zip->open($zip_file, ZipArchive::CREATE);
             $documents_dir = Storage::path('');
             $database = env('DB_DATABASE') . "_copy";
-            $connect = mysqli_connect('localhost', env('DB_USERNAME'), env('DB_PASSWORD'));
+            $connect = mysqli_connect(env('DB_HOST'), env('DB_USERNAME'), env('DB_PASSWORD'));
             if ($connect) {
                 if (mysqli_select_db($connect, $database)) {
                     $sql = "DROP DATABASE " . $database;
@@ -2270,8 +2270,9 @@ class CoreController extends Controller
                 }
                 $sql = "CREATE DATABASE " . $database;
                 if (mysqli_query($connect,$sql)) {
-                    $command = "mysqldump --no-data -u " . env('DB_USERNAME') . " -p". env('DB_PASSWORD') . " " . env('DB_DATABASE') . " | mysql -u " . env('DB_USERNAME') . " -p". env('DB_PASSWORD') . " " . $database;
+                    $command = "mysqldump --no-data -h " . env('DB_HOST') . " -u " . env('DB_USERNAME') . " -p". env('DB_PASSWORD') . " " . env('DB_DATABASE') . " | mysql -h " . env('DB_HOST') . " -u " . env('DB_USERNAME') . " -p". env('DB_PASSWORD') . " " . $database;
                     system($command);
+                    // drop unnecessary tables
                     Schema::connection('mysql2')->drop('audit');
                     Schema::connection('mysql2')->drop('ci_sessions');
                     Schema::connection('mysql2')->drop('cpt');
@@ -2304,10 +2305,11 @@ class CoreController extends Controller
                     Schema::connection('mysql2')->drop('snomed_procedure_imaging');
                     Schema::connection('mysql2')->drop('snomed_procedure_path');
                     Schema::connection('mysql2')->drop('supplements_list');
-                    File::put(public_path() . '/temp/' . $track_id, '10');
+                    File::put(public_path() . '/temp/' . $track_id, '10'); // move progress bar to 10%
                     $practiceinfo = DB::table('practiceinfo')->where('practice_id', '=', Session::get('practice_id'))->first();
                     $practiceinfo_data = (array) $practiceinfo;
                     $practiceinfo_data['practice_id'] = '1';
+                    // save practice logo
                     DB::connection('mysql2')->table('practiceinfo')->insert($practiceinfo_data);
                     if ($practiceinfo->practice_logo != '') {
                         $practice_logo_file = public_path() . '/assets/images/' . $practiceinfo->practice_logo;
@@ -2367,6 +2369,7 @@ class CoreController extends Controller
                     }
                     DB::connection('mysql2')->table('orderslist')->update(['practice_id' => '1']);
                     $provider_id_arr = [];
+                    // save provider signatures
                     $providers = DB::table('providers')->where('practice_id', '=', Session::get('practice_id'))->get();
                     if ($providers->count()) {
                         foreach ($providers as $providers_row) {
@@ -2388,6 +2391,7 @@ class CoreController extends Controller
                             DB::connection('mysql2')->table('procedurelist')->insert((array) $procedurelist_row);
                         }
                     }
+                    // 
                     DB::connection('mysql2')->table('procedurelist')->update(['practice_id' => '1']);
                     $received = DB::table('received')->where('practice_id', '=', Session::get('practice_id'))->get();
                     if ($received->count()) {
@@ -2402,6 +2406,7 @@ class CoreController extends Controller
                         }
                     }
                     DB::connection('mysql2')->table('received')->update(['practice_id' => '1']);
+                    // backup scans
                     $scans = DB::table('scans')->where('practice_id', '=', Session::get('practice_id'))->get();
                     if ($scans->count()) {
                         foreach ($scans as $scans_row) {
@@ -2595,6 +2600,7 @@ class CoreController extends Controller
                                 DB::connection('mysql2')->table('t_messages')->update(['practice_id' => '1']);
                             }
                             $rootPath = realpath($documents_dir . $pid);
+                            // backup patient documents
                             if (file_exists($rootPath)) {
                                 $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($rootPath), RecursiveIteratorIterator::SELF_FIRST);
                                 foreach ($files as $name => $file) {
@@ -2642,6 +2648,7 @@ class CoreController extends Controller
                                     DB::connection('mysql2')->table('recipients')->insert((array) $recipients_row);
                                 }
                             }
+                            // backup sent faxes
                             $rootPath1 = realpath($documents_dir . 'sentfax/' . $job_id);
                             if (file_exists($rootPath1)) {
                                 $files1 = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($rootPath1), RecursiveIteratorIterator::SELF_FIRST);
@@ -2737,14 +2744,14 @@ class CoreController extends Controller
                             if ($vitals) {
                                 DB::connection('mysql2')->table('vitals')->insert((array) $vitals);
                             }
-                            $i++;
-                            $percent1 = round($j/$eid_count*25) + 70;
+                            $j++;
+                            $percent = round($j/$eid_count*30) + 70;
                             File::put(public_path() . '/temp/' . $track_id, $percent);
                         }
                     }
                     $sqlfilename = time() . '_noshexport.sql';
                     $sqlfile = public_path() . '/temp/' . $sqlfilename;
-                    $command = "mysqldump -u " . env('DB_USERNAME') . " -p". env('DB_PASSWORD') . " " . $database . " > " . $sqlfile;
+                    $command = "mysqldump -h " . env('DB_HOST') . " -u " . env('DB_USERNAME') . " -p". env('DB_PASSWORD') . " " . $database . " > " . $sqlfile;
                     system($command);
                     if (!file_exists($sqlfile)) {
                         sleep(2);
@@ -2767,7 +2774,7 @@ class CoreController extends Controller
             return response()->download($zip_file, $zip_file_name, $headers);
         } else {
             $track_id = time() . '_' . Session::get('user_id') . '_track';
-            Session::put('database_export', route('database_export', [$track_id]));
+            Session::put('database_export', route('database_export', [$track_id])); // create a session key/value signifying that a database export is in progress
             return redirect()->route('dashboard');
         }
     }
@@ -2778,7 +2785,7 @@ class CoreController extends Controller
         ini_set('max_execution_time', 300);
         if ($request->isMethod('post')) {
             $file = $request->input('backup');
-            $command = "mysql -u " . env('DB_USERNAME') . " -p". env('DB_PASSWORD') . " " . env('DB_DATABASE') . " < " . $file;
+            $command = "mysql -h " . env('DB_HOST') . " -u " . env('DB_USERNAME') . " -p". env('DB_PASSWORD') . " " . env('DB_DATABASE') . " < " . $file;
             system($command);
             $message = trans('noshform.database_import1');
             Session::put('message_action', $message);
@@ -2836,7 +2843,7 @@ class CoreController extends Controller
                 $sqlsearch = glob($directory . '/*_noshexport.sql');
                 if (! empty($sqlsearch)) {
                     foreach ($sqlsearch as $sqlfile) {
-                        $command = "mysql -u " . env('DB_USERNAME') . " -p". env('DB_PASSWORD') . " " . env('DB_DATABASE') . " < " . $sqlfile;
+                        $command = "mysql -h " . env('DB_HOST') . " -u " . env('DB_USERNAME') . " -p". env('DB_PASSWORD') . " " . env('DB_DATABASE') . " < " . $sqlfile;
                         system($command);
                         unlink($sqlfile);
                     }
@@ -2876,7 +2883,7 @@ class CoreController extends Controller
             $directory = public_path() . '/temp';
             $file->move($directory, $file->getClientOriginalName());
             $new_file = $directory . '/' . $file->getClientOriginalName();
-            $command = "mysql -u " . env('DB_USERNAME') . " -p". env('DB_PASSWORD') . " " . env('DB_DATABASE') . " < " . $new_file;
+            $command = "mysql -h " . env('DB_HOST') . " -u " . env('DB_USERNAME') . " -p". env('DB_PASSWORD') . " " . env('DB_DATABASE') . " < " . $new_file;
             system($command);
             unlink($new_file);
             $message = trans('noshform.database_import1');
@@ -6613,7 +6620,7 @@ class CoreController extends Controller
     {
         if ($request->isMethod('post')) {
             $file = $request->input('backup');
-            $command = "mysql -u " . env('DB_USERNAME') . " -p". env('DB_PASSWORD') . " " . env('DB_DATABASE') . " < " . $file;
+            $command = "mysql -h " . env('DB_HOST') . " -u " . env('DB_USERNAME') . " -p". env('DB_PASSWORD') . " " . env('DB_DATABASE') . " < " . $file;
             system($command);
             // Do migrations if needed
             $migrate = new Process(["php artisan migrate --force"]);
@@ -6968,7 +6975,7 @@ class CoreController extends Controller
                 trans('noshform.patient_portal') => $result->patient_portal
             ];
             $encounter_type_arr = $this->array_encounter_type();
-            // Remove depreciated encounter types for new encounters
+            // Remove deprecated encounter types for new encounters
             unset($encounter_type_arr['standardmedical']);
             unset($encounter_type_arr['standardmedical1']);
             $reminder_interval_arr = $this->array_reminder_interval();

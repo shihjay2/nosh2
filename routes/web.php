@@ -79,7 +79,7 @@ Route::get('dashboard_reminders', ['as' => 'dashboard_reminders', 'uses' => 'Cor
 Route::get('dashboard_tests', ['as' => 'dashboard_tests', 'uses' => 'CoreController@dashboard_tests']);
 Route::any('dashboard_tests_reconcile/{id}', ['as' => 'dashboard_tests_reconcile', 'uses' => 'CoreController@dashboard_tests_reconcile']);
 Route::get('dashboard_t_messages', ['as' => 'dashboard_t_messages', 'uses' => 'CoreController@dashboard_t_messages']);
-Route::get('database_export/{tracK_id?}', ['as' => 'database_export', 'uses' => 'CoreController@database_export']);
+Route::get('database_export/{track_id?}', ['as' => 'database_export', 'uses' => 'CoreController@database_export']);
 Route::any('database_import', ['as' => 'database_import', 'uses' => 'CoreController@database_import']);
 Route::any('database_import_cloud', ['as' => 'database_import_cloud', 'uses' => 'CoreController@database_import_cloud']);
 Route::any('database_import_file', ['as' => 'database_import_file', 'uses' => 'CoreController@database_import_file']);
