@@ -13920,10 +13920,12 @@ class Controller extends BaseController
     protected function icd10data($icd10q)
     {
         $data = [];
-        $url = 'http://www.icd10data.com/Search.aspx?search=' . $icd10q . '&codeBook=ICD10CM';
+        $url = 'https://www.icd10data.com/search?s=' . $icd10q . '&codeBook=icd10cm';
+        $userAgent = 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322';
         if (strlen($icd10q) > 2) {
             $ch = curl_init();
             curl_setopt($ch,CURLOPT_URL, $url);
+            curl_setopt($ch,CURLOPT_USERAGENT, $userAgent);
             curl_setopt($ch,CURLOPT_FAILONERROR,1);
             curl_setopt($ch,CURLOPT_FOLLOWLOCATION,1);
             curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
@@ -13958,9 +13960,11 @@ class Controller extends BaseController
     protected function icd10data_get($page, $data, $icd10q)
     {
         if (strlen($icd10q) > 2) {
-            $url = 'http://www.icd10data.com/Search.aspx?search=' . $icd10q . '&codeBook=ICD10CM' . '&page=' . $page;
+            $url = 'https://www.icd10data.com/search?s=' . $icd10q . '&codeBook=icd10cm' . '&page=' . $page;
+            $userAgent = 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)';
             $ch = curl_init();
             curl_setopt($ch,CURLOPT_URL, $url);
+            curl_setopt($ch,CURLOPT_USERAGENT, $userAgent);
             curl_setopt($ch,CURLOPT_FAILONERROR,1);
             curl_setopt($ch,CURLOPT_FOLLOWLOCATION,1);
             curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
