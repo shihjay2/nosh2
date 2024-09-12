@@ -756,9 +756,11 @@ class ChartController extends Controller {
         $dropdown_array['items'] = $items;
         $data['panel_dropdown'] = $this->dropdown_build($dropdown_array);
         if ($type == 'prevention') {
-            $key = '48126e4e8ea3b83bc808850c713a5743';
-            $url = 'https://epssdata.ahrq.gov/';
-            $post = http_build_query([
+            $key = '48126e4e8ea3b83bc808850c713a5743'; //this is Dr. Chen's key DH
+            // $url = 'https://epssdata.ahrq.gov/'; //this may be an older url DH
+            $url = 'https://data.uspreventiveservicestaskforce.org/api/json'; //this is the one currently recommended on the uspstf web site DH
+            // $post = http_build_query([ //change from post to get DH
+            $get = http_build_query([
                 'key' => $key,
                 'age' => round($age, 0, PHP_ROUND_HALF_DOWN),
                 'sex' => $gender,
@@ -766,9 +768,9 @@ class ChartController extends Controller {
                 'sexuallyActive' => $row->sexuallyactive,
                 'tobacco' => $row->tobacco
             ]);
-            $cr = curl_init($url);
-            curl_setopt($cr, CURLOPT_POST, 1);
-            curl_setopt($cr, CURLOPT_POSTFIELDS, $post);
+            $cr = curl_init($url . '?' . $get);
+            // curl_setopt($cr, CURLOPT_POST, 1);  //not needed for get
+            // curl_setopt($cr, CURLOPT_POSTFIELDS, $post);  //not needed for get
             curl_setopt($cr, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($cr, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
             $data1 = curl_exec($cr);
@@ -2205,7 +2207,7 @@ class ChartController extends Controller {
             $this->audit('Delete');
 
             // $this->api_data('delete', 'rx_list', 'rxl_id', $old_rxl_id);
-            // UMA placeholder
+            // UMA (User-managed access) placeholder
             $arr['message'] = trans('noshform.eie') . "!";
         }
         $arr['response'] = 'OK';
@@ -3076,7 +3078,7 @@ class ChartController extends Controller {
             $return .= $this->header_build($header_arr, trans('noshform.contacts'));
             foreach ($contact_arr as $key2 => $value2) {
                 if ($value2 !== '' && $value2 !== null) {
-                    $return .= '<div class="row"><div class="col-md-3"><b>' . $key2 . '</b></div><div class="col-md-8">' . $value2 . '</div></div>';
+                    $return .= '<div class="row"><div class="col-md-3"><b>' . $key2 . '</b></div><">' . $value2 . '</div></div>';
                 }
             }
             $return .= '</div></div></div>';
@@ -3090,7 +3092,7 @@ class ChartController extends Controller {
             $return .= $this->header_build($header_arr, trans('noshform.other'));
             foreach ($other_arr as $key4 => $value4) {
                 if ($value4 !== '' && $value4 !== null) {
-                    $return .= '<div class="row"><div class="col-md-3"><b>' . $key4 . '</b></div><div class="col-md-8">' . $value4 . '</div></div>';
+                    $return .= '<div class="row"><div class="col-md-3"><b>' . $key4 . '</b></div><">' . $value4 . '</div></div>';
                 }
             }
             $return .= '</div></div></div>';
@@ -3579,7 +3581,7 @@ class ChartController extends Controller {
             'standardpsych',
             'standardpsych1'
         ];
-        $depreciated_array = [
+        $deprecated_array = [
             'standardmedical',
             'standardmedical1'
         ];
@@ -3635,8 +3637,8 @@ class ChartController extends Controller {
         }
         if ($ros) {
             $ros_val = $ros->ros;
-            // Convert depreciated encounter type to current
-            if (in_array($encounter->encounter_template, $depreciated_array)) {
+            // Convert deprecated encounter type to current
+            if (in_array($encounter->encounter_template, $deprecated_array)) {
                 $ros_arr = $this->array_ros();
                 foreach ($ros_arr as $ros_k => $ros_v) {
                     if ($ros->{$ros_k} !== '' && $ros->{$ros_k} !== null) {
@@ -3765,8 +3767,8 @@ class ChartController extends Controller {
                 $pe = DB::table('pe')->where('eid', '=', $eid)->first();
                 if ($pe) {
                     $pe_val = $pe->pe;
-                    // Convert depreciated encounter type to current
-                    if (in_array($encounter->encounter_template, $depreciated_array)) {
+                    // Convert deprecated encounter type to current
+                    if (in_array($encounter->encounter_template, $deprecated_array)) {
                         $pe_arr = $this->array_pe();
                         foreach ($pe_arr as $pe_k => $pe_v) {
                             if ($pe->{$pe_k} !== '' && $pe->{$pe_k} !== null) {
@@ -4945,7 +4947,7 @@ class ChartController extends Controller {
             $provider_arr = $this->array_providers();
             $encounter_type_arr = $this->array_encounter_type();
             if ($eid == '0') {
-                // Remove depreciated encounter types for new encounters
+                // Remove deprecated encounter types for new encounters
                 unset($encounter_type_arr['standardmedical']);
                 unset($encounter_type_arr['standardmedical1']);
             }
@@ -9005,7 +9007,7 @@ class ChartController extends Controller {
             $return .= $this->header_build($header_arr, trans('noshform.habits'));
             foreach ($habits_arr as $key2 => $value2) {
                 if ($value2 !== '' && $value2 !== null) {
-                    $return .= '<div class="col-md-3"><b>' . $key2 . '</b></div><div class="col-md-8">' . $value2 . '</div>';
+                    $return .= '<div class="col-md-3"><b>' . $key2 . '</b></div><">' . $value2 . '</div>';
                 }
             }
             $return .= '</div></div></div>';

@@ -1342,7 +1342,7 @@ class LoginController extends Controller {
     }
 
 
-    // Patient-centric, UMA login
+    // Patient-centric, UMA (User-managed accesd) login
     public function uma_auth()
     {
         $practice = DB::table('practiceinfo')->where('practice_id', '=', '1')->first();

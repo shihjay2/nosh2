@@ -1493,8 +1493,8 @@ class Controller extends BaseController
             'medical' => trans('noshform.medical_encounter'),
             'phone' => trans('noshform.phone_encounter'),
             'virtual' => trans('noshform.virtual_encounter'),
-            'standardmedical1' => 'Standard Medical Visit V2', // Depreciated
-            'standardmedical' => 'Standard Medical Visit V1', // Depreciated
+            'standardmedical1' => 'Standard Medical Visit V2', // deprecated
+            'standardmedical' => 'Standard Medical Visit V1', // deprecated
             'standardpsych' => trans('noshform.standardpsych'),
             'standardpsych1' => trans('noshform.standardpsych1'),
             'clinicalsupport' => trans('noshform.clinicalsupport'),
@@ -2778,16 +2778,20 @@ class Controller extends BaseController
             if ($vitals->bp_systolic > 200) {
                 $sbp = '200';
             } elseif ($vitals->bp_systolic < 90) {
-                $spb = '90';
+                $sbp = '90';
             } else {
-                $spb = $vitals->bp_systolic;
+                $sbp = $vitals->bp_systolic;
             }
         }
         $htn = false;
         $chol = false;
         $rx = DB::table('rx_list')->where('pid', '=', Session::get('pid'))->whereNull('rxl_date_inactive')->whereNull('rxl_date_old')->get();
         if ($rx->count()) {
-            $htn_url = 'https://rxnav.nlm.nih.gov/REST/rxclass/classMembers.json?classId=N0000001616&relaSource=NDFRT&rela=may_treat';
+        //  $htn_url = 'https://rxnav.nlm.nih.gov/REST/rxclass/classMembers.json?classId=N0000001616&relaSource=NDFRT&rela=may_treat'; 
+        //  according to https://rxnav.nlm.nih.gov/RxClassIntro.html NDFRT was replaced with MEDRT in 2018. In addition MESH identifiers
+        //  like D006973 for HTN replace the NDFRT ids like N0000001616
+        //  JSON structure is the same.     
+            $htn_url = 'https://rxnav.nlm.nih.gov/REST/rxclass/classMembers.json?classId=D006973&relaSource=MEDRT&rela=may_treat';
             $htn_ch = curl_init();
             curl_setopt($htn_ch,CURLOPT_URL, $htn_url);
             curl_setopt($htn_ch,CURLOPT_FAILONERROR,1);
@@ -2801,28 +2805,36 @@ class Controller extends BaseController
             foreach ($htn_group['drugMemberGroup']['drugMember'] as $htn_item) {
                 $htn_arr[] = strtolower($htn_item['minConcept']['name']);
             }
-            $chol_url = 'https://rxnav.nlm.nih.gov/REST/rxclass/classMembers.json?classId=N0000001592&relaSource=NDFRT&rela=may_treat';
-            $chol_ch = curl_init();
-            curl_setopt($chol_ch,CURLOPT_URL, $chol_url);
-            curl_setopt($chol_ch,CURLOPT_FAILONERROR,1);
-            curl_setopt($chol_ch,CURLOPT_FOLLOWLOCATION,1);
-            curl_setopt($chol_ch,CURLOPT_RETURNTRANSFER,1);
-            curl_setopt($chol_ch,CURLOPT_TIMEOUT, 15);
-            $chol_json = curl_exec($chol_ch);
-            curl_close($chol_ch);
-            $chol_group = json_decode($chol_json, true);
-            $chol_arr = [];
-            foreach ($chol_group['drugMemberGroup']['drugMember'] as $chol_item) {
-                $chol_arr[] = strtolower($chol_item['minConcept']['name']);
-            }
+        //     This hyperlipidemia Rx class search is replaced with a simple statin array on line 2825. 
+        //     Reason - 1) many meds which treat high cholesterol are not statins; 2) the list of statins
+        //     is pretty short.
+        //     $chol_url = 'https://rxnav.nlm.nih.gov/REST/rxclass/classMembers.json?classId=N0000001592&relaSource=NDFRT&rela=may_treat';
+        //     Handy for drug - disease NDFRT - MEDRT code lookups: https://bioportal.bioontology.org/ontologies/NDFRT?p=classes&conceptid=N0000001580
+        //     $chol_ch = curl_init();
+        //     curl_setopt($chol_ch,CURLOPT_URL, $chol_url);
+        //     curl_setopt($chol_ch,CURLOPT_FAILONERROR,1);
+        //     curl_setopt($chol_ch,CURLOPT_FOLLOWLOCATION,1);
+        //     curl_setopt($chol_ch,CURLOPT_RETURNTRANSFER,1);
+        //     curl_setopt($chol_ch,CURLOPT_TIMEOUT, 15);
+        //     $chol_json = curl_exec($chol_ch);
+        //     curl_close($chol_ch);
+        //     $chol_group = json_decode($chol_json, true);
+        //     $chol_arr = [];
+        //     foreach ($chol_group['drugMemberGroup']['drugMember'] as $chol_item) {
+        //         $chol_arr[] = strtolower($chol_item['minConcept']['name']);
+        //     }
+            $chol_arr = ['atorvastatin', 'fluvastatin', 'lovastatin', 'pitavastatin', 'pravastatin', 'rosuvastatin', 'simvastatin']; // DH
             foreach ($rx as $rx_item) {
-                $rx_name = explode(' ', $rx_item->rxl_medication);
+                $rx_full_name = $rx_item->rxl_medication; 
+                $rx_name = explode(' ', $rx_item->rxl_medication); 
                 $rx_name_first = strtolower($rx_name[0]);
                 if (in_array($rx_name_first, $htn_arr)) {
-                    $htn = true;
+                    $htn = true; // ...where $htn means 'being treated for HTN => taking antihypertensive medicine'
                 }
-                if (in_array($rx_name_first, $chol_arr)) {
-                    $chol = true;
+                foreach ($chol_arr as $ca) {
+                    if (stripos($rx_full_name, $ca) !== false) { //don't use rx_name_first! Stripos is case insensitive. 
+                        $chol = true;  // ...where $chol means 'taking a statin'
+                    }
                 }
             }
         }
@@ -2860,6 +2872,7 @@ class Controller extends BaseController
                 'age' => $age
             ];
             $data_string = json_encode($data);
+            echo $data_string;
             $ch = curl_init($url);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
             curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
@@ -2876,6 +2889,7 @@ class Controller extends BaseController
             foreach ($missing_arr as $missing_item) {
                 $result_arr['message'] .= '<li>' . $missing_item . '</li>';
             }
+            $result_arr['message'] .= '</ul></div>';
             $result_arr['message'] .= '</ul></div>';
         }
         return $result_arr;
@@ -8044,7 +8058,7 @@ class Controller extends BaseController
         }
         if ($subtype == 'settings') {
             $encounter_type_arr = $this->array_encounter_type();
-            // Remove depreciated encounter types for new encounters
+            // Remove deprecated encounter types for new encounters
             unset($encounter_type_arr['standardmedical']);
             unset($encounter_type_arr['standardmedical1']);
             $settings_arr = [
@@ -8919,8 +8933,9 @@ class Controller extends BaseController
             'selectpicker' => true,
             'default_value' => $rx['label']
         ];
-        // DH Removed because it causes entry in rx_list
+        // Removed because it causes error in rx_list
         // of 0000-00-00. With code commented out entry is null. 
+        // which causes problems with the Conditions list. 
         // $items[] = [ 
         //     'name' => 'rxl_date_inactive',
         //     'type' => 'hidden',
@@ -8939,6 +8954,7 @@ class Controller extends BaseController
         ];
         // DH Removed because it causes entry in rx_list
         // of 0000-00-00. With code commented out entry is null. 
+        // Was causing problems with the Medications list. 
         // $items[] = [
         //     'name' => 'rxl_date_old',
         //     'type' => 'hidden',

@@ -47,6 +47,7 @@ USER www-data
 
 # Install all PHP dependencies
 RUN composer install --no-interaction
+RUN composer update shihjay2/tcpdi-merger  --no-interaction
 
 USER root
 

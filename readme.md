@@ -17,7 +17,7 @@ mysql, imap, mcrypt, imagick, gd, cli, curl, soap, pear
 ##### 8. cURL
 
 ## Installation
-Installing NOSH ChartingSystem is easy to install if you run [Docker NOSH](https://github.com/shihjay2/docker-nosh).  NOSH and all its dependencies are already configured and installed properly.  Just deploy the Vagrant virtual machine and you're ready to start.  The previous method through Ubuntu Linux PPA's is now depreciated.  If you have access to a terminal shell for your server (any distro for Linux or Mac OS-X), you can [install NOSH](https://github.com/shihjay2/nosh2/wiki/Installation).  
+Installing NOSH ChartingSystem is easy to install if you run [Docker NOSH](https://github.com/shihjay2/docker-nosh).  NOSH and all its dependencies are already configured and installed properly.  Just deploy the Vagrant virtual machine and you're ready to start.  The previous method through Ubuntu Linux PPA's is now deprecated.  If you have access to a terminal shell for your server (any distro for Linux or Mac OS-X), you can [install NOSH](https://github.com/shihjay2/nosh2/wiki/Installation).  
 The installation script automatically adds scheduled task commands (cron files) and web server configuration files to make NOSH
 work seamlessly the first time.  The script also determines if your system meets all the package dependencies before installation.
 For detailed information, go to the [Wiki link](https://github.com/shihjay2/nosh2/wiki/Installation).
@@ -35,16 +35,16 @@ NOSH version at your fingertips!
 
 ## Update Notes for Version 2.0:
 ##### 1. Phaxio is now the only supported fax program.
-##### 2. Standard Medical Templates v1 and v2 are now depreciated and replaced my Medical Template
+##### 2. Standard Medical Templates v1 and v2 are now deprecated and replaced my Medical Template
 ##### 3. CPT database is now coming from Medicare and subsequently royalty-free.
-##### 4. ICD database update (Internal database is now depreciated).
-##### 5. Medication database update (Internal database is now depreciated with move to RXNorm API)
-##### 6. CVX database update (Internal database is now depreciated).
-##### 7. Patient education materials using VivaCare is now depreciated.
+##### 4. ICD database update (Internal database is now deprecated).
+##### 5. Medication database update (Internal database is now deprecated with move to RXNorm API)
+##### 6. CVX database update (Internal database is now deprecated).
+##### 7. Patient education materials using VivaCare is now deprecated.
 ##### 8. SMS sending using TextBelt
-##### 9. Supplements database update (Internal database is now depreciated).
-##### 10. Guardian roles database update (Internal database is now depreciated).
-##### 11. Sessions table depreciated (file based sessions currently in use with Laravel 5).
+##### 9. Supplements database update (Internal database is now deprecated).
+##### 10. Guardian roles database update (Internal database is now deprecated).
+##### 11. Sessions table deprecated (file based sessions currently in use with Laravel 5).
 
 # Notes
 ## Lab order templates:
@@ -89,7 +89,7 @@ Imported files are usually downloaded via script in the ../import directory.
 
 ## Database schema
 Below are the list of active database tables that are installed for NOSH.  Some table names are self explainatory, but those that are not
-will be explained here.  Some tables are depreciated if you happen to see the database schemas.
+will be explained here.  Some tables are deprecated if you happen to see the database schemas.
 	addressbook
 	alerts
 	allergies

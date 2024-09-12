@@ -11,3 +11,5 @@ Homestead.json
 /public/assets/js/web3-old.js
 /public/assets/js/abi-decoder-old.js
 /node_modules
+.vscode
+.DS_Store
